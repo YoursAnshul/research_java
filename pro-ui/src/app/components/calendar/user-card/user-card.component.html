@@ -1,0 +1,5 @@
+<div id="user-card-container">
+  <span>{{user?.preferredfname || user?.fname}} {{user?.preferredlname || user?.lname}}</span>
+  <mat-icon *ngIf="user?.buddy" svgIcon="group" id="buddy-icon"></mat-icon>
+  <app-language-icon *ngFor="let language of languages" [language]="language"></app-language-icon>
+</div>

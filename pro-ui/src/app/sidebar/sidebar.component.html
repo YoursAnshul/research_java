@@ -1,0 +1,53 @@
+<!-- app.component.html -->
+<div class="sidenav-container">
+    <div class="sidenav" [ngClass]="{'collapsed': isCollapsed}" [@slideInOut]="isCollapsed ? 'out' : 'in'">
+        <!-- Toggle Button -->
+        <div *ngIf="!isCollapsed" class="menu-border menu">
+            <span> Menu</span>
+            <button (click)="toggleNav()" class="toggle-button"  style="margin: 10px 10px 10px 7px;">
+                <mat-icon svgIcon="close"></mat-icon>
+            </button>
+        </div>
+        <div *ngIf="isCollapsed" class="menu-border menu" >
+            <button (click)="toggleNav()" class="toggle-button" style="margin: 10px 7px 10px 7px;">
+                <mat-icon svgIcon="menu"></mat-icon>
+            </button>
+        </div>
+        <div class="seprator"><div></div></div>
+
+        <!-- Menu Items -->
+        <ul>
+            <ng-container *ngFor="let group of menuItems; let i = index">
+                <ng-container *ngFor="let item of group">
+                  <li
+                    [ngClass]="{'selected': item.id === selectedItemId}"
+                    (click)="selectItem(item.id)" ngbTooltip="{{item.label}}" 
+                    placement="right" *ngIf="isCollapsed">
+                    <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+                  </li>
+                  <li
+                  [ngClass]="{'selected': item.id === selectedItemId}"
+                  (click)="selectItem(item.id)" *ngIf="!isCollapsed">
+                  <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+                  <span class="menu-label">{{item.label}}</span>
+                </li>
+                 
+                </ng-container>
+                <!-- Separator after each group except the last one -->
+                <div *ngIf="i < menuItems.length - 1" class="seprator" style="padding-top: 10px;"><div></div></div>
+              </ng-container>
+            <!-- Add more menu items -->
+          <div class="menu-border ht" [ngClass]="{'interviewer': isInterviewer}"></div>
+        </ul>
+        
+    </div>
+
+    <div class="main-content">
+      <!-- page content router -->
+      <router-outlet />
+      <app-schedule id="schedule-modal"
+      *ngIf="showSchedule"></app-schedule>
+      <div id="hover-message" [class.hidden]="!showHoverMessage">
+      </div>
+    </div>
+</div>

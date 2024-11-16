@@ -1,0 +1,108 @@
+body {
+  font-family: Roboto, Helvetica Neue, sans-serif;
+}
+#header {
+   display: flex;
+   justify-content: space-between;
+  }
+  
+  #logged-in-as-section {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  #logged-in-as {
+    /*display: inline-flex;*/
+    margin-right: 10px;
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+ 
+  .pro-ep-role {
+      font-size: 0.8em;
+      text-align: right;
+  }
+
+
+
+  .quick-ref-container {
+    /* Worklist */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 15px 8px;
+    gap: 116px;
+
+    position: absolute;
+    width: 400px;
+    height: 45px;
+    right: 11px;
+    top: 60px;
+
+    /* Dark Accent */
+    background: #00569B;
+    /* Standard shadow */
+    box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.12);
+    border-radius: 0px 0px 15px 15px;
+
+  }
+
+  ::ng-deep .quick-reference-notification {
+    max-width: 450px !important;
+    border: 1px solid #0680CD !important;
+         
+          border-radius: 15px 15px 0px 15px !important;
+          border: 2px 0px 0px 0px !important;
+  }
+
+  ::ng-deep .mdc-tab__text-label {
+    font-size: 10px !important;
+  }
+  
+  .custom-color1 {
+    color: #0680CD !important;
+  }
+
+  .quick-span {
+    vertical-align: super;
+    padding-left: 5px;
+  }
+
+  ::ng-deep .search-container {
+    width: 100%;
+  }
+
+  ::ng-deep .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
+    background-color: transparent !important;
+    border: 1px solid #ccc;
+  }
+
+  .bg-yellow-500 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(245, 158, 11, var(--tw-bg-opacity));
+  }
+
+  .bg-blue-500 {
+    background-color: #7373E8;
+  }
+
+  .bg-lightblue-500 {
+    background-color: #87CEFA;
+  }
+
+  .bg-red-500 {
+    background-color: #FF9083;
+  }
+
+  .text-grey-700 {
+    --tw-text-opacity: 1;
+    color: rgba(55, 65, 81, var(--tw-text-opacity));
+  }
+
+  .ft-14 {
+    font-size: 14px;
+  }

@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mat-mdc-tab-group,
+.mat-mdc-tab-nav-bar {
+    --mdc-tab-indicator-active-indicator-color: #0680CD;
+    --mat-tab-header-active-label-text-color: #0680CD;
+    --mat-tab-header-inactive-label-text-color: #0680CD;
+    --mat-tab-header-active-focus-label-text-color: #0680CD;
+    --mat-tab-header-active-hover-label-text-color: #0680CD;
+    --mat-tab-header-active-focus-indicator-color: #0680CD;
+    --mat-tab-header-active-hover-indicator-color: #0680CD;
+    --mdc-filled-text-field-container-color: white;
+    /* Set the active indicator color to red */
+}
+
+.btn-primary {
+    --bs-btn-bg: #0680CD;
+}
+
+#pro-app .mat-mdc-tab.mdc-tab {
+    max-width: 100px !important;
+}
+
+#pro-app .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+}
+
+#pro-app .mat-mdc-form-field {
+    background-color: white;
+    border-top: 0.5px solid lightskyblue;
+    border-left: 0.5px solid lightskyblue;
+    border-right: 0.5px solid lightskyblue;
+    border-radius: 4px 4px 0 0;
+}
+
+#pro-app .mdc-floating-label {
+    font-weight: 500;
+    color: #0078d4;
+}
+
+#pro-app .mat-form-field-wrapper .mat-form-field-flex {
+    padding-top: 2px;
+    padding-bottom: 0px;
+}
+
+.mat-mdc-tab-list {
+    margin-bottom: 10px;
+}
+
+.mdc-tab--active {
+    background-color: rgb(0 86 155 / .2) !important;
+    border-radius: 5px 5px 0px 0px !important;
+}
+
+#pro-app .bold {
+    font-weight: 500;
+}
+
+#pro-app .italic {
+    font-style: italic;
+}
+
+.mat-mdc-tab-header {
+    margin: 5px 5px 0px 5px;
+}
+
+#hover-message {
+    position: fixed;
+    padding: 25px;
+    background-color: white;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+    z-index: 1000;
+}
+
+#hover-message .hover-message-title {
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+#schedule-modal {
+    background-color: #f2f2f2;
+    border-radius: 3px;
+    padding: 20px 30px;
+    min-width: 1085px;
+    box-shadow: 0 0px 25px rgb(57 63 72);
+    position: fixed;
+    top: 25%;
+    left: 20%;
+    z-index: 1000;
+  }
+
+  #day-calendar {
+    background-color: #f2f2f2 !important;
+ }

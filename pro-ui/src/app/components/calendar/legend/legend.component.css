@@ -1,0 +1,89 @@
+.legend-card {
+    width: 100%;
+}
+
+.mat-mdc-card-header {
+    justify-content: space-between;
+    padding: 4px 16px 0;
+}
+
+.mat-mdc-card-content {
+    max-height: 50vh;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+}
+
+.legend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+  
+.legend-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+  
+.view-all {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.view-all button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.875rem;
+    text-transform: none;
+    color: #0680CD;
+    background-color: #fff;
+}
+
+.view-all button:hover {
+    background-color: #fff;
+}
+  
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+  
+    .color-box {
+      width: 12px;
+      height: 12px;
+      margin-right: 8px;
+    }
+  
+    p {
+      margin: 0;
+      color: #424242;
+      font-size: 14px;
+    }
+}
+
+.no-legend-msg {
+    margin-top: 0.4rem;
+    font-size: 14px;
+}
+
+.mat-subheading-1 {
+    font-size: 14px;
+}
+
+.legend-title-adjust {
+    width: auto;
+}
+
+.grid-container {
+    display: grid;
+    overflow-y: auto;
+    grid-template-columns: 1fr;
+}
+
+.current-schedule-lengend {
+    max-height: 120px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}

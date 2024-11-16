@@ -1,0 +1,47 @@
+<mat-card class="legend-card">
+    <mat-card-header>
+        <div mat-card-avatar class="legend-title">
+            <h2 class="mat-subheading-1">Legend</h2>
+        </div>
+        <div class="view-all">
+            <button mat-button color="primary" (click)="openViewAllDialog();">
+                <mat-icon fontIcon="open_in_new" class="view-icon"></mat-icon>
+                View All
+            </button>
+        </div>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="current-schedule-lengend">
+        <div class="legend-item" *ngFor="let schedule of uniqueProjectDetails">
+            <span class="color-box" [ngStyle]="{'background-color': schedule.projectColor}"></span>
+            <p>{{ schedule.projectName }}</p>
+        </div>
+        <ng-container *ngIf="uniqueProjectDetails.length == 0">
+            <p class="no-legend-msg">There are no Projects to display</p>
+        </ng-container>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #dialogTemplate let-data="data">
+    <mat-card class="legend-card">
+        <mat-card-header>
+            <div mat-card-avatar class="legend-title legend-title-adjust">
+                <h2 class="mat-subheading-1">{{ data.title }}</h2>
+            </div>
+            <div class="view-all">
+                <button class="no-bg-button" mat-dialog-close>
+                    <mat-icon fontIcon="close"></mat-icon>
+                </button>
+            </div>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+            <div class="grid-container">
+                <div class="legend-item" *ngFor="let schedule of data.content">
+                    <span class="color-box" [ngStyle]="{'background-color': schedule.projectColor}"></span>
+                    <p>{{ schedule.projectName }}</p>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

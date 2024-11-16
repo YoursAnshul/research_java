@@ -1,0 +1,6 @@
+<div class="week-schedules-container" *ngFor="let weekSchedules of monthSchedules?.weekSchedules">
+  <app-week-view [weekSchedules]="weekSchedules"
+                 [monthPart]="true"></app-week-view>
+</div>
+<app-week-view *ngIf="[monthSchedules?.weekSchedules || []].length < 1"
+               [weekSchedules]="null"></app-week-view>
