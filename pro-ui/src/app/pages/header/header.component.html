@@ -9,43 +9,81 @@
         <div class="circle" ngbTooltip="Learning Center" placement="bottom">
           <mat-icon svgIcon="question_mark" />
         </div>
-        <div [matMenuTriggerFor]="menu" class="circle" ngbTooltip="Quick Book" placement="bottom">
+        <div
+          [matMenuTriggerFor]="menu"
+          class="circle"
+          ngbTooltip="Quick Book"
+          placement="bottom"
+        >
           <mat-icon svgIcon="quick_book" />
-          <div >
-
-            <!-- Dropdown menu --> 
-             <mat-menu #menu="matMenu" style=""  class="absolute quick-reference-notification top-4 w-[440px] h-[80vh] right-2 mt-16 quick-book-ref" >
+          <div>
+            <!-- Dropdown menu -->
+            <mat-menu
+              #menu="matMenu"
+              [hasBackdrop]="false"
+              class="absolute quick-reference-notification top-4 w-[440px] h-[80vh] right-2 mt-16 quick-book-ref"
+            >
               <div class="quick-refrence-top-header d-flex justify-between m-2">
-                <div class="col-lg-10" style="display: flex;">
+                <div class="col-lg-10" style="display: flex">
                   <!-- <mat-icon fontIcon="mail" class="custom-color1"></mat-icon> &nbsp; -->
                   <div class="col-lg-2 mr-2">
-                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <mask id="mask0_326_3294" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="32" height="32">
-                      <rect width="32" height="32" fill="#D9D9D9"/>
+                    <svg
+                      width="34"
+                      height="34"
+                      viewBox="0 0 34 34"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <mask
+                        id="mask0_326_3294"
+                        style="mask-type: alpha"
+                        maskUnits="userSpaceOnUse"
+                        x="0"
+                        y="0"
+                        width="32"
+                        height="32"
+                      >
+                        <rect width="32" height="32" fill="#D9D9D9" />
                       </mask>
                       <g mask="url(#mask0_326_3294)">
-                      <path d="M9.00016 29.3333C8.00016 29.3333 7.13905 28.9944 6.41683 28.3167C5.69461 27.6389 5.3335 26.8 5.3335 25.8V7.19998C5.3335 6.35554 5.59461 5.59998 6.11683 4.93332C6.63905 4.26665 7.32238 3.84443 8.16683 3.66665L21.3335 1.06665V22.4L8.70016 24.9333C8.50016 24.9778 8.3335 25.0833 8.20016 25.25C8.06683 25.4167 8.00016 25.6 8.00016 25.8C8.00016 26.0444 8.10016 26.25 8.30016 26.4167C8.50016 26.5833 8.7335 26.6667 9.00016 26.6667H24.0002V5.33332H26.6668V29.3333H9.00016ZM9.3335 22.1L12.0002 21.5667V5.63332L9.3335 6.16665V22.1Z" fill="#0680CD"/>
+                        <path
+                          d="M9.00016 29.3333C8.00016 29.3333 7.13905 28.9944 6.41683 28.3167C5.69461 27.6389 5.3335 26.8 5.3335 25.8V7.19998C5.3335 6.35554 5.59461 5.59998 6.11683 4.93332C6.63905 4.26665 7.32238 3.84443 8.16683 3.66665L21.3335 1.06665V22.4L8.70016 24.9333C8.50016 24.9778 8.3335 25.0833 8.20016 25.25C8.06683 25.4167 8.00016 25.6 8.00016 25.8C8.00016 26.0444 8.10016 26.25 8.30016 26.4167C8.50016 26.5833 8.7335 26.6667 9.00016 26.6667H24.0002V5.33332H26.6668V29.3333H9.00016ZM9.3335 22.1L12.0002 21.5667V5.63332L9.3335 6.16665V22.1Z"
+                          fill="#0680CD"
+                        />
                       </g>
-                      </svg>
-                      
+                    </svg>
                   </div>
-                    <div class="col-lg-5 mt-1">
-                      <span class="quick-span" style="font-family: Roboto !important;
-                      font-size: 16px;
-                      font-weight: 400;
-                      line-height: 20px;
-                      letter-spacing: 0.10000000149011612px;
-                      text-align: left;
-                      text-underline-position: from-font;
-                      text-decoration-skip-ink: none;
-                      font-weight: normal;
-                      color: #6c757d;
-                      " >Quick Reference</span>
-                    </div>
+                  <div class="col-lg-5 mt-1">
+                    <span
+                      class="quick-span"
+                      style="
+                        font-family: Roboto !important;
+                        font-size: 16px;
+                        font-weight: 400;
+                        line-height: 20px;
+                        letter-spacing: 0.10000000149011612px;
+                        text-align: left;
+                        text-underline-position: from-font;
+                        text-decoration-skip-ink: none;
+                        font-weight: normal;
+                        color: #6c757d;
+                      "
+                      >Quick Reference</span
+                    >
+                  </div>
                 </div>
                 <div>
-                  <mat-icon fontIcon="open_in_new" class="custom-color1"></mat-icon> &nbsp;
-                  <mat-icon fontIcon="close" class="text-danger"></mat-icon>
+                  <mat-icon
+                    fontIcon="open_in_new"
+                    class="custom-color1"
+                    style="cursor: pointer;"
+                  ></mat-icon>
+                  &nbsp;
+                  <mat-icon
+                    fontIcon="close"
+                    class="text-danger"
+                    style="cursor: pointer"
+                  ></mat-icon>
                 </div>
               </div>
               <!-- <mat-form-field class="search-container">
@@ -53,160 +91,504 @@
                 <input matInput type="search" placeholder="search" class="search-input">
               </mat-form-field> -->
               <div class="relative w-full max-w-md px-1">
-                <input 
-                  type="text" 
-                  placeholder="Search" 
+                <input
+                  type="text"
+                  placeholder="Search"
                   class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   (click)="$event.stopPropagation()"
+                  [(ngModel)]="searchTerms"
                 />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                   <!-- Search icon -->
-                 
-                    <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12.3374 10.7933L15.5 13.9552L14.4552 15L11.2933 11.8374C10.1168 12.7805 8.65349 13.2935 7.14566 13.2913C3.47726 13.2913 0.5 10.3141 0.5 6.64566C0.5 2.97726 3.47726 0 7.14566 0C10.8141 0 13.7913 2.97726 13.7913 6.64566C13.7935 8.15349 13.2805 9.61682 12.3374 10.7933ZM10.8562 10.2454C11.7933 9.28169 12.3166 7.98988 12.3145 6.64566C12.3145 3.7895 10.0011 1.47681 7.14566 1.47681C4.2895 1.47681 1.97681 3.7895 1.97681 6.64566C1.97681 9.50108 4.2895 11.8145 7.14566 11.8145C8.48988 11.8166 9.78169 11.2933 10.7454 10.3562L10.8562 10.2454Z" fill="#0680CD"/>
-                      </svg>
-                      
-                  
+
+                  <svg
+                    width="16"
+                    height="15"
+                    viewBox="0 0 16 15"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    (click)="$event.stopPropagation()"
+                    style="cursor: pointer"
+                  >
+                    <path
+                      d="M12.3374 10.7933L15.5 13.9552L14.4552 15L11.2933 11.8374C10.1168 12.7805 8.65349 13.2935 7.14566 13.2913C3.47726 13.2913 0.5 10.3141 0.5 6.64566C0.5 2.97726 3.47726 0 7.14566 0C10.8141 0 13.7913 2.97726 13.7913 6.64566C13.7935 8.15349 13.2805 9.61682 12.3374 10.7933ZM10.8562 10.2454C11.7933 9.28169 12.3166 7.98988 12.3145 6.64566C12.3145 3.7895 10.0011 1.47681 7.14566 1.47681C4.2895 1.47681 1.97681 3.7895 1.97681 6.64566C1.97681 9.50108 4.2895 11.8145 7.14566 11.8145C8.48988 11.8166 9.78169 11.2933 10.7454 10.3562L10.8562 10.2454Z"
+                      fill="#0680CD"
+                    />
+                  </svg>
                 </div>
               </div>
               <div>
-                <mat-tab-group class="custom-tabs" (click)="$event.stopPropagation()">
-                  <mat-tab label="Voicemail Info">
-                    
-                  </mat-tab>
+                <mat-tab-group
+                  class="custom-tabs"
+                  (click)="$event.stopPropagation()"
+                >
+                  <mat-tab label="Voicemail Info"> </mat-tab>
                   <mat-tab label="Project Info">
-                    <div class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400">
+                    <div
+                      class="scroll-container max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
+                    >
                       <div class="space-y-4">
-                        <div class="flex border border-gray-300 rounded-lg shadow-md overflow-hidden">
-                          <div class="w-2 bg-yellow-500" style="background-color: #f6c867 !important"></div>
-                          <div class="p-4 flex-1">
-                            <h2 class="text-xl font-bold mb-3">HERO Together</h2>
-                            <div class="mb-3">
-                              <p class="flex items-center mb-1 ft-14">
-                                Toll-Free Phone # <span class="ml-2 text-grey-600 ft-14">1-800-999-8888</span>
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
-                              <p class="flex items-center ft-14">
-                                Email Address <span class="ml-2 text-grey-600 ft-14">herotogether&#64;duke.com</span>
-                                <svg width="22" height="22" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
+                        <div class="hero-box">
+                          <div class="yellow-bar"></div>
+                          <div class="content">
+                            <h2
+                              [innerHTML]="
+                                firstHeading | highlight : searchTerms
+                              "
+                            ></h2>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="
+                                  tollFree1 | highlight : searchTerms
+                                "
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  tollFreeNum1 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(tollFreeNum1)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
-                            <div class="text-grey-700">
-                              <p class="ft-14">
-                                This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.
-                              </p>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="email1 | highlight : searchTerms"
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  emailAddress1 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(emailAddress1)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
+                            <div
+                              class="description"
+                              [innerHTML]="
+                                description1 | highlight : searchTerms
+                              "
+                            ></div>
                           </div>
                         </div>
-                        <div class="flex border border-gray-300 rounded-lg shadow-md overflow-hidden">
-                          <div class="w-2 bg-blue-500"  style="background-color: #7373E8 !important"></div>
-                          <div class="p-4 flex-1">
-                            <h2 class="text-xl font-bold mb-3">Project 42</h2>
-                            <div class="mb-3">
-                              <p class="flex items-center mb-1 ft-14">
-                                Toll-Free Phone # <span class="ml-2 text-grey-600 ft-14">1-800-999-8888</span>
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
-                              <p class="flex items-center ft-14">
-                                Email Address <span class="ml-2 text-grey-600 ft-14">herotogether&#64;duke.com</span>
-                                <svg width="22" height="22" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
+                        <div class="hero-box">
+                          <div class="purple-bar"></div>
+                          <div class="content">
+                            <h2
+                              [innerHTML]="
+                                secondHeading | highlight : searchTerms
+                              "
+                            ></h2>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="
+                                  tollFree2 | highlight : searchTerms
+                                "
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  tollFreeNum2 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(tollFreeNum2)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
-                            <div class="text-grey-700">
-                              <p class="ft-14">
-                                This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.
-                              </p>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="email2 | highlight : searchTerms"
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  emailAddress2 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(emailAddress2)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
+                            <div
+                              class="description"
+                              [innerHTML]="
+                                description2 | highlight : searchTerms
+                              "
+                            ></div>
                           </div>
                         </div>
-    
-                        <div class="flex border border-gray-300 rounded-lg shadow-md overflow-hidden">
-                          <div class="w-2 bg-lightblue-500"  style="background-color: #87CEFA !important"></div>
-                          <div class="p-4 flex-1">
-                            <h2 class="text-xl font-bold mb-3">Project Eleven</h2>
-                            <div class="mb-3">
-                              <p class="flex items-center mb-1 ft-14">
-                                Toll-Free Phone # <span class="ml-2 text-grey-600 ft-14">1-800-999-8888</span>
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
-                              <p class="flex items-center ft-14">
-                                Email Address <span class="ml-2 text-grey-600 ft-14">herotogether&#64;duke.com</span>
-                                <svg width="22" height="22" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
+
+                        <div class="hero-box">
+                          <div class="light-blue-bar"></div>
+                          <div class="content">
+                            <h2
+                              [innerHTML]="
+                                thirdHeading | highlight : searchTerms
+                              "
+                            ></h2>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="
+                                  tollFree3 | highlight : searchTerms
+                                "
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  tollFreeNum3 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(tollFreeNum3)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
-                            <div class="text-grey-700">
-                              <p class="ft-14">
-                                This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.
-                              </p>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="email3 | highlight : searchTerms"
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  emailAddress3 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(emailAddress3)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
+                            <div
+                              class="description"
+                              [innerHTML]="
+                                description3 | highlight : searchTerms
+                              "
+                            ></div>
                           </div>
                         </div>
-    
-                        <div class="flex border border-gray-300 rounded-lg shadow-md overflow-hidden">
-                          <div class="w-2 bg-red-500"  style="background-color: #FF9083 !important"></div>
-                          <div class="p-4 flex-1">
-                            <h2 class="text-xl font-bold mb-3">Project Q</h2>
-                            <div class="mb-3">
-                              <p class="flex items-center mb-1 ft-14">
-                                Toll-Free Phone # <span class="ml-2 text-grey-600 ft-14">1-800-999-8888</span>
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
-                              <p class="flex items-center ft-14">
-                                Email Address <span class="ml-2 text-grey-600 ft-14">herotogether&#64;duke.com</span>
-                                <svg width="22" height="22" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  <path d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667" stroke="#58595B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                  </svg>
-                                  
-                              </p>
+
+                        <div class="hero-box">
+                          <div class="light-pink-bar"></div>
+                          <div class="content">
+                            <h2
+                              [innerHTML]="
+                                fourtHeading | highlight : searchTerms
+                              "
+                            ></h2>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="
+                                  tollFree4 | highlight : searchTerms
+                                "
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  tollFreeNum4 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(tollFreeNum4)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
-                            <div class="text-grey-700">
-                              <p class="ft-14">
-                                This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.
-                              </p>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="email4 | highlight : searchTerms"
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  emailAddress4 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(emailAddress4)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </div>
+                            <div
+                              class="description"
+                              [innerHTML]="
+                                description4 | highlight : searchTerms
+                              "
+                            ></div>
+                          </div>
+                        </div>
+
+                        <div class="hero-box">
+                          <div class="purple-dark-bar"></div>
+                          <div class="content">
+                            <h2
+                              [innerHTML]="
+                                fifthHeading | highlight : searchTerms
+                              "
+                            ></h2>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="
+                                  tollFree5 | highlight : searchTerms
+                                "
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  tollFreeNum5 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(tollFreeNum5)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </div>
+                            <div class="contact-item">
+                              <p
+                                [innerHTML]="email5 | highlight : searchTerms"
+                              ></p>
+                              <p
+                                [innerHTML]="
+                                  emailAddress5 | highlight : searchTerms
+                                "
+                              ></p>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(emailAddress5)"
+                                style="cursor: pointer"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </div>
+                            <div
+                              class="description"
+                              [innerHTML]="
+                                description5 | highlight : searchTerms
+                              "
+                            ></div>
                           </div>
                         </div>
                       </div>
-                      
                     </div>
                   </mat-tab>
-                  <mat-tab label="Team Contacts">
-                    
-                  </mat-tab>
+                  <mat-tab label="Team Contacts"> </mat-tab>
                 </mat-tab-group>
               </div>
             </mat-menu>
           </div>
-        
         </div>
         <div class="circle" ngbTooltip="ACD Phone System" placement="bottom">
           <mat-icon svgIcon="call" />
@@ -218,25 +600,27 @@
           <mat-icon svgIcon="person" />
         </div>
       </div>
-      <div id="logged-in-as">
-        <font class="italic">logged in as</font>&nbsp;
-        <font class="bold">{{authenticatedUser?.netID?.toUpperCase()}}</font>
 
-        <div class="pro-ep-role italic" *ngIf="authenticatedUser?.admin; else resourceGroup">(admin)</div>
-        <ng-template #resourceGroup>
-          <div class="pro-ep-role italic" *ngIf="authenticatedUser?.resourceGroup; else interviewer">(resource group)
-          </div>
-        </ng-template>
-        <ng-template #interviewer>
-          <div class="pro-ep-role italic" *ngIf="authenticatedUser?.interviewer; else projectTeam">(interviewer)</div>
-        </ng-template>
-        <ng-template #projectTeam>
-          <div class="pro-ep-role italic" *ngIf="authenticatedUser?.projectTeam; else outcomesIt">(Project Team)</div>
-        </ng-template>
-        <ng-template #outcomesIt>
-          <div class="pro-ep-role italic" *ngIf="authenticatedUser?.outcomesIt">(Outcomes IT)</div>
-        </ng-template>
-      </div>
+      <div id="logged-in-as">
+          <font class="italic">logged in as</font>&nbsp;
+          <font class="bold">{{authenticatedUser?.netID?.toUpperCase()}}</font>
+  
+          <div class="pro-ep-role italic" *ngIf="authenticatedUser?.admin; else resourceGroup">(admin)</div>
+          <ng-template #resourceGroup>
+            <div class="pro-ep-role italic" *ngIf="authenticatedUser?.resourceGroup; else interviewer">(resource group)
+            </div>
+          </ng-template>
+          <ng-template #interviewer>
+            <div class="pro-ep-role italic" *ngIf="authenticatedUser?.interviewer; else projectTeam">(interviewer)</div>
+          </ng-template>
+          <ng-template #projectTeam>
+            <div class="pro-ep-role italic" *ngIf="authenticatedUser?.projectTeam; else outcomesIt">(Project Team)</div>
+          </ng-template>
+          <ng-template #outcomesIt>
+            <div class="pro-ep-role italic" *ngIf="authenticatedUser?.outcomesIt">(Outcomes IT)</div>
+          </ng-template>
+        </div>
+
       <div id="logout-button" title="logout">
         <!--door fill-->
         <!--<svg xmlns="http://www.w3.org/2000/svg" width="21px" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
@@ -248,13 +632,22 @@
         <path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117zM11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5zM4 1.934V15h6V1.077l-6 .857z" />
       </svg>-->
         <!--arrow logout-->
-        <a href="javascript:void(0)" (click)="logout()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20px" fill="#164b8b" class="bi bi-box-arrow-right"
-            viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
-            <path fill-rule="evenodd"
-              d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+        <a href="javascript:void(0)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20px"
+            fill="#164b8b"
+            class="bi bi-box-arrow-right"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
+            />
           </svg>
         </a>
         <!--<div>
@@ -264,3 +657,123 @@
     </div>
   </div>
 </header>
+
+<style>
+  body {
+    font-family: Roboto, sans-serif;
+    margin: 20px;
+  }
+
+  .hero-box {
+    display: flex;
+    border-bottom: 1px solid #58595b; 
+    width: 400px;
+    height: auto;
+  }
+
+  .hero-box .yellow-bar {
+    background-color: #f6c867;
+    width: 8px;
+    height: 226px;
+  }
+
+  .hero-box .purple-bar {
+    background-color: #7373e8;
+    width: 8px;
+    height: 226px;
+  }
+
+  .hero-box .purple-dark-bar {
+    background-color: #6b15a3;
+    width: 8px;
+    height: 226px;
+  }
+
+  .hero-box .light-blue-bar {
+    background-color: #87cefa;
+    width: 8px;
+    height: 226px;
+  }
+
+  .custom-tab .mat-tab-label {
+    font-size: 20px !important;
+    font-weight: bold !important;
+  }
+
+  ::ng-deep .mat-tab-label {
+    font-size: 20px; 
+  }
+
+  .custom-tab .mdc-tab__text-label {
+    font-size: 20px !important; 
+    color: #333; 
+  }
+
+  .hero-box .light-pink-bar {
+    background-color: #ff9083;
+    width: 8px;
+    height: 226px;
+  }
+
+  .hero-box .content {
+    padding: 10px 16px;
+    width: 100%;
+  }
+
+  .content h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #000;
+  }
+
+  .contact-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #6c757d;
+  }
+
+  .contact-item span {
+    font-weight: normal;
+    color: #58595b;
+  }
+
+  .description {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #58595b;
+  }
+
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 100px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #a1a1aa;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f9fafb;
+    border-radius: 100px;
+  }
+
+  .scroll-container {
+    overflow-y: auto;
+    max-height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #000000 #f9fafb;
+  }
+  ::ng-deep .mdc-tab__text-label {
+    font-size: 12px !important;
+  }
+</style>

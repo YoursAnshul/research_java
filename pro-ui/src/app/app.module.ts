@@ -53,6 +53,7 @@ import { LanguageIconComponent } from './components/language-icon/language-icon.
 import { DialogComponent } from './components/dialog/dialog.component';
 import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-datepicker/month-datepicker.component";
 import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
+import { HighlightSearch } from './components/highlightsearch/highlight.search';
 @NgModule({
   declarations: [
     AppComponent,
@@ -86,6 +87,7 @@ import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-da
     MonthViewComponent,
     MonthDatepickerComponent,
     WeekDatepickerComponent,
+    HighlightSearch,
   ],
   imports: [
     BrowserModule,
