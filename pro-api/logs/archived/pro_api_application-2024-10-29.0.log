@@ -1,0 +1,88 @@
+2024-10-29 08:55:45 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14h3m15s672ms122µs800ns).
+2024-10-29 09:37:46 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 09:37:46 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 09:37:46 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 09:37:46 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 09:37:46 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 09:37:47 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:02:20 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:02:20 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:02:20 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:02:20 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:02:20 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:02:20 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:02:30 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:02:30 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:02:30 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:02:30 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:02:30 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:02:31 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:11:09 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:11:09 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:11:09 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:11:09 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:11:09 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:11:09 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:11:14 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:11:14 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:11:14 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:11:14 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:11:14 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:11:15 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:12:54 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:12:54 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:12:54 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:12:54 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:12:54 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:12:56 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:18:05 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:18:05 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:18:05 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:18:05 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:18:05 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:18:05 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:18:30 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:18:30 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:18:30 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:18:30 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:18:30 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:18:30 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:23:32 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:23:32 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 11:23:32 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 11:23:32 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 11:23:32 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 11:23:32 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 13:26:06 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 13:26:06 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 13:26:06 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 13:26:06 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 13:26:06 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 13:26:06 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 13:26:12 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 14:10:18 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 14:10:18 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 14:10:21 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 14:10:21 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 14:10:21 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 17:12:06 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 17:12:06 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 17:12:06 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 17:12:06 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 17:12:06 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 17:12:06 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 18:34:39 [http-nio-8080-exec-5] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@5d00a89a (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-8] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@1b0e965c (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-8] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@456643ff (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-5] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@1e162d41 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-8] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@6d11d158 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-5] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@116b73d4 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-8] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@5896ba90 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-8] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@37c57ba8 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-5] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@49774d1b (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-8] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@404baf14 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-10-29 18:34:39 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK
+2024-10-29 18:34:39 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-29 18:34:40 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 404 OK
+2024-10-29 18:34:40 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 404 OK
+2024-10-29 18:34:40 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-29: 404 OK

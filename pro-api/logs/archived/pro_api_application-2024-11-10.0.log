@@ -1,0 +1,5 @@
+2024-11-10 19:10:59 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2d43m2s451ms440µs500ns).
+2024-11-10 19:26:19 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m19s702ms370µs700ns).
+2024-11-10 22:29:25 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h2m1s124ms235µs).
+2024-11-10 23:21:01 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-10 23:21:05 [http-nio-8080-exec-15] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]

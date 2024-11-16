@@ -1,0 +1,262 @@
+2024-11-08 07:57:36 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14h34m50s697ms602µs300ns).
+2024-11-08 07:59:16 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-08 09:25:38 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-08 09:26:01 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-08 09:26:24 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 09:30:05 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-08 09:30:52 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-08 09:38:02 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-08 09:38:36 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-08 10:04:32 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-08 12:24:41 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 12:24:45 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-08 12:39:16 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-08 12:50:17 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-08 12:57:05 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-08 12:57:31 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-08 12:59:31 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-08 13:00:27 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-08 13:04:09 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-08 13:04:25 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-08 13:07:10 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-08 13:09:04 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 13:15:56 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-08 13:22:07 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-08 13:24:24 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 13:25:46 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-08 13:27:48 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 13:32:10 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-08 13:32:35 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 14:00:47 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-08 14:03:59 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-08 14:04:25 [http-nio-8080-exec-4] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 14:04:27 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-08 15:48:47 [http-nio-8080-exec-15] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@13ab7140 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@504ccabd (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-15] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@39575fa1 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@56c4f0cf (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-15] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@901370e (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-15] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@41e8761f (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@1a045049 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@240a8c69 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-15] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7b2b6b4c (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 15:48:47 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@1225b377 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 17:16:37 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 0 Unknown Error
+2024-11-08 17:16:37 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 0 Unknown Error
+2024-11-08 17:16:37 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 0 Unknown Error
+2024-11-08 17:16:37 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/range: 0 Unknown Error
+2024-11-08 17:16:38 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/users/min: 0 Unknown Error
+2024-11-08 17:16:38 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/range: 0 Unknown Error
+2024-11-08 17:16:42 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h35m23s203ms801µs900ns).
+2024-11-08 17:16:56 [http-nio-8080-exec-15] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:16:56 [http-nio-8080-exec-15] ERROR : HikariPool-1 - Connection is not available, request timed out after 5288882ms (total=0, active=0, idle=0, waiting=11)
+2024-11-08 17:16:56 [http-nio-8080-exec-15] ERROR : The connection attempt failed.
+2024-11-08 17:16:56 [http-nio-8080-exec-15] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 17:16:56 [http-nio-8080-exec-2] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:16:56 [http-nio-8080-exec-2] ERROR : HikariPool-1 - Connection is not available, request timed out after 5288871ms (total=0, active=0, idle=0, waiting=10)
+2024-11-08 17:16:56 [http-nio-8080-exec-2] ERROR : The connection attempt failed.
+2024-11-08 17:16:56 [http-nio-8080-exec-2] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 17:16:56 [http-nio-8080-exec-1] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:16:56 [http-nio-8080-exec-1] ERROR : HikariPool-1 - Connection is not available, request timed out after 5288878ms (total=0, active=0, idle=0, waiting=8)
+2024-11-08 17:16:56 [http-nio-8080-exec-1] ERROR : The connection attempt failed.
+2024-11-08 17:16:56 [http-nio-8080-exec-1] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 17:16:56 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:16:56 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 5288880ms (total=0, active=0, idle=0, waiting=8)
+2024-11-08 17:16:56 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-08 17:16:56 [http-nio-8080-exec-3] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 17:16:56 [http-nio-8080-exec-17] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:16:56 [http-nio-8080-exec-5] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:16:56 [http-nio-8080-exec-17] ERROR : HikariPool-1 - Connection is not available, request timed out after 5288868ms (total=0, active=0, idle=0, waiting=6)
+2024-11-08 17:16:56 [http-nio-8080-exec-5] ERROR : HikariPool-1 - Connection is not available, request timed out after 5288864ms (total=0, active=0, idle=0, waiting=6)
+2024-11-08 17:16:56 [http-nio-8080-exec-17] ERROR : The connection attempt failed.
+2024-11-08 17:16:56 [http-nio-8080-exec-5] ERROR : The connection attempt failed.
+2024-11-08 17:16:56 [http-nio-8080-exec-17] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 17:16:56 [http-nio-8080-exec-5] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-08 17:17:08 [http-nio-8080-exec-4] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:08 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:08 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 30007ms (total=0, active=0, idle=0, waiting=5)
+2024-11-08 17:17:08 [http-nio-8080-exec-4] ERROR : HikariPool-1 - Connection is not available, request timed out after 30011ms (total=0, active=0, idle=0, waiting=4)
+2024-11-08 17:17:08 [http-nio-8080-exec-4] ERROR : The connection attempt failed.
+2024-11-08 17:17:08 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-11-08 17:17:08 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:08 [http-nio-8080-exec-18] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:08 [http-nio-8080-exec-9] ERROR : HikariPool-1 - Connection is not available, request timed out after 30014ms (total=0, active=0, idle=0, waiting=3)
+2024-11-08 17:17:08 [http-nio-8080-exec-18] ERROR : HikariPool-1 - Connection is not available, request timed out after 30014ms (total=0, active=0, idle=0, waiting=3)
+2024-11-08 17:17:08 [http-nio-8080-exec-18] ERROR : The connection attempt failed.
+2024-11-08 17:17:08 [http-nio-8080-exec-9] ERROR : The connection attempt failed.
+2024-11-08 17:17:08 [http-nio-8080-exec-19] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:08 [http-nio-8080-exec-19] ERROR : HikariPool-1 - Connection is not available, request timed out after 30013ms (total=0, active=0, idle=0, waiting=1)
+2024-11-08 17:17:08 [http-nio-8080-exec-19] ERROR : The connection attempt failed.
+2024-11-08 17:17:08 [http-nio-8080-exec-20] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:08 [http-nio-8080-exec-20] ERROR : HikariPool-1 - Connection is not available, request timed out after 30013ms (total=0, active=0, idle=0, waiting=1)
+2024-11-08 17:17:08 [http-nio-8080-exec-20] ERROR : The connection attempt failed.
+2024-11-08 17:17:08 [http-nio-8080-exec-2] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-08 17:17:38 [http-nio-8080-exec-15] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 17:17:38 [http-nio-8080-exec-15] ERROR : HikariPool-1 - Connection is not available, request timed out after 30009ms (total=0, active=0, idle=0, waiting=0)
+2024-11-08 17:17:38 [http-nio-8080-exec-15] ERROR : The connection attempt failed.
+2024-11-08 17:28:53 [http-nio-8080-exec-15] WARN  : HikariPool-1 - Connection org.postgresql.jdbc.PgConnection@451039fb marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:398)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess.executeQuery(DeferredResultSetAccess.java:246)
+	at org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess.getResultSet(DeferredResultSetAccess.java:167)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.advanceNext(JdbcValuesResultSetImpl.java:265)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.processNext(JdbcValuesResultSetImpl.java:145)
+	at org.hibernate.sql.results.jdbc.internal.AbstractJdbcValues.next(AbstractJdbcValues.java:19)
+	at org.hibernate.sql.results.internal.RowProcessingStateStandardImpl.next(RowProcessingStateStandardImpl.java:67)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:204)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:33)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.doExecuteQuery(JdbcSelectExecutorStandardImpl.java:211)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.executeQuery(JdbcSelectExecutorStandardImpl.java:83)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:76)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:65)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.lambda$new$2(ConcreteSqmSelectQueryPlan.java:139)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.withCacheableSqmInterpretation(ConcreteSqmSelectQueryPlan.java:382)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.performList(ConcreteSqmSelectQueryPlan.java:302)
+	at org.hibernate.query.sqm.internal.QuerySqmImpl.doList(QuerySqmImpl.java:526)
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:423)
+	at org.hibernate.query.Query.getResultList(Query.java:120)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$CollectionExecution.doExecute(JpaQueryExecution.java:129)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:92)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:152)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:140)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:164)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:136)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy132.findByFormFieldId(Unknown Source)
+	at com.pro.api.controllers.ProjectsController.getProjectsMin(ProjectsController.java:72)
+	at jdk.internal.reflect.GeneratedMethodAccessor200.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:328)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:355)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:808)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(SSLSocketInputRecord.java:484)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.readHeader(SSLSocketInputRecord.java:478)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.bytesInCompletePacket(SSLSocketInputRecord.java:70)
+	at java.base/sun.security.ssl.SSLSocketImpl.readApplicationRecord(SSLSocketImpl.java:1461)
+	at java.base/sun.security.ssl.SSLSocketImpl$AppInputStream.read(SSLSocketImpl.java:1065)
+	at org.postgresql.core.VisibleBufferedInputStream.readMore(VisibleBufferedInputStream.java:162)
+	at org.postgresql.core.VisibleBufferedInputStream.ensureBytes(VisibleBufferedInputStream.java:129)
+	at org.postgresql.core.VisibleBufferedInputStream.ensureBytes(VisibleBufferedInputStream.java:114)
+	at org.postgresql.core.VisibleBufferedInputStream.read(VisibleBufferedInputStream.java:74)
+	at org.postgresql.core.PGStream.receiveChar(PGStream.java:467)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2166)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	... 96 common frames omitted
+2024-11-08 17:28:53 [http-nio-8080-exec-15] WARN  : SQL Error: 0, SQLState: 08006
+2024-11-08 17:28:53 [http-nio-8080-exec-15] ERROR : An I/O error occurred while sending to the backend.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@58d3c0af (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@6ae03568 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@413b5383 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7ab35b3 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@39ccf92 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@683ce1fc (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@73000033 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2d58b54d (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:11 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@48dd1f2b (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-08 18:14:12 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-08 18:14:12 [http-nio-8080-exec-17] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 0 Unknown Error
+2024-11-08 18:14:24 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=53m38s996ms394µs100ns).
+2024-11-08 18:14:41 [http-nio-8080-exec-2] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:41 [http-nio-8080-exec-2] ERROR : HikariPool-1 - Connection is not available, request timed out after 30016ms (total=0, active=0, idle=0, waiting=7)
+2024-11-08 18:14:41 [http-nio-8080-exec-2] ERROR : The connection attempt failed.
+2024-11-08 18:14:42 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:42 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 30004ms (total=0, active=0, idle=0, waiting=6)
+2024-11-08 18:14:42 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:43 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 30007ms (total=0, active=0, idle=0, waiting=5)
+2024-11-08 18:14:43 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-20] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:43 [http-nio-8080-exec-20] ERROR : HikariPool-1 - Connection is not available, request timed out after 30003ms (total=0, active=0, idle=0, waiting=5)
+2024-11-08 18:14:43 [http-nio-8080-exec-20] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-15] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:43 [http-nio-8080-exec-1] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:43 [http-nio-8080-exec-1] ERROR : HikariPool-1 - Connection is not available, request timed out after 30008ms (total=0, active=0, idle=0, waiting=3)
+2024-11-08 18:14:43 [http-nio-8080-exec-1] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-15] ERROR : HikariPool-1 - Connection is not available, request timed out after 30009ms (total=0, active=0, idle=0, waiting=3)
+2024-11-08 18:14:43 [http-nio-8080-exec-15] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-17] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:43 [http-nio-8080-exec-18] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:14:43 [http-nio-8080-exec-18] ERROR : HikariPool-1 - Connection is not available, request timed out after 30015ms (total=0, active=0, idle=0, waiting=1)
+2024-11-08 18:14:43 [http-nio-8080-exec-18] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-17] ERROR : HikariPool-1 - Connection is not available, request timed out after 30014ms (total=0, active=0, idle=0, waiting=1)
+2024-11-08 18:14:43 [http-nio-8080-exec-17] ERROR : The connection attempt failed.
+2024-11-08 18:14:43 [http-nio-8080-exec-2] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-08 18:15:13 [http-nio-8080-exec-19] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-08 18:15:13 [http-nio-8080-exec-19] ERROR : HikariPool-1 - Connection is not available, request timed out after 30014ms (total=0, active=0, idle=0, waiting=0)
+2024-11-08 18:15:13 [http-nio-8080-exec-19] ERROR : The connection attempt failed.
+2024-11-08 18:16:32 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-08 18:17:23 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-08 18:17:51 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-08 18:22:04 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-08 18:25:40 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-08 18:26:17 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-08 18:26:53 [http-nio-8080-exec-9] INFO  : Log Message: null

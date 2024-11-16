@@ -1,0 +1,219 @@
+2024-10-31 08:51:19 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15h44m474ms740µs900ns).
+2024-10-31 08:51:25 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 08:51:25 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/range: 0 Unknown Error
+2024-10-31 08:51:25 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/users/min: 0 Unknown Error
+2024-10-31 08:51:25 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 0 Unknown Error
+2024-10-31 08:51:25 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/forecasting/reconcile: 0 Unknown Error
+2024-10-31 08:51:25 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/range: 0 Unknown Error
+2024-10-31 08:51:28 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 08:51:57 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-10-31 08:51:57 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 30005ms (total=0, active=0, idle=0, waiting=4)
+2024-10-31 08:51:57 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-10-31 08:51:57 [http-nio-8080-exec-5] WARN  : SQL Error: 0, SQLState: 08001
+2024-10-31 08:51:57 [http-nio-8080-exec-5] ERROR : HikariPool-1 - Connection is not available, request timed out after 30003ms (total=0, active=0, idle=0, waiting=4)
+2024-10-31 08:51:57 [http-nio-8080-exec-5] ERROR : The connection attempt failed.
+2024-10-31 08:51:57 [http-nio-8080-exec-10] WARN  : SQL Error: 0, SQLState: 08001
+2024-10-31 08:51:57 [http-nio-8080-exec-10] ERROR : HikariPool-1 - Connection is not available, request timed out after 30002ms (total=0, active=0, idle=0, waiting=3)
+2024-10-31 08:51:57 [http-nio-8080-exec-10] ERROR : The connection attempt failed.
+2024-10-31 08:51:57 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-10-31 08:51:57 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 30001ms (total=0, active=0, idle=0, waiting=1)
+2024-10-31 08:51:57 [http-nio-8080-exec-2] WARN  : SQL Error: 0, SQLState: 08001
+2024-10-31 08:51:57 [http-nio-8080-exec-2] ERROR : HikariPool-1 - Connection is not available, request timed out after 30004ms (total=0, active=0, idle=0, waiting=1)
+2024-10-31 08:51:57 [http-nio-8080-exec-2] ERROR : The connection attempt failed.
+2024-10-31 08:51:57 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-10-31 08:51:57 [http-nio-8080-exec-1] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-10-31 08:52:17 [http-nio-8080-exec-4] WARN  : SQL Error: 0, SQLState: 08001
+2024-10-31 08:52:17 [http-nio-8080-exec-4] ERROR : HikariPool-1 - Connection is not available, request timed out after 30011ms (total=0, active=0, idle=0, waiting=0)
+2024-10-31 08:52:17 [http-nio-8080-exec-4] ERROR : The connection attempt failed.
+2024-10-31 09:29:38 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:29:52 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 09:29:52 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:29:53 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:29:53 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:30:03 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:31:21 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:31:39 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:33:04 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:33:09 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:52:24 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 09:52:28 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:52:28 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 09:52:28 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:06:51 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 10:06:51 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:06:52 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:06:52 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:07:53 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 10:07:53 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:07:53 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:07:53 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:08:00 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:09:41 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 10:09:44 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:09:44 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:09:44 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:09:47 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:09:56 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:10:42 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:10:44 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:10:46 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:10:49 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:10:50 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:06 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:21 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:26 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:11:29 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:05 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 10:18:05 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:05 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:06 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:11 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:14 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:20 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:22 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:24 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:18:29 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:44 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 10:23:44 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:45 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:45 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:47 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:48 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:49 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:50 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:53 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 10:23:55 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 15:20:17 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 15:20:17 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 15:20:17 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 15:20:18 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 17:08:42 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-10-31 17:08:42 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 17:08:42 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 17:08:42 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-10-31 18:26:55 [http-nio-8080-exec-9] WARN  : HikariPool-1 - Connection org.postgresql.jdbc.PgConnection@77fa7647 marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:398)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess.executeQuery(DeferredResultSetAccess.java:246)
+	at org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess.getResultSet(DeferredResultSetAccess.java:167)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.advanceNext(JdbcValuesResultSetImpl.java:265)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.processNext(JdbcValuesResultSetImpl.java:145)
+	at org.hibernate.sql.results.jdbc.internal.AbstractJdbcValues.next(AbstractJdbcValues.java:19)
+	at org.hibernate.sql.results.internal.RowProcessingStateStandardImpl.next(RowProcessingStateStandardImpl.java:67)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:204)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:33)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.doExecuteQuery(JdbcSelectExecutorStandardImpl.java:211)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.executeQuery(JdbcSelectExecutorStandardImpl.java:83)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:76)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:65)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.lambda$new$2(ConcreteSqmSelectQueryPlan.java:139)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.withCacheableSqmInterpretation(ConcreteSqmSelectQueryPlan.java:382)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.performList(ConcreteSqmSelectQueryPlan.java:302)
+	at org.hibernate.query.sqm.internal.QuerySqmImpl.doList(QuerySqmImpl.java:526)
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:423)
+	at org.hibernate.query.Query.getResultList(Query.java:120)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$CollectionExecution.doExecute(JpaQueryExecution.java:129)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:92)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:152)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:140)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:164)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:136)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy132.findByFormFieldId(Unknown Source)
+	at com.pro.api.controllers.ProjectsController.getProjectsMin(ProjectsController.java:72)
+	at jdk.internal.reflect.GeneratedMethodAccessor149.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: java.net.SocketException: Connection reset by peer
+	at java.base/sun.nio.ch.NioSocketImpl.implWrite(NioSocketImpl.java:425)
+	at java.base/sun.nio.ch.NioSocketImpl.write(NioSocketImpl.java:445)
+	at java.base/sun.nio.ch.NioSocketImpl$2.write(NioSocketImpl.java:831)
+	at java.base/java.net.Socket$SocketOutputStream.write(Socket.java:1035)
+	at java.base/sun.security.ssl.SSLSocketOutputRecord.deliver(SSLSocketOutputRecord.java:345)
+	at java.base/sun.security.ssl.SSLSocketImpl$AppOutputStream.write(SSLSocketImpl.java:1304)
+	at java.base/java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:81)
+	at java.base/java.io.BufferedOutputStream.flush(BufferedOutputStream.java:142)
+	at org.postgresql.core.PGStream.flush(PGStream.java:724)
+	at org.postgresql.core.v3.QueryExecutorImpl.sendSync(QueryExecutorImpl.java:1574)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:369)
+	... 96 common frames omitted
+2024-10-31 18:26:55 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08006
+2024-10-31 18:26:55 [http-nio-8080-exec-9] ERROR : An I/O error occurred while sending to the backend.
+2024-10-31 18:26:56 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h18m44s203ms965µs100ns).

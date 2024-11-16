@@ -1,0 +1,635 @@
+2024-11-04 08:38:47 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=14h26m15s270ms528µs1ns).
+2024-11-04 09:29:17 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:29:47 [http-nio-8080-exec-5] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:29:47 [http-nio-8080-exec-5] ERROR : HikariPool-1 - Connection is not available, request timed out after 30052ms (total=0, active=0, idle=0, waiting=5)
+2024-11-04 09:29:47 [http-nio-8080-exec-5] ERROR : The connection attempt failed.
+2024-11-04 09:29:47 [http-nio-8080-exec-4] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:29:47 [http-nio-8080-exec-10] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:29:47 [http-nio-8080-exec-10] ERROR : HikariPool-1 - Connection is not available, request timed out after 30064ms (total=0, active=0, idle=0, waiting=3)
+2024-11-04 09:29:47 [http-nio-8080-exec-10] ERROR : The connection attempt failed.
+2024-11-04 09:29:47 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:29:47 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 30085ms (total=0, active=0, idle=0, waiting=2)
+2024-11-04 09:29:47 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-11-04 09:29:47 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:29:47 [http-nio-8080-exec-9] ERROR : HikariPool-1 - Connection is not available, request timed out after 30116ms (total=0, active=0, idle=0, waiting=1)
+2024-11-04 09:29:47 [http-nio-8080-exec-9] ERROR : The connection attempt failed.
+2024-11-04 09:29:47 [http-nio-8080-exec-4] ERROR : HikariPool-1 - Connection is not available, request timed out after 30064ms (total=0, active=0, idle=0, waiting=4)
+2024-11-04 09:29:47 [http-nio-8080-exec-4] ERROR : The connection attempt failed.
+2024-11-04 09:29:48 [http-nio-8080-exec-2] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-04 09:30:07 [http-nio-8080-exec-11] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:30:07 [http-nio-8080-exec-11] ERROR : HikariPool-1 - Connection is not available, request timed out after 30025ms (total=0, active=0, idle=0, waiting=1)
+2024-11-04 09:30:07 [http-nio-8080-exec-11] ERROR : The connection attempt failed.
+2024-11-04 09:30:34 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:30:34 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 30024ms (total=0, active=0, idle=0, waiting=0)
+2024-11-04 09:30:34 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-04 09:31:04 [http-nio-8080-exec-1] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:04 [http-nio-8080-exec-1] ERROR : HikariPool-1 - Connection is not available, request timed out after 30086ms (total=0, active=0, idle=0, waiting=6)
+2024-11-04 09:31:04 [http-nio-8080-exec-1] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-4] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:18 [http-nio-8080-exec-4] ERROR : HikariPool-1 - Connection is not available, request timed out after 30002ms (total=0, active=0, idle=0, waiting=5)
+2024-11-04 09:31:18 [http-nio-8080-exec-4] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:31:18 [http-nio-8080-exec-11] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:18 [http-nio-8080-exec-11] ERROR : HikariPool-1 - Connection is not available, request timed out after 30012ms (total=0, active=0, idle=0, waiting=4)
+2024-11-04 09:31:18 [http-nio-8080-exec-11] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:18 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 30000ms (total=0, active=0, idle=0, waiting=3)
+2024-11-04 09:31:18 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-10] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:18 [http-nio-8080-exec-5] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:18 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-04 09:31:18 [http-nio-8080-exec-5] ERROR : HikariPool-1 - Connection is not available, request timed out after 30010ms (total=0, active=0, idle=0, waiting=1)
+2024-11-04 09:31:18 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 30002ms (total=0, active=0, idle=0, waiting=0)
+2024-11-04 09:31:18 [http-nio-8080-exec-10] ERROR : HikariPool-1 - Connection is not available, request timed out after 30007ms (total=0, active=0, idle=0, waiting=2)
+2024-11-04 09:31:18 [http-nio-8080-exec-5] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-10] ERROR : The connection attempt failed.
+2024-11-04 09:31:18 [http-nio-8080-exec-9] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-04 09:33:28 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:33:28 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:33:28 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:33:29 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:33:29 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-04 09:33:37 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:33:37 [http-nio-8080-exec-11] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:33:38 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:33:38 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 09:33:38 [http-nio-8080-exec-2] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-04 09:33:38 [http-nio-8080-exec-11] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:33:58 [SpringApplicationShutdownHook] INFO  : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:33:59 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown initiated...
+2024-11-04 09:34:00 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown completed.
+2024-11-04 09:34:08 [main] INFO  : Starting ProApiApplication using Java 17.0.12 with PID 26716 (C:\Users\kv125\myWorkspace\development\pro\pro-api\target\classes started by kv125 in C:\Users\kv125\myWorkspace\development\pro\pro-api)
+2024-11-04 09:34:08 [main] INFO  : The following 1 profile is active: "local"
+2024-11-04 09:34:10 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-04 09:34:10 [main] INFO  : Finished Spring Data repository scanning in 155 ms. Found 12 JPA repository interfaces.
+2024-11-04 09:34:11 [main] INFO  : Tomcat initialized with port 8080 (http)
+2024-11-04 09:34:11 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:34:11 [main] INFO  : Starting service [Tomcat]
+2024-11-04 09:34:11 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-04 09:34:11 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2024-11-04 09:34:11 [main] INFO  : Root WebApplicationContext: initialization completed in 2604 ms
+2024-11-04 09:34:11 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-04 09:34:11 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-11-04 09:34:12 [main] INFO  : HHH000026: Second-level cache disabled
+2024-11-04 09:34:12 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-04 09:34:12 [main] INFO  : HikariPool-1 - Starting...
+2024-11-04 09:34:14 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7573c7b5
+2024-11-04 09:34:14 [main] INFO  : HikariPool-1 - Start completed.
+2024-11-04 09:34:14 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-04 09:34:15 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:34:15 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:34:16 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-04 09:34:17 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:34:17 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-04 09:34:19 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-04 09:34:20 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:34:20 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-04 09:34:20 [main] INFO  : Started ProApiApplication in 12.501 seconds (process running for 14.23)
+2024-11-04 09:34:20 [main] INFO  : Hello PRO!
+2024-11-04 09:34:28 [http-nio-8080-exec-4] INFO  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-04 09:34:28 [http-nio-8080-exec-4] INFO  : Initializing Servlet 'dispatcherServlet'
+2024-11-04 09:34:28 [http-nio-8080-exec-4] INFO  : Completed initialization in 3 ms
+2024-11-04 09:34:28 [http-nio-8080-exec-4] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [125] milliseconds.
+2024-11-04 09:34:28 [http-nio-8080-exec-3] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [125] milliseconds.
+2024-11-04 09:34:29 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:34:29 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:34:30 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:34:30 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 09:34:30 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:34:52 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:34:53 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:34:53 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 09:34:53 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:34:53 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:35:12 [SpringApplicationShutdownHook] INFO  : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:35:12 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown initiated...
+2024-11-04 09:35:13 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown completed.
+2024-11-04 09:35:20 [main] INFO  : Starting ProApiApplication using Java 17.0.12 with PID 29572 (C:\Users\kv125\myWorkspace\development\pro\pro-api\target\classes started by kv125 in C:\Users\kv125\myWorkspace\development\pro\pro-api)
+2024-11-04 09:35:20 [main] INFO  : The following 1 profile is active: "local"
+2024-11-04 09:35:22 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-04 09:35:22 [main] INFO  : Finished Spring Data repository scanning in 171 ms. Found 12 JPA repository interfaces.
+2024-11-04 09:35:23 [main] INFO  : Tomcat initialized with port 8080 (http)
+2024-11-04 09:35:23 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:35:23 [main] INFO  : Starting service [Tomcat]
+2024-11-04 09:35:23 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-04 09:35:23 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2024-11-04 09:35:23 [main] INFO  : Root WebApplicationContext: initialization completed in 2397 ms
+2024-11-04 09:35:23 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-04 09:35:23 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-11-04 09:35:23 [main] INFO  : HHH000026: Second-level cache disabled
+2024-11-04 09:35:24 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-04 09:35:24 [main] INFO  : HikariPool-1 - Starting...
+2024-11-04 09:35:25 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@780ee3ad
+2024-11-04 09:35:25 [main] INFO  : HikariPool-1 - Start completed.
+2024-11-04 09:35:26 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-04 09:35:26 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:35:26 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:35:27 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-04 09:35:28 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:35:29 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-04 09:35:30 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-04 09:35:31 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:35:31 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-04 09:35:31 [main] INFO  : Started ProApiApplication in 11.304 seconds (process running for 13.901)
+2024-11-04 09:35:31 [main] INFO  : Hello PRO!
+2024-11-04 09:35:46 [http-nio-8080-exec-2] INFO  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-04 09:35:46 [http-nio-8080-exec-2] INFO  : Initializing Servlet 'dispatcherServlet'
+2024-11-04 09:35:46 [http-nio-8080-exec-2] INFO  : Completed initialization in 2 ms
+2024-11-04 09:35:47 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:35:47 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:35:47 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:35:47 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-04 09:35:47 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:36:44 [SpringApplicationShutdownHook] INFO  : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:36:44 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown initiated...
+2024-11-04 09:36:46 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown completed.
+2024-11-04 09:37:36 [main] INFO  : Starting ProApiApplication using Java 17.0.12 with PID 24272 (C:\Users\kv125\myWorkspace\development\pro\pro-api\target\classes started by kv125 in C:\Users\kv125\myWorkspace\development\pro\pro-api)
+2024-11-04 09:37:36 [main] INFO  : The following 1 profile is active: "local"
+2024-11-04 09:37:37 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-04 09:37:37 [main] INFO  : Finished Spring Data repository scanning in 145 ms. Found 12 JPA repository interfaces.
+2024-11-04 09:37:38 [main] INFO  : Tomcat initialized with port 8080 (http)
+2024-11-04 09:37:38 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:37:38 [main] INFO  : Starting service [Tomcat]
+2024-11-04 09:37:38 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-04 09:37:38 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2024-11-04 09:37:38 [main] INFO  : Root WebApplicationContext: initialization completed in 2275 ms
+2024-11-04 09:37:38 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-04 09:37:38 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-11-04 09:37:39 [main] INFO  : HHH000026: Second-level cache disabled
+2024-11-04 09:37:39 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-04 09:37:39 [main] INFO  : HikariPool-1 - Starting...
+2024-11-04 09:37:41 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1530d0f2
+2024-11-04 09:37:41 [main] INFO  : HikariPool-1 - Start completed.
+2024-11-04 09:37:41 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-04 09:37:42 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:37:42 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:37:43 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-04 09:37:44 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:37:45 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-04 09:37:46 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-04 09:37:47 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:37:47 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-04 09:37:47 [main] INFO  : Started ProApiApplication in 12.174 seconds (process running for 13.926)
+2024-11-04 09:37:47 [main] INFO  : Hello PRO!
+2024-11-04 09:38:15 [http-nio-8080-exec-4] INFO  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-04 09:38:15 [http-nio-8080-exec-4] INFO  : Initializing Servlet 'dispatcherServlet'
+2024-11-04 09:38:15 [http-nio-8080-exec-4] INFO  : Completed initialization in 2 ms
+2024-11-04 09:38:15 [http-nio-8080-exec-2] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [168] milliseconds.
+2024-11-04 09:38:15 [http-nio-8080-exec-3] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [168] milliseconds.
+2024-11-04 09:38:16 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:16 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:38:17 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:17 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 09:38:17 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:25 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:38:25 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:25 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:25 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 09:38:25 [http-nio-8080-exec-7] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-04 09:38:31 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:38:32 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 09:38:32 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:32 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:33 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:38:35 [http-nio-8080-exec-4] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-04 09:45:12 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:45:13 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-04 09:45:13 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:45:13 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:45:13 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:46:33 [SpringApplicationShutdownHook] INFO  : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:46:33 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown initiated...
+2024-11-04 09:46:35 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown completed.
+2024-11-04 09:46:41 [main] INFO  : Starting ProApiApplication using Java 17.0.12 with PID 20848 (C:\Users\kv125\myWorkspace\development\pro\pro-api\target\classes started by kv125 in C:\Users\kv125\myWorkspace\development\pro\pro-api)
+2024-11-04 09:46:41 [main] INFO  : The following 1 profile is active: "local"
+2024-11-04 09:46:42 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-04 09:46:42 [main] INFO  : Finished Spring Data repository scanning in 121 ms. Found 12 JPA repository interfaces.
+2024-11-04 09:46:43 [main] INFO  : Tomcat initialized with port 8080 (http)
+2024-11-04 09:46:43 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:46:43 [main] INFO  : Starting service [Tomcat]
+2024-11-04 09:46:43 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-04 09:46:43 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2024-11-04 09:46:43 [main] INFO  : Root WebApplicationContext: initialization completed in 1915 ms
+2024-11-04 09:46:43 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-04 09:46:43 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-11-04 09:46:43 [main] INFO  : HHH000026: Second-level cache disabled
+2024-11-04 09:46:43 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-04 09:46:44 [main] INFO  : HikariPool-1 - Starting...
+2024-11-04 09:46:45 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7573c7b5
+2024-11-04 09:46:45 [main] INFO  : HikariPool-1 - Start completed.
+2024-11-04 09:46:45 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-04 09:46:46 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:46:46 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-04 09:46:47 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-04 09:46:48 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-04 09:46:49 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-04 09:46:50 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-04 09:46:50 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2024-11-04 09:46:50 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-04 09:46:50 [main] INFO  : Started ProApiApplication in 10.719 seconds (process running for 11.829)
+2024-11-04 09:46:50 [main] INFO  : Hello PRO!
+2024-11-04 09:47:02 [http-nio-8080-exec-1] INFO  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-04 09:47:02 [http-nio-8080-exec-1] INFO  : Initializing Servlet 'dispatcherServlet'
+2024-11-04 09:47:02 [http-nio-8080-exec-1] INFO  : Completed initialization in 4 ms
+2024-11-04 09:53:09 [http-nio-8080-exec-10] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [278] milliseconds.
+2024-11-04 09:53:09 [http-nio-8080-exec-9] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [276] milliseconds.
+2024-11-04 09:53:09 [http-nio-8080-exec-1] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [277] milliseconds.
+2024-11-04 09:53:11 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-04 09:53:11 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:11 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:53:11 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:11 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:21 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:53:22 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:22 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 09:53:22 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:22 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:46 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:53:46 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 09:53:46 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:46 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:46 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:53:59 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:53:59 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 09:54:00 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:54:00 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:54:00 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:55:57 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:55:58 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 09:55:58 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:55:58 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:55:58 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:56:12 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:56:12 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-04 09:56:12 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:56:12 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:56:16 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:57:20 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:57:20 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:57:20 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 09:57:20 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:57:21 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:21 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:59:23 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-04 09:59:23 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:23 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:23 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:43 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:59:44 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 09:59:44 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:47 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:47 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:48 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 09:59:49 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 09:59:49 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:50 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:50 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 09:59:50 [http-nio-8080-exec-1] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-04 10:02:54 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:02:54 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 10:02:54 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:02:54 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:02:55 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:02:59 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:02:59 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 10:02:59 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:02:59 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:03:01 [http-nio-8080-exec-8] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-04 10:03:02 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:06:41 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:06:42 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-04 10:06:42 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:06:42 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:06:42 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:08:25 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:08:26 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-04 10:08:26 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:08:26 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:08:26 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:11:05 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:11:05 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-04 10:11:05 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:11:05 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:11:06 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:11:30 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:11:30 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:11:30 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 10:11:30 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:11:33 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:12:39 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:12:39 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:12:39 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-04 10:12:39 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:12:41 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:12:41 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 10:12:41 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:12:41 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:12:41 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:12:47 [http-nio-8080-exec-7] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-04 10:13:00 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:13:01 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:13:01 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:13:01 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-04 10:13:01 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:16:59 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:16:59 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:16:59 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:16:59 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 10:17:00 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:17:33 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:17:36 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:17:36 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 10:17:37 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:17:37 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:17:59 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:18:00 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:18:00 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-04 10:18:00 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:18:01 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:18:40 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 10:18:40 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:18:42 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 10:18:42 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 10:18:42 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:44:03 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 12:44:03 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:44:03 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-04 12:44:03 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:44:04 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:53:50 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 12:53:50 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-04 12:53:51 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:53:51 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:53:51 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:55:35 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 12:55:35 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:55:35 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:55:35 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-04 12:55:36 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:57:55 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 12:57:55 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:57:56 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:57:56 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 12:57:56 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:58:35 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 12:58:36 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:58:36 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 12:58:36 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-04 12:58:36 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:02:19 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:02:20 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-04 13:02:20 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:02:20 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:02:21 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:02:42 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:02:42 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-04 13:02:42 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:02:42 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:02:42 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:04:50 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:04:50 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:04:51 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-04 13:04:51 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:04:51 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:09:58 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:09:59 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:09:59 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 13:09:59 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:10:00 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:10:35 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:10:35 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:10:35 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-04 13:10:35 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:10:36 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:21 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:24 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:26 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:27 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:32 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:40 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:43 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:44 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:46 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:50 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:52 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:54 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:56 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:13:58 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:14:00 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:18:35 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:18:36 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-04 13:18:36 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:18:36 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:18:36 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:13 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:19:14 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:14 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:14 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 13:19:15 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:19 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:21 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:23 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:24 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:25 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:27 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:28 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:30 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:32 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:33 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:35 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:37 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:39 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:41 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:19:44 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:32 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:20:34 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:34 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 13:20:34 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:34 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:38 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:39 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:40 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:50 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:56 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:56 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:57 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:58 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:58 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:58 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:20:59 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:21:01 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:21:03 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:21:05 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:21:46 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:21:48 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 13:21:48 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:21:48 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:21:48 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:02 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:31 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:22:31 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:31 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 13:22:31 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:32 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:39 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:55 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:22:56 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-04 13:22:56 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:56 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:22:56 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:23:06 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:23:22 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:23:23 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-04 13:23:23 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:23:23 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:23:23 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:23:32 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:32:46 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:32:47 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 13:32:47 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:32:47 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:32:48 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:34:25 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:34:26 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-04 13:34:26 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:34:26 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:34:27 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:34:36 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:36:26 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:36:26 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:36:27 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 13:36:27 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:36:28 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:40:26 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:40:32 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 13:40:32 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:40:32 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:40:33 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:54:05 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 13:54:12 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 13:54:12 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:54:12 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:54:12 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:54:58 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:55:29 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 13:55:39 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:11:37 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:11:38 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-04 14:11:38 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:11:39 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:11:39 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:14:47 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:14:58 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 14:14:58 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:15:01 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:15:01 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:19:09 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:19:10 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:19:10 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:19:10 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-04 14:19:10 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:19:23 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:20:02 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:20:03 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 14:20:03 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:20:03 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:20:03 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:20:10 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:22:23 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:22:24 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 14:22:25 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:22:25 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:22:25 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:23:34 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:23:39 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-04 14:23:39 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:23:40 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:23:40 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:24:09 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:24:53 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:25:43 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:25:45 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-04 14:25:45 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:25:45 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:25:45 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:25:57 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:26:18 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:26:33 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:30:31 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:30:34 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-04 14:30:34 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:30:34 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:30:35 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:30:44 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:31:38 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:31:44 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:36:40 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:36:43 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-04 14:36:44 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:36:44 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:36:44 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:09 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:45:09 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-04 14:45:09 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:09 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:10 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:16 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:20 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:23 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:44 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:45:47 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:48:00 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:48:02 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-04 14:48:02 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:48:02 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:48:03 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:48:10 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:52:51 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 14:52:53 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-04 14:52:53 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:52:53 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:52:55 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:53:01 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:53:04 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:53:11 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:53:29 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:53:38 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:55:34 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:55:34 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:58:23 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 14:58:24 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 15:09:38 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 15:11:58 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:34 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:36 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:39 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:40 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:41 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:42 [http-nio-8080-exec-4] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:50 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 16:49:50 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:50 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-04 16:49:50 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 16:49:51 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-04 17:15:28 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-04 17:22:32 [http-nio-8080-exec-6] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@3a9dd6e (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-04 17:22:32 [http-nio-8080-exec-9] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@6d84bbcd (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-04 17:22:32 [http-nio-8080-exec-1] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@61d1cf9c (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-04 17:22:32 [http-nio-8080-exec-3] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@20e92fac (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-04 17:22:32 [http-nio-8080-exec-7] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@400eb8ba (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-04 17:22:32 [http-nio-8080-exec-7] WARN  : SQL Error: 0, SQLState: 08003
+2024-11-04 17:22:32 [http-nio-8080-exec-7] ERROR : HikariPool-1 - Connection is not available, request timed out after 424895ms (total=5, active=0, idle=5, waiting=0)
+2024-11-04 17:22:32 [http-nio-8080-exec-7] ERROR : This connection has been closed.
+2024-11-04 17:22:32 [http-nio-8080-exec-1] WARN  : SQL Error: 0, SQLState: 08003
+2024-11-04 17:22:32 [http-nio-8080-exec-1] ERROR : HikariPool-1 - Connection is not available, request timed out after 424838ms (total=7, active=2, idle=5, waiting=0)
+2024-11-04 17:22:32 [http-nio-8080-exec-1] ERROR : This connection has been closed.
+2024-11-04 17:22:32 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08003
+2024-11-04 17:22:32 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 424841ms (total=7, active=2, idle=5, waiting=0)
+2024-11-04 17:22:32 [http-nio-8080-exec-6] ERROR : This connection has been closed.
+2024-11-04 17:22:32 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08003
+2024-11-04 17:22:32 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 424758ms (total=6, active=1, idle=5, waiting=0)
+2024-11-04 17:22:32 [http-nio-8080-exec-3] ERROR : This connection has been closed.
+2024-11-04 17:22:32 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08003
+2024-11-04 17:22:32 [http-nio-8080-exec-9] ERROR : HikariPool-1 - Connection is not available, request timed out after 424691ms (total=7, active=2, idle=5, waiting=0)
+2024-11-04 17:22:32 [http-nio-8080-exec-9] ERROR : This connection has been closed.

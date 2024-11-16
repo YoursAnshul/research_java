@@ -1,0 +1,84 @@
+2024-11-07 08:01:19 [http-nio-8080-exec-13] INFO  : Log Message: Http failure response for http://localhost:8080/api/users/min: 0 Unknown Error
+2024-11-07 08:01:29 [http-nio-8080-exec-1] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:29 [http-nio-8080-exec-1] ERROR : HikariPool-1 - Connection is not available, request timed out after 48523612ms (total=0, active=0, idle=0, waiting=17)
+2024-11-07 08:01:29 [http-nio-8080-exec-1] ERROR : The connection attempt failed.
+2024-11-07 08:01:29 [http-nio-8080-exec-1] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:29 [http-nio-8080-exec-7] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:29 [http-nio-8080-exec-7] ERROR : HikariPool-1 - Connection is not available, request timed out after 48523614ms (total=0, active=0, idle=0, waiting=16)
+2024-11-07 08:01:29 [http-nio-8080-exec-7] ERROR : The connection attempt failed.
+2024-11-07 08:01:29 [http-nio-8080-exec-7] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:29 [http-nio-8080-exec-10] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:29 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:29 [http-nio-8080-exec-10] ERROR : HikariPool-1 - Connection is not available, request timed out after 48523614ms (total=0, active=0, idle=0, waiting=14)
+2024-11-07 08:01:29 [http-nio-8080-exec-10] ERROR : The connection attempt failed.
+2024-11-07 08:01:29 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 48523611ms (total=0, active=0, idle=0, waiting=14)
+2024-11-07 08:01:29 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-07 08:01:29 [http-nio-8080-exec-10] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:29 [http-nio-8080-exec-3] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:29 [http-nio-8080-exec-2] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:29 [http-nio-8080-exec-2] ERROR : HikariPool-1 - Connection is not available, request timed out after 48523600ms (total=0, active=0, idle=0, waiting=13)
+2024-11-07 08:01:29 [http-nio-8080-exec-2] ERROR : The connection attempt failed.
+2024-11-07 08:01:29 [http-nio-8080-exec-2] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:29 [http-nio-8080-exec-4] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:29 [http-nio-8080-exec-4] ERROR : HikariPool-1 - Connection is not available, request timed out after 48523612ms (total=0, active=0, idle=0, waiting=12)
+2024-11-07 08:01:29 [http-nio-8080-exec-4] ERROR : The connection attempt failed.
+2024-11-07 08:01:29 [http-nio-8080-exec-4] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:30 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=13h28m43s621ms901µs600ns).
+2024-11-07 08:01:37 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:37 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 48016929ms (total=0, active=0, idle=0, waiting=11)
+2024-11-07 08:01:37 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-11-07 08:01:37 [http-nio-8080-exec-6] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:37 [http-nio-8080-exec-8] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:37 [http-nio-8080-exec-8] ERROR : HikariPool-1 - Connection is not available, request timed out after 48016935ms (total=0, active=0, idle=0, waiting=10)
+2024-11-07 08:01:37 [http-nio-8080-exec-8] ERROR : The connection attempt failed.
+2024-11-07 08:01:37 [http-nio-8080-exec-8] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 08:01:37 [http-nio-8080-exec-5] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:37 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:37 [http-nio-8080-exec-5] ERROR : HikariPool-1 - Connection is not available, request timed out after 30003ms (total=0, active=0, idle=0, waiting=8)
+2024-11-07 08:01:37 [http-nio-8080-exec-9] ERROR : HikariPool-1 - Connection is not available, request timed out after 30002ms (total=0, active=0, idle=0, waiting=8)
+2024-11-07 08:01:37 [http-nio-8080-exec-5] ERROR : The connection attempt failed.
+2024-11-07 08:01:37 [http-nio-8080-exec-9] ERROR : The connection attempt failed.
+2024-11-07 08:01:49 [http-nio-8080-exec-11] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:49 [http-nio-8080-exec-12] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:49 [http-nio-8080-exec-11] ERROR : HikariPool-1 - Connection is not available, request timed out after 30009ms (total=0, active=0, idle=0, waiting=6)
+2024-11-07 08:01:49 [http-nio-8080-exec-12] ERROR : HikariPool-1 - Connection is not available, request timed out after 30009ms (total=0, active=0, idle=0, waiting=6)
+2024-11-07 08:01:49 [http-nio-8080-exec-11] ERROR : The connection attempt failed.
+2024-11-07 08:01:49 [http-nio-8080-exec-12] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-13] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:50 [http-nio-8080-exec-14] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:50 [http-nio-8080-exec-13] ERROR : HikariPool-1 - Connection is not available, request timed out after 30010ms (total=0, active=0, idle=0, waiting=4)
+2024-11-07 08:01:50 [http-nio-8080-exec-14] ERROR : HikariPool-1 - Connection is not available, request timed out after 30004ms (total=0, active=0, idle=0, waiting=4)
+2024-11-07 08:01:50 [http-nio-8080-exec-13] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-14] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-15] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:50 [http-nio-8080-exec-16] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:50 [http-nio-8080-exec-15] ERROR : HikariPool-1 - Connection is not available, request timed out after 30006ms (total=0, active=0, idle=0, waiting=3)
+2024-11-07 08:01:50 [http-nio-8080-exec-16] ERROR : HikariPool-1 - Connection is not available, request timed out after 30006ms (total=0, active=0, idle=0, waiting=3)
+2024-11-07 08:01:50 [http-nio-8080-exec-15] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-16] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-17] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:50 [http-nio-8080-exec-18] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:01:50 [http-nio-8080-exec-17] ERROR : HikariPool-1 - Connection is not available, request timed out after 30005ms (total=0, active=0, idle=0, waiting=1)
+2024-11-07 08:01:50 [http-nio-8080-exec-18] ERROR : HikariPool-1 - Connection is not available, request timed out after 30005ms (total=0, active=0, idle=0, waiting=1)
+2024-11-07 08:01:50 [http-nio-8080-exec-17] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-18] ERROR : The connection attempt failed.
+2024-11-07 08:01:50 [http-nio-8080-exec-5] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-07 08:02:20 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-07 08:02:20 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 30000ms (total=0, active=0, idle=0, waiting=0)
+2024-11-07 08:02:20 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-07 08:20:39 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-07 08:21:07 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-07 08:30:17 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-07 08:32:39 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-07 08:42:47 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-07 08:43:27 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-07 10:03:35 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-07 10:07:14 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-07 10:07:21 [http-nio-8080-exec-9] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 10:11:21 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-07 10:18:31 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-07 10:18:31 [http-nio-8080-exec-5] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-07 15:05:14 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-07 15:06:25 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-07 15:11:54 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-07 15:24:29 [http-nio-8080-exec-4] INFO  : Log Message: null

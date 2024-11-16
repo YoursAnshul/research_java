@@ -1,0 +1,176 @@
+2024-11-11 00:17:09 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 00:42:38 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 00:42:38 [http-nio-8080-exec-20] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/range: 0 Unknown Error
+2024-11-11 00:42:38 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 0 Unknown Error
+2024-11-11 00:42:38 [http-nio-8080-exec-3] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-11 00:42:40 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 00:42:42 [http-nio-8080-exec-2] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-11 00:42:58 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=53s630ms812µs800ns).
+2024-11-11 02:44:06 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 02:44:19 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h1m49s684ms742µs600ns).
+2024-11-11 04:48:06 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 04:48:25 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h1m35s156ms859µs600ns).
+2024-11-11 06:52:31 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h1m34s610ms717µs900ns).
+2024-11-11 08:06:22 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 08:08:42 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-11 08:10:04 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 08:23:39 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-11 08:24:20 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-11 08:25:48 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 08:26:56 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-11 08:27:57 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 08:29:04 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 08:29:28 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 08:31:48 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-11 08:32:10 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 08:33:34 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 08:37:58 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-11 08:43:36 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 08:46:56 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 08:49:21 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 08:50:14 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 08:51:39 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 08:52:17 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 08:55:07 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-11 08:57:17 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 08:59:03 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-11 09:00:56 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-11 09:02:52 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 09:10:55 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 09:12:42 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-11 09:17:56 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 09:22:21 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 09:26:49 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 09:27:07 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 12:29:48 [http-nio-8080-exec-20] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@6d620a05 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-6] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@48847ec2 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-1] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@765295d3 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-17] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@241717be (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-3] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@19eab1b7 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-2] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2c49df7b (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-20] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@26f12bdd (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-1] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@53510373 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-17] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@22adb525 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:48 [http-nio-8080-exec-6] WARN  : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@65715c72 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2024-11-11 12:29:50 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 12:42:13 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-11 12:45:34 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 12:47:20 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 12:50:27 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 12:52:08 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-11 12:52:56 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 12:53:03 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 12:53:03 [http-nio-8080-exec-17] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-11 12:58:01 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 13:00:18 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-11 13:02:13 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-11 13:03:41 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 13:05:14 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-11 13:07:02 [http-nio-8080-exec-15] INFO  : Log Message: null
+2024-11-11 13:10:52 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 13:13:19 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-11 13:14:59 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 13:16:34 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 13:18:19 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 13:20:11 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 13:22:35 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 13:32:11 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-11 13:33:00 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-11 13:42:25 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 13:44:55 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 13:45:08 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 13:47:11 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-11 13:48:55 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 13:50:39 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-11 13:51:38 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-11 13:54:07 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 13:56:56 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 14:00:37 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-11 14:03:08 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 14:13:12 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-11 14:16:14 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:16:14 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:16:15 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-11 14:16:15 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:16:24 [http-nio-8080-exec-15] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-12?startDate=2024-11-12&endDate=2024-11-12: 404 OK
+2024-11-11 14:16:26 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-13?startDate=2024-11-13&endDate=2024-11-13: 404 OK
+2024-11-11 14:16:33 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-20?startDate=2024-10-20&endDate=2024-10-20: 404 OK
+2024-11-11 14:18:14 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:18:14 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:18:15 [http-nio-8080-exec-18] INFO  : Log Message: null
+2024-11-11 14:18:15 [http-nio-8080-exec-15] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:18:45 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-10-01?startDate=2024-10-01&endDate=2024-10-01: 404 OK
+2024-11-11 14:21:51 [http-nio-8080-exec-15] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:21:52 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:21:52 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-11 14:21:52 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:33:34 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:33:35 [http-nio-8080-exec-19] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:33:36 [http-nio-8080-exec-17] INFO  : Log Message: null
+2024-11-11 14:33:36 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:34:29 [http-nio-8080-exec-15] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:34:29 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:34:30 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 14:34:30 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:35:45 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:35:46 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:35:47 [http-nio-8080-exec-20] INFO  : Log Message: null
+2024-11-11 14:35:47 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:38:28 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:38:28 [http-nio-8080-exec-15] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:38:29 [http-nio-8080-exec-19] INFO  : Log Message: null
+2024-11-11 14:38:29 [http-nio-8080-exec-18] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:54:54 [http-nio-8080-exec-17] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:54:55 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:54:55 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-11 14:54:55 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/2024-11-11?startDate=2024-11-11&endDate=2024-11-11: 404 OK
+2024-11-11 14:55:04 [SpringApplicationShutdownHook] INFO  : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-11-11 14:55:04 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown initiated...
+2024-11-11 14:55:05 [SpringApplicationShutdownHook] INFO  : HikariPool-1 - Shutdown completed.
+2024-11-11 14:55:16 [main] INFO  : Starting ProApiApplication using Java 17.0.12 with PID 8300 (C:\Users\kv125\myWorkspace\development\pro\pro-api\target\classes started by kv125 in C:\Users\kv125\myWorkspace\development\pro\pro-api)
+2024-11-11 14:55:16 [main] INFO  : The following 1 profile is active: "local"
+2024-11-11 14:55:18 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-11 14:55:18 [main] INFO  : Finished Spring Data repository scanning in 166 ms. Found 13 JPA repository interfaces.
+2024-11-11 14:55:19 [main] INFO  : Tomcat initialized with port 8080 (http)
+2024-11-11 14:55:19 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-11 14:55:19 [main] INFO  : Starting service [Tomcat]
+2024-11-11 14:55:19 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-11 14:55:19 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2024-11-11 14:55:19 [main] INFO  : Root WebApplicationContext: initialization completed in 2469 ms
+2024-11-11 14:55:19 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-11 14:55:19 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-11-11 14:55:19 [main] INFO  : HHH000026: Second-level cache disabled
+2024-11-11 14:55:20 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-11 14:55:20 [main] INFO  : HikariPool-1 - Starting...
+2024-11-11 14:55:22 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6cee903a
+2024-11-11 14:55:22 [main] INFO  : HikariPool-1 - Start completed.
+2024-11-11 14:55:22 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-11 14:55:23 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-11 14:55:23 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-11 14:55:25 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-11 14:55:26 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-11 14:55:27 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-11 14:55:28 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-11 14:55:29 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2024-11-11 14:55:29 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-11 14:55:29 [main] INFO  : Started ProApiApplication in 14.305 seconds (process running for 16.003)
+2024-11-11 14:55:29 [main] INFO  : Hello PRO!
+2024-11-11 14:55:38 [http-nio-8080-exec-1] INFO  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-11 14:55:38 [http-nio-8080-exec-1] INFO  : Initializing Servlet 'dispatcherServlet'
+2024-11-11 14:55:38 [http-nio-8080-exec-1] INFO  : Completed initialization in 11 ms
+2024-11-11 14:55:39 [http-nio-8080-exec-3] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [389] milliseconds.
+2024-11-11 14:55:39 [http-nio-8080-exec-1] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [197] milliseconds.
+2024-11-11 14:55:39 [http-nio-8080-exec-2] WARN  : Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [396] milliseconds.
+2024-11-11 14:55:41 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-11 15:15:07 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-11 15:46:24 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-11 18:13:47 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-11 23:38:57 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=46s291ms554µs900ns).
+2024-11-11 23:45:28 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-11 23:50:53 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-11 23:51:56 [http-nio-8080-exec-1] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-11 23:51:59 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 0 Unknown Error
+2024-11-11 23:51:59 [http-nio-8080-exec-7] INFO  : Log Message: Http failure response for http://localhost:8080/api/projects/min: 0 Unknown Error
+2024-11-11 23:51:59 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 0 Unknown Error
+2024-11-11 23:51:59 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 0 Unknown Error
+2024-11-11 23:52:01 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m33s274ms514µs300ns).

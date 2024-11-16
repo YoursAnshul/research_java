@@ -1,0 +1,237 @@
+2024-11-12 02:53:57 [HikariPool-1 connection adder] WARN  : Failed to closed stream with error: {0}
+java.net.SocketException: An established connection was aborted by the software in your host machine
+	at java.base/sun.nio.ch.NioSocketImpl.implWrite(NioSocketImpl.java:425)
+	at java.base/sun.nio.ch.NioSocketImpl.write(NioSocketImpl.java:445)
+	at java.base/sun.nio.ch.NioSocketImpl$2.write(NioSocketImpl.java:831)
+	at java.base/java.net.Socket$SocketOutputStream.write(Socket.java:1035)
+	at java.base/java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:81)
+	at java.base/java.io.BufferedOutputStream.flush(BufferedOutputStream.java:142)
+	at java.base/java.io.FilterOutputStream.flush(FilterOutputStream.java:153)
+	at org.postgresql.core.PGStream$1.close(PGStream.java:316)
+	at java.base/sun.nio.cs.StreamEncoder.implClose(StreamEncoder.java:347)
+	at java.base/sun.nio.cs.StreamEncoder.close(StreamEncoder.java:169)
+	at java.base/java.io.OutputStreamWriter.close(OutputStreamWriter.java:252)
+	at org.postgresql.core.PGStream.close(PGStream.java:750)
+	at org.postgresql.core.ConnectionFactory.closeStream(ConnectionFactory.java:89)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:211)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:262)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273)
+	at org.postgresql.Driver.makeConnection(Driver.java:446)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:724)
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:703)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-11-12 02:53:57 [http-nio-8080-exec-9] WARN  : HikariPool-1 - Connection org.postgresql.jdbc.PgConnection@3df12b16 marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:398)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess.executeQuery(DeferredResultSetAccess.java:246)
+	at org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess.getResultSet(DeferredResultSetAccess.java:167)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.advanceNext(JdbcValuesResultSetImpl.java:265)
+	at org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl.processNext(JdbcValuesResultSetImpl.java:145)
+	at org.hibernate.sql.results.jdbc.internal.AbstractJdbcValues.next(AbstractJdbcValues.java:19)
+	at org.hibernate.sql.results.internal.RowProcessingStateStandardImpl.next(RowProcessingStateStandardImpl.java:67)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:204)
+	at org.hibernate.sql.results.spi.ListResultsConsumer.consume(ListResultsConsumer.java:33)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.doExecuteQuery(JdbcSelectExecutorStandardImpl.java:211)
+	at org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl.executeQuery(JdbcSelectExecutorStandardImpl.java:83)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:76)
+	at org.hibernate.sql.exec.spi.JdbcSelectExecutor.list(JdbcSelectExecutor.java:65)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.lambda$new$2(ConcreteSqmSelectQueryPlan.java:139)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.withCacheableSqmInterpretation(ConcreteSqmSelectQueryPlan.java:382)
+	at org.hibernate.query.sqm.internal.ConcreteSqmSelectQueryPlan.performList(ConcreteSqmSelectQueryPlan.java:302)
+	at org.hibernate.query.sqm.internal.QuerySqmImpl.doList(QuerySqmImpl.java:526)
+	at org.hibernate.query.spi.AbstractSelectionQuery.list(AbstractSelectionQuery.java:423)
+	at org.hibernate.query.Query.getResultList(Query.java:120)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$CollectionExecution.doExecute(JpaQueryExecution.java:129)
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:92)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:152)
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:140)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:170)
+	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:164)
+	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:143)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:379)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:136)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223)
+	at jdk.proxy2/jdk.proxy2.$Proxy132.findByFormFieldId(Unknown Source)
+	at com.pro.api.controllers.ProjectsController.getProjectsMin(ProjectsController.java:72)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:328)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:355)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:808)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(SSLSocketInputRecord.java:484)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.readHeader(SSLSocketInputRecord.java:478)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.bytesInCompletePacket(SSLSocketInputRecord.java:70)
+	at java.base/sun.security.ssl.SSLSocketImpl.readApplicationRecord(SSLSocketImpl.java:1461)
+	at java.base/sun.security.ssl.SSLSocketImpl$AppInputStream.read(SSLSocketImpl.java:1065)
+	at org.postgresql.core.VisibleBufferedInputStream.readMore(VisibleBufferedInputStream.java:162)
+	at org.postgresql.core.VisibleBufferedInputStream.ensureBytes(VisibleBufferedInputStream.java:129)
+	at org.postgresql.core.VisibleBufferedInputStream.ensureBytes(VisibleBufferedInputStream.java:114)
+	at org.postgresql.core.VisibleBufferedInputStream.read(VisibleBufferedInputStream.java:74)
+	at org.postgresql.core.PGStream.receiveChar(PGStream.java:467)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2166)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	... 97 common frames omitted
+2024-11-12 02:53:57 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08006
+2024-11-12 02:53:57 [http-nio-8080-exec-9] ERROR : An I/O error occurred while sending to the backend.
+2024-11-12 02:53:58 [http-nio-8080-exec-9] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-12 09:00:15 [main] INFO  : Starting ProApiApplication using Java 17.0.12 with PID 15172 (C:\Users\kv125\myWorkspace\development\pro\pro-api\target\classes started by kv125 in C:\Users\kv125\myWorkspace\development\pro\pro-api)
+2024-11-12 09:00:15 [main] INFO  : The following 1 profile is active: "local"
+2024-11-12 09:00:17 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-12 09:00:17 [main] INFO  : Finished Spring Data repository scanning in 313 ms. Found 13 JPA repository interfaces.
+2024-11-12 09:00:19 [main] INFO  : Tomcat initialized with port 8080 (http)
+2024-11-12 09:00:19 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2024-11-12 09:00:19 [main] INFO  : Starting service [Tomcat]
+2024-11-12 09:00:19 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-11-12 09:00:19 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2024-11-12 09:00:19 [main] INFO  : Root WebApplicationContext: initialization completed in 4764 ms
+2024-11-12 09:00:20 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-12 09:00:20 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-11-12 09:00:20 [main] INFO  : HHH000026: Second-level cache disabled
+2024-11-12 09:00:21 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-12 09:00:21 [main] INFO  : HikariPool-1 - Starting...
+2024-11-12 09:00:24 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7d8f2eec
+2024-11-12 09:00:24 [main] INFO  : HikariPool-1 - Start completed.
+2024-11-12 09:00:24 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-12 09:00:25 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-12 09:00:25 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2024-11-12 09:00:33 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-12 09:00:34 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-12 09:00:35 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-12 09:00:37 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-12 09:00:37 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2024-11-12 09:00:37 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2024-11-12 09:00:37 [main] INFO  : Started ProApiApplication in 23.764 seconds (process running for 24.861)
+2024-11-12 09:00:37 [main] INFO  : Hello PRO!
+2024-11-12 09:56:19 [http-nio-8080-exec-8] INFO  : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-12 09:56:19 [http-nio-8080-exec-8] INFO  : Initializing Servlet 'dispatcherServlet'
+2024-11-12 09:56:19 [http-nio-8080-exec-8] INFO  : Completed initialization in 45 ms
+2024-11-12 09:56:20 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-12 12:28:55 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-12 12:30:28 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-12 12:39:41 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 12:40:43 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 12:45:17 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-12 13:07:31 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 13:08:54 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-12 13:14:14 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-12 13:16:09 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-12 13:16:14 [http-nio-8080-exec-5] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-12 13:16:14 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-12 13:18:17 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-12 13:19:44 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-12 13:27:20 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-12 13:28:28 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 13:36:50 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 13:38:51 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-12 13:42:24 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-12 13:42:52 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-12 13:43:08 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 13:43:42 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 13:48:31 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-12 13:50:18 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 13:55:34 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-12 13:56:19 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-12 13:58:24 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 14:04:19 [http-nio-8080-exec-7] INFO  : Log Message: null
+2024-11-12 14:04:44 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 14:21:34 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-12 14:26:00 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-12 14:27:30 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-12 14:31:09 [http-nio-8080-exec-2] INFO  : Log Message: null
+2024-11-12 14:33:12 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 14:33:45 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-12 14:34:40 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-12 14:36:53 [http-nio-8080-exec-5] INFO  : Log Message: null
+2024-11-12 14:37:10 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-12 14:37:34 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 14:39:29 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-12 14:40:02 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-12 14:40:41 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-12 14:42:46 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-12 14:42:52 [http-nio-8080-exec-10] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-12 14:42:53 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-12 14:43:18 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-12 14:43:55 [http-nio-8080-exec-4] INFO  : Log Message: null
+2024-11-12 14:44:17 [http-nio-8080-exec-3] INFO  : Log Message: null
+2024-11-12 14:44:44 [http-nio-8080-exec-8] INFO  : Log Message: null
+2024-11-12 18:22:09 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h1m249ms728µs).
+2024-11-12 18:22:28 [http-nio-8080-exec-2] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-12 18:22:30 [http-nio-8080-exec-1] INFO  : Log Message: null
+2024-11-12 18:22:30 [http-nio-8080-exec-8] WARN  : Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-11-12 18:22:44 [http-nio-8080-exec-10] INFO  : Log Message: null

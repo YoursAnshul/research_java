@@ -1,0 +1,45 @@
+2024-11-03 08:08:29 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1d15h58m9s287ms134µs).
+2024-11-03 09:10:10 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h40s365ms590µs300ns).
+2024-11-03 09:32:25 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=22m15s223ms72µs100ns).
+2024-11-03 09:38:49 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6m24s357ms562µs300ns).
+2024-11-03 17:59:58 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8h14m4s14ms805µs).
+2024-11-03 18:00:49 [http-nio-8080-exec-2] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-03 18:01:19 [http-nio-8080-exec-6] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-03 18:01:19 [http-nio-8080-exec-11] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-03 18:01:19 [http-nio-8080-exec-11] ERROR : HikariPool-1 - Connection is not available, request timed out after 30008ms (total=0, active=0, idle=0, waiting=3)
+2024-11-03 18:01:19 [http-nio-8080-exec-11] ERROR : The connection attempt failed.
+2024-11-03 18:01:19 [http-nio-8080-exec-3] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-03 18:01:19 [http-nio-8080-exec-3] ERROR : HikariPool-1 - Connection is not available, request timed out after 30025ms (total=0, active=0, idle=0, waiting=4)
+2024-11-03 18:01:19 [http-nio-8080-exec-3] ERROR : The connection attempt failed.
+2024-11-03 18:01:19 [http-nio-8080-exec-6] ERROR : HikariPool-1 - Connection is not available, request timed out after 30030ms (total=0, active=0, idle=0, waiting=4)
+2024-11-03 18:01:19 [http-nio-8080-exec-6] ERROR : The connection attempt failed.
+2024-11-03 18:01:19 [http-nio-8080-exec-9] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-03 18:01:19 [http-nio-8080-exec-10] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-03 18:01:19 [http-nio-8080-exec-9] ERROR : HikariPool-1 - Connection is not available, request timed out after 30002ms (total=0, active=0, idle=0, waiting=1)
+2024-11-03 18:01:19 [http-nio-8080-exec-10] ERROR : HikariPool-1 - Connection is not available, request timed out after 30003ms (total=0, active=0, idle=0, waiting=1)
+2024-11-03 18:01:19 [http-nio-8080-exec-9] ERROR : The connection attempt failed.
+2024-11-03 18:01:19 [http-nio-8080-exec-10] ERROR : The connection attempt failed.
+2024-11-03 18:01:19 [http-nio-8080-exec-5] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-03 18:01:39 [http-nio-8080-exec-1] WARN  : SQL Error: 0, SQLState: 08001
+2024-11-03 18:01:39 [http-nio-8080-exec-1] ERROR : HikariPool-1 - Connection is not available, request timed out after 30007ms (total=0, active=0, idle=0, waiting=0)
+2024-11-03 18:01:39 [http-nio-8080-exec-1] ERROR : The connection attempt failed.
+2024-11-03 18:02:22 [http-nio-8080-exec-5] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-03 18:02:22 [http-nio-8080-exec-8] INFO  : Log Message: Could not open JPA EntityManager for transaction
+2024-11-03 18:06:46 [http-nio-8080-exec-11] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-03 18:06:47 [http-nio-8080-exec-8] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:06:47 [http-nio-8080-exec-6] INFO  : Log Message: null
+2024-11-03 18:06:47 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:06:47 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:06:51 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:02 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-03 18:07:03 [http-nio-8080-exec-11] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:03 [http-nio-8080-exec-9] INFO  : Log Message: null
+2024-11-03 18:07:03 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:03 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:06 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:28 [http-nio-8080-exec-9] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/timecodes: 404 OK
+2024-11-03 18:07:28 [http-nio-8080-exec-6] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:28 [http-nio-8080-exec-10] INFO  : Log Message: null
+2024-11-03 18:07:28 [http-nio-8080-exec-3] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:28 [http-nio-8080-exec-1] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
+2024-11-03 18:07:30 [http-nio-8080-exec-10] INFO  : Log Message: Http failure response for http://localhost:8080/api/userSchedules/scheduleCache: 404 OK
