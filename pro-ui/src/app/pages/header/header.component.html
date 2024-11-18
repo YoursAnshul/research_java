@@ -55,19 +55,7 @@
                   </div>
                   <div class="col-lg-5 mt-1">
                     <span
-                      class="quick-span"
-                      style="
-                        font-family: Roboto !important;
-                        font-size: 16px;
-                        font-weight: 400;
-                        line-height: 20px;
-                        letter-spacing: 0.10000000149011612px;
-                        text-align: left;
-                        text-underline-position: from-font;
-                        text-decoration-skip-ink: none;
-                        font-weight: normal;
-                        color: #6c757d;
-                      "
+                      class="quick-span quick-reference"
                       >Quick Reference</span
                     >
                   </div>
@@ -137,12 +125,12 @@
                               "
                             ></h2>
                             <div class="contact-item">
-                              <p
+                              <p class="contact-item-color"
                                 [innerHTML]="
                                   tollFree1 | highlight : searchTerms
                                 "
                               ></p>
-                              <p
+                              <p class="stickeky-header"
                                 [innerHTML]="
                                   tollFreeNum1 | highlight : searchTerms
                                 "
@@ -174,11 +162,11 @@
                                 />
                               </svg>
                             </div>
-                            <div class="contact-item">
-                              <p
+                            <div  class="contact-item-new">
+                              <p class="contact-item-color"
                                 [innerHTML]="email1 | highlight : searchTerms"
                               ></p>
-                              <p
+                              <p 
                                 [innerHTML]="
                                   emailAddress1 | highlight : searchTerms
                                 "
@@ -227,12 +215,12 @@
                               "
                             ></h2>
                             <div class="contact-item">
-                              <p
+                              <p class="contact-item-color"
                                 [innerHTML]="
                                   tollFree2 | highlight : searchTerms
                                 "
                               ></p>
-                              <p
+                              <p class="stickeky-header"
                                 [innerHTML]="
                                   tollFreeNum2 | highlight : searchTerms
                                 "
@@ -264,8 +252,8 @@
                                 />
                               </svg>
                             </div>
-                            <div class="contact-item">
-                              <p
+                            <div class="contact-item-new">
+                              <p class="contact-item-color"
                                 [innerHTML]="email2 | highlight : searchTerms"
                               ></p>
                               <p
@@ -318,12 +306,12 @@
                               "
                             ></h2>
                             <div class="contact-item">
-                              <p
+                              <p class="contact-item-color"
                                 [innerHTML]="
                                   tollFree3 | highlight : searchTerms
                                 "
                               ></p>
-                              <p
+                              <p class="stickeky-header"
                                 [innerHTML]="
                                   tollFreeNum3 | highlight : searchTerms
                                 "
@@ -355,8 +343,8 @@
                                 />
                               </svg>
                             </div>
-                            <div class="contact-item">
-                              <p
+                            <div class="contact-item-new">
+                              <p class="contact-item-color"
                                 [innerHTML]="email3 | highlight : searchTerms"
                               ></p>
                               <p
@@ -409,12 +397,12 @@
                               "
                             ></h2>
                             <div class="contact-item">
-                              <p
+                              <p class="contact-item-color"
                                 [innerHTML]="
                                   tollFree4 | highlight : searchTerms
                                 "
                               ></p>
-                              <p
+                              <p class="stickeky-header"
                                 [innerHTML]="
                                   tollFreeNum4 | highlight : searchTerms
                                 "
@@ -446,8 +434,8 @@
                                 />
                               </svg>
                             </div>
-                            <div class="contact-item">
-                              <p
+                            <div class="contact-item-new">
+                              <p class="contact-item-color"
                                 [innerHTML]="email4 | highlight : searchTerms"
                               ></p>
                               <p
@@ -500,12 +488,12 @@
                               "
                             ></h2>
                             <div class="contact-item">
-                              <p
+                              <p class="contact-item-color"
                                 [innerHTML]="
                                   tollFree5 | highlight : searchTerms
                                 "
                               ></p>
-                              <p
+                              <p class="stickeky-header"
                                 [innerHTML]="
                                   tollFreeNum5 | highlight : searchTerms
                                 "
@@ -537,8 +525,8 @@
                                 />
                               </svg>
                             </div>
-                            <div class="contact-item">
-                              <p
+                            <div class="contact-item-new">
+                              <p class="contact-item-color"
                                 [innerHTML]="email5 | highlight : searchTerms"
                               ></p>
                               <p
@@ -730,9 +718,19 @@
   .contact-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
     font-size: 14px;
     line-height: 1.4;
+  }
+
+  .contact-item-new {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-left: 20px;
+  }
+
+  .contact-item-color {
     color: #6c757d;
   }
 
@@ -745,7 +743,6 @@
     margin-top: 10px;
     font-size: 14px;
     line-height: 1.4;
-    color: #58595b;
   }
 
   ::-webkit-scrollbar {
@@ -775,5 +772,21 @@
   }
   ::ng-deep .mdc-tab__text-label {
     font-size: 12px !important;
+  }
+
+  .quick-reference{
+    font-family: Roboto !important;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.10000000149011612px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    font-weight: normal;
+    color: #6c757d;
+  }
+  .stickeky-header{
+    margin-right: 62px;
   }
 </style>

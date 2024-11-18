@@ -11,13 +11,13 @@ export class HeaderComponent implements OnInit {
   description1: string =
     'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description2: string =
-    'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
+    'This is a brief description of Project 42. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description3: string =
-    'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
+    'This is a brief description of Project Eleven. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description4: string =
-    'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
+    'This is a brief description of Project Q. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description5: string =
-    'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
+    'This is a brief description of Purple Project. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
 
   firstHeading = 'HERO Together';
   secondHeading = 'Project 42';
@@ -44,10 +44,10 @@ export class HeaderComponent implements OnInit {
   email5 = 'Email Address';
 
   emailAddress1 = 'herotogether@duke.com';
-  emailAddress2 = 'herotogether@duke.com';
-  emailAddress3 = 'herotogether@duke.com';
-  emailAddress4 = 'herotogether@duke.com';
-  emailAddress5 = 'herotogether@duke.com';
+  emailAddress2 = 'email1@inbox.com';
+  emailAddress3 = 'email1@inbox.com';
+  emailAddress4 = 'email1@inbox.com';
+  emailAddress5 = 'email1@inbox.com';
 
   searchTerms: string = '';
   authenticatedUser!: IAuthenticatedUser;
