@@ -23,7 +23,8 @@
               [hasBackdrop]="false"
               class="absolute quick-reference-notification top-4 w-[440px] h-[80vh] right-2 mt-16 quick-book-ref"
             >
-              <div class="quick-refrence-top-header d-flex justify-between m-2">
+            <div class="sticky-header">
+              <div class="quick-refrence-top-header d-flex justify-between m-2 ">
                 <div class="col-lg-10" style="display: flex">
                   <!-- <mat-icon fontIcon="mail" class="custom-color1"></mat-icon> &nbsp; -->
                   <div class="col-lg-2 mr-2">
@@ -64,7 +65,7 @@
                   <mat-icon
                     fontIcon="open_in_new"
                     class="custom-color1"
-                    style="cursor: pointer;"
+                    style="cursor: pointer; color: #0680CD;"
                   ></mat-icon>
                   &nbsp;
                   <mat-icon
@@ -74,7 +75,8 @@
                   ></mat-icon>
                 </div>
               </div>
-              <!-- <mat-form-field class="search-container">
+
+               <!-- <mat-form-field class="search-container">
                 <mat-icon matSuffix class="custom-color1">search</mat-icon>
                 <input matInput type="search" placeholder="search" class="search-input">
               </mat-form-field> -->
@@ -105,15 +107,17 @@
                   </svg>
                 </div>
               </div>
-              <div>
+            </div>
+      
                 <mat-tab-group
-                  class="custom-tabs"
+                  class="custom-tabs sticky-header-tabs"
                   (click)="$event.stopPropagation()"
                 >
                   <mat-tab label="Voicemail Info"> </mat-tab>
-                  <mat-tab label="Project Info">
+                  <mat-tab label="Project Info" class="sticky-tab">
+                    <div class="scroll-container">
                     <div
-                      class="scroll-container max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
+                      class=" max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
                     >
                       <div class="space-y-4">
                         <div class="hero-box">
@@ -602,10 +606,12 @@
 
                       </div>
                     </div>
+                  </div>
                   </mat-tab>
+                
                   <mat-tab label="Team Contacts"> </mat-tab>
                 </mat-tab-group>
-              </div>
+              
             </mat-menu>
           </div>
         </div>
@@ -839,4 +845,31 @@
 .svg-align{
   cursor: pointer; margin-left: 8px; margin-bottom: 10px;
 }
+.sticky-header {
+  position: sticky;
+  top: 0; 
+  z-index: 999; 
+  background-color: white; 
+  padding: 8px; 
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+mat-tab-group {
+  position: relative;
+}
+
+.sticky-tab {
+  position: sticky;
+  top: 0; 
+  z-index: 10; 
+  background-color: white;
+}
+
+.sticky-header-tabs ::ng-deep .mat-mdc-tab-header {
+  position: sticky !important;
+  top: 108px;
+  z-index: 1000;
+  background-color: white;
+}
+
 </style>
