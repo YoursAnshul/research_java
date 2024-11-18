@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IAuthenticatedUser } from '../../interfaces/interfaces';
-import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  selector: 'book-reference',
+  templateUrl: './book.component.html',
+  styleUrls: ['./book.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class BookComponent implements OnInit {
   description1: string =
     'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description2: string =
@@ -57,22 +55,15 @@ export class HeaderComponent implements OnInit {
   emailAddress6 = 'email1@inbox.com';
 
   searchTerms: string = '';
-  authenticatedUser!: IAuthenticatedUser;
 
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    //subscribe to the authenticated user
-    this.authenticationService.authenticatedUser.subscribe(
-      authenticatedUser => {
-        this.authenticatedUser = authenticatedUser;
-      }
-    );
+    
 
   }
 
   public logout(): void {
-    this.authenticationService.logout();
   }
 
   copyToClipboard(text: string): void {

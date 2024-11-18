@@ -182,3 +182,4 @@
 .metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml
 .metadata/.plugins/org.eclipse.wst.sse.core/task-tags.properties
 .metadata/version.ini
+/.metadata/

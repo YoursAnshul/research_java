@@ -13,6 +13,7 @@ import { ForecastingComponent } from './pages/forecasting/forecasting.component'
 import { RequestsComponent } from './pages/requests/requests.component';
 import { ConfigurationComponent } from './pages/configuration/configuration.component';
 import { LoginComponent } from './pages/login/login.component';
+import { BookComponent } from './pages/book-refrence/book.component';
 
 const routes: Routes = [
 
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: 'forecasting', component: ForecastingComponent},
   { path: 'requests', component: RequestsComponent },
   { path: 'configuration', component: ConfigurationComponent},
+  { path: 'book-reference', component: BookComponent}
 
   //{ path: 'test', component: TestComponent },
 ];

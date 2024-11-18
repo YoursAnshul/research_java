@@ -54,6 +54,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-datepicker/month-datepicker.component";
 import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
 import { HighlightSearch } from './components/highlightsearch/highlight.search';
+import { BookComponent } from './pages/book-refrence/book.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -88,6 +89,7 @@ import { HighlightSearch } from './components/highlightsearch/highlight.search';
     MonthDatepickerComponent,
     WeekDatepickerComponent,
     HighlightSearch,
+    BookComponent
   ],
   imports: [
     BrowserModule,

@@ -66,6 +66,8 @@
                     fontIcon="open_in_new"
                     class="custom-color1"
                     style="cursor: pointer; color: #0680CD;"
+                    (click)="moveToPage()"
+                    (click)="$event.stopPropagation()"
                   ></mat-icon>
                   &nbsp;
                   <mat-icon
