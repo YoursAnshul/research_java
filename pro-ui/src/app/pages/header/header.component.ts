@@ -56,6 +56,29 @@ export class HeaderComponent implements OnInit {
   emailAddress5 = 'email1@inbox.com';
   emailAddress6 = 'email1@inbox.com';
 
+  // voice mail
+  voiceMailTollFree1 = 'Voicemail Phone';
+  voiceMailPin1 = 'Voicemail PIN';
+
+  voiceMailtollFreeNum1 = '111-555-1234';
+  voiceMailtollFreeNum2 = '222-444-5432';
+  voiceMailtollFreeNum3 = '919-785-8888';
+  voiceMailtollFreeNum4 = '555-123-9874';
+  voiceMailtollFreeNum5 = '777-111-5252';
+  voiceMailtollFreeNum6 = '122-778-3355';
+
+  voiceMailtollPIN1 = '7859';
+  voiceMailtollPIN2 = '1111';
+  voiceMailtollPIN3 = '7899';
+  voiceMailtollPIN4 = '3336';
+  voiceMailtollPIN5 = '3939';
+  voiceMailtollPIN6 = '5362';
+
+  firstHeadingVoiceMail = 'Voicemail access instructions';
+  voiceMailInstruction1 = '1. Access the voicemail system at 123-555-1919';
+  voiceMailInstruction2 = '2. Enter the project voicemail phone number';
+  voiceMailInstruction3 = '3. Enter the project voicemail PIN';
+
   searchTerms: string = '';
   authenticatedUser!: IAuthenticatedUser;
 
