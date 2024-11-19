@@ -55,6 +55,7 @@ import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-
 import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
 import { HighlightSearch } from './components/highlightsearch/highlight.search';
 import { BookComponent } from './pages/book-refrence/book.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -111,7 +112,8 @@ import { BookComponent } from './pages/book-refrence/book.component';
     MatButtonModule,
     MatDividerModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatCheckboxModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]

@@ -82,6 +82,75 @@ export class HeaderComponent implements OnInit {
   searchTerms: string = '';
   authenticatedUser!: IAuthenticatedUser;
 
+  contacts = [
+    {
+      name: 'Ashley Blake',
+      role: 'Interviewer',
+      email: 'ashley.blake@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Gina Hernandez',
+      role: 'Admin',
+      email: 'gina.hernandez@duke.edu',
+      escalation: '1-919-123-9876',
+    },
+    {
+      name: 'Heather Campbell',
+      role: 'Project Team',
+      email: 'heather.s.campbell@duke.edu',
+      escalation: '1-919-555-7722',
+    },
+    {
+      name: 'Labriah Wilson',
+      role: 'Interviewer',
+      email: 'lamwilson@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Lauren Watkins',
+      role: 'Interviewer',
+      email: 'lauren.watkins@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Lauren Conroy',
+      role: 'Interviewer',
+      email: 'lauren.conroy@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Miroslava Martinez',
+      role: 'Interviewer',
+      email: 'mim17@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Nicole Boone',
+      role: 'Interviewer',
+      email: 'nicole.boone17@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Quanita Byers',
+      role: 'Interviewer',
+      email: 'quanita.byers17@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Shayla Mitchell',
+      role: 'Interviewer',
+      email: 'shayla.mitchell17@duke.edu',
+      escalation: null,
+    },
+  ];
+  filteredContacts = [...this.contacts];
+  selectAll = false;
+  filterAdmin = false;
+  filterProjectTeam = false;
+  filterInterviewer = false;
+  filterEscalationContact = false;
+
   constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
@@ -123,6 +192,43 @@ export class HeaderComponent implements OnInit {
       "_blank",
       `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
     );
+  }
+
+  toggleSelectAll() {
+    if (this.selectAll) {
+      this.filterAdmin =
+        this.filterProjectTeam =
+        this.filterInterviewer =
+        this.filterEscalationContact =
+          true;
+    } else {
+      this.filterAdmin =
+        this.filterProjectTeam =
+        this.filterInterviewer =
+        this.filterEscalationContact =
+          false;
+    }
+    this.filterContacts();
+  }
+
+  filterContacts() {
+    if (
+      !this.filterAdmin &&
+      !this.filterProjectTeam &&
+      !this.filterInterviewer &&
+      !this.filterEscalationContact
+    ) {
+      this.filteredContacts = [...this.contacts];
+      return;
+    }
+    this.filteredContacts = this.contacts.filter((contact) => {
+      return (
+        (this.filterAdmin && contact.role === 'Admin') ||
+        (this.filterProjectTeam && contact.role === 'Project Team') ||
+        (this.filterInterviewer && contact.role === 'Interviewer') ||
+        (this.filterEscalationContact && contact.escalation !== null)
+      );
+    });
   }
 
 }

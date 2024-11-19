@@ -1129,7 +1129,129 @@
                   </div>
                   </mat-tab>
                 
-                  <mat-tab label="Team Contacts"> </mat-tab>
+                  <mat-tab label="Team Contacts">
+                    <div class="quick-reference">
+                      <span class="font-containt">Filter Contacts:</span>
+                      <div>
+                        <mat-checkbox
+                          color="primary"
+                          [(ngModel)]="selectAll"
+                          (change)="toggleSelectAll()"
+                        >
+                          Select All
+                        </mat-checkbox>
+                        <mat-checkbox
+                          color="primary"
+                          [(ngModel)]="filterAdmin"
+                          (change)="filterContacts()"
+                        >
+                          Admin
+                        </mat-checkbox>
+                        <mat-checkbox
+                          color="primary"
+                          [(ngModel)]="filterProjectTeam"
+                          (change)="filterContacts()"
+                        >
+                          Project Team
+                        </mat-checkbox>
+                        <mat-checkbox
+                          color="primary"
+                          [(ngModel)]="filterInterviewer"
+                          (change)="filterContacts()"
+                        >
+                          Interviewer
+                        </mat-checkbox>
+                        <mat-checkbox
+                          color="primary"
+                          [(ngModel)]="filterEscalationContact"
+                          (change)="filterContacts()"
+                        >
+                          Escalation Contact
+                        </mat-checkbox>
+                      </div>
+                      <div *ngFor="let contact of filteredContacts" class="mt-3">
+                        <div>
+                          <span class="font-containt">{{ contact.name }}</span>
+                        </div>
+                        <div class="text-containt">
+                          <div class="detail">
+                            <span class="label" style="padding-left: 67px"
+                              >Role</span
+                            >
+                            <span class="value">{{ contact.role }}</span>
+                          </div>
+                          <div class="detail">
+                            <span class="label" style="padding-left: 10px"
+                              >Email Address</span
+                            >
+                            <div class="value-container">
+                              <span class="value">{{ contact.email }}</span>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(contact.email)"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                                style="cursor: pointer; margin-left: 5px"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div class="detail" *ngIf="contact.escalation">
+                            <span class="label" style="padding-left: 27px"
+                              >Escalation #</span
+                            >
+                            <div class="value-container">
+                              <span class="value">{{ contact.escalation }}</span>
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                (click)="copyToClipboard(contact.escalation)"
+                                matTooltip="copy"
+                                matTooltipPosition="above"
+                                style="cursor: pointer; margin-left: 5px"
+                              >
+                                <path
+                                  d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                                  stroke="#58595B"
+                                  stroke-width="1.5"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </mat-tab>
                 </mat-tab-group>
               
             </mat-menu>
@@ -1463,4 +1585,61 @@ mat-tab-group {
     line-height: 1;
   }
 
+/* team contacts */
+.quick-reference {
+    margin-bottom: 10px;
+    padding: 16px;
+  }
+
+  .font-containt {
+    color: #262626;
+    width: 600px;
+    font-weight: 600;
+    font-size: 13px;
+    font-family: roboto;
+    line-height: 15.23px;
+  }
+  .text-containt {
+    font-size: 13px;
+    line-height: 16px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #e0e0e0;
+  }
+
+  .detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+  }
+
+  .value-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .label {
+    color: #6c757d;
+  }
+
+  .value {
+    color: #262626;
+    padding-left: 20px;
+  }
+  .mat-checkbox .mat-checkbox-label {
+    font-size: 12px !important;
+  }
+  ::ng-deep .mdc-checkbox__background {
+    width: 13px !important;
+    height: 13px !important;
+  }
+  ::ng-deep .mat-mdc-checkbox {
+    --mdc-form-field-label-text-size: 12px !important;
+  }
+  ::ng-deep .mdc-form-field > label {
+    padding-left: 0px !important;
+    margin-bottom: 4px !important;
+    margin-left: -8px !important;
+  }
 </style>
