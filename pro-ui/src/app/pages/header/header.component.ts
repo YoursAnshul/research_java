@@ -110,8 +110,19 @@ export class HeaderComponent implements OnInit {
       console.error('Clipboard API not supported');
     }
   }
-  moveToPage(){
-    window.open("/book-reference")
+  moveToPage(event: MouseEvent): void {
+    event.stopPropagation();
+    const url = "/book-reference"; 
+    const width = 500;
+    const height = 660; 
+    const left = window.screen.width / 2 - width / 2; 
+    const top = window.screen.height / 2 - height / 2; 
+    
+    window.open(
+      url,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
+    );
   }
 
 }
