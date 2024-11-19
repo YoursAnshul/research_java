@@ -74,9 +74,7 @@ header {
   height: Fixed(850px) ;
   border-radius: 15px 15px 15px;
   border: 2px;
-  padding: 15px;
   gap: 15px;
-  text-align: center;
 }
 
 .bg-yellow-500{

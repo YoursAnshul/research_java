@@ -1,9 +1,9 @@
 <div id="header-inner">
   <div id="logged-in-as-section" class="flex">
-    <div class="quick-reference-notification top-4 w-[440px] h-[100vh]  right-2 mt-16 quick-book-ref">
-      <!-- Dropdown menu -->
+    <div class="quick-reference-notification top-4 w-[440px] h-[79vh] right-2 quick-book-ref">
+      <!-- Header Section -->
       <div class="sticky-header">
-        <div class="quick-refrence-top-header d-flex justify-between m-2">
+        <div class="quick-refrence-top-header d-flex justify-between m-2 ">
           <div class="col-lg-10" style="display: flex">
             <!-- <mat-icon fontIcon="mail" class="custom-color1"></mat-icon> &nbsp; -->
             <div class="col-lg-2 mr-2">
@@ -34,15 +34,19 @@
               </svg>
             </div>
             <div class="col-lg-5 mt-1">
-              <span class="quick-span quick-reference">Quick Reference</span>
+              <span
+                class="quick-span quick-reference"
+                >Quick Reference</span
+              >
             </div>
           </div>
           <div>
             <mat-icon
               fontIcon="open_in_new"
               class="custom-color1"
-              style="cursor: pointer; color: #0680cd"
-              (click) = "moveToPage()"
+              style="cursor: pointer; color: #0680CD;"
+              (click)="moveToPage()"
+              (click)="$event.stopPropagation()"
             ></mat-icon>
             &nbsp;
             <mat-icon
@@ -81,548 +85,512 @@
         </div>
       </div>
 
-      <mat-tab-group
-        class="custom-tabs sticky-header-tabs"
-        (click)="$event.stopPropagation()"
-      >
-        <mat-tab label="Voicemail Info"> </mat-tab>
-        <mat-tab label="Project Info" class="sticky-tab">
+      <!-- Scrollable Content -->
+      <mat-tab-group class="custom-tabs sticky-header-tabs" (click)="$event.stopPropagation()">
+        <mat-tab label="Voicemail Info">
           <div class="scroll-container">
-            <div
-              class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
-            >
-              <div class="space-y-4">
-                <div class="hero-box">
-                  <div class="yellow-bar"></div>
-                  <div class="content">
-                    <h2
-                      [innerHTML]="firstHeading | highlight : searchTerms"
-                    ></h2>
-                    <div class="contact-item">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="tollFree1 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          class="stickeky-header"
-                          [innerHTML]="tollFreeNum1 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(tollFreeNum1)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="contact-item-new">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="email1 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          [innerHTML]="emailAddress1 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(emailAddress1)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      class="description"
-                      [innerHTML]="description1 | highlight : searchTerms"
-                    ></div>
-                  </div>
-                </div>
-                <div class="hero-box">
-                  <div class="purple-bar"></div>
-                  <div class="content">
-                    <h2
-                      [innerHTML]="secondHeading | highlight : searchTerms"
-                    ></h2>
-                    <div class="contact-item">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="tollFree2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          class="stickeky-header"
-                          [innerHTML]="tollFreeNum2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(tollFreeNum2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="contact-item-new">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="email2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row" style="margin-right: 38px">
-                        <p
-                          [innerHTML]="emailAddress2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(emailAddress2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      class="description"
-                      [innerHTML]="description2 | highlight : searchTerms"
-                    ></div>
-                  </div>
-                </div>
-
-                <div class="hero-box">
-                  <div class="light-blue-bar"></div>
-                  <div class="content">
-                    <h2
-                      [innerHTML]="thirdHeading | highlight : searchTerms"
-                    ></h2>
-                    <div class="contact-item">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="tollFree2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          class="stickeky-header"
-                          [innerHTML]="tollFreeNum2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(tollFreeNum2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="contact-item-new">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="email2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row" style="margin-right: 38px">
-                        <p
-                          [innerHTML]="emailAddress2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(emailAddress2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      class="description"
-                      [innerHTML]="description3 | highlight : searchTerms"
-                    ></div>
-                  </div>
-                </div>
-
-                <div class="hero-box">
-                  <div class="light-pink-bar"></div>
-                  <div class="content">
-                    <h2
-                      [innerHTML]="fourtHeading | highlight : searchTerms"
-                    ></h2>
-                    <div class="contact-item">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="tollFree2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          class="stickeky-header"
-                          [innerHTML]="tollFreeNum2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(tollFreeNum2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="contact-item-new">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="email2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row" style="margin-right: 38px">
-                        <p
-                          [innerHTML]="emailAddress2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(emailAddress2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      class="description"
-                      [innerHTML]="description4 | highlight : searchTerms"
-                    ></div>
-                  </div>
-                </div>
-
-                <div class="hero-box">
-                  <div class="purple-dark-bar"></div>
-                  <div class="content">
-                    <h2
-                      [innerHTML]="fifthHeading | highlight : searchTerms"
-                    ></h2>
-                    <div class="contact-item">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="tollFree2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          class="stickeky-header"
-                          [innerHTML]="tollFreeNum2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(tollFreeNum2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="contact-item-new">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="email2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row" style="margin-right: 38px">
-                        <p
-                          [innerHTML]="emailAddress2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(emailAddress2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      class="description"
-                      [innerHTML]="description5 | highlight : searchTerms"
-                    ></div>
-                  </div>
-                </div>
-                <div class="hero-box">
-                  <div class="green-dark-bar"></div>
-                  <div class="content">
-                    <h2
-                      [innerHTML]="sixthHeading | highlight : searchTerms"
-                    ></h2>
-                    <div class="contact-item">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="tollFree2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row">
-                        <p
-                          class="stickeky-header"
-                          [innerHTML]="tollFreeNum2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(tollFreeNum2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="contact-item-new">
-                      <p
-                        class="contact-item-color"
-                        [innerHTML]="email2 | highlight : searchTerms"
-                      ></p>
-                      <div class="contact-item-row" style="margin-right: 38px">
-                        <p
-                          [innerHTML]="emailAddress2 | highlight : searchTerms"
-                        ></p>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 14 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(emailAddress2)"
-                          class="svg-align"
-                          matTooltip="copy"
-                          matTooltipPosition="above"
-                        >
-                          <path
-                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                            stroke="#58595B"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div
-                      class="description"
-                      [innerHTML]="description6 | highlight : searchTerms"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </mat-tab>
+        <mat-tab label="Project Info">
+          <div class="scroll-container">
+            <div
+            class=" max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
+          >
+            <div class="space-y-4">
+              <div class="hero-box">
+                <div class="yellow-bar"></div>
+                <div class="content">
+                  <h2
+                    [innerHTML]="
+                      firstHeading | highlight : searchTerms
+                    "
+                  ></h2>
+                  <div class="contact-item">
+                    <p class="contact-item-color" [innerHTML]="tollFree1 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p class="stickeky-header" [innerHTML]="tollFreeNum1 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(tollFreeNum1)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="contact-item-new">
+                    <p class="contact-item-color" [innerHTML]="email1 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p [innerHTML]="emailAddress1 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(emailAddress1)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="description"
+                    [innerHTML]="
+                      description1 | highlight : searchTerms
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="hero-box">
+                <div class="purple-bar"></div>
+                <div class="content">
+                  <h2
+                    [innerHTML]="
+                      secondHeading | highlight : searchTerms
+                    "
+                  ></h2>
+                  <div class="contact-item">
+                    <p class="contact-item-color" [innerHTML]="tollFree2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p class="stickeky-header" [innerHTML]="tollFreeNum2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(tollFreeNum2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="contact-item-new">
+                    <p class="contact-item-color" [innerHTML]="email2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row" style="margin-right: 38px;">
+                      <p [innerHTML]="emailAddress2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(emailAddress2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="description"
+                    [innerHTML]="
+                      description2 | highlight : searchTerms
+                    "
+                  ></div>
+                </div>
+              </div>
 
-        <mat-tab label="Team Contacts"> </mat-tab>
+              <div class="hero-box">
+                <div class="light-blue-bar"></div>
+                <div class="content">
+                  <h2
+                    [innerHTML]="
+                      thirdHeading | highlight : searchTerms
+                    "
+                  ></h2>
+                  <div class="contact-item">
+                    <p class="contact-item-color" [innerHTML]="tollFree2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p class="stickeky-header" [innerHTML]="tollFreeNum2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(tollFreeNum2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="contact-item-new">
+                    <p class="contact-item-color" [innerHTML]="email2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row" style="margin-right: 38px;">
+                      <p [innerHTML]="emailAddress2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(emailAddress2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="description"
+                    [innerHTML]="
+                      description3 | highlight : searchTerms
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <div class="hero-box">
+                <div class="light-pink-bar"></div>
+                <div class="content">
+                  <h2
+                    [innerHTML]="
+                      fourtHeading | highlight : searchTerms
+                    "
+                  ></h2>
+                  <div class="contact-item">
+                    <p class="contact-item-color" [innerHTML]="tollFree2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p class="stickeky-header" [innerHTML]="tollFreeNum2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(tollFreeNum2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="contact-item-new">
+                    <p class="contact-item-color" [innerHTML]="email2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row" style="margin-right: 38px;">
+                      <p [innerHTML]="emailAddress2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(emailAddress2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="description"
+                    [innerHTML]="
+                      description4 | highlight : searchTerms
+                    "
+                  ></div>
+                </div>
+              </div>
+
+              <div class="hero-box">
+                <div class="purple-dark-bar"></div>
+                <div class="content">
+                  <h2
+                    [innerHTML]="
+                      fifthHeading | highlight : searchTerms
+                    "
+                  ></h2>
+                  <div class="contact-item">
+                    <p class="contact-item-color" [innerHTML]="tollFree2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p class="stickeky-header" [innerHTML]="tollFreeNum2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(tollFreeNum2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="contact-item-new">
+                    <p class="contact-item-color" [innerHTML]="email2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row" style="margin-right: 38px;">
+                      <p [innerHTML]="emailAddress2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(emailAddress2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="description"
+                    [innerHTML]="
+                      description5 | highlight : searchTerms
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="hero-box">
+                <div class="green-dark-bar"></div>
+                <div class="content">
+                  <h2
+                    [innerHTML]="
+                      sixthHeading | highlight : searchTerms
+                    "
+                  ></h2>
+                  <div class="contact-item">
+                    <p class="contact-item-color" [innerHTML]="tollFree2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row">
+                      <p class="stickeky-header" [innerHTML]="tollFreeNum2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(tollFreeNum2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="contact-item-new">
+                    <p class="contact-item-color" [innerHTML]="email2 | highlight : searchTerms"></p>
+                    <div class="contact-item-row" style="margin-right: 38px;">
+                      <p [innerHTML]="emailAddress2 | highlight : searchTerms"></p>
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        (click)="copyToClipboard(emailAddress2)"
+                        class="svg-align"
+                        matTooltip="copy"
+                        matTooltipPosition="above"
+                      >
+                        <path
+                          d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                          stroke="#58595B"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div
+                    class="description"
+                    [innerHTML]="
+                      description6 | highlight : searchTerms
+                    "
+                  ></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Team Contacts">
+          <div class="scroll-container">
+            
+          </div>
+        </mat-tab>
       </mat-tab-group>
     </div>
   </div>
@@ -634,23 +602,60 @@
     margin: 20px;
   }
 
+  .quick-reference-notification {
+    right: 0;
+    top: 0;
+    background: white;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    overflow: hidden; 
+    width: 500px;
+    margin-left: 162px;
+  }
+
+  .scroll-container {
+    max-height: calc(100vh - 200px); 
+    overflow-y: auto;
+    /* padding: 16px; */
+  }
+
+  ::ng-deep .mdc-tab__text-label {
+    font-size: 12px !important;
+  }
+
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #fff;
+    padding: 8px;
+  }
+
+  .sticky-header-tabs{
+
+  }
+
+  .sticky-header-tabs ::ng-deep .mat-mdc-tab-label-container {
+  padding-left: 50px;
+}
+
   .hero-box {
     display: flex;
-    border-bottom: 1px solid #58595b; 
-    width: 400px;
-    height: auto;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 16px;
+    width: 100%;
   }
 
   .hero-box .yellow-bar {
     background-color: #f6c867;
     width: 8px;
-    height: 226px;
+    height: auto;
   }
 
   .hero-box .purple-bar {
     background-color: #7373e8;
     width: 8px;
-    height: 226px;
+    height: auto;
   }
 
   .hero-box .purple-dark-bar {
@@ -673,19 +678,6 @@
     height: 226px;
   }
 
-  /* .custom-tab .mat-tab-label {
-    font-size: 20px !important;
-    font-weight: bold !important;
-  } */
-
-  /* ::ng-deep .mat-tab-label {
-    font-size: 20px; 
-  } */
-
-  /* .custom-tab .mdc-tab__text-label {
-    font-size: 20px !important; 
-    color: #333; 
-  } */
 
   .hero-box .light-pink-bar {
     background-color: #ff9083;
@@ -704,6 +696,16 @@
     margin: 0 0 10px 0;
     color: #000;
   }
+
+  .contact-item-row {
+  display: flex;
+  align-items: center;
+  
+}
+
+.svg-align{
+  cursor: pointer; margin-left: 8px; margin-bottom: 10px;
+}
 
   .contact-item {
     display: flex;
@@ -736,86 +738,7 @@
     line-height: 1.4;
   }
 
-  ::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
+  .mat-menu-panel {
+    position: fixed !important; 
   }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
-    border-radius: 100px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #a1a1aa;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #f9fafb;
-    border-radius: 100px;
-  }
-
-  .scroll-container {
-    overflow-y: auto;
-    max-height: 100%;
-    scrollbar-width: thin;
-    scrollbar-color: #000000 #f9fafb;
-  }
-  ::ng-deep .mdc-tab__text-label {
-    font-size: 13px !important;
-  }
-
-  .quick-reference{
-    font-family: Roboto !important;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 20px;
-    letter-spacing: 0.10000000149011612px;
-    text-align: left;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    font-weight: normal;
-    color: #6c757d;
-  }
-  /* .stickeky-header{
-    margin-right: 62px;
-  } */
-
-  .contact-item-row {
-  display: flex;
-  align-items: center;
-  
-}
-
-.svg-align{
-  cursor: pointer; margin-left: 8px; margin-bottom: 10px;
-}
-.sticky-header {
-  position: sticky;
-  top: 0; 
-  z-index: 999; 
-  background-color: white; 
-  padding: 8px; 
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
-}
-
-mat-tab-group {
-  position: relative;
-}
-
-.sticky-tab {
-  position: sticky;
-  top: 0; 
-  z-index: 10; 
-  background-color: white;
-}
-
-.sticky-header-tabs ::ng-deep .mat-mdc-tab-header {
-  position: sticky !important;
-  top: 100px;
-  z-index: 1000;
-  background-color: white;
-  padding-left: 40px;
-}
-
 </style>
