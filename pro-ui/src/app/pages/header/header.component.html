@@ -1131,61 +1131,77 @@
                 
                   <mat-tab label="Team Contacts">
                     <div class="quick-reference-new">
-                      <span class="font-containt">Filter Contacts:</span>
+                      <span
+                        class="font-containt"
+                        [innerHTML]="
+                          filterContactsValue | highlight : searchTerms
+                        "
+                        ></span
+                      >
                       <div>
                         <mat-checkbox
                           color="primary"
                           [(ngModel)]="selectAll"
                           (change)="toggleSelectAll()"
                         >
-                          Select All
+                          <span
+                            [innerHTML]="selectAllValue | highlight : searchTerms"
+                          ></span>
                         </mat-checkbox>
                         <mat-checkbox
                           color="primary"
                           [(ngModel)]="filterAdmin"
                           (change)="filterContacts()"
-                        >
-                          Admin
+                        ><span
+                          [innerHTML]="admin | highlight : searchTerms"
+                        ></span>
                         </mat-checkbox>
                         <mat-checkbox
                           color="primary"
                           [(ngModel)]="filterProjectTeam"
                           (change)="filterContacts()"
                         >
-                          Project Team
+                        <span
+                          [innerHTML]="projectTeamValue | highlight : searchTerms"
+                        ></span>
                         </mat-checkbox>
                         <mat-checkbox
                           color="primary"
                           [(ngModel)]="filterInterviewer"
                           (change)="filterContacts()"
                         >
-                          Interviewer
+                          <span
+                          [innerHTML]="interviewerValue | highlight : searchTerms"
+                        ></span>
                         </mat-checkbox>
                         <mat-checkbox
                           color="primary"
                           [(ngModel)]="filterEscalationContact"
                           (change)="filterContacts()"
                         >
-                          Escalation Contact
+                          <span
+                          [innerHTML]="escalationContactValue | highlight : searchTerms"
+                        ></span>
                         </mat-checkbox>
                       </div>
                       <div *ngFor="let contact of filteredContacts" class="mt-3">
                         <div>
-                          <span class="font-containt">{{ contact.name }}</span>
+                          <span class="font-containt" [innerHTML]="contact.name | highlight : searchTerms"
+                          ></span>
                         </div>
                         <div class="text-containt">
                           <div class="detail">
                             <span class="label" style="padding-left: 67px"
-                              >Role</span
+                            [innerHTML]="roleValue | highlight : searchTerms"></span
                             >
-                            <span class="value">{{ contact.role }}</span>
+                            <span class="value" [innerHTML]="contact.role | highlight : searchTerms"></span>
                           </div>
                           <div class="detail">
                             <span class="label" style="padding-left: 10px"
-                              >Email Address</span
+                            [innerHTML]="email1 | highlight : searchTerms" ></span
                             >
                             <div class="value-container">
-                              <span class="value">{{ contact.email }}</span>
+                              <span class="value" [innerHTML]="contact.email  | highlight : searchTerms"></span>
                               <svg
                                 width="14"
                                 height="14"
@@ -1216,10 +1232,10 @@
                           </div>
                           <div class="detail" *ngIf="contact.escalation">
                             <span class="label" style="padding-left: 27px"
-                              >Escalation #</span
+                            [innerHTML]="escalationValue | highlight : searchTerms">Escalation #</span
                             >
                             <div class="value-container">
-                              <span class="value">{{ contact.escalation }}</span>
+                              <span class="value" [innerHTML]="contact.escalation | highlight : searchTerms"></span>
                               <svg
                                 width="14"
                                 height="14"
@@ -1591,6 +1607,9 @@ mat-tab-group {
     padding: 16px;
   }
 
+  /* .quick-reference-new ::ng-deep #pro-app .mat-mdc-tab.mdc-tab {
+  max-width: unset !important; 
+} */
   .font-containt {
     color: #262626;
     width: 600px;

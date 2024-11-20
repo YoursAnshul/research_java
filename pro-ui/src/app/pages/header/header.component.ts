@@ -151,6 +151,15 @@ export class HeaderComponent implements OnInit {
   filterInterviewer = false;
   filterEscalationContact = false;
 
+  selectAllValue = 'Select All';
+  filterContactsValue = 'Filter Contacts'
+  admin = 'Admin';
+  projectTeamValue = 'Project Team';
+  interviewerValue = 'Interviewer';
+  escalationContactValue = 'Escalation Contact';
+  roleValue = 'Role';
+  escalationValue = 'Escalation #'
+
   constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {

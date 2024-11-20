@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { AppComponent } from '../../app.component';
 @Component({
   selector: 'book-reference',
   templateUrl: './book.component.html',
@@ -54,14 +54,109 @@ export class BookComponent implements OnInit {
   emailAddress5 = 'email1@inbox.com';
   emailAddress6 = 'email1@inbox.com';
 
+    // voice mail
+    voiceMailTollFree1 = 'Voicemail Phone';
+    voiceMailPin1 = 'Voicemail PIN';
+  
+    voiceMailtollFreeNum1 = '111-555-1234';
+    voiceMailtollFreeNum2 = '222-444-5432';
+    voiceMailtollFreeNum3 = '919-785-8888';
+    voiceMailtollFreeNum4 = '555-123-9874';
+    voiceMailtollFreeNum5 = '777-111-5252';
+    voiceMailtollFreeNum6 = '122-778-3355';
+  
+    voiceMailtollPIN1 = '7859';
+    voiceMailtollPIN2 = '1111';
+    voiceMailtollPIN3 = '7899';
+    voiceMailtollPIN4 = '3336';
+    voiceMailtollPIN5 = '3939';
+    voiceMailtollPIN6 = '5362';
+  
+    firstHeadingVoiceMail = 'Voicemail access instructions';
+    voiceMailInstruction1 = '1. Access the voicemail system at 123-555-1919';
+    voiceMailInstruction2 = '2. Enter the project voicemail phone number';
+    voiceMailInstruction3 = '3. Enter the project voicemail PIN';
+
   searchTerms: string = '';
 
-  constructor() { }
+  contacts = [
+    {
+      name: 'Ashley Blake',
+      role: 'Interviewer',
+      email: 'ashley.blake@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Gina Hernandez',
+      role: 'Admin',
+      email: 'gina.hernandez@duke.edu',
+      escalation: '1-919-123-9876',
+    },
+    {
+      name: 'Heather Campbell',
+      role: 'Project Team',
+      email: 'heather.s.campbell@duke.edu',
+      escalation: '1-919-555-7722',
+    },
+    {
+      name: 'Labriah Wilson',
+      role: 'Interviewer',
+      email: 'lamwilson@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Lauren Watkins',
+      role: 'Interviewer',
+      email: 'lauren.watkins@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Lauren Conroy',
+      role: 'Interviewer',
+      email: 'lauren.conroy@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Miroslava Martinez',
+      role: 'Interviewer',
+      email: 'mim17@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Nicole Boone',
+      role: 'Interviewer',
+      email: 'nicole.boone17@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Quanita Byers',
+      role: 'Interviewer',
+      email: 'quanita.byers17@duke.edu',
+      escalation: null,
+    },
+    {
+      name: 'Shayla Mitchell',
+      role: 'Interviewer',
+      email: 'shayla.mitchell17@duke.edu',
+      escalation: null,
+    },
+  ];
+  filteredContacts = [...this.contacts];
+  selectAll = false;
+  filterAdmin = false;
+  filterProjectTeam = false;
+  filterInterviewer = false;
+  filterEscalationContact = false;
+  constructor(private appComponent: AppComponent) { }
 
   ngOnInit(): void {
-    
+    this.appComponent.toggleSidebarAndHeader();
 
   }
+
+  // ngOnDestroy(): void {
+  //   this.appComponent.toggleSidebarAndHeader(false);
+  // }
 
   public logout(): void {
   }
@@ -78,8 +173,56 @@ export class BookComponent implements OnInit {
       console.error('Clipboard API not supported');
     }
   }
-  moveToPage(){
-    window.open("/book-reference")
+  moveToPage(event: MouseEvent): void {
+    event.stopPropagation();
+    const url = "/book-reference"; 
+    const width = 500;
+    const height = 660; 
+    const left = window.screen.width / 2 - width / 2; 
+    const top = window.screen.height / 2 - height / 2; 
+    
+    window.open(
+      url,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
+    );
+  }
+
+  toggleSelectAll() {
+    if (this.selectAll) {
+      this.filterAdmin =
+        this.filterProjectTeam =
+        this.filterInterviewer =
+        this.filterEscalationContact =
+          true;
+    } else {
+      this.filterAdmin =
+        this.filterProjectTeam =
+        this.filterInterviewer =
+        this.filterEscalationContact =
+          false;
+    }
+    this.filterContacts();
+  }
+
+  filterContacts() {
+    if (
+      !this.filterAdmin &&
+      !this.filterProjectTeam &&
+      !this.filterInterviewer &&
+      !this.filterEscalationContact
+    ) {
+      this.filteredContacts = [...this.contacts];
+      return;
+    }
+    this.filteredContacts = this.contacts.filter((contact) => {
+      return (
+        (this.filterAdmin && contact.role === 'Admin') ||
+        (this.filterProjectTeam && contact.role === 'Project Team') ||
+        (this.filterInterviewer && contact.role === 'Interviewer') ||
+        (this.filterEscalationContact && contact.escalation !== null)
+      );
+    });
   }
 
 }
