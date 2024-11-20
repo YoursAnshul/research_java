@@ -179,7 +179,7 @@ export class CustomPageComponent {
     event.stopPropagation();
     const url = "/book-reference"; 
     const width = 500;
-    const height = 660; 
+    const height = 1000; 
     const left = window.screen.width / 2 - width / 2; 
     const top = window.screen.height / 2 - height / 2; 
     
