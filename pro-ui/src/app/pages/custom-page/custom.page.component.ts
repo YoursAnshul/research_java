@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { AppComponent } from '../../app.component';
+import { Component } from '@angular/core';
+
 @Component({
-  selector: 'book-reference',
-  templateUrl: './book.component.html',
-  styleUrls: ['./book.component.css']
+  selector: 'app-custom',
+  templateUrl: './custom.page.component.html',
 })
-export class BookComponent implements OnInit {
-  description1: string =
+export class CustomPageComponent {
+
+    description1: string =
     'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description2: string =
     'This is a brief description of Project 42. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
@@ -54,28 +54,28 @@ export class BookComponent implements OnInit {
   emailAddress5 = 'email1@inbox.com';
   emailAddress6 = 'email1@inbox.com';
 
-    // voice mail
-    voiceMailTollFree1 = 'Voicemail Phone';
-    voiceMailPin1 = 'Voicemail PIN';
-  
-    voiceMailtollFreeNum1 = '111-555-1234';
-    voiceMailtollFreeNum2 = '222-444-5432';
-    voiceMailtollFreeNum3 = '919-785-8888';
-    voiceMailtollFreeNum4 = '555-123-9874';
-    voiceMailtollFreeNum5 = '777-111-5252';
-    voiceMailtollFreeNum6 = '122-778-3355';
-  
-    voiceMailtollPIN1 = '7859';
-    voiceMailtollPIN2 = '1111';
-    voiceMailtollPIN3 = '7899';
-    voiceMailtollPIN4 = '3336';
-    voiceMailtollPIN5 = '3939';
-    voiceMailtollPIN6 = '5362';
-  
-    firstHeadingVoiceMail = 'Voicemail access instructions';
-    voiceMailInstruction1 = '1. Access the voicemail system at 123-555-1919';
-    voiceMailInstruction2 = '2. Enter the project voicemail phone number';
-    voiceMailInstruction3 = '3. Enter the project voicemail PIN';
+  // voice mail
+  voiceMailTollFree1 = 'Voicemail Phone';
+  voiceMailPin1 = 'Voicemail PIN';
+
+  voiceMailtollFreeNum1 = '111-555-1234';
+  voiceMailtollFreeNum2 = '222-444-5432';
+  voiceMailtollFreeNum3 = '919-785-8888';
+  voiceMailtollFreeNum4 = '555-123-9874';
+  voiceMailtollFreeNum5 = '777-111-5252';
+  voiceMailtollFreeNum6 = '122-778-3355';
+
+  voiceMailtollPIN1 = '7859';
+  voiceMailtollPIN2 = '1111';
+  voiceMailtollPIN3 = '7899';
+  voiceMailtollPIN4 = '3336';
+  voiceMailtollPIN5 = '3939';
+  voiceMailtollPIN6 = '5362';
+
+  firstHeadingVoiceMail = 'Voicemail access instructions';
+  voiceMailInstruction1 = '1. Access the voicemail system at 123-555-1919';
+  voiceMailInstruction2 = '2. Enter the project voicemail phone number';
+  voiceMailInstruction3 = '3. Enter the project voicemail PIN';
 
   searchTerms: string = '';
 
@@ -147,18 +147,20 @@ export class BookComponent implements OnInit {
   filterProjectTeam = false;
   filterInterviewer = false;
   filterEscalationContact = false;
-  constructor(private appComponent: AppComponent) { }
+
+  selectAllValue = 'Select All';
+  filterContactsValue = 'Filter Contacts'
+  admin = 'Admin';
+  projectTeamValue = 'Project Team';
+  interviewerValue = 'Interviewer';
+  escalationContactValue = 'Escalation Contact';
+  roleValue = 'Role';
+  escalationValue = 'Escalation #'
+
+  constructor() { }
 
   ngOnInit(): void {
-    this.appComponent.toggleSidebarAndHeader();
 
-  }
-
-  // ngOnDestroy(): void {
-  //   this.appComponent.toggleSidebarAndHeader(false);
-  // }
-
-  public logout(): void {
   }
 
   copyToClipboard(text: string): void {

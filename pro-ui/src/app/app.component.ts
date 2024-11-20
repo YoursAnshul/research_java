@@ -7,6 +7,8 @@ import {UsersService} from "./services/users/users.service";
 import { AppConfig } from './models/presentation/app-config';
 import { IAuthenticatedUser } from './interfaces/interfaces';
 import { GlobalsService } from './services/globals/globals.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +21,7 @@ export class AppComponent {
   appConfig: AppConfig | undefined = undefined;
   userActive: boolean = true;
   authenticatedUser!: IAuthenticatedUser;
-  hideSidebarAndHeader: boolean = false;
+  hideHeaderFooter = false;
 
   description1: string =
     'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
@@ -170,7 +172,8 @@ export class AppComponent {
     private authenticationService: AuthenticationService,
     private configurationService: ConfigurationService,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private router: Router
   ) {
     this.configurationService.setAppConfiguration();
     this.matIconRegistry.addSvgIcon(
@@ -310,12 +313,13 @@ export class AppComponent {
         this.authenticatedUser = authenticatedUser;
       }
     );
+    this.router.events
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        const currentRoute = this.router.routerState.snapshot.root.firstChild;
+        this.hideHeaderFooter = currentRoute?.data['hideHeaderFooter'] || false;
+      });
 
-  }
-
-  toggleSidebarAndHeader(): void {
-    this.hideSidebarAndHeader = true;
-    console.log("hideSidebarAndHeader----------- ", this.hideSidebarAndHeader);
   }
 
   
