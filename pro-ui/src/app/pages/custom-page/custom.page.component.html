@@ -40,12 +40,12 @@
             </div>
           </div>
           <div>
-            <mat-icon
+            <!-- <mat-icon
               fontIcon="open_in_new"
               class="custom-color1"
               style="cursor: pointer; color: #0680cd"
               (click)="moveToPage($event)"
-            ></mat-icon>
+            ></mat-icon> -->
             &nbsp;
           </div>
         </div>
@@ -1655,4 +1655,14 @@
     margin-bottom: 4px !important;
     margin-left: -8px !important;
   }
+
+  ::ng-deep .mdc-checkbox__ripple {
+  top: unset !important;
+  left: unset !important;
+  right: unset !important;
+  bottom: unset !important;
+  position: unset !important;
+  border-radius: unset !important;
+  pointer-events: unset !important;
+}
 </style>
