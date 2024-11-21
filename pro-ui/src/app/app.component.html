@@ -8,7 +8,10 @@
 
       <!-- header -->
        
-      <div *ngIf = "!hideHeaderFooter">
+      <div *ngIf = "!hideHeaderFooter" style="position: sticky;
+      top: 0px;
+      z-index: 1001;
+      padding: 0px;">
         <app-header></app-header>
       </div>
       
