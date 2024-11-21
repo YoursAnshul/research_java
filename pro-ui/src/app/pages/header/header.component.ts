@@ -76,6 +76,7 @@ export class HeaderComponent implements OnInit {
 
   firstHeadingVoiceMail = 'Voicemail access instructions';
   voiceMailInstruction1 = '1. Access the voicemail system at 123-555-1919';
+  voiceMailInstructionCopy = '123-555-1919';
   voiceMailInstruction2 = '2. Enter the project voicemail phone number';
   voiceMailInstruction3 = '3. Enter the project voicemail PIN';
 
