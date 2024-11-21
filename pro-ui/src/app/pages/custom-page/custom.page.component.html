@@ -89,7 +89,7 @@
               class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
             >
               <div class="space-y-4">
-                <div class="content">
+                <div class="content sticky">
                   <h4
                     style="
                       font-weight: 600;
@@ -1234,13 +1234,11 @@
         </mat-tab>
         <mat-tab label="Team Contacts">
           <div class="quick-reference-new">
-            <span
+            <div class="sticky-team-contacts">
+              <span
               class="font-containt"
-              [innerHTML]="
-                filterContactsValue | highlight : searchTerms
-              "
-              ></span
-            >
+              [innerHTML]="filterContactsValue | highlight : searchTerms"
+            ></span>
             <div>
               <mat-checkbox
                 color="primary"
@@ -1255,18 +1253,16 @@
                 color="primary"
                 [(ngModel)]="filterAdmin"
                 (change)="filterContacts()"
-              ><span
-                [innerHTML]="admin | highlight : searchTerms"
-              ></span>
+                ><span [innerHTML]="admin | highlight : searchTerms"></span>
               </mat-checkbox>
               <mat-checkbox
                 color="primary"
                 [(ngModel)]="filterProjectTeam"
                 (change)="filterContacts()"
               >
-              <span
-                [innerHTML]="projectTeamValue | highlight : searchTerms"
-              ></span>
+                <span
+                  [innerHTML]="projectTeamValue | highlight : searchTerms"
+                ></span>
               </mat-checkbox>
               <mat-checkbox
                 color="primary"
@@ -1274,8 +1270,8 @@
                 (change)="filterContacts()"
               >
                 <span
-                [innerHTML]="interviewerValue | highlight : searchTerms"
-              ></span>
+                  [innerHTML]="interviewerValue | highlight : searchTerms"
+                ></span>
               </mat-checkbox>
               <mat-checkbox
                 color="primary"
@@ -1283,28 +1279,43 @@
                 (change)="filterContacts()"
               >
                 <span
-                [innerHTML]="escalationContactValue | highlight : searchTerms"
-              ></span>
+                  [innerHTML]="escalationContactValue | highlight : searchTerms"
+                ></span>
               </mat-checkbox>
             </div>
+            </div>
+           
+           
             <div *ngFor="let contact of filteredContacts" class="mt-3">
               <div>
-                <span class="font-containt" [innerHTML]="contact.name | highlight : searchTerms"
+                <span
+                  class="font-containt"
+                  [innerHTML]="contact.name | highlight : searchTerms"
                 ></span>
               </div>
               <div class="text-containt">
                 <div class="detail">
-                  <span class="label" style="padding-left: 67px"
-                  [innerHTML]="roleValue | highlight : searchTerms"></span
-                  >
-                  <span class="value" [innerHTML]="contact.role | highlight : searchTerms"></span>
+                  <span
+                    class="label"
+                    style="padding-left: 67px"
+                    [innerHTML]="roleValue | highlight : searchTerms"
+                  ></span>
+                  <span
+                    class="value"
+                    [innerHTML]="contact.role | highlight : searchTerms"
+                  ></span>
                 </div>
                 <div class="detail">
-                  <span class="label" style="padding-left: 10px"
-                  [innerHTML]="email1 | highlight : searchTerms" ></span
-                  >
+                  <span
+                    class="label"
+                    style="padding-left: 10px"
+                    [innerHTML]="email1 | highlight : searchTerms"
+                  ></span>
                   <div class="value-container">
-                    <span class="value" [innerHTML]="contact.email  | highlight : searchTerms"></span>
+                    <span
+                      class="value"
+                      [innerHTML]="contact.email | highlight : searchTerms"
+                    ></span>
                     <svg
                       width="14"
                       height="14"
@@ -1334,11 +1345,17 @@
                   </div>
                 </div>
                 <div class="detail" *ngIf="contact.escalation">
-                  <span class="label" style="padding-left: 27px"
-                  [innerHTML]="escalationValue | highlight : searchTerms">Escalation #</span
+                  <span
+                    class="label"
+                    style="padding-left: 27px"
+                    [innerHTML]="escalationValue | highlight : searchTerms"
+                    >Escalation #</span
                   >
                   <div class="value-container">
-                    <span class="value" [innerHTML]="contact.escalation | highlight : searchTerms"></span>
+                    <span
+                      class="value"
+                      [innerHTML]="contact.escalation | highlight : searchTerms"
+                    ></span>
                     <svg
                       width="14"
                       height="14"
@@ -1657,12 +1674,24 @@
   }
 
   ::ng-deep .mdc-checkbox__ripple {
-  top: unset !important;
-  left: unset !important;
-  right: unset !important;
-  bottom: unset !important;
-  position: unset !important;
-  border-radius: unset !important;
-  pointer-events: unset !important;
-}
+    top: unset !important;
+    left: unset !important;
+    right: unset !important;
+    bottom: unset !important;
+    position: unset !important;
+    border-radius: unset !important;
+    pointer-events: unset !important;
+  }
+  .sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #fff;
+  }
+  .sticky-team-contacts {
+    position: sticky;
+    top: -18px !important;
+    z-index: 1000;
+    background: #fff;
+  }
 </style>
