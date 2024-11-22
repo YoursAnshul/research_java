@@ -70,7 +70,8 @@ header {
 
 .quick-book-ref{
   width: Hug(436px);
-  height: Fixed(850px) ;
+  /* height: Fixed(850px) ; */
+  max-height: 80vh !important;
   top:123px ;
   left:1065px ;
 
