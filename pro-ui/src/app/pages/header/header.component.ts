@@ -247,5 +247,8 @@ export class HeaderComponent implements OnInit {
     this.searchTerms = "";
     this.menuTrigger.closeMenu();
   }
+  clearSearch(){
+    this.searchTerms = "";
+  }
 
 }

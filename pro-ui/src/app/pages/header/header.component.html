@@ -9,7 +9,7 @@
         <div class="circle" ngbTooltip="Learning Center" placement="bottom">
           <mat-icon svgIcon="question_mark" />
         </div>
-        <div [matMenuTriggerFor]="menu" class="circle" ngbTooltip="Quick Reference" placement="bottom">
+        <div [matMenuTriggerFor]="menu" class="circle" ngbTooltip="Quick Reference" placement="bottom" (click)="clearSearch()">
           <mat-icon svgIcon="quick_book" />
           <div>
             <!-- Dropdown menu -->
