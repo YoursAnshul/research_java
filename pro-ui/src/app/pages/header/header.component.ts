@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-header',
@@ -8,6 +9,8 @@ import { AuthenticationService } from '../../services/authentication/authenticat
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
+
   description1: string =
     'This is a brief description of HERO Together. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description2: string =
@@ -239,6 +242,10 @@ export class HeaderComponent implements OnInit {
         (this.filterEscalationContact && contact.escalation !== null)
       );
     });
+  }
+  closeMenu() {
+    this.searchTerms = "";
+    this.menuTrigger.closeMenu();
   }
 
 }

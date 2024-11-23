@@ -13,10 +13,10 @@
           <mat-icon svgIcon="quick_book" />
           <div>
             <!-- Dropdown menu -->
-            <mat-menu #menu="matMenu" [hasBackdrop]="false"
+            <mat-menu #menu="matMenu" [hasBackdrop]="false" 
               class="absolute quick-reference-notification top-4 w-[440px] right-2 mt-16 quick-book-ref overflow-y-hidden">
-              <div class="sticky-header">
-                <div class="quick-refrence-top-header d-flex justify-between m-2">
+              <div class="sticky-header" (click)="$event.stopPropagation()">
+                <div class="quick-refrence-top-header d-flex justify-between m-2"  >
                   <div class="col-lg-10" style="display: flex">
                     <!-- <mat-icon fontIcon="mail" class="custom-color1"></mat-icon> &nbsp; -->
                     <div class="col-lg-2 mr-2">
@@ -32,7 +32,7 @@
                         </g>
                       </svg>
                     </div>
-                    <div class="col-lg-5 mt-1">
+                    <div class="col-lg-5 mt-1" >
                       <span class="quick-span quick-reference">Quick Reference</span>
                     </div>
                   </div>
@@ -40,7 +40,7 @@
                     <mat-icon fontIcon="open_in_new" class="custom-color1" style="cursor: pointer; color: #0680cd"
                       (click)="moveToPage($event)"></mat-icon>
                     &nbsp;
-                    <mat-icon fontIcon="close" class="text-danger" style="cursor: pointer"></mat-icon>
+                    <mat-icon fontIcon="close" class="text-danger" style="cursor: pointer" (click)="closeMenu()"></mat-icon>
                   </div>
                 </div>
 
