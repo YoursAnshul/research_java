@@ -2,11 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
@@ -21,7 +22,7 @@ export class HeaderComponent implements OnInit {
     'This is a brief description of Project Q. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
   description5: string =
     'This is a brief description of Purple Project. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
-    description6: string =
+  description6: string =
     'This is a brief description of XYZ Trial. It will give you a quick overview of what the study is about. This might be helpful for when interviewers take incoming calls from participants inquiring about studies on which the interviewer isn’t trained.';
 
   firstHeading = 'HERO Together';
@@ -156,24 +157,27 @@ export class HeaderComponent implements OnInit {
   filterEscalationContact = false;
 
   selectAllValue = 'Select All';
-  filterContactsValue = 'Filter Contacts'
+  filterContactsValue = 'Filter Contacts';
   admin = 'Admin';
   projectTeamValue = 'Project Team';
   interviewerValue = 'Interviewer';
   escalationContactValue = 'Escalation Contact';
   roleValue = 'Role';
-  escalationValue = 'Escalation #'
-
-  constructor(private authenticationService: AuthenticationService) { }
+  escalationValue = 'Escalation #';
+  voicemaillist: any[] = [];
+  constructor(
+    private authenticationService: AuthenticationService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     //subscribe to the authenticated user
     this.authenticationService.authenticatedUser.subscribe(
-      authenticatedUser => {
+      (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
       }
     );
-
+    this.getVoicMailData();
   }
 
   public logout(): void {
@@ -194,15 +198,15 @@ export class HeaderComponent implements OnInit {
   }
   moveToPage(event: MouseEvent): void {
     event.stopPropagation();
-    const url = "/book-reference"; 
+    const url = '/book-reference';
     const width = 500;
-    const height = 1000; 
-    const left = window.screen.width / 2 - width / 2; 
-    const top = window.screen.height / 2 - height / 2; 
-    
+    const height = 1000;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
     window.open(
       url,
-      "_blank",
+      '_blank',
       `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
     );
   }
@@ -244,11 +248,22 @@ export class HeaderComponent implements OnInit {
     });
   }
   closeMenu() {
-    this.searchTerms = "";
+    this.searchTerms = '';
     this.menuTrigger.closeMenu();
   }
-  clearSearch(){
-    this.searchTerms = "";
+  clearSearch() {
+    this.searchTerms = '';
   }
 
+  getVoicMailData(): void {
+    const apiUrl = 'http://localhost:8080/quick-reference/list'; 
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.voicemaillist = data?.Subject;
+      },
+      error: (error: any) => {
+        console.error('Error fetching voicemails:', error);
+      },
+    });
+  }
 }

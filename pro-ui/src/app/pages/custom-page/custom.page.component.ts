@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-custom',
@@ -157,11 +159,13 @@ export class CustomPageComponent {
   escalationContactValue = 'Escalation Contact';
   roleValue = 'Role';
   escalationValue = 'Escalation #'
+  voicemaillist: any[] = [];
 
-  constructor() { }
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-
+   this.getVoicMailData();
   }
 
   copyToClipboard(text: string): void {
@@ -228,4 +232,15 @@ export class CustomPageComponent {
     });
   }
 
+  getVoicMailData(): void {
+    const apiUrl = 'http://localhost:8080/quick-reference/list'; 
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.voicemaillist = data?.Subject;
+      },
+      error: (error: any) => {
+        console.error('Error fetching voicemails:', error);
+      },
+    });
+  }
 }

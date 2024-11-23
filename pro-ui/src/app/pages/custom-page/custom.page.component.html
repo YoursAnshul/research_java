@@ -157,11 +157,11 @@
               <div class="space-y-4">
                 
 
-                <div class="voice-mail-box">
-                  <div class="yellow-bar"></div>
+                <div class="voice-mail-box"  *ngFor="let voicemail of voicemaillist" >
+                  <div class="yellow-bar" [ngStyle]="{ 'background-color': voicemail.projectColor }"></div>
                   <div class="content">
                     <h2
-                      [innerHTML]="firstHeading | highlight : searchTerms"
+                      [innerHTML]="voicemail.projectName | highlight : searchTerms"
                     ></h2>
                     <div class="contact-item">
                       <p
@@ -174,16 +174,17 @@
                         <p
                           class="stickeky-header"
                           [innerHTML]="
-                            voiceMailtollFreeNum1 | highlight : searchTerms
+                          voicemail?.voiceMailNumber | highlight : searchTerms
                           "
                         ></p>
                         <svg
+                         *ngIf = "voicemail?.voiceMailNumber"
                           width="14"
                           height="14"
                           viewBox="0 0 14 14"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(voiceMailtollFreeNum1)"
+                          (click)="copyToClipboard( voicemail?.voiceMailNumber)"
                           class="svg-align"
                           matTooltip="copy"
                           matTooltipPosition="above"
@@ -213,16 +214,17 @@
                       <div class="contact-item-row-voice-mail-pin">
                         <p
                           [innerHTML]="
-                            voiceMailtollPIN1 | highlight : searchTerms
+                          voicemail?.voiceMailPin | highlight : searchTerms
                           "
                         ></p>
                         <svg
+                        *ngIf = "voicemail?.voiceMailPin"
                           width="14"
                           height="14"
                           viewBox="0 0 14 14"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          (click)="copyToClipboard(voiceMailtollPIN1)"
+                          (click)="copyToClipboard(voicemail?.voiceMailPin)"
                           class="svg-align"
                           matTooltip="copy"
                           matTooltipPosition="above"
@@ -246,7 +248,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="voice-mail-box">
+                <!-- <div class="voice-mail-box">
                   <div class="purple-bar"></div>
                   <div class="content">
                     <h2
@@ -693,7 +695,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>

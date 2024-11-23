@@ -18,9 +18,9 @@ public class QuickReferenceImpl implements QuickReference {
 	@Override
 	public List<QuickResponse> getQuikGeneralResponse(String type) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT projectname,projectcolor,projectcolor_iview, ");
-		sql.append(" voicemailnumber,voicemailpin,active ");
-		sql.append(" FROM core.projects WHERE active = 1 order by projectname asc ");
+		sql.append(" SELECT projectname,projectcolor, ");
+		sql.append(" voicemailnumber,voicemailpin ");
+		sql.append(" FROM core.projects WHERE active = 1 and projectType <> 4 order by projectname asc ");
 
 		List<QuickResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			QuickResponse quickResponse = new QuickResponse();
@@ -28,11 +28,10 @@ public class QuickReferenceImpl implements QuickReference {
 			quickResponse.setProjectColor(rs.getString("projectcolor"));
 			quickResponse.setVoiceMailNumber(rs.getString("voicemailnumber"));
 			quickResponse.setVoiceMailPin(rs.getString("voicemailpin"));
-			quickResponse.setActive(rs.getString("active"));
 			return quickResponse;
 
 		});
 		return list;
 	}
-	
+
 }
