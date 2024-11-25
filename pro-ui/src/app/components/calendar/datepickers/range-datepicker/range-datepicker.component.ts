@@ -4,7 +4,7 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/mat
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { DateRange, MatDatepicker, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';
 import { Moment } from 'moment';
-import { utils } from 'protractor';
+
 import { start } from 'repl';
 import { Utils } from '../../../../classes/utils';
 

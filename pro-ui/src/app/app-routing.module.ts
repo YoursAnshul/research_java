@@ -32,7 +32,6 @@ const routes: Routes = [
   { path: 'configuration', component: ConfigurationComponent},
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent}
 
-
   //{ path: 'test', component: TestComponent },
 ];
 

@@ -73,8 +73,9 @@ export class WeekViewComponent implements OnInit {
 
       this.globalsService.showHoverMessage.next(true);
 
-      hoverMessage.style.top = (event.screenY) + 'px';
+      hoverMessage.style.top = (event.clientY) + 'px';
       hoverMessage.style.left = event.clientX + 'px';
+      hoverMessage.style.marginTop = '-70px';
     }
 
   }

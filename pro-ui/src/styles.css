@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    --mdc-outlined-text-field-label-text-color: #0680CD;
+    --mdc-outlined-text-field-caret-color: #0680CD;
+    --mdc-outlined-text-field-focus-outline-color: #0680CD;
+    --mdc-outlined-text-field-focus-label-text-color: #0680CD;
+    --mdc-filled-text-field-label-text-color: #0680CD;
+    --mdc-filled-text-field-hover-label-text-color: #0680CD;
+    --mdc-filled-text-field-disabled-label-text-color: #0680CD;
+    --mdc-filled-text-field-container-color: #fff;
+    --mat-sort-arrow-color: #0680CD;
+}
+
 .mat-mdc-tab-group,
 .mat-mdc-tab-nav-bar {
     --mdc-tab-indicator-active-indicator-color: #0680CD;
@@ -12,6 +24,7 @@
     --mat-tab-header-active-focus-indicator-color: #0680CD;
     --mat-tab-header-active-hover-indicator-color: #0680CD;
     --mdc-filled-text-field-container-color: white;
+    --mdc-protected-button-label-text-color: #0680CD;
     /* Set the active indicator color to red */
 }
 
@@ -35,7 +48,7 @@
     border-radius: 4px 4px 0 0;
 }
 
-#pro-app .mdc-floating-label {
+.mdc-floating-label {
     font-weight: 500;
     color: #0078d4;
 }
@@ -89,8 +102,16 @@
     top: 25%;
     left: 20%;
     z-index: 1000;
-  }
+}
 
-  #day-calendar {
+#day-calendar {
     background-color: #f2f2f2 !important;
- }
+}
+
+.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field .mdc-notched-outline__notch {
+    border-right: none !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper{
+display: none !important;
+}

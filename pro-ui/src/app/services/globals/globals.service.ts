@@ -21,7 +21,7 @@ export class GlobalsService {
   public contextProjectName: BehaviorSubject<string | null> = new BehaviorSubject<string | null>('');
   public scheduleTabIndex: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public sessionEndReminderSent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+  public showParticipantModal: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(private userSchedulesService: UserSchedulesService) { }
 
   public openSchedulePopup(): void {
@@ -89,6 +89,14 @@ export class GlobalsService {
 
   hideHoverMessage(): void {
     this.showHoverMessage.next(false);
+  }
+
+  public openParticipantModal(): void {
+    this.showParticipantModal.next(true);
+  }
+
+  public closeParticipantModal(): void {
+    this.showParticipantModal.next(false);
   }
 
 }

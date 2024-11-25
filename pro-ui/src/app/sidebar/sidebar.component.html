@@ -47,6 +47,8 @@
       <router-outlet />
       <app-schedule id="schedule-modal"
       *ngIf="showSchedule"></app-schedule>
+      <app-participant-search id="participant-search-modal"
+      *ngIf="showParticipantModal"></app-participant-search>
       <div id="hover-message" [class.hidden]="!showHoverMessage">
       </div>
     </div>

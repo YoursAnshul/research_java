@@ -47,6 +47,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule} from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTableModule } from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
 
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { LanguageIconComponent } from './components/language-icon/language-icon.component';
@@ -54,8 +56,9 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-datepicker/month-datepicker.component";
 import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
 import { HighlightSearch } from './components/highlightsearch/highlight.search';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatCheckboxModule} from '@angular/material/checkbox'
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
+import { ParticipantSearchComponent } from './components/participant-search/participant-search.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -90,7 +93,8 @@ import { CustomPageComponent } from './pages/custom-page/custom.page.component';
     MonthDatepickerComponent,
     WeekDatepickerComponent,
     HighlightSearch,
-    CustomPageComponent
+    CustomPageComponent,
+    ParticipantSearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -113,7 +117,9 @@ import { CustomPageComponent } from './pages/custom-page/custom.page.component';
     MatDividerModule,
     MatDialogModule,
     MatMenuModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTableModule,
+    MatSortModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]

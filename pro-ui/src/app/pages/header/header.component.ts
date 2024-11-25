@@ -1,8 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,TemplateRef } from '@angular/core';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { HttpClient } from '@angular/common/http';
+import { GlobalsService } from '../../services/globals/globals.service';
+import { DialogComponent } from '../../components/dialog/dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-header',
@@ -165,9 +168,10 @@ export class HeaderComponent implements OnInit {
   roleValue = 'Role';
   escalationValue = 'Escalation #';
   voicemaillist: any[] = [];
+  @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
   constructor(
-    private authenticationService: AuthenticationService,
-    private http: HttpClient
+    private authenticationService: AuthenticationService,private globalsService: GlobalsService,
+    private http: HttpClient,private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -266,4 +270,15 @@ export class HeaderComponent implements OnInit {
       },
     });
   }
+
+  public openParticipantModal() : void {
+    //this.globalsService.openSchedulePopup();
+    this.dialog.open(DialogComponent, {
+      width: '75.5%',
+      data: {   
+        template: this.participantTemplate,
+      }
+    })
+  }
+
 }

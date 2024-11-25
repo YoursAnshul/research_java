@@ -39,7 +39,7 @@ export class SidebarComponent {
   isCollapsed = false;
   showSchedule: boolean = false;
   isInterviewer = true;
-
+  showParticipantModal: boolean = false;
   constructor(private router: Router, private authenticationService: AuthenticationService, private globalsService: GlobalsService) {
     this.globalsService.showHoverMessage.subscribe(
       showHoverMessage => {
@@ -49,6 +49,11 @@ export class SidebarComponent {
     this.globalsService.showScheduler.subscribe(
       showSchedule => {
         this.showSchedule = showSchedule;
+      }
+    );
+    this.globalsService.showParticipantModal.subscribe(
+      showParticipantModal => {
+        this.showParticipantModal = showParticipantModal;
       }
     );
     this.authenticationService.authenticatedUser.subscribe(
