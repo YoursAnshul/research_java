@@ -160,12 +160,15 @@ export class CustomPageComponent {
   roleValue = 'Role';
   escalationValue = 'Escalation #'
   voicemaillist: any[] = [];
+  projectinfolist: any[] = [];
+
 
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
    this.getVoicMailData();
+   this.getProjectInfo();
   }
 
   copyToClipboard(text: string): void {
@@ -240,6 +243,17 @@ export class CustomPageComponent {
       },
       error: (error: any) => {
         console.error('Error fetching voicemails:', error);
+      },
+    });
+  }
+  getProjectInfo(): void {
+    const apiUrl = 'http://localhost:8080/quick-reference/project-info'; 
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.projectinfolist = data?.Subject;
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
       },
     });
   }

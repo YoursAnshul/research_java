@@ -247,7 +247,7 @@
                         <div class="yellow-bar" [ngStyle]="{ 'background-color': data?.projectColor  || '' }"></div>
                         <div class="content">
                           <h2
-                            [innerHTML]="firstHeading | highlight : searchTerms"
+                            [innerHTML]="data?.projectName || '' | highlight : searchTerms"
                           ></h2>
                           <div class="contact-item">
                             <p
