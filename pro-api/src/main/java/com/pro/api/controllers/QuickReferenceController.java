@@ -27,4 +27,14 @@ public class QuickReferenceController {
 		response.Subject = list;
 		return ResponseEntity.ok(response);
 	}
+	
+	
+	@GetMapping("/project-info")
+	public ResponseEntity<GeneralResponse> getQuikProjectInfo(
+			@RequestParam(name = "type", defaultValue = "false") String type) {
+		List<QuickResponse> list = quickReference.getQuikProjectInfo(type);
+		GeneralResponse response = new GeneralResponse();
+		response.Subject = list;
+		return ResponseEntity.ok(response);
+	}
 }

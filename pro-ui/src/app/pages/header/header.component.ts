@@ -168,6 +168,7 @@ export class HeaderComponent implements OnInit {
   roleValue = 'Role';
   escalationValue = 'Escalation #';
   voicemaillist: any[] = [];
+  projectinfolist: any[] = [];
   @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
   constructor(
     private authenticationService: AuthenticationService,private globalsService: GlobalsService,
@@ -182,6 +183,7 @@ export class HeaderComponent implements OnInit {
       }
     );
     this.getVoicMailData();
+    this.getProjectInfo();
   }
 
   public logout(): void {
@@ -230,6 +232,7 @@ export class HeaderComponent implements OnInit {
           false;
     }
     this.filterContacts();
+   
   }
 
   filterContacts() {
@@ -281,4 +284,15 @@ export class HeaderComponent implements OnInit {
     })
   }
 
+  getProjectInfo(): void {
+    const apiUrl = 'http://localhost:8080/quick-reference/project-info'; 
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.projectinfolist = data?.Subject;
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
+      },
+    });
+  }
 }

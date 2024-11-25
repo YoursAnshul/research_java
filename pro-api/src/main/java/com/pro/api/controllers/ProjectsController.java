@@ -1,14 +1,5 @@
 package com.pro.api.controllers;
 
-import com.pro.api.models.business.ProjectMin;
-import com.pro.api.models.business.ProjectTotalsReport;
-import com.pro.api.models.business.SessionUserEmail;
-import com.pro.api.models.dataaccess.*;
-import com.pro.api.models.dataaccess.repos.*;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -16,6 +7,36 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.pro.api.models.business.ProjectMin;
+import com.pro.api.models.business.ProjectTotalsReport;
+import com.pro.api.models.business.SessionUserEmail;
+import com.pro.api.models.dataaccess.DropDownValue;
+import com.pro.api.models.dataaccess.ForecastHour;
+import com.pro.api.models.dataaccess.Project;
+import com.pro.api.models.dataaccess.User;
+import com.pro.api.models.dataaccess.ViProjectTotal;
+import com.pro.api.models.dataaccess.ViProjectTotalsSummed;
+import com.pro.api.models.dataaccess.repos.DropDownValueRepository;
+import com.pro.api.models.dataaccess.repos.ForecastHourRepository;
+import com.pro.api.models.dataaccess.repos.ProjectRepository;
+import com.pro.api.models.dataaccess.repos.UserRepository;
+import com.pro.api.models.dataaccess.repos.ViProjectTotalRepository;
+import com.pro.api.models.dataaccess.repos.ViProjectTotalsSummedRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/projects")

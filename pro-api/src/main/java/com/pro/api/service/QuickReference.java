@@ -10,4 +10,6 @@ import com.pro.api.response.QuickResponse;
 public interface QuickReference {
 
 	public List<QuickResponse> getQuikGeneralResponse(String type);
+	
+	public List<QuickResponse> getQuikProjectInfo(String type);
 }

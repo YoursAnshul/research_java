@@ -243,8 +243,8 @@
                     class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
                   >
                     <div class="space-y-4">
-                      <div class="hero-box">
-                        <div class="yellow-bar"></div>
+                      <div class="hero-box" *ngFor="let data of projectinfolist" >
+                        <div class="yellow-bar" [ngStyle]="{ 'background-color': data?.projectColor  || '' }"></div>
                         <div class="content">
                           <h2
                             [innerHTML]="firstHeading | highlight : searchTerms"
@@ -257,15 +257,16 @@
                             <div class="contact-item-row">
                               <p
                                 class="stickeky-header"
-                                [innerHTML]="tollFreeNum1 | highlight : searchTerms"
+                                [innerHTML]="data?.tollfreenumber || '' | highlight : searchTerms"
                               ></p>
                               <svg
+                               *ngIf = "data?.tollfreenumber"
                                 width="14"
                                 height="14"
                                 viewBox="0 0 14 14"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                (click)="copyToClipboard(tollFreeNum1)"
+                                (click)="copyToClipboard(data?.tollfreenumber || '')"
                                 class="svg-align"
                                 matTooltip="copy"
                                 matTooltipPosition="above"
@@ -294,15 +295,16 @@
                             ></p>
                             <div class="contact-item-row">
                               <p
-                                [innerHTML]="emailAddress1 | highlight : searchTerms"
+                                [innerHTML]="data?.studyemailaddress || '' | highlight : searchTerms"
                               ></p>
                               <svg
+                               *ngIf = "data?.studyemailaddress"
                                 width="14"
                                 height="14"
                                 viewBox="0 0 14 14"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                (click)="copyToClipboard(emailAddress1)"
+                                (click)="copyToClipboard(data?.studyemailaddress || '')"
                                 class="svg-align"
                                 matTooltip="copy"
                                 matTooltipPosition="above"
@@ -326,11 +328,11 @@
                           </div>
                           <div
                             class="description"
-                            [innerHTML]="description1 | highlight : searchTerms"
+                            [innerHTML]="data?.projectinfo || '' | highlight : searchTerms"
                           ></div>
                         </div>
                       </div>
-                      <div class="hero-box">
+                      <!-- <div class="hero-box">
                         <div class="purple-bar"></div>
                         <div class="content">
                           <h2
@@ -767,7 +769,7 @@
                             [innerHTML]="description6 | highlight : searchTerms"
                           ></div>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
