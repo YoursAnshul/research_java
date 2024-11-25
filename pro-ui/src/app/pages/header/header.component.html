@@ -160,9 +160,8 @@
                             <div class="contact-item-row-voice-mail">
                               <p
                                 class="stickeky-header"
-                                [innerHTML]="
-                                voicemail?.voiceMailNumber | highlight : searchTerms
-                                "
+                                
+                                [innerHTML]="(voicemail?.voiceMailNumber || '') | highlight : searchTerms"
                               ></p>
                               <svg
                                *ngIf = "voicemail?.voiceMailNumber"
@@ -200,9 +199,8 @@
                             ></p>
                             <div class="contact-item-row-voice-mail-pin">
                               <p
-                                [innerHTML]="
-                                voicemail?.voiceMailPin | highlight : searchTerms
-                                "
+                                
+                                [innerHTML]="(voicemail?.voiceMailPin || '') | highlight : searchTerms"
                               ></p>
                               <svg
                               *ngIf = "voicemail?.voiceMailPin"
