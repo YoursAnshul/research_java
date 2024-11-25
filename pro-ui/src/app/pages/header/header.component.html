@@ -254,7 +254,7 @@
                               class="contact-item-color"
                               [innerHTML]="tollFree1 | highlight : searchTerms"
                             ></p>
-                            <div class="contact-item-row">
+                            <div class="contact-item-row-voice-mail">
                               <p
                                 class="stickeky-header"
                                 [innerHTML]="data?.tollfreenumber || '' | highlight : searchTerms"
@@ -293,7 +293,7 @@
                               class="contact-item-color"
                               [innerHTML]="email1 | highlight : searchTerms"
                             ></p>
-                            <div class="contact-item-row">
+                            <div class="contact-item-row-voice-mail-pin-email">
                               <p
                                 [innerHTML]="data?.studyemailaddress || '' | highlight : searchTerms"
                               ></p>
@@ -1326,4 +1326,13 @@
     background: #fff;
     padding-left: 20px;
   }
+
+  .contact-item-row-voice-mail-pin-email {
+display: flex;
+align-items: center;
+/* margin-right: 163px; */
+margin-left: 30px;
+}
+
+
 </style>
