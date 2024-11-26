@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -82,69 +83,7 @@ export class CustomPageComponent {
 
   searchTerms: string = '';
 
-  contacts = [
-    {
-      name: 'Ashley Blake',
-      role: 'Interviewer',
-      email: 'ashley.blake@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Gina Hernandez',
-      role: 'Admin',
-      email: 'gina.hernandez@duke.edu',
-      escalation: '1-919-123-9876',
-    },
-    {
-      name: 'Heather Campbell',
-      role: 'Project Team',
-      email: 'heather.s.campbell@duke.edu',
-      escalation: '1-919-555-7722',
-    },
-    {
-      name: 'Labriah Wilson',
-      role: 'Interviewer',
-      email: 'lamwilson@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Lauren Watkins',
-      role: 'Interviewer',
-      email: 'lauren.watkins@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Lauren Conroy',
-      role: 'Interviewer',
-      email: 'lauren.conroy@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Miroslava Martinez',
-      role: 'Interviewer',
-      email: 'mim17@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Nicole Boone',
-      role: 'Interviewer',
-      email: 'nicole.boone17@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Quanita Byers',
-      role: 'Interviewer',
-      email: 'quanita.byers17@duke.edu',
-      escalation: null,
-    },
-    {
-      name: 'Shayla Mitchell',
-      role: 'Interviewer',
-      email: 'shayla.mitchell17@duke.edu',
-      escalation: null,
-    },
-  ];
-  filteredContacts = [...this.contacts];
+  filteredContacts: any[] = [];
   selectAll = false;
   filterAdmin = false;
   filterProjectTeam = false;
@@ -161,6 +100,7 @@ export class CustomPageComponent {
   escalationValue = 'Escalation #'
   voicemaillist: any[] = [];
   projectinfolist: any[] = [];
+  teamContactList: any[] = [];
 
 
 
@@ -169,6 +109,7 @@ export class CustomPageComponent {
   ngOnInit(): void {
    this.getVoicMailData();
    this.getProjectInfo();
+   this.getContactInfo();
   }
 
   copyToClipboard(text: string): void {
@@ -222,10 +163,10 @@ export class CustomPageComponent {
       !this.filterInterviewer &&
       !this.filterEscalationContact
     ) {
-      this.filteredContacts = [...this.contacts];
+      this.filteredContacts = [...this.teamContactList];
       return;
     }
-    this.filteredContacts = this.contacts.filter((contact) => {
+    this.filteredContacts = this.teamContactList.filter((contact) => {
       return (
         (this.filterAdmin && contact.role === 'Admin') ||
         (this.filterProjectTeam && contact.role === 'Project Team') ||
@@ -236,7 +177,7 @@ export class CustomPageComponent {
   }
 
   getVoicMailData(): void {
-    const apiUrl = 'http://localhost:8080/quick-reference/list'; 
+    const apiUrl = `${environment.DataAPIUrl}/quick-reference/list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.voicemaillist = data?.Subject;
@@ -247,10 +188,22 @@ export class CustomPageComponent {
     });
   }
   getProjectInfo(): void {
-    const apiUrl = 'http://localhost:8080/quick-reference/project-info'; 
+    const apiUrl = `${environment.DataAPIUrl}/quick-reference/project-info`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectinfolist = data?.Subject;
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
+      },
+    });
+  }
+  getContactInfo(): void {
+    const apiUrl = `${environment.DataAPIUrl}/quick-reference/team-contact`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.teamContactList = data?.Subject || [];
+        this.filteredContacts = [...this.teamContactList];
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);

@@ -353,63 +353,72 @@
         <mat-tab label="Team Contacts">
           <div class="sticky-team-contacts">
             <span
-            class="font-containt"
-            [innerHTML]="filterContactsValue | highlight : searchTerms"
-          ></span>
-          <div>
-            <mat-checkbox
-              color="primary"
-              [(ngModel)]="selectAll"
-              (change)="toggleSelectAll()"
-            >
-              <span
-                [innerHTML]="selectAllValue | highlight : searchTerms"
-              ></span>
-            </mat-checkbox>
-            <mat-checkbox
-              color="primary"
-              [(ngModel)]="filterAdmin"
-              (change)="filterContacts()"
-              ><span [innerHTML]="admin | highlight : searchTerms"></span>
-            </mat-checkbox>
-            <mat-checkbox
-              color="primary"
-              [(ngModel)]="filterProjectTeam"
-              (change)="filterContacts()"
-            >
-              <span
-                [innerHTML]="projectTeamValue | highlight : searchTerms"
-              ></span>
-            </mat-checkbox>
-            <mat-checkbox
-              color="primary"
-              [(ngModel)]="filterInterviewer"
-              (change)="filterContacts()"
-            >
-              <span
-                [innerHTML]="interviewerValue | highlight : searchTerms"
-              ></span>
-            </mat-checkbox>
-            <mat-checkbox
-              color="primary"
-              [(ngModel)]="filterEscalationContact"
-              (change)="filterContacts()"
-            >
-              <span
-                [innerHTML]="escalationContactValue | highlight : searchTerms"
-              ></span>
-            </mat-checkbox>
+              class="font-containt"
+              [innerHTML]="
+                filterContactsValue | highlight : searchTerms
+              "
+            ></span>
+            <div>
+              <mat-checkbox
+                color="primary"
+                [(ngModel)]="selectAll"
+                (change)="toggleSelectAll()"
+              >
+                <span
+                  [innerHTML]="selectAllValue | highlight : searchTerms"
+                ></span>
+              </mat-checkbox>
+              <mat-checkbox
+                color="primary"
+                [(ngModel)]="filterAdmin"
+                (change)="filterContacts()"
+                ><span
+                  [innerHTML]="admin | highlight : searchTerms"
+                ></span>
+              </mat-checkbox>
+              <mat-checkbox
+                color="primary"
+                [(ngModel)]="filterProjectTeam"
+                (change)="filterContacts()"
+              >
+                <span
+                  [innerHTML]="
+                    projectTeamValue | highlight : searchTerms
+                  "
+                ></span>
+              </mat-checkbox>
+              <mat-checkbox
+                color="primary"
+                [(ngModel)]="filterInterviewer"
+                (change)="filterContacts()"
+              >
+                <span
+                  [innerHTML]="
+                    interviewerValue | highlight : searchTerms
+                  "
+                ></span>
+              </mat-checkbox>
+              <mat-checkbox
+                color="primary"
+                [(ngModel)]="filterEscalationContact"
+                (change)="filterContacts()"
+              >
+                <span
+                  [innerHTML]="
+                    escalationContactValue | highlight : searchTerms
+                  "
+                ></span>
+              </mat-checkbox>
+            </div>
           </div>
-          </div>
-          <div class="quick-reference-new scroll-container">
-           
-           
-           
+          <div class="quick-reference-new scroll-container1">
             <div *ngFor="let contact of filteredContacts" class="mt-3">
               <div>
                 <span
                   class="font-containt"
-                  [innerHTML]="contact.name | highlight : searchTerms"
+                  [innerHTML]="
+                    contact?.username || '' | highlight : searchTerms
+                  "
                 ></span>
               </div>
               <div class="text-containt">
@@ -421,7 +430,9 @@
                   ></span>
                   <span
                     class="value"
-                    [innerHTML]="contact.role | highlight : searchTerms"
+                    [innerHTML]="
+                      contact?.role || '' | highlight : searchTerms
+                    "
                   ></span>
                 </div>
                 <div class="detail">
@@ -433,15 +444,21 @@
                   <div class="value-container">
                     <span
                       class="value"
-                      [innerHTML]="contact.email | highlight : searchTerms"
+                      [innerHTML]="
+                        contact?.emailAddress || ''
+                          | highlight : searchTerms
+                      "
                     ></span>
                     <svg
+                      *ngIf="contact?.emailAddress"
                       width="14"
                       height="14"
                       viewBox="0 0 14 14"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      (click)="copyToClipboard(contact.email)"
+                      (click)="
+                        copyToClipboard(contact?.emailAddress || '')
+                      "
                       matTooltip="copy"
                       matTooltipPosition="above"
                       style="cursor: pointer; margin-left: 5px"
@@ -463,25 +480,33 @@
                     </svg>
                   </div>
                 </div>
-                <div class="detail" *ngIf="contact.escalation">
+                <div class="detail" *ngIf="contact?.escalationphone">
                   <span
                     class="label"
                     style="padding-left: 27px"
-                    [innerHTML]="escalationValue | highlight : searchTerms"
+                    [innerHTML]="
+                      escalationValue | highlight : searchTerms
+                    "
                     >Escalation #</span
                   >
                   <div class="value-container">
                     <span
                       class="value"
-                      [innerHTML]="contact.escalation | highlight : searchTerms"
+                      [innerHTML]="
+                        contact?.escalationphone || ''
+                          | highlight : searchTerms
+                      "
                     ></span>
                     <svg
+                      *ngIf="contact?.escalationphone"
                       width="14"
                       height="14"
                       viewBox="0 0 14 14"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      (click)="copyToClipboard(contact.escalation)"
+                      (click)="
+                        copyToClipboard(contact?.escalationphone || '')
+                      "
                       matTooltip="copy"
                       matTooltipPosition="above"
                       style="cursor: pointer; margin-left: 5px"
