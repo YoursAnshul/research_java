@@ -27,8 +27,7 @@ public class QuickReferenceController {
 		response.Subject = list;
 		return ResponseEntity.ok(response);
 	}
-	
-	
+
 	@GetMapping("/project-info")
 	public ResponseEntity<GeneralResponse> getQuikProjectInfo(
 			@RequestParam(name = "type", defaultValue = "false") String type) {
@@ -37,4 +36,14 @@ public class QuickReferenceController {
 		response.Subject = list;
 		return ResponseEntity.ok(response);
 	}
+
+	@GetMapping("/team-contact")
+	public ResponseEntity<GeneralResponse> getTeamContact(
+			@RequestParam(name = "type", defaultValue = "false") String type) {
+		List<QuickResponse> list = quickReference.getQuikTeamContact(type);
+		GeneralResponse response = new GeneralResponse();
+		response.Subject = list;
+		return ResponseEntity.ok(response);
+	}
+
 }

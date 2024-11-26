@@ -2,30 +2,6 @@ package com.pro.api.response;
 
 public class QuickResponse {
 
-	public String getTollfreenumber() {
-		return tollfreenumber;
-	}
-
-	public void setTollfreenumber(String tollfreenumber) {
-		this.tollfreenumber = tollfreenumber;
-	}
-
-	public String getProjectinfo() {
-		return projectinfo;
-	}
-
-	public void setProjectinfo(String projectinfo) {
-		this.projectinfo = projectinfo;
-	}
-
-	public String getStudyemailaddress() {
-		return studyemailaddress;
-	}
-
-	public void setStudyemailaddress(String studyemailaddress) {
-		this.studyemailaddress = studyemailaddress;
-	}
-
 	private String projectName;
 	private String projectColor;
 	private String voiceMailNumber;
@@ -34,6 +10,10 @@ public class QuickResponse {
 	private String tollfreenumber;
 	private String projectinfo;
 	private String studyemailaddress;
+	private String username;
+	private String role;
+	private String escalationphone;
+	private String emailAddress;
 
 	public String getProjectName() {
 		return projectName;
@@ -73,6 +53,62 @@ public class QuickResponse {
 
 	public void setActive(String active) {
 		this.active = active;
+	}
+
+	public String getTollfreenumber() {
+		return tollfreenumber;
+	}
+
+	public void setTollfreenumber(String tollfreenumber) {
+		this.tollfreenumber = tollfreenumber;
+	}
+
+	public String getProjectinfo() {
+		return projectinfo;
+	}
+
+	public void setProjectinfo(String projectinfo) {
+		this.projectinfo = projectinfo;
+	}
+
+	public String getStudyemailaddress() {
+		return studyemailaddress;
+	}
+
+	public void setStudyemailaddress(String studyemailaddress) {
+		this.studyemailaddress = studyemailaddress;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getEscalationphone() {
+		return escalationphone;
+	}
+
+	public void setEscalationphone(String escalationphone) {
+		this.escalationphone = escalationphone;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 }

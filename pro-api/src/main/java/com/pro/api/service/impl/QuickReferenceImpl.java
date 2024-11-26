@@ -54,26 +54,24 @@ public class QuickReferenceImpl implements QuickReference {
 		return list;
 	}
 
-//	@Override
-//	public List<QuickResponse> getQuikTeamContact(String type) {
-//		StringBuilder sql = new StringBuilder();
-//		sql.append(" select userid,u.dempoid, ");
-//		sql.append(" u.escalationphone,eamailaddr, f.dropdownitem as roletext, u.role ");
-//		sql.append(" coalesce(nullif(u.preferredfaname, ''), u.fname) ||' '|| ");
-//		sql.append(" coalesce (nullif(u.preferredlname, ''), u.lname) as fullname from users u");
-//		sql.append(" join (select codevalues, dropdownitem from dropdownvalues where formfield = 10)f ");
-//		sql.append(" on u.role = f.codevalues where u.active = true and u.role <>4 ");
-//
-//		List<QuickResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
-//			QuickResponse quickResponse = new QuickResponse();
-//			quickResponse.setProjectName(rs.getString("projectname"));
-//			quickResponse.setProjectColor(rs.getString("projectcolor"));
-//			quickResponse.setVoiceMailNumber(rs.getString("voicemailnumber"));
-//			quickResponse.setVoiceMailPin(rs.getString("voicemailpin"));
-//			return quickResponse;
-//
-//		});
-//		return list;
-//	}
+	@Override
+	public List<QuickResponse> getQuikTeamContact(String type) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("  select userid,u.dempoid,  u.escalationphone, emailaddr, f.dropdownitem as roletext, ");
+		sql.append("  u.role , coalesce(nullif(u.preferredfname, ''), u.fname) ||' '||  ");
+		sql.append("  coalesce (nullif(u.preferredlname, ''), u.lname) as fullname from core.users u ");
+		sql.append("  join (select codevalues, dropdownitem from core.dropdownvalues where formfieldid = 10)f ");
+		sql.append("  on u.role = f.codevalues where u.active = true and u.role <> 4  ");
+		List<QuickResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			QuickResponse quickResponse = new QuickResponse();
+			quickResponse.setUsername(rs.getString("fullname"));
+			quickResponse.setEscalationphone(rs.getString("escalationphone"));
+			quickResponse.setEmailAddress(rs.getString("emailaddr"));
+			quickResponse.setRole(rs.getString("roletext"));
+			return quickResponse;
+
+		});
+		return list;
+	}
 
 }
