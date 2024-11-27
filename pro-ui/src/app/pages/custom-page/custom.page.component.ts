@@ -29,6 +29,7 @@ export class CustomPageComponent {
   filterInterviewer = false;
   filterEscalationContact = false;
 
+
   selectAllValue = 'Select All';
   filterContactsValue = 'Filter Contacts'
   admin = 'Admin';
@@ -40,7 +41,6 @@ export class CustomPageComponent {
   voicemaillist: any[] = [];
   projectinfolist: any[] = [];
   teamContactList: any[] = [];
-
 
 
   constructor(private http: HttpClient) { }
@@ -110,7 +110,7 @@ export class CustomPageComponent {
         (this.filterAdmin && contact.role === 'Admin') ||
         (this.filterProjectTeam && contact.role === 'Project Team') ||
         (this.filterInterviewer && contact.role === 'Interviewer') ||
-        (this.filterEscalationContact && contact.escalation !== null)
+        (this.filterEscalationContact && contact.escalationphone !== null)
       );
     });
   }
