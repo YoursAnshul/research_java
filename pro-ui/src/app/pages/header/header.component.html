@@ -118,6 +118,7 @@
               <mat-tab-group
                 class="custom-tabs sticky-header-tabs"
                 (click)="$event.stopPropagation()"
+                dynamicHeight="true"
               >
                 <mat-tab label="Voicemail Info">
                   <div class="content sticky">
@@ -1027,6 +1028,14 @@
     border-radius: unset !important;
     pointer-events: unset !important;
   }
+  ::ng-deep .mat-mdc-tab-body-content[style*="visibility: hidden"] {
+  visibility: visible !important;
+  display: block !important;
+}
+
+::ng-deep .mat-mdc-tab-group-dynamic-height .mat-mdc-tab-body-content {
+  overflow: auto !important; 
+}
   .sticky {
     position: sticky;
     top: 0;
