@@ -47,6 +47,8 @@ export class HeaderComponent implements OnInit {
   projectinfolist: any[] = [];
   teamContactList: any[] = [];
   filteredContacts: any[] = [];
+  loading = false;
+
 
   @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
 
@@ -167,13 +169,16 @@ export class HeaderComponent implements OnInit {
   }
 
   getVoicMailData(): void {
+    this.loading = true; 
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.voicemaillist = data?.Subject;
+        this.loading = false; 
       },
       error: (error: any) => {
         console.error('Error fetching voicemails:', error);
+        this.loading = false;
       },
     });
   }
@@ -189,26 +194,32 @@ export class HeaderComponent implements OnInit {
   }
 
   getProjectInfo(): void {
+    this.loading = true; 
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/project-info`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectinfolist = data?.Subject;
+        this.loading = false; 
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
+        this.loading = false; 
       },
     });
   }
 
   getContactInfo(): void {
+    this.loading = true; 
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/team-contact`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.teamContactList = data?.Subject || [];
         this.filteredContacts = [...this.teamContactList];
+        this.loading = false; 
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
+        this.loading = false; 
       },
     });
   }

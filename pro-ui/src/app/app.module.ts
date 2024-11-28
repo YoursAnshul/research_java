@@ -59,6 +59,8 @@ import { HighlightSearch } from './components/highlightsearch/highlight.search';
 import {MatCheckboxModule} from '@angular/material/checkbox'
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
 import { ParticipantSearchComponent } from './components/participant-search/participant-search.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -119,7 +121,8 @@ import { ParticipantSearchComponent } from './components/participant-search/part
     MatMenuModule,
     MatCheckboxModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
+    MatProgressSpinnerModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]
