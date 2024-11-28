@@ -8,7 +8,6 @@ import { DialogComponent } from '../../components/dialog/dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
 
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -50,23 +49,46 @@ export class HeaderComponent implements OnInit {
   filteredContacts: any[] = [];
 
   @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
+
   constructor(
     private authenticationService: AuthenticationService,
-    private globalsService: GlobalsService,
     private http: HttpClient,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    //subscribe to the authenticated user
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
       }
     );
-    this.getVoicMailData();
-    this.getProjectInfo();
-    this.getContactInfo();
+  }
+  ngAfterViewInit(): void {
+    this.menuTrigger.menuOpened.subscribe(() => {
+      this.handleTabLogic(0);
+    });
+
+    this.menuTrigger.menuClosed.subscribe(() => {
+      this.searchTerms = '';
+    });
+  }
+  onTabChange(event: any): void {
+    this.handleTabLogic(event.index);
+  }
+  handleTabLogic(tabIndex: number): void {
+    switch (tabIndex) {
+      case 0:
+        this.getVoicMailData();
+        break;
+      case 1:
+        this.getProjectInfo();
+        break;
+      case 2:
+        this.getContactInfo();
+        break;
+      default:
+        break;
+    }
   }
 
   public logout(): void {

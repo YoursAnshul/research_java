@@ -119,6 +119,7 @@
                 class="custom-tabs sticky-header-tabs"
                 (click)="$event.stopPropagation()"
                 dynamicHeight="true"
+                (selectedTabChange)="onTabChange($event)"
               >
                 <mat-tab label="Voicemail Info">
                   <div class="content sticky">

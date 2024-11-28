@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 
 @Component({
@@ -44,11 +45,37 @@ export class CustomPageComponent {
 
 
   constructor(private http: HttpClient) { }
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
 
   ngOnInit(): void {
-   this.getVoicMailData();
-   this.getProjectInfo();
-   this.getContactInfo();
+    this.handleTabLogic(0);
+  }
+  ngAfterViewInit(): void {
+    this.menuTrigger.menuOpened.subscribe(() => {
+      this.handleTabLogic(0);
+    });
+
+    this.menuTrigger.menuClosed.subscribe(() => {
+      this.searchTerms = '';
+    });
+  }
+  onTabChange(event: any): void {
+    this.handleTabLogic(event.index);
+  }
+  handleTabLogic(tabIndex: number): void {
+    switch (tabIndex) {
+      case 0:
+        this.getVoicMailData();
+        break;
+      case 1:
+        this.getProjectInfo();
+        break;
+      case 2:
+        this.getContactInfo();
+        break;
+      default:
+        break;
+    }
   }
 
   copyToClipboard(text: string): void {
