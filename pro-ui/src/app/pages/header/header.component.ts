@@ -48,6 +48,8 @@ export class HeaderComponent implements OnInit {
   teamContactList: any[] = [];
   filteredContacts: any[] = [];
   loading = false;
+  activeTabIndex: number = 0;
+
 
 
   @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
@@ -67,6 +69,7 @@ export class HeaderComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     this.menuTrigger.menuOpened.subscribe(() => {
+      this.activeTabIndex = 0; 
       this.handleTabLogic(0);
     });
 
@@ -75,6 +78,7 @@ export class HeaderComponent implements OnInit {
     });
   }
   onTabChange(event: any): void {
+    this.activeTabIndex = event.index; 
     this.handleTabLogic(event.index);
   }
   handleTabLogic(tabIndex: number): void {

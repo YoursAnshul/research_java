@@ -43,6 +43,8 @@ export class CustomPageComponent {
   projectinfolist: any[] = [];
   teamContactList: any[] = [];
   loading = false;
+  activeTabIndex: number = 0;
+
 
 
 
@@ -54,6 +56,7 @@ export class CustomPageComponent {
   }
   ngAfterViewInit(): void {
     this.menuTrigger.menuOpened.subscribe(() => {
+      this.activeTabIndex = 0; 
       this.handleTabLogic(0);
     });
 
@@ -62,6 +65,7 @@ export class CustomPageComponent {
     });
   }
   onTabChange(event: any): void {
+    this.activeTabIndex = event.index; 
     this.handleTabLogic(event.index);
   }
   handleTabLogic(tabIndex: number): void {

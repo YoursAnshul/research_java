@@ -90,6 +90,8 @@
           class="custom-tabs sticky-header-tabs"
           (click)="$event.stopPropagation()"
           (selectedTabChange)="onTabChange($event)"
+          [(selectedIndex)]="activeTabIndex"
+
         >
           <mat-tab label="Voicemail Info">
             <div class="content sticky">
@@ -220,6 +222,7 @@
                       </div>
                       <div class="contact-item-new">
                         <p
+                          style="padding-left: 17px;"
                           class="contact-item-color"
                           [innerHTML]="voiceMailPin1 | highlight : searchTerms"
                         ></p>
@@ -464,7 +467,7 @@
                   <div class="detail">
                     <span
                       class="label"
-                      style="padding-left: 10px"
+                      style="padding-left: 12px"
                       [innerHTML]="email1 | highlight : searchTerms"
                     ></span>
                     <div class="value-container">
@@ -506,7 +509,7 @@
                   <div class="detail" *ngIf="contact?.escalationphone">
                     <span
                       class="label"
-                      style="padding-left: 27px"
+                      style="padding-left: 29px"
                       [innerHTML]="escalationValue | highlight : searchTerms"
                       >Escalation #</span
                     >
@@ -769,7 +772,7 @@
     display: flex;
     align-items: center;
     /* margin-right: 163px; */
-    margin-left: 28px;
+    margin-left: 12px;
   }
 
   .contact-item-row-voice-mail-new {
