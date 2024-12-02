@@ -42,4 +42,15 @@ export class ConfigurationService {
       }
     );
   }
+
+  //get lock date
+  getLockDate(): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/adminOptions/schedulelock`);
+  }
+
+  //block-out dates
+  //get future block-out dates
+  getBlockOutDates(): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/blockOutDates`);
+  }
 }

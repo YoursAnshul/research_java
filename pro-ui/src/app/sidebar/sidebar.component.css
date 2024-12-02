@@ -15,7 +15,7 @@
   background-color: #f8f9fa;
   transition: width 0.3s ease;
   /* Smooth transition for expand/collapse */
-  z-index: 1000;
+  z-index: 999;
   /* Ensure it's on top of other elements */
 }
 
@@ -113,7 +113,7 @@ ul {
   height: calc(100vh - 552px) !important;
 }
 .mat-tooltip {
-  z-index: 1000;
+  z-index: 999;
   background-color: black;
   /* Change background color */
   color: white;

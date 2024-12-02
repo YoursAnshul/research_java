@@ -1,0 +1,37 @@
+#popup-header {
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+#popup-header-title {
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #3f51b5;
+  position: absolute;
+}
+
+#close-modal-popup {
+  display: inline-block;
+  cursor: pointer;
+  position: absolute;
+  right: 25px;
+}
+
+#popup-content {
+}
+
+#popup-content-message {
+  margin-top: 15px;
+  margin-bottom: 30px;
+  font-size: 1.25em;
+}
+
+#popup-buttons {
+  float: right;
+}
+
+#popup-buttons button {
+  font-size: 0.85em;
+  min-width: 65px;
+  margin-left: 15px;
+}

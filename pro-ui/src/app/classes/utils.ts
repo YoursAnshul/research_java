@@ -1,6 +1,7 @@
 
 import { IActionButton, IDropDownValue, IPopupMessage, ISchedule, IWeekStartAndEnd, IWeekStartAndEndStrings } from "../interfaces/interfaces";
 import moment from 'moment';
+import colors from "tailwindcss/colors";
 
 export class Utils {
 
@@ -297,6 +298,7 @@ export class Utils {
       scheduleModal.style.top = top;
       scheduleModal.style.width = (width * 0.9) + 'px';
       scheduleModal.style.left = '5%';
+      scheduleModal.style.backgroundColor = colors.white
     }
 
     //tab bodies

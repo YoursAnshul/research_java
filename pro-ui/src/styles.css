@@ -95,7 +95,7 @@ html {
 #schedule-modal {
     background-color: #f2f2f2;
     border-radius: 3px;
-    padding: 20px 30px;
+    padding: 60px 30px;
     min-width: 1085px;
     box-shadow: 0 0px 25px rgb(57 63 72);
     position: fixed;
@@ -112,6 +112,42 @@ html {
     border-right: none !important;
 }
 
-.mat-mdc-form-field-subscript-wrapper{
-display: none !important;
+.mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+}
+
+.mat-mdc-raised-button .mdc-button__label {
+    font-size: 11px !important;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.black.mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
+    color: #58595B;
+}
+
+.round .mat-mdc-form-field-infix {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.round-orange .mat-mdc-form-field-infix::before {
+    content: '';
+    background: #FF9900;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+
+.round-red .mat-mdc-form-field-infix::before {
+    content: '';
+    background: red;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.black {
+  font-size: 13px !important;
 }

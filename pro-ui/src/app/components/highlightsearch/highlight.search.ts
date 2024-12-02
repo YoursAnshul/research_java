@@ -13,7 +13,7 @@ export class HighlightSearch implements PipeTransform {
         }
 
         const re = new RegExp(searchTerms, 'gi'); 
-        const highlighted = value?.replace(re, (match:string) => {
+        const highlighted = value.replace(re, (match:string) => {
             return `<mark style="background-color: yellow; color: black;" >${match}</mark>`;
         });
 

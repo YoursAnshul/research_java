@@ -182,9 +182,6 @@ export class CalendarComponent implements OnInit {
     // console.log('index => ', tabChangeEvent.index);
     this.tabIndex = tabChangeEvent.index;
     console.log("tabIndex" + this.tabIndex);
-    if (this.tabIndex == 0) {
-      this.getAllUserSchedulesByAnchorDate();
-    }
   }
 
   checkContext(applyFilters: boolean = true): void {

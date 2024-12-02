@@ -23,6 +23,7 @@ const routes: Routes = [
   { path: 'scheduling', component: SchedulingComponent },
   { path: 'assignments', component: AssignmentsComponent},
   { path: 'participants', component: ParticipantsComponent},
+  { path: 'participants/:id', component: ParticipantsComponent},
   { path: 'projects', component: ProjectsComponent},
   { path: 'communications', component: CommunicationsComponent},
   { path: 'reports', component: ReportsComponent},

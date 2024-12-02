@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { GlobalsService } from '../services/globals/globals.service';
 
@@ -35,12 +35,22 @@ export class SidebarComponent {
     // Add more menu items as needed
   ];
 
-  selectedItemId: number | null = null;
+  selectedItemRoute: string | null = null;
   isCollapsed = false;
   showSchedule: boolean = false;
   isInterviewer = true;
   showParticipantModal: boolean = false;
   constructor(private router: Router, private authenticationService: AuthenticationService, private globalsService: GlobalsService) {
+     // Listen to route changes to update the selected route
+     this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.selectedItemRoute = this.router.url;
+      }
+    });
+
+    // Initialize route-based highlight
+    this.selectedItemRoute = this.router.url;
+
     this.globalsService.showHoverMessage.subscribe(
       showHoverMessage => {
         this.showHoverMessage = showHoverMessage;
@@ -77,7 +87,6 @@ export class SidebarComponent {
   }
 
   selectItem(id: number) {
-    this.selectedItemId = id;
     const selectedItem = this.findItemById(id);
     if (selectedItem) {
       this.router.navigate([selectedItem.route]);
@@ -94,4 +103,10 @@ export class SidebarComponent {
     }
     return null;
   }
+
+  isActiveRoute(menuRoute: string): boolean {
+    // Check if the current route starts with the menu route
+    return this.selectedItemRoute?.startsWith(menuRoute) || false;
+  }
+
 }

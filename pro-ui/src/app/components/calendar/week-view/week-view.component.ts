@@ -2,6 +2,7 @@ import { Component, Input, OnInit, } from '@angular/core';
 import { Utils } from '../../../classes/utils';
 import {ILegend, ISchedule, IWeekSchedules} from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
+import { HoverMessage } from '../../../models/presentation/hover-message';
 
 @Component({
   selector: 'app-week-view',
@@ -13,6 +14,8 @@ export class WeekViewComponent implements OnInit {
 
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Input() monthPart: boolean = false;
+  
+  hoverMessage: HoverMessage = new HoverMessage();
 
   constructor(private globalsService: GlobalsService) { }
 
@@ -61,27 +64,18 @@ export class WeekViewComponent implements OnInit {
   }
 
   displayHoverMessage(event: any, schedule: ISchedule): void {
+
     let htmlMessage: string = '<p class="hover-message-title">' + schedule.displayName + ' (' + schedule.projectName + '): ' + schedule.startTime + ' – ' + schedule.endTime + ' – ' + this.formatDateOnlyString(schedule.startdatetime) + ' </p>';
     if (schedule.comments) {
       htmlMessage = htmlMessage + '<p class="bold">Comments:</p><p>' + schedule.comments + '</p>';
     }
 
-    let hoverMessage: HTMLElement | null = document.getElementById('hover-message');
-
-    if (hoverMessage) {
-      hoverMessage.innerHTML = htmlMessage;
-
-      this.globalsService.showHoverMessage.next(true);
-
-      hoverMessage.style.top = (event.clientY) + 'px';
-      hoverMessage.style.left = event.clientX + 'px';
-      hoverMessage.style.marginTop = '-70px';
-    }
+    this.hoverMessage.setAndShow(event, htmlMessage);
 
   }
 
   hideHoverMessage(): void {
-    this.globalsService.showHoverMessage.next(false);
+    this.hoverMessage.hide();
   }
 
 }

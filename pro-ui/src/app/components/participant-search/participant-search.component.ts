@@ -5,14 +5,30 @@ import { ProjectsService } from '../../services/projects/projects.service';
 import { LogsService } from '../../services/logs/logs.service';
 import { MatSort } from '@angular/material/sort';
 import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ParticipantService } from '../../services/participant/participant.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 interface Participant {
   dateOfBirth: string;
   project: string;
   participantId: string;
-  firstName: string;
-  lastName: string;
+  participantFName: string;
+  participantLName: string;
+  phoneId: string;
+  phoneType: string;
+  contactSource: string;
+  contactFName: string;
+  contactLName: string;
   // Add other fields as needed
+  assignedTo?: string;
+  recordLocation?: string;
+  lastContactDate?: string;
+  participantName?: string;
+  sex?: string;
+  language?: string;
+  site?: string;
+  localTime?: string;
 }
 
 @Component({
@@ -32,27 +48,63 @@ export class ParticipantSearchComponent {
   selectedParticipant: Participant | null = null;
   projectGroups: IProjectGroup[] = [];
   // Example data
-  participants: Participant[] = [
-    { dateOfBirth: '09/13/1984', project: 'Project Eleven', participantId: '02-89932', firstName: 'Kyle', lastName: 'McCarthy' },
-    // Add more participants here...
-  ];
+
+  participants: Participant[] = [];
   //GENERAL
   errorMessage!: string;
   //@ViewChild(MatSort) sort: MatSort;
 
-  constructor(private projectsService: ProjectsService, private logsService: LogsService) {
+  //Filters
+  phoneNumberFilter: string = '';
+  firstNameFilter: string = '';
+  lastNameFilter: string = '';
+  projectFilter: string[] = [];
+  @ViewChild(MatSort) sort: MatSort | undefined;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(private projectsService: ProjectsService, private logsService: LogsService, private participantService: ParticipantService, private router: Router) {
+
     this.phoneNumber.valueChanges.subscribe((newValue) => {
-      console.log("Phone  : ", newValue)
+      this.phoneNumberFilter = newValue?.toLowerCase();
+      this.filter();
     });
     this.firstName.valueChanges.subscribe((newValue) => {
-      console.log("firstName  : ", newValue)
+      this.firstNameFilter = newValue?.toLowerCase();
+      this.filter();
     });
     this.lastName.valueChanges.subscribe((newValue) => {
-      console.log("lastName  : ", newValue)
+      this.lastNameFilter = newValue?.toLowerCase();
+      this.filter();
     });
     this.project.valueChanges.subscribe((newValue) => {
-      console.log("project  : ", newValue)
+      this.projectFilter = newValue?.map((v: any) => v.toLowerCase());
+      this.filter();
     });
+    // Participant Lookup
+    this.participantService.getLookup().subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.participants = response.Subject.map((res: any) => {
+            const { dob: dateOfBirth, project, participantno: participantId, participantfname: participantFName, participantlname: participantLName,
+              phone: phoneId, phonetype: phoneType, contactsource: contactSource, contactfname: contactFName, contactlname: contactLName
+            } = res;
+            return {
+              dateOfBirth,
+              project,
+              participantId,
+              participantFName,
+              participantLName,
+              phoneId,
+              phoneType,
+              contactSource,
+              contactFName,
+              contactLName
+            }
+          });
+          this.dataSource.data = [...this.participants];
+        }
+      }
+    )
     //subscribe to projects
     this.projectsService.allProjectsMin.subscribe(
       projects => {
@@ -71,26 +123,51 @@ export class ParticipantSearchComponent {
       },
       error => {
         this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+        this.logsService.logError(this.errorMessage);
       }
     );
-    this.dataSource.data =[...this.dataSource.data, ...this.participants]
   }
 
   reset() {
     // Filter participants based on search criteria
-    this.dataSource.data =[...this.dataSource.data, ...this.participants]
     this.phoneNumber.reset();
     this.firstName.reset();
     this.lastName.reset();
     this.project.reset();
   }
 
+  filter() {
+    let lookups = this.participants;
+    if (this.firstNameFilter) {
+      lookups = lookups.filter((lookup) => lookup?.participantFName?.toLowerCase().includes(this.firstNameFilter))
+    }
+    if (this.lastNameFilter) {
+      lookups = lookups.filter((lookup) => lookup?.participantLName?.toLowerCase().includes(this.lastNameFilter))
+    }
+    if (this.phoneNumberFilter) {
+      lookups = lookups.filter((lookup) => lookup?.phoneId?.toLowerCase().includes(this.phoneNumberFilter))
+    }
+
+    if (this.projectFilter && this.projectFilter?.length > 0) {
+      lookups = lookups.filter((lookup) => this.projectFilter.some((filterTerm) => filterTerm === '0' || lookup.project.toLowerCase().includes(filterTerm)))
+    }
+    this.dataSource.data = lookups;
+  }
+
   selectRow(row: Participant) {
-    this.selectedParticipant = row;
+    this.selectedParticipant = {
+      ...row,
+      participantName: `${row.participantFName} ${row.participantLName}`
+    };
+  }
+
+  openLinkInNewTab(id: string): void {
+    const url = this.router.createUrlTree(['/participants', id]).toString();
+    window.open(url, '_blank');
   }
 
   ngAfterViewInit() {
-    //this.dataSource.sort = this.sort;
+    this.dataSource.sort = this.sort!;
+    this.dataSource.paginator = this.paginator;
   }
 }

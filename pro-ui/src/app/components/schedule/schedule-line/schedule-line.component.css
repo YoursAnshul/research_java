@@ -1,0 +1,90 @@
+.saved-saved-placeholder {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+}
+.save-schedule {
+  cursor: pointer;
+}
+
+.schedule-saved {
+    cursor: default;
+}
+
+.save-schedule, .schedule-saved {
+  margin-right: 15px;
+}
+
+
+.schedule-actions {
+  display: inline-flex;
+  justify-content: left;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0.8em;
+}
+
+.add-schedule-row, .delete-schedule-row {
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 2px;
+}
+
+.delete-schedule-row, .undo-delete {
+  margin-left: 15px;
+}
+
+.undo-delete {
+  display: inline-block;
+  padding-bottom: 7px;
+  cursor: pointer;
+}
+
+.read-only-value {
+  width: 150px;
+  margin: 15px 5px;
+  font-size: 0.9em;
+  text-decoration: line-through;
+  text-align: center;
+}
+
+.read-only-comments {
+  overflow: auto;
+  height: 30px;
+  vertical-align: middle;
+}
+
+mat-form-field {
+  width: 200px;
+  margin: 5px;
+  font-size: 0.8em;
+}
+
+.date-picker-form-field {
+  width: 150px;
+}
+
+
+.time-select, .comments {
+  width: 200px;
+}
+
+
+.edit-section, .read-only-section, .read-only-value{
+  display: inline-block;
+
+}
+
+
+.day-of-week {
+  display: inline-block;
+  width: 5%;
+  font-size: 0.9em;
+  margin: 0px 5px;
+  font-style: italic;
+  font-weight: 500;
+  text-align: center;
+
+}
+
+

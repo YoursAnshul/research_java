@@ -55,12 +55,18 @@ import { LanguageIconComponent } from './components/language-icon/language-icon.
 import { DialogComponent } from './components/dialog/dialog.component';
 import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-datepicker/month-datepicker.component";
 import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
+import {ScheduleLineComponent} from "./components/schedule/schedule-line/schedule-line.component";
+import {RangeDatepickerComponent} from "./components/calendar/datepickers/range-datepicker/range-datepicker.component";
+import {MatPaginator} from "@angular/material/paginator";
+import {ModalPopupComponent} from "./components/modal-popup/modal-popup.component";
+import {NavMenuComponent} from "./components/nav-menu/nav-menu.component";
 import { HighlightSearch } from './components/highlightsearch/highlight.search';
 import {MatCheckboxModule} from '@angular/material/checkbox'
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
 import { ParticipantSearchComponent } from './components/participant-search/participant-search.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { HoverMessageComponent } from './components/hover-message/hover-message.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -86,7 +92,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     LoginComponent,
     HeaderComponent,
     LegendComponent,
-    ScheduleComponent,
     LanguageIconComponent,
     DialogComponent,
     LanguageIconComponent,
@@ -94,9 +99,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MonthViewComponent,
     MonthDatepickerComponent,
     WeekDatepickerComponent,
+    ScheduleLineComponent,
+    ModalPopupComponent,
+    NavMenuComponent,
+    RangeDatepickerComponent,
+    ScheduleComponent,
     HighlightSearch,
     CustomPageComponent,
     ParticipantSearchComponent,
+    HoverMessageComponent,
   ],
   imports: [
     BrowserModule,
@@ -118,6 +129,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonModule,
     MatDividerModule,
     MatDialogModule,
+    MatPaginator,
+    MatPaginatorModule,
     MatMenuModule,
     MatCheckboxModule,
     MatTableModule,

@@ -91,7 +91,7 @@
 .notes-container {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 10px;
   padding: 12px;
 }
 
@@ -105,11 +105,12 @@
   font-size: 14px;
   font-weight: 400;
   color: #262626;
+  max-width: 500px;
 }
 
 .reset-container {
   display: flex;
-  gap: 10px;
+  gap: 16px;
   padding: 12px;
   align-items: center;
 }
@@ -122,16 +123,10 @@
   color: #393939;
 }
 
-#reset-button {
-  color: #0680CD !important;
-  border: 2px solid #0680CD;
-  box-shadow: none;
-  height: 24px;
-  width: 69px;
-}
-
 .mat-mdc-raised-button .mdc-button__label {
   font-size: 11px !important;
+  font-weight: 500;
+  line-height: 20px;
 }
 
 .mat-mdc-form-field {
@@ -161,9 +156,9 @@ td {
 }
 
 .btn-container {
-display: flex;
-align-items: center;
-gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .view-icon {
@@ -176,6 +171,45 @@ gap: 10px;
 }
 
 .table-ht {
-  max-height: 500px;
+  max-height: 200px;
   overflow: auto;
+}
+
+.gap-32 {
+  gap: 32px !important;
+}
+
+.mdc-data-table__row:last-child .mat-mdc-cell {
+  border-bottom: 1px solid #EAEAEA !important;
+}
+
+.preview-container {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  flex-direction: column;
+}
+
+.flex {
+  display: flex;
+}
+
+.center {
+  align-items: center;
+}
+
+#preview-btn, #reset-button {
+  color: #fff !important;
+  border: 2px solid #0680CD;
+  box-shadow: none;
+  padding: 4px 20px;
+  background-color: #0680CD !important;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.seprator {
+  padding: 0px 20px;
 }

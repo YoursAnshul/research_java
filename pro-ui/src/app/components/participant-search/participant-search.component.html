@@ -21,7 +21,7 @@
             Communications Hub will open when you select Open Participant.
         </span>
     </div>
-    <div class="reset-container">
+    <div class="reset-container gap-32">
         <span class="reset-heading">Search Criteria</span>
         <button id="reset-button" mat-raised-button class="btn" (click)="reset()">
             Reset
@@ -30,7 +30,7 @@
     <div class="reset-container">
         <mat-form-field appearance="outline">
             <mat-label>Phone Number</mat-label>
-            <input matInput  [formControl]="phoneNumber">
+            <input matInput [formControl]="phoneNumber">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>First Name</mat-label>
@@ -43,10 +43,10 @@
 
         <mat-form-field class="select">
             <mat-label>Projects</mat-label>
-            <mat-select multiple  [formControl]="project">
+            <mat-select multiple [formControl]="project">
                 <mat-option value="0">Any Project</mat-option>
                 <mat-optgroup *ngFor="let group of projectGroups" [label]="group.name">
-                    <mat-option *ngFor="let p of group.projects" value="{{p.projectID}}">{{p.projectName}}</mat-option>
+                    <mat-option *ngFor="let p of group.projects" value="{{p.projectName}}">{{p.projectName}}</mat-option>
                 </mat-optgroup>
             </mat-select>
         </mat-form-field>
@@ -68,7 +68,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="participantId">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Participant ID </th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Participant # </th>
                     <td mat-cell *matCellDef="let element"> {{element.participantId}} </td>
                 </ng-container>
 
@@ -111,11 +111,11 @@
                 <ng-container matColumnDef="edit">
                     <th mat-header-cell *matHeaderCellDef> </th>
                     <td mat-cell *matCellDef="let element">
-                       <div class="btn-container">
-                        <mat-icon svgIcon="visibility" class="pointer"/>
-                        <mat-icon fontIcon="open_in_new" class="view-icon pointer"></mat-icon>
+                        <div class="btn-container">
+                            <mat-icon svgIcon="visibility" class="pointer" (click)="selectRow(element)" />
+                            <mat-icon fontIcon="open_in_new" class="view-icon pointer" (click)="openLinkInNewTab(element.participantId)"></mat-icon>
 
-                       </div>
+                        </div>
                     </td>
 
                 </ng-container>
@@ -124,8 +124,72 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></tr>
             </table>
+       
+        </div>
+        <mat-paginator
+        [length]="dataSource.data.length"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20, 50, 100]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <div class="seprator" *ngIf="selectedParticipant">
+        <hr />
+    </div>
+    <div class="preview-container" *ngIf="selectedParticipant">
+        <div class="flex center gap-32">
+            <span class="reset-heading">Preview</span>
+            <button id="preview-btn" mat-raised-button class="btn">
+                Open Participant
+            </button>
+        </div>
+        <div class="flex gap-16">
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Assigned To</mat-label>
+                <input matInput [value]="selectedParticipant?.assignedTo || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Record Location</mat-label>
+                <input matInput [value]="selectedParticipant?.recordLocation || 'Unassigned'" readonly>
+            </mat-form-field>
         </div>
 
+        <div class="flex gap-16">
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Last Contact Date</mat-label>
+                <input matInput [value]="selectedParticipant?.assignedTo || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Participant Number</mat-label>
+                <input matInput [value]="selectedParticipant?.participantId || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Participant Name</mat-label>
+                <input matInput [value]="selectedParticipant?.participantName || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Date of Birth</mat-label>
+                <input matInput [value]="selectedParticipant?.dateOfBirth || 'Unassigned'" readonly>
+            </mat-form-field>
+        </div>
 
+        <div class="flex gap-16">
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Sex</mat-label>
+                <input matInput [value]="selectedParticipant?.sex || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Language</mat-label>
+                <input matInput [value]="selectedParticipant?.language || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black">
+                <mat-label>Site</mat-label>
+                <input matInput [value]="selectedParticipant?.site || 'Unassigned'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="black round round-orange">
+                <mat-label>Local Time</mat-label>
+                <input matInput [value]="selectedParticipant?.localTime || 'Unassigned'" readonly>
+            </mat-form-field>
+        </div>
     </div>
 </mat-card>

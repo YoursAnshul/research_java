@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import { ILegend, ISchedule, IUserMin, IUserSchedule } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
+import { HoverMessage } from '../../../models/presentation/hover-message';
 
 @Component({
   selector: 'app-day-view',
@@ -13,6 +14,8 @@ export class DayViewComponent implements OnInit {
 
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
+  
+  hoverMessage: HoverMessage = new HoverMessage();
 
   constructor(private globalsService: GlobalsService) { }
 
@@ -83,6 +86,7 @@ export class DayViewComponent implements OnInit {
   }
 
   displayHoverMessage(event: any, schedule: ISchedule, us: IUserSchedule): void {
+
     let htmlMessage: string = '<p class="hover-message-title">' + us.user.displayName + ' (' + schedule.projectName + '): ' + schedule.startTime + ' – ' + schedule.endTime + '<p>';
 
     //comments
@@ -90,21 +94,12 @@ export class DayViewComponent implements OnInit {
       htmlMessage = htmlMessage + '<p class="bold">Comments:</p><p>' + schedule.comments + '</p>';
     }
 
-    let hoverMessage: HTMLElement | null = document.getElementById('hover-message');
-    if (hoverMessage != null) {
-      hoverMessage.innerHTML = htmlMessage;
-
-      this.globalsService.showHoverMessage.next(true);
-
-      hoverMessage.style.top = (event.clientY) + 'px';
-      hoverMessage.style.left = (event.clientX) + 'px';
-      hoverMessage.style.marginTop = '-70px';
-    }
+    this.hoverMessage.setAndShow(event, htmlMessage);
 
   }
 
   hideHoverMessage(): void {
-    this.globalsService.showHoverMessage.next(false);
+    this.hoverMessage.hide();
   }
 
 }
