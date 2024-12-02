@@ -61,7 +61,7 @@ public class QuickReferenceImpl implements QuickReference {
 		sql.append("  u.role , coalesce(nullif(u.preferredfname, ''), u.fname) ||' '||  ");
 		sql.append("  coalesce (nullif(u.preferredlname, ''), u.lname) as fullname from core.users u ");
 		sql.append("  join (select codevalues, dropdownitem from core.dropdownvalues where formfieldid = 10)f ");
-		sql.append("  on u.role = f.codevalues where u.active = true and u.role <> 4  ");
+		sql.append("  on u.role = f.codevalues where u.active = true and u.role <> 4 ORDER BY fullname ASC ");
 		List<QuickResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			QuickResponse quickResponse = new QuickResponse();
 			quickResponse.setUsername(rs.getString("fullname"));
