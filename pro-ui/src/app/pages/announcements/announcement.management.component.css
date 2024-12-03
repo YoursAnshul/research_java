@@ -1,0 +1,55 @@
+.announcement-table {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 15px;
+}
+.mat-column-start {
+  border-right: 1px solid #ddd;
+}
+.mat-column-expiration {
+  border-right: 1px solid #ddd;
+}
+.mat-column-title {
+  border-right: 1px solid #ddd;
+}
+.mat-column-author {
+  border-right: 1px solid #ddd;
+}
+.mat-column-displayTo {
+  border-right: 1px solid #ddd;
+}
+.mat-column-action {
+  border-right: 1px solid #ddd;
+}
+
+::ng-deep .mat-sort-header-container:not(.mat-sort-header-sorted):after {
+  content: "↑↓";
+  font-size: 16px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 15px;
+  width: 15px;
+  display: inline-block;
+  visibility: visible;
+}
+
+::ng-deep .mat-sort-header-container.mat-sort-header-sorted:after {
+  content: "↑↓";
+  font-size: 16px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 15px;
+  width: 15px;
+  display: inline-block;
+  visibility: visible;
+  color: #0680cd;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  visibility: hidden !important;
+  transition: none !important;
+}

@@ -15,6 +15,7 @@ import { ConfigurationComponent } from './pages/configuration/configuration.comp
 import { LoginComponent } from './pages/login/login.component';
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
 import { ParticipantIdComponent } from './components/participant-id/participant-id.component';
+import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
 
 const routes: Routes = [
 
@@ -32,7 +33,9 @@ const routes: Routes = [
   { path: 'forecasting', component: ForecastingComponent},
   { path: 'requests', component: RequestsComponent },
   { path: 'configuration', component: ConfigurationComponent},
-  { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent}
+  { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent},
+  { path: 'announcement-management', component: ManageAnnouncementsComponent},
+
   
   //{ path: 'test', component: TestComponent },
 ];
