@@ -375,12 +375,25 @@
                           </svg>
                         </div>
                       </div>
-                      <div
-                        class="description"
-                        [innerHTML]="
-                          data?.projectinfo || '' | highlight : searchTerms
-                        "
-                      ></div>
+                      <div class="description">
+                        <span
+                          *ngIf="!data.showMore"
+                          [innerHTML]="
+                            (data?.projectinfo ? (data.projectinfo | slice: 0:100) + '...' : '') | highlight : searchTerms
+                          "
+                        ></span>
+                        <span
+                          *ngIf="data.showMore"
+                          [innerHTML]="data?.projectinfo || '' | highlight : searchTerms"
+                        ></span>
+                        <a *ngIf="data?.projectinfo"
+                          href="javascript:void(0)"
+                          (click)="toggleShowMore(data)"
+                          class="show-more-less"
+                        >
+                          {{ data.showMore ? 'Show Less' : 'Show More' }}
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -925,4 +938,10 @@
     transform: translate(-50%, -50%);
     z-index: 10;
   }
+
+  .show-more-less {
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
 </style>

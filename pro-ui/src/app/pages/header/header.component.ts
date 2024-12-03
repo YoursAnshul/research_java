@@ -198,18 +198,25 @@ export class HeaderComponent implements OnInit {
   }
 
   getProjectInfo(): void {
-    this.loading = true; 
+    this.loading = true;
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/project-info`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.projectinfolist = data?.Subject;
-        this.loading = false; 
+        this.projectinfolist = data?.Subject.map((project: any) => ({
+          ...project,
+          showMore: false,
+        }));
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
-        this.loading = false; 
+        this.loading = false;
       },
     });
+  }
+
+  toggleShowMore(data: any): void {
+    data.showMore = !data.showMore;
   }
 
   getContactInfo(): void {
