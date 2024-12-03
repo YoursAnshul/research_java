@@ -15,43 +15,44 @@
         </span>
         <span class="notes-desc">
             Search results will include participants from projects that have not been fully integrated into the new PRO
-            Platform. You can view limited preview information about these participants in this window, but you will
-            need to look up the participant in the existing project database in order to view and modify their full
-            participant information. If a record only exists in the PRO Communications Hub, the appropriate project
-            Communications Hub will open when you select Open Participant.
+            Platform. You can view limited preview information about these participants in the window, but you will need
+            to look up the participant in the existing project database in order to view and modify the full participant
+            information. Participants that exist in the PRO PLATFORM and the PRO Communications Hub will open directly
+            when you select “Open Participant”
         </span>
     </div>
-    <div class="reset-container gap-32">
+    <div class="search-container gap-32">
         <span class="reset-heading">Search Criteria</span>
         <button id="reset-button" mat-raised-button class="btn" (click)="reset()">
             Reset
         </button>
     </div>
     <div class="reset-container">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="ctm">
             <mat-label>Phone Number</mat-label>
             <input matInput [formControl]="phoneNumber">
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="ctm">
             <mat-label>First Name</mat-label>
             <input matInput [formControl]="firstName">
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="ctm">
             <mat-label>Last Name</mat-label>
             <input matInput [formControl]="lastName">
         </mat-form-field>
 
-        <mat-form-field class="select">
+        <mat-form-field class="select" class="ctm-select">
             <mat-label>Projects</mat-label>
             <mat-select multiple [formControl]="project">
                 <mat-option value="0">Any Project</mat-option>
                 <mat-optgroup *ngFor="let group of projectGroups" [label]="group.name">
-                    <mat-option *ngFor="let p of group.projects" value="{{p.projectName}}">{{p.projectName}}</mat-option>
+                    <mat-option *ngFor="let p of group.projects"
+                        value="{{p.projectName}}">{{p.projectName}}</mat-option>
                 </mat-optgroup>
             </mat-select>
         </mat-form-field>
     </div>
-    <div class="notes-container">
+    <div class="results-container">
         <span class="reset-heading">Results</span>
         <div class="table-ht">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
@@ -113,7 +114,8 @@
                     <td mat-cell *matCellDef="let element">
                         <div class="btn-container">
                             <mat-icon svgIcon="visibility" class="pointer" (click)="selectRow(element)" />
-                            <mat-icon fontIcon="open_in_new" class="view-icon pointer" (click)="openLinkInNewTab(element.participantId)"></mat-icon>
+                            <mat-icon fontIcon="open_in_new" class="view-icon pointer"
+                                (click)="moveToPage($event, element.participantId)"></mat-icon>
 
                         </div>
                     </td>
@@ -124,14 +126,11 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)"></tr>
             </table>
-       
+
         </div>
-        <mat-paginator
-        [length]="dataSource.data.length"
-        [pageSize]="10"
-        [pageSizeOptions]="[5, 10, 20, 50, 100]"
-        showFirstLastButtons>
-      </mat-paginator>
+        <mat-paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50, 100]"
+            showFirstLastButtons>
+        </mat-paginator>
     </div>
     <div class="seprator" *ngIf="selectedParticipant">
         <hr />
@@ -143,53 +142,54 @@
                 Open Participant
             </button>
         </div>
-        <div class="flex gap-16">
-            <mat-form-field appearance="outline" class="black">
+        <div class="flex gap-16 pdt8">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Assigned To</mat-label>
                 <input matInput [value]="selectedParticipant?.assignedTo || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Record Location</mat-label>
                 <input matInput [value]="selectedParticipant?.recordLocation || 'Unassigned'" readonly>
             </mat-form-field>
         </div>
-
+<div class="container">
         <div class="flex gap-16">
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Last Contact Date</mat-label>
                 <input matInput [value]="selectedParticipant?.assignedTo || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Participant Number</mat-label>
                 <input matInput [value]="selectedParticipant?.participantId || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Participant Name</mat-label>
                 <input matInput [value]="selectedParticipant?.participantName || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Date of Birth</mat-label>
                 <input matInput [value]="selectedParticipant?.dateOfBirth || 'Unassigned'" readonly>
             </mat-form-field>
         </div>
 
         <div class="flex gap-16">
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Sex</mat-label>
                 <input matInput [value]="selectedParticipant?.sex || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Language</mat-label>
                 <input matInput [value]="selectedParticipant?.language || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black">
+            <mat-form-field appearance="outline" class="black ctm">
                 <mat-label>Site</mat-label>
                 <input matInput [value]="selectedParticipant?.site || 'Unassigned'" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="black round round-orange">
+            <mat-form-field appearance="outline" class="black round round-orange ctm">
                 <mat-label>Local Time</mat-label>
                 <input matInput [value]="selectedParticipant?.localTime || 'Unassigned'" readonly>
             </mat-form-field>
         </div>
+    </div>
     </div>
 </mat-card>

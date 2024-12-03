@@ -92,7 +92,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 12px;
+  padding: 8px 16px 8px 12px;
 }
 
 .notes-heading {
@@ -105,14 +105,22 @@
   font-size: 14px;
   font-weight: 400;
   color: #262626;
-  max-width: 500px;
+  max-width: 1000px;
+}
+.search-container {
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px 4px 12px;
+  align-items: center;
+  height: 36px;
 }
 
 .reset-container {
   display: flex;
   gap: 16px;
-  padding: 12px;
+  padding: 0px 12px 8px 12px;
   align-items: center;
+  height: 49px;
 }
 
 .reset-heading {
@@ -173,6 +181,9 @@ td {
 .table-ht {
   max-height: 200px;
   overflow: auto;
+  display: block; /* Ensures scrollable behavior */
+  border-top: 1px solid #B5B5B5;
+  border-bottom: 1px solid #B5B5B5;
 }
 
 .gap-32 {
@@ -197,6 +208,13 @@ td {
 .center {
   align-items: center;
 }
+#reset-button {
+  height: 24px;
+  width: 46px;
+}
+#preview-btn{
+  height: 24px;
+}
 
 #preview-btn, #reset-button {
   color: #fff !important;
@@ -212,4 +230,70 @@ td {
 
 .seprator {
   padding: 0px 20px;
+}
+
+.mat-mdc-header-row, .mat-mdc-header-cell {
+  position: sticky;
+  top: -2px;
+  z-index: 2;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.mat-mdc-cell, .mat-mdc-header-cell {
+  border: 1px solid #B5B5B5;
+}
+
+
+.mat-mdc-row .mat-mdc-cell {
+  border-left: 1px solid #B5B5B5; /* Bottom border for the last row */
+}
+
+/* Set the height of the form field */
+.mat-mdc-form-field.ctm {
+  height: 35px; /* Desired height */
+  display: flex; /* Align content properly */
+  align-items: center; /* Center inner content vertically */
+ 
+}
+
+.mat-mdc-form-field.ctm-select {
+ border-top: 1px solid #B5B5B5;
+  border-left: 1px solid #B5B5B5;
+  border-right: 1px solid #B5B5B5;
+  border-radius: 4px !important;
+  height: 35px;
+}
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.mat-mdc-header-row {
+  height: 29px !important;
+}
+
+th {
+  padding: 8px 5px !important;
+}
+
+.mat-mdc-row {
+  height: 28px;
+}
+
+td {
+  padding: 8px 10px !important;
+}
+
+.pdt8 {
+  padding-top: 8px !important;
+}
+
+.container {
+  padding: 8px 0px;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
 }

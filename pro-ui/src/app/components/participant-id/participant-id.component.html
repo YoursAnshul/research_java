@@ -1,0 +1,364 @@
+<div *ngIf="id">
+    <div id="header-inner">
+        <div id="logged-in-as-section" class="flex">
+          <div
+            class="quick-reference-notification top-4 w-[440px] h-[79vh] right-2 quick-book-ref"
+          >
+            <!-- Header Section -->
+            <div class="sticky-header">
+              <div class="quick-refrence-top-header d-flex justify-between m-2">
+                <div class="col-lg-10" style="display: flex">
+                  <!-- <mat-icon fontIcon="mail" class="custom-color1"></mat-icon> &nbsp; -->
+                  <div class="col-lg-2 mr-2">
+                    <svg
+                      width="34"
+                      height="34"
+                      viewBox="0 0 34 34"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <mask
+                        id="mask0_326_3294"
+                        style="mask-type: alpha"
+                        maskUnits="userSpaceOnUse"
+                        x="0"
+                        y="0"
+                        width="32"
+                        height="32"
+                      >
+                        <rect width="32" height="32" fill="#D9D9D9" />
+                      </mask>
+                      <g mask="url(#mask0_326_3294)">
+                        <path
+                          d="M9.00016 29.3333C8.00016 29.3333 7.13905 28.9944 6.41683 28.3167C5.69461 27.6389 5.3335 26.8 5.3335 25.8V7.19998C5.3335 6.35554 5.59461 5.59998 6.11683 4.93332C6.63905 4.26665 7.32238 3.84443 8.16683 3.66665L21.3335 1.06665V22.4L8.70016 24.9333C8.50016 24.9778 8.3335 25.0833 8.20016 25.25C8.06683 25.4167 8.00016 25.6 8.00016 25.8C8.00016 26.0444 8.10016 26.25 8.30016 26.4167C8.50016 26.5833 8.7335 26.6667 9.00016 26.6667H24.0002V5.33332H26.6668V29.3333H9.00016ZM9.3335 22.1L12.0002 21.5667V5.63332L9.3335 6.16665V22.1Z"
+                          fill="#0680CD"
+                        />
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="col-lg-5 mt-1">
+                    <span class="quick-span quick-reference">Participant ID: {{ id }}</span>
+                  </div>
+                </div>
+                <div>
+                  <!-- <mat-icon
+                    fontIcon="open_in_new"
+                    class="custom-color1"
+                    style="cursor: pointer; color: #0680cd"
+                    (click)="moveToPage($event)"
+                  ></mat-icon> -->
+                  &nbsp;
+                </div>
+              </div>
+          
+            </div>
+      
+   
+          </div>
+        </div>
+      </div>
+      <style>
+        body {
+          font-family: Roboto, sans-serif;
+          margin: 20px;
+        }
+      
+        .quick-reference-notification {
+          background: white;
+          box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+          height: 98vh;
+          width: 100%;
+          max-width: 500px;
+          overflow: hidden;
+          margin: auto;
+          margin-top: 10px;
+        }
+      
+        .scroll-container {
+          max-height: calc(100vh - 200px);
+          overflow-y: auto;
+          /* padding: 16px; */
+        }
+      
+        ::ng-deep .mdc-tab__text-label {
+          font-size: 12px !important;
+        }
+      
+        .sticky-header {
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          background-color: #fff;
+          padding: 8px;
+        }
+      
+        .sticky-header-tabs {
+        }
+      
+        /* .sticky-header-tabs ::ng-deep .mat-mdc-tab-label-container {
+          padding-left: 60px;
+        } */
+      
+        .hero-box {
+          display: flex;
+          border-bottom: 1px solid #ddd;
+          margin-bottom: 16px;
+          width: 100%;
+        }
+      
+        .hero-box .yellow-bar {
+          background-color: #f6c867;
+          width: 8px;
+          height: auto;
+        }
+      
+        .hero-box .purple-bar {
+          background-color: #7373e8;
+          width: 8px;
+          height: auto;
+        }
+      
+        .hero-box .purple-dark-bar {
+          background-color: #9400d3;
+          width: 8px;
+          height: 226px;
+        }
+      
+        .hero-box .green-dark-bar {
+          background-color: #00a542;
+          width: 8px;
+          height: 226px;
+        }
+      
+        .hero-box .light-blue-bar {
+          background-color: #87cefa;
+          width: 8px;
+          height: 226px;
+        }
+      
+        .hero-box .light-pink-bar {
+          background-color: #ff9083;
+          width: 8px;
+          height: 226px;
+        }
+      
+        .hero-box .content {
+          padding: 10px 16px;
+          width: 100%;
+        }
+      
+        .content h2 {
+          font-size: 18px;
+          font-weight: bold;
+          margin: 0 0 10px 0;
+          color: #000;
+        }
+      
+        .contact-item-row {
+          display: flex;
+          align-items: center;
+        }
+      
+        .svg-align {
+          cursor: pointer;
+          margin-left: 8px;
+          margin-bottom: 10px;
+        }
+      
+        .contact-item {
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+          line-height: 1.4;
+          margin-right: 78px;
+        }
+      
+        .contact-item-new {
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+          line-height: 1.4;
+          margin-left: 20px;
+          margin-right: 18px;
+        }
+      
+        .contact-item-color {
+          color: #6c757d;
+        }
+      
+        .contact-item span {
+          font-weight: normal;
+          color: #58595b;
+        }
+      
+        .description {
+          font-size: 14px;
+          line-height: 1.4;
+        }
+      
+        .mat-menu-panel {
+          position: fixed !important;
+        }
+      
+        /* voice mail */
+      
+        .voice-mail-box {
+          display: flex;
+          border-bottom: 1px solid #58595b;
+          width: 400px;
+          height: 110px;
+        }
+      
+        .voice-mail-box .yellow-bar {
+          background-color: #f6c867;
+          width: 8px;
+          height: 104px;
+        }
+      
+        .voice-mail-box .purple-bar {
+          background-color: #7373e8;
+          width: 8px;
+          height: 104px;
+        }
+      
+        .voice-mail-box .purple-dark-bar {
+          background-color: #9400d3;
+          width: 8px;
+          height: 104px;
+        }
+      
+        .voice-mail-box .green-dark-bar {
+          background-color: #00a542;
+          width: 8px;
+          height: 104px;
+        }
+      
+        .voice-mail-box .light-blue-bar {
+          background-color: #87cefa;
+          width: 8px;
+          height: 104px;
+        }
+      
+        .voice-mail-box .light-pink-bar {
+          background-color: #ff9083;
+          width: 8px;
+          height: 104px;
+        }
+      
+        .voice-mail-box .content {
+          padding: 10px 16px;
+          width: 100%;
+        }
+      
+        .contact-item-row-voice-mail {
+          display: flex;
+          align-items: center;
+          margin-right: 45px;
+        }
+      
+        .contact-item-row-voice-mail-pin {
+          display: flex;
+          align-items: center;
+          margin-right: 163px;
+        }
+      
+        .contact-item-voice-mail {
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+          line-height: 1;
+        }
+      
+        .custom-tabs .mat-tab-label {
+          margin-right: 20px;
+        }
+      
+        .custom-tabs .mat-tab-label:last-child {
+          margin-right: 0;
+        }
+        ::ng-deep #pro-app .mat-mdc-tab.mdc-tab {
+          max-width: unset !important;
+        }
+      
+        /* team contacts */
+        .quick-reference-new {
+          margin-bottom: 10px;
+          padding: 16px;
+        }
+      
+        .font-containt {
+          color: #262626;
+          width: 600px;
+          font-weight: 600;
+          font-size: 13px;
+          font-family: roboto;
+          line-height: 15.23px;
+        }
+        .text-containt {
+          font-size: 13px;
+          line-height: 16px;
+          padding-bottom: 10px;
+          border-bottom: 3px solid #e0e0e0;
+        }
+      
+        .detail {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 5px 0;
+        }
+      
+        .value-container {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+      
+        .label {
+          color: #6c757d;
+        }
+      
+        .value {
+          color: #262626;
+          padding-left: 20px;
+        }
+        .mat-checkbox .mat-checkbox-label {
+          font-size: 12px !important;
+        }
+        ::ng-deep .mdc-checkbox__background {
+          width: 13px !important;
+          height: 13px !important;
+        }
+        ::ng-deep .mat-mdc-checkbox {
+          --mdc-form-field-label-text-size: 12px !important;
+        }
+        ::ng-deep .mdc-form-field > label {
+          padding-left: 0px !important;
+          margin-bottom: 4px !important;
+          margin-left: -8px !important;
+        }
+      
+        ::ng-deep .mdc-checkbox__ripple {
+          top: unset !important;
+          left: unset !important;
+          right: unset !important;
+          bottom: unset !important;
+          position: unset !important;
+          border-radius: unset !important;
+          pointer-events: unset !important;
+        }
+        .sticky {
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          background: #fff;
+        }
+        .sticky-team-contacts {
+          position: sticky;
+          top: -18px !important;
+          z-index: 1000;
+          background: #fff;
+        }
+      </style>
+      
+</div>

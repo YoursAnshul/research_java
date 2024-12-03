@@ -131,6 +131,7 @@ html {
     align-items: center;
     gap: 3px;
 }
+
 .round-orange .mat-mdc-form-field-infix::before {
     content: '';
     background: #FF9900;
@@ -149,5 +150,90 @@ html {
 }
 
 .black {
-  font-size: 13px !important;
+    font-size: 13px !important;
+}
+
+/* Ensure the wrapper inside adapts to the height */
+.ctm .mat-mdc-text-field-wrapper {
+    height: 100% !important;
+    /* Inherit the parent height */
+    display: flex !important;
+    /* Flex layout for alignment */
+    align-items: center !important;
+    padding: 0px !important;
+    /* Center-align content */
+}
+
+/* Adjust the input height */
+.ctm .mat-mdc-form-field .mat-mdc-input-element {
+    height: 100% !important;
+    /* Match input to container height */
+    line-height: normal !important;
+    /* Reset line height */
+    padding: 0 8px !important;
+    /* Adjust padding if necessary */
+    box-sizing: border-box !important;
+    /* Ensure proper padding calculation */
+}
+
+/* Adjust the outline to fit the new height */
+.ctm .mdc-notched-outline {
+    height: 100% !important;
+    /* Match the container height */
+    display: flex !important;
+    align-items: center !important;
+    /* Center notch content */
+}
+
+/* Fix floating label alignment */
+.ctm .mdc-floating-label {
+    transform: translateY(-20px) !important;
+    /* Adjust label position */
+}
+
+.ctm .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
+    --mat-mdc-form-field-label-transform: translateY(calc(calc(6.75px + var(--mat-form-field-container-height) / 2)* -1)) scale(var(--mat-mdc-form-field-floating-label-scale, 0.75));
+    transform: var(--mat-mdc-form-field-label-transform) !important;
+}
+
+.ctm .mat-mdc-form-field-infix {
+    padding: 14px 10px 10px 13px !important;
+    min-height: 35px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ctm-select .mat-mdc-text-field-wrapper {
+    height: 100% !important;
+    /* Inherit the parent height */
+    display: flex !important;
+    /* Flex layout for alignment */
+    align-items: center !important;
+    padding: 0px !important;
+    /* Center-align content */
+}
+
+/* Adjust the wrapper to inherit the height */
+.ctm-select .mat-mdc-form-field-infix {
+    padding: 11px 10px 10px 13px !important;
+    min-height: 35px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ctm-select .mdc-floating-label--float-above {
+    display: none !important;
+}
+
+.ctm-select .mdc-floating-label {
+    transform: translateY(-15px) !important;
+    /* Adjust label position */
+}
+
+.ctm-select .mat-mdc-select-arrow {
+    height: 35px !important;
+}
+
+.ctm-select .mat-mdc-select-arrow svg {
+    top: 65% !important;
 }

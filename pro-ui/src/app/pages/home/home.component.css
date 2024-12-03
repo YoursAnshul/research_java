@@ -1,5 +1,4 @@
 .calendar-container {
-  display: flex;
-  gap: 16px;
-}
-
+    display: flex;
+    gap: 16px;
+  }

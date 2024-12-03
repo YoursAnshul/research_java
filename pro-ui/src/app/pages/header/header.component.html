@@ -3,7 +3,7 @@
     <img id="wordmark-logo" src="/assets/DCRI_PRO_wordmark.jpg" />
     <div id="logged-in-as-section" *ngIf="authenticatedUser">
       <div class="flex">
-        <div class="circle" ngbTooltip="Search" placement="bottom">
+        <div class="circle" ngbTooltip="Search Participants" placement="bottom" (click)="openParticipantModal()">
           <mat-icon svgIcon="search" />
         </div>
         <div class="circle" ngbTooltip="Learning Center" placement="bottom">
@@ -660,7 +660,7 @@
           <mat-icon svgIcon="call" />
         </div>
         <div class="circle" ngbTooltip="Add a Schedule" placement="bottom">
-          <mat-icon svgIcon="calendar_addon" />
+          <mat-icon (click)="addASchedulePopup()" svgIcon="calendar_addon" />
         </div>
         <div class="circle" ngbTooltip="My Profile" placement="bottom">
           <mat-icon svgIcon="person" />
@@ -1118,7 +1118,6 @@
     transform: translate(-50%, -50%);
     z-index: 10;
   }
-
   .show-more-less {
   color: blue;
   cursor: pointer;

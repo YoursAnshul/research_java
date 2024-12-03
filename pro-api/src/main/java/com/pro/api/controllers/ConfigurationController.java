@@ -3,6 +3,7 @@ package com.pro.api.controllers;
 import com.pro.api.models.business.*;
 import com.pro.api.models.dataaccess.AdminOption;
 
+import com.pro.api.models.dataaccess.BlockOutDate;
 import com.pro.api.models.dataaccess.DropDownValue;
 import com.pro.api.models.dataaccess.FormField;
 import com.pro.api.models.dataaccess.repos.*;
@@ -29,9 +30,9 @@ public class ConfigurationController {
 	private DropDownValueRepository dropDownValueRepository;
 	@Autowired
 	private FormFieldRepository formFieldRepository;
-/*	@Autowired
-	private BlockOutDateRepository blockOutDateRepository;
 	@Autowired
+	private BlockOutDateRepository blockOutDateRepository;
+/*	@Autowired
 	private CommunicationsHubRepository communicationsHubRepository;*/
 
 	//front-end configuration
@@ -316,7 +317,7 @@ public class ConfigurationController {
 		return response;
 	}
 
-/*	@GetMapping("/blockOutDates")
+	@GetMapping("/blockOutDates")
 	public GeneralResponse getBlockoutDate() {
 		GeneralResponse response = new GeneralResponse();
 		try {
@@ -332,8 +333,8 @@ public class ConfigurationController {
 			response.Message = ex.getMessage();
 		}
 		return response;
-	}*/
-/*
+	}
+
 
 	@PostMapping("/blockOutDates")
 	public GeneralResponse saveBlockoutDate(@RequestBody BlockOutDate blockOutDate) {
@@ -349,9 +350,9 @@ public class ConfigurationController {
 		}
 		return response;
 	}
-*/
 
-/*
+
+
 	@DeleteMapping("/blockOutDates")
 	public GeneralResponse deleteBlockoutDate(@RequestBody BlockOutDate blockOutDate) {
 		GeneralResponse response = new GeneralResponse();
@@ -365,7 +366,7 @@ public class ConfigurationController {
 		}
 		return response;
 	}
-*/
+
 
 /*	@PostMapping("/commHubConfig")
 	public GeneralResponse addDefaultCommHubConfig(HttpServletRequest request,

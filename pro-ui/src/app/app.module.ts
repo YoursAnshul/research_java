@@ -67,6 +67,7 @@ import { ParticipantSearchComponent } from './components/participant-search/part
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { HoverMessageComponent } from './components/hover-message/hover-message.component';
+import { ParticipantIdComponent } from './components/participant-id/participant-id.component';
 import { AnnouncementsComponent } from './pages/announcements/announcements.component';
 @NgModule({
   declarations: [
@@ -109,6 +110,7 @@ import { AnnouncementsComponent } from './pages/announcements/announcements.comp
     CustomPageComponent,
     ParticipantSearchComponent,
     HoverMessageComponent,
+    ParticipantIdComponent,
     AnnouncementsComponent
   ],
   imports: [

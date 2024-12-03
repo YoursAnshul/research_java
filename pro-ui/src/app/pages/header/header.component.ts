@@ -57,7 +57,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private http: HttpClient,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private globalsService: GlobalsService
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +70,7 @@ export class HeaderComponent implements OnInit {
   }
   ngAfterViewInit(): void {
     this.menuTrigger.menuOpened.subscribe(() => {
-      this.activeTabIndex = 0; 
+      this.activeTabIndex = 0;
       this.handleTabLogic(0);
     });
 
@@ -78,7 +79,7 @@ export class HeaderComponent implements OnInit {
     });
   }
   onTabChange(event: any): void {
-    this.activeTabIndex = event.index; 
+    this.activeTabIndex = event.index;
     this.handleTabLogic(event.index);
   }
   handleTabLogic(tabIndex: number): void {
@@ -96,6 +97,12 @@ export class HeaderComponent implements OnInit {
         break;
     }
   }
+
+
+  addASchedulePopup(): void {
+    this.globalsService.openSchedulePopup();
+  }
+
 
   public logout(): void {
     this.authenticationService.logout();
@@ -173,12 +180,12 @@ export class HeaderComponent implements OnInit {
   }
 
   getVoicMailData(): void {
-    this.loading = true; 
+    this.loading = true;
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.voicemaillist = data?.Subject;
-        this.loading = false; 
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Error fetching voicemails:', error);
@@ -220,17 +227,17 @@ export class HeaderComponent implements OnInit {
   }
 
   getContactInfo(): void {
-    this.loading = true; 
+    this.loading = true;
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/team-contact`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.teamContactList = data?.Subject || [];
         this.filteredContacts = [...this.teamContactList];
-        this.loading = false; 
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
-        this.loading = false; 
+        this.loading = false;
       },
     });
   }

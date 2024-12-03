@@ -14,6 +14,7 @@ import { RequestsComponent } from './pages/requests/requests.component';
 import { ConfigurationComponent } from './pages/configuration/configuration.component';
 import { LoginComponent } from './pages/login/login.component';
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
+import { ParticipantIdComponent } from './components/participant-id/participant-id.component';
 
 const routes: Routes = [
 
@@ -23,7 +24,7 @@ const routes: Routes = [
   { path: 'scheduling', component: SchedulingComponent },
   { path: 'assignments', component: AssignmentsComponent},
   { path: 'participants', component: ParticipantsComponent},
-  { path: 'participants/:id', component: ParticipantsComponent},
+  { path: 'participants/:id',  data: { hideHeaderFooter: true }, component: ParticipantIdComponent},
   { path: 'projects', component: ProjectsComponent},
   { path: 'communications', component: CommunicationsComponent},
   { path: 'reports', component: ReportsComponent},
@@ -32,7 +33,7 @@ const routes: Routes = [
   { path: 'requests', component: RequestsComponent },
   { path: 'configuration', component: ConfigurationComponent},
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent}
-
+  
   //{ path: 'test', component: TestComponent },
 ];
 

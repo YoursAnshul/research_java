@@ -134,6 +134,7 @@ export class ParticipantSearchComponent {
     this.firstName.reset();
     this.lastName.reset();
     this.project.reset();
+    this.selectedParticipant = null;
   }
 
   filter() {
@@ -169,5 +170,20 @@ export class ParticipantSearchComponent {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort!;
     this.dataSource.paginator = this.paginator;
+  }
+
+  moveToPage(event: MouseEvent, id: string): void {
+    event.stopPropagation();
+    const url = this.router.createUrlTree(['/participants', id]).toString();
+    const width = 500;
+    const height = 1000;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    window.open(
+      url,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
+    );
   }
 }
