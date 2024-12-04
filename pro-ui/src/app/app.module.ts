@@ -70,8 +70,10 @@ import { HoverMessageComponent } from './components/hover-message/hover-message.
 import { ParticipantIdComponent } from './components/participant-id/participant-id.component';
 import { AnnouncementsComponent } from './pages/announcements/announcements.component';
 import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
+import { AddAnnouncementDialogComponent } from './pages/announcements/add-announcement-dialog.component';
 @NgModule({
   declarations: [
+    AddAnnouncementDialogComponent,
     AppComponent,
     CalendarComponent,
     UserCardComponent,
