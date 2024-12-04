@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -52,6 +53,14 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   openAddAnnouncementDialog(): void {
     console.log('Opening add announcement dialog...');
+    const  dialogRef= this.dialog.open(AddAnnouncementDialogComponent, {
+      width: '600px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.announcements.push(result);
+      }
+    });
   }
 
   editAnnouncement(announcement: any): void {
@@ -63,6 +72,5 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   viewAnnouncement(announcement: any): void {
     console.log('View announcement:', announcement);
-
   }
 }

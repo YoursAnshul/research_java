@@ -5,15 +5,19 @@ declare var Quill: any;
 
 @Component({
   selector: 'app-add-announcement-dialog',
-  templateUrl: './add-announcement-dialog.componentV2.html',
-  styleUrls: ['./add-announcement-dialog.componentV2.css']
+  templateUrl: './add-announcement-dialog.component.html',
+  styleUrls: ['./add-announcement-dialog.component.css']
 })
-export class AddAnnouncementDialogComponentV2 implements OnInit {
+export class AddAnnouncementDialogComponent implements OnInit {
   announcement = { title: '', content: '' };
   private quill: any;
+  authorList: string[] = ['Hannah Campbell', 'Hannah Campbell'];
+    selectedAuthor: string = this.authorList[0];
+    announcementList: string[] = ['All Users', 'Administrators', 'Managers', 'Employees'];
+    selectedAnnouncement: string = this.announcementList[0];
 
   constructor(
-    public dialogRef: MatDialogRef<AddAnnouncementDialogComponentV2>,
+    public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 

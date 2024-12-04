@@ -1,0 +1,95 @@
+<h2 mat-dialog-title>Add New Announcement</h2>
+<mat-dialog-content>
+  <form>
+    <div class="form-container">
+      <mat-form-field appearance="outline" class="icon-width">
+        <mat-icon matPrefix>sentiment_very_satisfied</mat-icon>
+        <input matInput readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="title-width">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title*" required />
+      </mat-form-field>
+    </div>
+
+    <!-- <div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Enter text</mat-label>
+        <textarea matInput rows="5" placeholder="Enter text"></textarea>
+        <mat-hint>Maximum 500 words</mat-hint>
+      </mat-form-field>
+    </div> -->
+    <div class="editor-container">
+        <div id="editor"></div>
+      </div>
+
+    <div class="author-container">
+      <div class="author-width">
+        <mat-form-field appearance="outline" class="drop-down">
+          <mat-label>Author</mat-label>
+          <mat-select [(value)]="selectedAuthor">
+            <mat-option *ngFor="let author of authorList" [value]="author">
+              {{ author }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-checkbox class="display-author-checkbox"
+        >Display Author</mat-checkbox
+      >
+    </div>
+
+    <div class="date-container">
+      <mat-form-field appearance="outline" class="date-width">
+        <mat-label>Start</mat-label>
+        <input
+          matInput
+          [matDatepicker]="startPicker"
+          placeholder="Choose a start date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="startPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="date-width">
+        <mat-label>Expiration</mat-label>
+        <input
+          matInput
+          [matDatepicker]="expirationPicker"
+          placeholder="Choose an expiration date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="expirationPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #expirationPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field appearance="outline" class="drop-down">
+        <mat-label>Display Announcement to</mat-label>
+        <mat-select [(value)]="selectedAnnouncement">
+          <mat-option
+            *ngFor="let announcement of announcementList"
+            [value]="announcement"
+          >
+            {{ announcement }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <!-- <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary">Save</button> -->
+  <button mat-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="saveAnnouncement()">Save</button>
+</mat-dialog-actions>

@@ -70,10 +70,11 @@ import { HoverMessageComponent } from './components/hover-message/hover-message.
 import { ParticipantIdComponent } from './components/participant-id/participant-id.component';
 import { AnnouncementsComponent } from './pages/announcements/announcements.component';
 import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
-import { AddAnnouncementDialogComponentV2 } from './pages/announcements/add-announcement-dialog.componentV2';
+import { AddAnnouncementDialogComponent } from './pages/announcements/add-announcement-dialog.component';
 @NgModule({
   declarations: [
-    AddAnnouncementDialogComponentV2,
+    ManageAnnouncementsComponent,
+    AddAnnouncementDialogComponent,
     AppComponent,
     CalendarComponent,
     UserCardComponent,
@@ -115,7 +116,6 @@ import { AddAnnouncementDialogComponentV2 } from './pages/announcements/add-anno
     HoverMessageComponent,
     ParticipantIdComponent,
     AnnouncementsComponent,
-    AddAnnouncementDialogComponentV2
   ],
   imports: [
     BrowserModule,
