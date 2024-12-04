@@ -61,7 +61,7 @@ export class ParticipantSearchComponent {
   projectFilter: string[] = [];
   @ViewChild(MatSort) sort: MatSort | undefined;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  showCancel: boolean = false;
   constructor(private projectsService: ProjectsService, private logsService: LogsService, private participantService: ParticipantService, private router: Router) {
 
     this.phoneNumber.valueChanges.subscribe((newValue) => {
@@ -77,7 +77,26 @@ export class ParticipantSearchComponent {
       this.filter();
     });
     this.project.valueChanges.subscribe((newValue) => {
-      this.projectFilter = newValue?.map((v: any) => v.toLowerCase());
+      if (newValue.length > this.projectFilter.length) {
+        const addedValues = newValue.filter((v: any) => !this.projectFilter.includes(v.toLowerCase()));
+        let updatedValue = [...newValue]; // Copy the new value
+
+        if (addedValues.includes('0')) {
+          // If '0' is selected with other values, retain only '0'
+          updatedValue = ['0'];
+        } else if (updatedValue.includes('0')) {
+          // If other values are selected after '0', remove '0'
+          updatedValue = updatedValue.filter((v: any) => v !== '0');
+        }
+        // Update the form control to reflect the new value
+        this.project.setValue(updatedValue, { emitEvent: false });
+        // Update projectFilter with the new value
+        this.projectFilter = updatedValue.map((v: any) => v.toLowerCase());
+      } else {
+        // Update projectFilter with the new value
+        this.projectFilter = newValue.map((v: any) => v.toLowerCase());
+      }
+
       this.filter();
     });
     // Participant Lookup
@@ -127,7 +146,17 @@ export class ParticipantSearchComponent {
       }
     );
   }
-
+  // Method to check if the route contains 'search-participants'
+  checkRouteContainsSearchParticipants() {
+    const currentRoute = this.router.url; // Get the current URL
+    if (!currentRoute.includes('search-participants')) {
+      this.showCancel = true;
+      console.log('Route contains "search-participants"');
+      // Add your logic here
+    } else {
+      console.log('Route does not contain "search-participants"');
+    }
+  }
   reset() {
     // Filter participants based on search criteria
     this.phoneNumber.reset();
@@ -155,6 +184,9 @@ export class ParticipantSearchComponent {
     this.dataSource.data = lookups;
   }
 
+  ngOnInit() {
+    this.checkRouteContainsSearchParticipants();
+  }
   selectRow(row: Participant) {
     this.selectedParticipant = {
       ...row,
@@ -186,4 +218,20 @@ export class ParticipantSearchComponent {
       `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
     );
   }
+
+  moveToParticipantsPage(event: MouseEvent): void {
+    event.stopPropagation();
+    const url = 'search-participants';
+    const width = 500;
+    const height = 1000;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    window.open(
+      url,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
+    );
+  }
+
 }

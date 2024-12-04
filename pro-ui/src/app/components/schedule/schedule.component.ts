@@ -9,8 +9,8 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { GlobalsService } from '../../services/globals/globals.service';
 import { LogsService } from '../../services/logs/logs.service';
-import { ProjectsService } from '../../services/projects/projects.service';
 import { RequestsService } from '../../services/requests/requests.service';
+import { ProjectsService } from '../../services/projects/projects.service';
 import { UsersService } from '../../services/users/users.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
 
@@ -545,15 +545,6 @@ export class ScheduleComponent implements OnInit {
     } else {
       leaveFunction();
     }
-    //if (this.userSchedulesMonth.filter(x => x.changed).length > 0
-    //  && this.userSchedulesMonth.filter(x => x.changed).length > this.userSchedulesMonth.filter(x => x.addInitial).length) {
-    //  if (!confirm('You have unsaved changed, are you sure you want to close the scheduler and lose all unsaved work?')) {
-    //    return;
-    //  }
-    //}
-
-    //this.globalsService.closeSchedulePopup();
-    //this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
   };
 
   saveConfirmation(): void {
@@ -873,11 +864,12 @@ export class ScheduleComponent implements OnInit {
     this.businessRulesValidation(schedule);
 
     //tab validation
-    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
+/*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
     this.dayTabInvalid = this.filteredUserSchedulesDay.filter(x => x.invalid).length > 0;
     this.weekTabInvalid = this.filteredUserSchedulesWeek.filter(x => x.invalid).length > 0;
     this.monthTabInvalid = this.filteredUserSchedulesMonth.filter(x => x.invalid).length > 0;
-    this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;
+    this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;*/
+    console.log("invalid :-"+this.addTabInvalid,this.dayTabInvalid,this.weekTabInvalid,this.monthTabInvalid,this.customTabInvalid);
 
   }
 
@@ -1028,7 +1020,7 @@ export class ScheduleComponent implements OnInit {
     function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any ): boolean {
 
       //admin role , resourceGroup role and canEdit flag should be able to edit any schedule at any time
-      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
+/*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
         return true;
       }
 
@@ -1051,7 +1043,8 @@ export class ScheduleComponent implements OnInit {
         return scheduleDate >= unlockDateTwo;
       }
 
-      return false;
+      return false;*/
+      return date instanceof Date && !(authenticatedUser === null || authenticatedUser === undefined);
     }
 
 

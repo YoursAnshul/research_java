@@ -3,7 +3,8 @@
         <div mat-card-avatar class="legend-title legend-title-adjust">
             Participant Search
         </div>
-        <div class="view-all">
+        <div class="view-all" *ngIf="showCancel">
+            <mat-icon fontIcon="open_in_new" class="custom-color1" style="cursor: pointer; color: #0680cd" (click)="moveToParticipantsPage($event)"></mat-icon>
             <button class="no-bg-button" mat-dialog-close>
                 <mat-icon fontIcon="close"></mat-icon>
             </button>
@@ -54,7 +55,7 @@
     </div>
     <div class="results-container">
         <span class="reset-heading">Results</span>
-        <div class="table-ht">
+        <div class="table-ht" [ngClass] ="selectedParticipant ? 'ht371' : 'ht585'" >
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
 
                 <!-- Columns Definitions -->
@@ -138,7 +139,8 @@
     <div class="preview-container" *ngIf="selectedParticipant">
         <div class="flex center gap-32">
             <span class="reset-heading">Preview</span>
-            <button id="preview-btn" mat-raised-button class="btn">
+            <button id="preview-btn" mat-raised-button class="btn"
+                (click)="moveToPage($event, selectedParticipant.participantId)">
                 Open Participant
             </button>
         </div>
@@ -152,44 +154,44 @@
                 <input matInput [value]="selectedParticipant?.recordLocation || 'Unassigned'" readonly>
             </mat-form-field>
         </div>
-<div class="container">
-        <div class="flex gap-16">
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Last Contact Date</mat-label>
-                <input matInput [value]="selectedParticipant?.assignedTo || 'Unassigned'" readonly>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Participant Number</mat-label>
-                <input matInput [value]="selectedParticipant?.participantId || 'Unassigned'" readonly>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Participant Name</mat-label>
-                <input matInput [value]="selectedParticipant?.participantName || 'Unassigned'" readonly>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Date of Birth</mat-label>
-                <input matInput [value]="selectedParticipant?.dateOfBirth || 'Unassigned'" readonly>
-            </mat-form-field>
-        </div>
+        <div class="container">
+            <div class="flex gap-16">
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Last Contact Date</mat-label>
+                    <input matInput [value]="selectedParticipant?.assignedTo || 'Unassigned'" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Participant Number</mat-label>
+                    <input matInput [value]="selectedParticipant?.participantId || 'Unassigned'" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Participant Name</mat-label>
+                    <input matInput [value]="selectedParticipant?.participantName || 'Unassigned'" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput [value]="selectedParticipant?.dateOfBirth || 'Unassigned'" readonly>
+                </mat-form-field>
+            </div>
 
-        <div class="flex gap-16">
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Sex</mat-label>
-                <input matInput [value]="selectedParticipant?.sex || 'Unassigned'" readonly>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Language</mat-label>
-                <input matInput [value]="selectedParticipant?.language || 'Unassigned'" readonly>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="black ctm">
-                <mat-label>Site</mat-label>
-                <input matInput [value]="selectedParticipant?.site || 'Unassigned'" readonly>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="black round round-orange ctm">
-                <mat-label>Local Time</mat-label>
-                <input matInput [value]="selectedParticipant?.localTime || 'Unassigned'" readonly>
-            </mat-form-field>
+            <div class="flex gap-16">
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Sex</mat-label>
+                    <input matInput [value]="selectedParticipant?.sex || 'Unassigned'" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Language</mat-label>
+                    <input matInput [value]="selectedParticipant?.language || 'Unassigned'" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="black ctm">
+                    <mat-label>Site</mat-label>
+                    <input matInput [value]="selectedParticipant?.site || 'Unassigned'" readonly>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="black round round-orange ctm">
+                    <mat-label>Local Time</mat-label>
+                    <input matInput [value]="selectedParticipant?.localTime || 'Unassigned'" readonly>
+                </mat-form-field>
+            </div>
         </div>
-    </div>
     </div>
 </mat-card>

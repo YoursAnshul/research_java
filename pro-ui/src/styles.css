@@ -40,12 +40,20 @@ html {
     display: none !important;
 }
 
-#pro-app .mat-mdc-form-field {
-    background-color: white;
-    border-top: 0.5px solid lightskyblue;
-    border-left: 0.5px solid lightskyblue;
-    border-right: 0.5px solid lightskyblue;
-    border-radius: 4px 4px 0 0;
+#pro-app .invalid, #pro-ep-app .invalid .mat-select-value-text {
+  color: #f44336;
+}
+
+
+#pro-app .invalid-emphasis {
+  color: #f44336;
+  font-size: 1.2em;
+}
+
+#pro-app .invalid-button {
+  background-color: #f44336;
+  border: 1px solid #f44336;
+  font-style: italic;
 }
 
 .mdc-floating-label {

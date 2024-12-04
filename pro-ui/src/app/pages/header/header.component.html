@@ -3,7 +3,7 @@
     <img id="wordmark-logo" src="/assets/DCRI_PRO_wordmark.jpg" />
     <div id="logged-in-as-section" *ngIf="authenticatedUser">
       <div class="flex">
-        <div class="circle" ngbTooltip="Search Participants" placement="bottom" (click)="openParticipantModal()">
+        <div class="circle" ngbTooltip="Participants Search" placement="bottom" (click)="openParticipantModal()">
           <mat-icon svgIcon="search" />
         </div>
         <div class="circle" ngbTooltip="Learning Center" placement="bottom">
@@ -454,6 +454,7 @@
                                   class="show-more-less"
                                 >
                                   {{ data.showMore ? 'Show Less' : 'Show More' }}
+                                  
                                 </a>
                               </div>
                             </div>

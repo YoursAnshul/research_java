@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { provideHttpClient } from '@angular/common/http';
+import {provideHttpClient} from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -45,23 +45,23 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule} from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
+import {MatSortModule} from '@angular/material/sort';
 
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { LanguageIconComponent } from './components/language-icon/language-icon.component';
 import { DialogComponent } from './components/dialog/dialog.component';
-import { MonthDatepickerComponent } from './components/calendar/datepickers/month-datepicker/month-datepicker.component';
-import { WeekDatepickerComponent } from './components/calendar/datepickers/week-datepicker/week-datepicker.component';
-import { ScheduleLineComponent } from './components/schedule/schedule-line/schedule-line.component';
-import { RangeDatepickerComponent } from './components/calendar/datepickers/range-datepicker/range-datepicker.component';
-import { MatPaginator } from '@angular/material/paginator';
-import { ModalPopupComponent } from './components/modal-popup/modal-popup.component';
-import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-datepicker/month-datepicker.component";
+import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
+import {ScheduleLineComponent} from "./components/schedule/schedule-line/schedule-line.component";
+import {RangeDatepickerComponent} from "./components/calendar/datepickers/range-datepicker/range-datepicker.component";
+import {MatPaginator} from "@angular/material/paginator";
+import {ModalPopupComponent} from "./components/modal-popup/modal-popup.component";
+import {NavMenuComponent} from "./components/nav-menu/nav-menu.component";
 import { HighlightSearch } from './components/highlightsearch/highlight.search';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatCheckboxModule} from '@angular/material/checkbox'
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
 import { ParticipantSearchComponent } from './components/participant-search/participant-search.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -113,7 +113,7 @@ import { ManageAnnouncementsComponent } from './pages/announcements/announcement
     HoverMessageComponent,
     ParticipantIdComponent,
     AnnouncementsComponent,
-    ManageAnnouncementsComponent,
+    ManageAnnouncementsComponent
   ],
   imports: [
     BrowserModule,
@@ -141,9 +141,9 @@ import { ManageAnnouncementsComponent } from './pages/announcements/announcement
     MatCheckboxModule,
     MatTableModule,
     MatSortModule,
-    MatProgressSpinnerModule,
+    MatProgressSpinnerModule
   ],
   providers: [provideHttpClient()],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
