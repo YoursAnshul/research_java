@@ -5,15 +5,15 @@ declare var Quill: any;
 
 @Component({
   selector: 'app-add-announcement-dialog',
-  templateUrl: './add-announcement-dialog.component.html',
-  styleUrls: ['./add-announcement-dialog.component.css']
+  templateUrl: './add-announcement-dialog.componentV2.html',
+  styleUrls: ['./add-announcement-dialog.componentV2.css']
 })
-export class AddAnnouncementDialogComponent implements OnInit {
+export class AddAnnouncementDialogComponentV2 implements OnInit {
   announcement = { title: '', content: '' };
   private quill: any;
 
   constructor(
-    public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
+    public dialogRef: MatDialogRef<AddAnnouncementDialogComponentV2>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
