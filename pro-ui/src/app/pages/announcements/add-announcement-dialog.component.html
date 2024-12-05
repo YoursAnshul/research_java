@@ -3,8 +3,11 @@
   <form>
     <div class="form-container">
       <mat-form-field appearance="outline" class="icon-width">
-        <mat-icon matPrefix>sentiment_very_satisfied</mat-icon>
-        <input matInput readonly />
+        <!-- <mat-icon matPrefix>sentiment_very_satisfied</mat-icon> -->
+        <input matInput readonly [value]="selectedEmoji" />
+        <button mat-icon-button matSuffix (click)="toggleEmojiPicker($event)">
+          <mat-icon>mood</mat-icon>
+        </button>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="title-width">

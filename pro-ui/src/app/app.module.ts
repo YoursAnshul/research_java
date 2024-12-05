@@ -143,7 +143,7 @@ import { AddAnnouncementDialogComponent } from './pages/announcements/add-announ
     MatCheckboxModule,
     MatTableModule,
     MatSortModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]
