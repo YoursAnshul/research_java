@@ -6,7 +6,16 @@
         <!-- <mat-icon matPrefix>sentiment_very_satisfied</mat-icon> -->
         <input matInput readonly [value]="selectedEmoji" />
         <button mat-icon-button matSuffix (click)="toggleEmojiPicker($event)">
-          <mat-icon>mood</mat-icon>
+          <mat-icon style="margin-left: -46px" *ngIf="!selectedEmoji"
+            >mood</mat-icon
+          >
+          <mat-icon
+            style="margin-left: -46px"
+            *ngIf="selectedEmoji"
+            class="emoji-icon"
+          >
+            {{ selectedEmoji }}
+          </mat-icon>
         </button>
       </mat-form-field>
 
@@ -31,7 +40,7 @@
         </mat-form-field>
       </div>
 
-      <mat-checkbox class="display-author-checkbox"
+      <mat-checkbox class="display-author-checkbox" [disableRipple]="true"
         >Display Author</mat-checkbox
       >
     </div>
@@ -80,10 +89,17 @@
       </mat-form-field>
     </div>
     <div class="row">
-      <div class="col-lg-6"><button mat-stroked-button class="full-width-button">Preview</button></div>
       <div class="col-lg-6">
-        <button mat-flat-button color="primary" (click)="saveAnnouncement()" class="full-width-button">
-          Save 
+        <button mat-stroked-button class="full-width-button">Preview</button>
+      </div>
+      <div class="col-lg-6">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="saveAnnouncement()"
+          class="full-width-button"
+        >
+          Save
         </button>
       </div>
     </div>

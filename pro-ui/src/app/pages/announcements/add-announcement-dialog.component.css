@@ -78,3 +78,33 @@ mat-dialog-content {
 ::ng-deep .emoji-picker__wrapper {
   z-index: 2000 !important;
 }
+.mat-mdc-checkbox-checked {
+  --mdc-checkbox-selected-focus-icon-color: #0680cd;
+  --mdc-checkbox-selected-hover-icon-color: #0680cd;
+  --mdc-checkbox-selected-pressed-icon-color: #0680cd;
+  --mdc-checkbox-selected-icon-color: #0680cd;
+}
+
+.mat-mdc-checkbox {
+  --mdc-checkbox-unselected-hover-icon-color: #0680cd;
+  --mdc-checkbox-unselected-focus-icon-color: #0680cd;
+  --mdc-checkbox-unselected-pressed-icon-color: #0680cd;
+  --mdc-checkbox-unselected-icon-color: #0680cd;
+}
+
+.mat-mdc-checkbox-checked .mdc-checkbox__checkmark {
+  color: #0680cd !important;
+}
+
+.mat-mdc-checkbox-checked .mdc-checkbox__background {
+  background-color: #0680cd !important;
+  border-color: #0680cd !important;
+}
+
+.mat-mdc-checkbox .mdc-checkbox__background {
+  border-color: #0680cd !important;
+}
+.mat-icon{
+  height: 40px !important;
+  width: 40px !important;
+}

@@ -39,9 +39,9 @@ export class AddAnnouncementDialogComponent implements OnInit {
           [{ list: 'ordered' }, { list: 'bullet' }],
           ['link', 'blockquote', 'code-block'],
           [{ align: [] }],
-          [{ color: [] }, { background: [] }]
-        ]
-      }
+          [{ color: [] }, { background: [] }],
+        ],
+      },
     });
 
     this.emojiPicker = new EmojiButton();
@@ -52,12 +52,15 @@ export class AddAnnouncementDialogComponent implements OnInit {
 
     this.emojiPicker.on('emoji', (selection: any) => {
       this.selectedEmoji = selection.emoji;
+      console.log("this.selectedEmoji----"+this.selectedEmoji);
+
     });
   }
 
   toggleEmojiPicker(event: MouseEvent): void {
     this.emojiPicker.togglePicker(event.target);
-      this.emojiPicker.pickerContainer.style.zIndex = '2000';
+    // this.emojiPicker.pickerContainer.style.zIndex = '2000';
+    console.log("event----"+event);
   }
 
   saveAnnouncement(): void {
