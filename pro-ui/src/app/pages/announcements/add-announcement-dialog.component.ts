@@ -6,20 +6,15 @@ declare var Quill: any;
 @Component({
   selector: 'app-add-announcement-dialog',
   templateUrl: './add-announcement-dialog.component.html',
-  styleUrls: ['./add-announcement-dialog.component.css'],
+  styleUrls: ['./add-announcement-dialog.component.css']
 })
 export class AddAnnouncementDialogComponent implements OnInit {
   announcement = { title: '', content: '' };
   private quill: any;
   authorList: string[] = ['Hannah Campbell', 'Hannah Campbell'];
-  selectedAuthor: string = this.authorList[0];
-  announcementList: string[] = [
-    'All Users',
-    'Administrators',
-    'Managers',
-    'Employees',
-  ];
-  selectedAnnouncement: string = this.announcementList[0];
+    selectedAuthor: string = this.authorList[0];
+    announcementList: string[] = ['All Users', 'Administrators', 'Managers', 'Employees'];
+    selectedAnnouncement: string = this.announcementList[0];
 
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
@@ -36,11 +31,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
           [{ list: 'ordered' }, { list: 'bullet' }],
           ['link', 'blockquote', 'code-block'],
           [{ align: [] }],
-          [{ color: [] }, { background: [] }],
-        ],
-      },
+          [{ color: [] }, { background: [] }]
+        ]
+      }
     });
 
+    // Load existing content if available
     if (this.data?.content) {
       this.quill.root.innerHTML = this.data.content;
     }

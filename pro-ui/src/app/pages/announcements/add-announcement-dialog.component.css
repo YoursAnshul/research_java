@@ -4,8 +4,11 @@
 }
 
 mat-dialog-content {
-  height: 100%;
+  max-height: 100vh;
   overflow-y: auto;
+}
+::ng-deep .mat-mdc-dialog-surface {
+  width: 70vh !important;
 }
 
 .author-container {
@@ -40,7 +43,6 @@ mat-dialog-content {
   display: flex;
   gap: 20px;
   align-items: center;
-  margin-top: 5px;
 }
 
 .title-width {
@@ -56,25 +58,18 @@ mat-dialog-content {
 }
 
 .editor-container {
-  margin-top: 20px;
+  margin-top: 10px;
   border: 1px solid #ccc;
   min-height: 200px;
   border-radius: 5px;
 }
 .ql-container.ql-snow {
   border-top: 0;
-  height: 300px;
+  height: 170px;
 }
-mat-form-field .mat-input-element.ng-touched.ng-invalid {
-  color: red;  /* Text color when field is invalid */
-}
-
-/* Optional: You can also customize the border color for invalid fields */
-mat-form-field .mat-form-field-underline.ng-touched.ng-invalid {
-  border-bottom: 2px solid red; /* Red border when invalid */
+.full-width-button {
+  width: 100%;
+  margin-top: 20px;
 }
 
-/* To remove the red background or any default styles */
-mat-form-field .mat-input-element {
-  background-color: transparent !important; /* Ensures no background color change */
-}
+
