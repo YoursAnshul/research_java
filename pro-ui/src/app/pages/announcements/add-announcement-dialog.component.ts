@@ -23,6 +23,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   selectedAnnouncement: string = this.announcementList[0];
   selectedEmoji: string = '';
   private emojiPicker: any;
+  showEmojiPicker = false; 
 
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
@@ -44,15 +45,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
       },
     });
 
-    this.emojiPicker = new EmojiButton();
-
+    this.emojiPicker = new EmojiButton(); 
     if (this.data?.content) {
       this.quill.root.innerHTML = this.data.content;
     }
 
     this.emojiPicker.on('emoji', (selection: any) => {
       this.selectedEmoji = selection.emoji;
+      this.showEmojiPicker = !this.showEmojiPicker;
       console.log("this.selectedEmoji----"+this.selectedEmoji);
+      console.log("this.showEmojiPicker22----"+this.showEmojiPicker);
 
     });
   }
@@ -61,6 +63,9 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.emojiPicker.togglePicker(event.target);
     // this.emojiPicker.pickerContainer.style.zIndex = '2000';
     console.log("event----"+event);
+    this.showEmojiPicker = false;
+    console.log("this.showEmojiPicker----"+this.showEmojiPicker);
+    
   }
 
   saveAnnouncement(): void {

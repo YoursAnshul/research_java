@@ -5,18 +5,18 @@
       <mat-form-field appearance="outline" class="icon-width">
         <!-- <mat-icon matPrefix>sentiment_very_satisfied</mat-icon> -->
         <input matInput readonly [value]="selectedEmoji" />
-        <button mat-icon-button matSuffix (click)="toggleEmojiPicker($event)">
-          <mat-icon style="margin-left: -46px" *ngIf="!selectedEmoji"
-            >mood</mat-icon
-          >
-          <mat-icon
-            style="margin-left: -46px"
-            *ngIf="selectedEmoji"
+        <button style="margin-left: -50px"  mat-icon-button matSuffix (click)="toggleEmojiPicker($event)">
+          <mat-icon style="margin-left: -5px"  *ngIf="!selectedEmoji"
+            >mood </mat-icon>
+            <!-- <mat-icon
+            style="margin-left: -5px"
+            *ngIf="showEmojiPicker"
             class="emoji-icon"
           >
             {{ selectedEmoji }}
-          </mat-icon>
+          </mat-icon> -->
         </button>
+        
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="title-width">
