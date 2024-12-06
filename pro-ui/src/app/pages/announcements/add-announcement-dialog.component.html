@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <form>
     <div class="form-container">
-      <mat-form-field appearance="outline" class="icon-width">
+      <mat-form-field appearance="outline" class="icon-width mt-2">
         <!-- <mat-icon matPrefix>sentiment_very_satisfied</mat-icon> -->
         <input matInput readonly [value]="selectedEmoji" />
         <button style="margin-left: -50px"  mat-icon-button matSuffix (click)="toggleEmojiPicker($event)">
@@ -19,8 +19,8 @@
         
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="title-width">
-        <mat-label>Title</mat-label>
+      <mat-form-field  appearance="outline" class="title-width mt-2">
+        <mat-label class="title-red">Title</mat-label>
         <input matInput placeholder="Title*" required />
       </mat-form-field>
     </div>
