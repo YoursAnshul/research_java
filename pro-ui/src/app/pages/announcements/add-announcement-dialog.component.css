@@ -104,7 +104,7 @@ mat-dialog-content {
 .mat-mdc-checkbox .mdc-checkbox__background {
   border-color: #0680cd !important;
 }
-.mat-icon{
+.mat-icon {
   height: 40px !important;
   width: 40px !important;
 }
@@ -117,4 +117,7 @@ mat-dialog-content {
   position: unset !important;
   border-radius: unset !important;
   pointer-events: unset !important;
+}
+::ng-deep .mat-mdc-dialog-surface {
+  border: 3px solid #0680cd !important;
 }
