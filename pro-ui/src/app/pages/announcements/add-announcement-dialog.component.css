@@ -165,6 +165,12 @@ mat-dialog-content {
   border-color: #0680cd !important; 
 }
 
+::ng-deep
+  .mat-mdc-text-field-wrapper.mdc-text-field--outlined
+  .mdc-text-field__input {
+  display: inline-block;
+  margin-left: -10px;
+}
 
 .editor-container {
   position: relative;
