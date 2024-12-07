@@ -116,7 +116,6 @@ mat-dialog-content {
   height: 37px !important;
   display: flex;
   align-items: center;
-  border-color: #0680cd !important;
 }
 
 ::ng-deep .custom-form-field .mat-mdc-input-element {
@@ -133,7 +132,6 @@ mat-dialog-content {
   transform: translateY(-50%) scale(1) !important;
   font-size: 14px !important;
   transition: transform 0.2s ease, top 0.2s ease !important;
-  color: #0680cd !important; 
 }
 
 ::ng-deep .custom-form-field .mdc-floating-label--float-above {
@@ -156,13 +154,6 @@ mat-dialog-content {
 ::ng-deep .custom-form-field .mat-mdc-form-field {
   position: relative;
   font-size: 14px;
-}
-
-::ng-deep .custom-form-field .mat-mdc-form-field:not(.mat-focused) .mdc-floating-label {
-  color:#0680cd !important;
-}
-::ng-deep .custom-form-field .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline-thick {
-  border-color: #0680cd !important; 
 }
 
 ::ng-deep
