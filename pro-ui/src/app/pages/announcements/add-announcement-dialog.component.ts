@@ -24,6 +24,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
   selectedEmoji: string = '';
   private emojiPicker: any;
   showEmojiPicker = false; 
+  maxWordLimit = 10;
+  wordCount = 0; 
 
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
@@ -34,14 +36,29 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.quill = new Quill('#editor', {
       theme: 'snow',
       modules: {
-        toolbar: [
-          [{ header: [1, 2, 3, false] }],
-          ['bold', 'italic', 'underline'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'blockquote', 'code-block'],
-          [{ align: [] }],
-          [{ color: [] }, { background: [] }],
-        ],
+        toolbar: {
+          container: [
+            [{ header: [1, 2, 3, false] }],
+            [{ align: [] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ list: 'ordered' }, { list: 'bullet' }], 
+            ['link', 'blockquote', 'code-block', 'image'], 
+            [{ color: [] }, { background: [] }], 
+            ['clean'],
+            ['emoji'], 
+            ['undo', 'redo'], 
+          ],
+          handlers: {
+            undo: () => this.undoChange(),
+            redo: () => this.redoChange(),
+          },
+        },
+        emoji: true,
+        history: {
+          delay: 1000,
+          maxStack: 50,
+          userOnly: true,
+        },
       },
     });
 
@@ -50,6 +67,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
       this.quill.root.innerHTML = this.data.content;
     }
 
+    this.quill.on('text-change', (delta: any, oldDelta: any, source: string) => {
+      if (source === 'user') {
+      this.handleWordLimit();
+      }
+    });
+
     this.emojiPicker.on('emoji', (selection: any) => {
       this.selectedEmoji = selection.emoji;
       this.showEmojiPicker = !this.showEmojiPicker;
@@ -57,6 +80,31 @@ export class AddAnnouncementDialogComponent implements OnInit {
       console.log("this.showEmojiPicker22----"+this.showEmojiPicker);
 
     });
+  }
+
+   handleWordLimit(): void {
+    const text = this.quill.getText().trim(); 
+    const words = text.match(/\b\S+\b/g) || []; 
+    this.wordCount = words.length;
+
+    if (this.wordCount > this.maxWordLimit) {
+      const excessWords = this.wordCount - this.maxWordLimit;
+      const range = this.quill.getSelection();
+      if (range) {
+        this.quill.deleteText(range.index - excessWords, excessWords);
+      } else {
+        this.quill.deleteText(this.quill.getLength() - excessWords, excessWords);
+      }
+      this.wordCount = this.maxWordLimit; 
+    }
+  }
+  
+    undoChange(): void {
+    this.quill.history.undo();
+  }
+  
+  redoChange(): void {
+    this.quill.history.redo();
   }
 
   toggleEmojiPicker(event: MouseEvent): void {

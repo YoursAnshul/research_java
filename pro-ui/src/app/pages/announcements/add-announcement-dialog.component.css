@@ -57,12 +57,6 @@ mat-dialog-content {
   width: 100%;
 }
 
-.editor-container {
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  min-height: 200px;
-  border-radius: 5px;
-}
 .ql-container.ql-snow {
   border-top: 0;
   height: 170px;
@@ -169,4 +163,43 @@ mat-dialog-content {
 }
 ::ng-deep .custom-form-field .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline-thick {
   border-color: #0680cd !important; 
+}
+
+
+.editor-container {
+  position: relative;
+  border: 2px solid #0680cd;
+  border-radius: 4px;
+  /* padding: 10px; */
+  background-color: #fff;
+  margin: 10px 0;
+}
+
+#editor {
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.character-counter {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.ql-undo::before {
+  content: '\21B6'; 
+}
+
+.ql-redo::before {
+  content: '\21B7'; 
+}
+
+.ql-toolbar .ql-undo,
+.ql-toolbar .ql-redo {
+  border: none;
+  background: none;
+  font-size: 16px;
+  padding: 5px;
+  cursor: pointer;
 }
