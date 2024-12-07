@@ -2,25 +2,28 @@
 <mat-dialog-content>
   <form>
     <div class="form-container">
-      <mat-form-field appearance="outline" class="icon-width mt-2">
-        <!-- <mat-icon matPrefix>sentiment_very_satisfied</mat-icon> -->
+      <mat-form-field
+        appearance="outline"
+        class="icon-width custom-form-field title-width mt-2"
+      >
         <input matInput readonly [value]="selectedEmoji" />
-        <button style="margin-left: -50px"  mat-icon-button matSuffix (click)="toggleEmojiPicker($event)">
-          <mat-icon style="margin-left: -5px"  *ngIf="!selectedEmoji"
-            >mood </mat-icon>
-            <!-- <mat-icon
-            style="margin-left: -5px"
-            *ngIf="showEmojiPicker"
-            class="emoji-icon"
-          >
-            {{ selectedEmoji }}
-          </mat-icon> -->
+        <button
+          style="margin-left: -50px"
+          mat-icon-button
+          matSuffix
+          (click)="toggleEmojiPicker($event)"
+        >
+          <mat-icon style="margin-left: -5px" *ngIf="!selectedEmoji"
+            >mood
+          </mat-icon>
         </button>
-        
       </mat-form-field>
 
-      <mat-form-field  appearance="outline" class="title-width mt-2">
-        <mat-label class="title-red">Title</mat-label>
+      <mat-form-field
+        appearance="outline"
+        class="custom-form-field title-width mt-2"
+      >
+        <mat-label>Title</mat-label>
         <input matInput placeholder="Title*" required />
       </mat-form-field>
     </div>
@@ -30,7 +33,11 @@
 
     <div class="author-container">
       <div class="author-width">
-        <mat-form-field appearance="outline" class="drop-down">
+        <mat-form-field
+          appearance="outline"
+          class="drop-down"
+          class="custom-form-field title-width mt-2"
+        >
           <mat-label>Author</mat-label>
           <mat-select [(value)]="selectedAuthor">
             <mat-option *ngFor="let author of authorList" [value]="author">
@@ -46,7 +53,10 @@
     </div>
 
     <div class="date-container">
-      <mat-form-field appearance="outline" class="date-width">
+      <mat-form-field
+        appearance="outline"
+        class="date-width custom-form-field title-width mt-2"
+      >
         <mat-label>Start</mat-label>
         <input
           matInput
@@ -60,7 +70,10 @@
         <mat-datepicker #startPicker></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="date-width">
+      <mat-form-field
+        appearance="outline"
+        class="date-width custom-form-field title-width mt-2"
+      >
         <mat-label>Expiration</mat-label>
         <input
           matInput
@@ -76,7 +89,10 @@
     </div>
 
     <div>
-      <mat-form-field appearance="outline" class="drop-down">
+      <mat-form-field
+        appearance="outline"
+        class="drop-down custom-form-field title-width mt-4"
+      >
         <mat-label>Display Announcement to</mat-label>
         <mat-select [(value)]="selectedAnnouncement">
           <mat-option
