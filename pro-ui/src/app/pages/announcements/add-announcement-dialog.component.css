@@ -209,3 +209,10 @@ mat-dialog-content {
   padding: 5px;
   cursor: pointer;
 }
+
+.word-counter {
+  font-size: 14px;
+  color: #555;
+  margin-top: 1px;
+  margin-left: 5px;
+}
