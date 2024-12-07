@@ -8,7 +8,7 @@ mat-dialog-content {
   overflow-y: auto;
 }
 ::ng-deep .mat-mdc-dialog-surface {
-  width: 70vh !important;
+  width: 60vh !important;
 }
 
 .author-container {
@@ -113,7 +113,7 @@ mat-dialog-content {
   border: 3px solid #0680cd !important;
 }
 ::ng-deep .custom-form-field .mat-mdc-text-field-wrapper {
-  height: 40px !important;
+  height: 37px !important;
   display: flex;
   align-items: center;
   border-color: #0680cd !important;
