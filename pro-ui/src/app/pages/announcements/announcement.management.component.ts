@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -17,6 +18,17 @@ export class ManageAnnouncementsComponent implements OnInit {
     'actions',
   ];
   announcements: any = [];
+  length = 4;
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [5, 10, 15];
+
+  hidePageSize = false;
+  showPageSizeOptions = true;
+  showFirstLastButtons = true;
+  disabled = false;
+
+  pageEvent!: PageEvent;
 
   constructor(private dialog: MatDialog) {}
 
@@ -72,5 +84,17 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   viewAnnouncement(announcement: any): void {
     console.log('View announcement:', announcement);
+  }
+  handlePageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.length = e.length;
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+  }
+
+  setPageSizeOptions(setPageSizeOptionsInput: string) {
+    if (setPageSizeOptionsInput) {
+      this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+    }
   }
 }

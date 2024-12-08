@@ -1,0 +1,41 @@
+<div class="dialog-overlay">
+  <div class="dialog-box">
+    <h2>Announcement Preview</h2>
+    <mat-icon
+      fontIcon="close"
+      class="text-danger close-icon"
+      style="cursor: pointer"
+      (click)="closeDialog()"
+    ></mat-icon>
+
+    <div *ngFor="let announcement of announcementsList" class="announcement">
+      <h4 style="font-weight: bold">
+        {{ announcement.title }}
+      </h4>
+      <p>{{ announcement.content }}</p>
+      <div class="meta">
+        <div>
+          <small
+            >Posted {{ announcement.date | date : "MM/dd/yyyy" }} by Hannah
+            Campbell</small
+          >
+        </div>
+        <div class="tags">
+          <span
+            *ngFor="let tag of announcement.tags"
+            class="tag"
+            [ngStyle]="{ '--tag-color': getTagColor(tag) }"
+          >
+            {{ tag }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-actions">
+      <button mat-flat-button class="w-100" (click)="closePreview()">
+        Close Preview
+      </button>
+    </div>
+  </div>
+</div>

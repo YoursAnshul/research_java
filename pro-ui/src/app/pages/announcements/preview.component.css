@@ -1,0 +1,86 @@
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-box {
+  position: relative;
+  background: white;
+  padding: 10px;
+  width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  border: 3px solid #0680cd !important;
+}
+
+h2 {
+  margin: 0 13px 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.announcement {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.meta {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 0px 5px;
+  border-radius: 12px;
+  background-color: white;
+  color: #333;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+}
+
+.tag::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background-color: var(--tag-color);
+}
+
+.dialog-actions {
+  text-align: right;
+  margin-top: 20px;
+}
+button {
+  background-color: #0680cd !important;
+  color: white !important;
+  cursor: pointer;
+  font-size: 12px !important;
+}
+.close-icon {
+  position: absolute;
+  top: 13px;
+  right: 8px;
+  color: red;
+  cursor: pointer;
+}

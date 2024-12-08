@@ -71,6 +71,7 @@ import { ParticipantIdComponent } from './components/participant-id/participant-
 import { AnnouncementsComponent } from './pages/announcements/announcements.component';
 import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
 import { AddAnnouncementDialogComponent } from './pages/announcements/add-announcement-dialog.component';
+import { PreviewComponent } from './pages/announcements/preview.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -116,6 +117,7 @@ import { AddAnnouncementDialogComponent } from './pages/announcements/add-announ
     HoverMessageComponent,
     ParticipantIdComponent,
     AnnouncementsComponent,
+    PreviewComponent
   ],
   imports: [
     BrowserModule,

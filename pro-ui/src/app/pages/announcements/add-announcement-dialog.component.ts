@@ -1,7 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialog,
+} from '@angular/material/dialog';
 import { EmojiButton } from '@joeattardi/emoji-button';
+import { PreviewComponent } from './preview.component';
 
 declare var Quill: any;
 
@@ -28,12 +33,13 @@ export class AddAnnouncementDialogComponent implements OnInit {
   maxWordLimit = 10;
   wordCount = 0;
   announcementForm!: FormGroup;
-  currentTarget!: 'formField' | 'textArea'; 
+  currentTarget!: 'formField' | 'textArea';
 
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
@@ -54,7 +60,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   <path d="M11.5 8c3.01 0 5.53 2.13 6.23 5H15l4 4 4-4h-2.73C20.19 9.28 16.27 6 11.5 6c-3.58 0-6.67 2.06-8.1 5.03l1.62.89C6.33 8.82 8.75 8 11.5 8z" />
 </svg>
 `;
-      icons.emoji = `
+    icons.emoji = `
       <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 <mask id="mask0_710_6226" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="21" height="21">
 <rect x="0.5" y="0.5" width="20" height="20" fill="#D9D9D9"/>
@@ -73,18 +79,20 @@ export class AddAnnouncementDialogComponent implements OnInit {
             [{ header: [1, 2, 3, false] }],
             [{ align: [] }],
             ['bold', 'italic', 'underline', 'strike'],
-            [{ list: 'ordered' }, { list: 'bullet' }], 
-            ['link', 'blockquote', 'code-block', 'image'], 
-            [{ color: [] }, { background: [] }], 
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link', 'blockquote', 'code-block', 'image'],
+            [{ color: [] }, { background: [] }],
             ['clean'],
-            ['emoji'], 
-             
+            ['emoji'],
           ],
           handlers: {
             undo: () => this.undoChange(),
             redo: () => this.redoChange(),
             emoji: (value: any) => {
-              const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+              const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+              });
               Object.defineProperty(event, 'target', {
                 value: document.querySelector('.ql-emoji'),
                 enumerable: true,
@@ -101,16 +109,19 @@ export class AddAnnouncementDialogComponent implements OnInit {
       },
     });
 
-    this.emojiPicker = new EmojiButton(); 
+    this.emojiPicker = new EmojiButton();
     if (this.data?.content) {
       this.quill.root.innerHTML = this.data.content;
     }
 
-    this.quill.on('text-change', (delta: any, oldDelta: any, source: string) => {
-      if (source === 'user') {
-      this.handleWordLimit();
+    this.quill.on(
+      'text-change',
+      (delta: any, oldDelta: any, source: string) => {
+        if (source === 'user') {
+          this.handleWordLimit();
+        }
       }
-    });
+    );
 
     this.emojiPicker.on('emoji', (selection: any) => {
       if (this.currentTarget === 'formField') {
@@ -121,14 +132,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
           this.quill.insertText(range.index, selection.emoji, 'user');
           this.quill.setSelection(range.index + selection.emoji.length);
         } else {
-          this.quill.insertText(this.quill.getLength() - 1, selection.emoji, 'user');
+          this.quill.insertText(
+            this.quill.getLength() - 1,
+            selection.emoji,
+            'user'
+          );
         }
       }
-        this.emojiPicker.hidePicker();
+      this.emojiPicker.hidePicker();
       this.showEmojiPicker = false;
     });
-    
-  }  
+  }
 
   handleWordLimit(): void {
     const text = this.quill.getText().trim();
@@ -158,7 +172,10 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.quill.history.redo();
   }
 
-  toggleEmojiPicker(event: MouseEvent | { target: HTMLElement }, target: 'formField' | 'textArea'): void {
+  toggleEmojiPicker(
+    event: MouseEvent | { target: HTMLElement },
+    target: 'formField' | 'textArea'
+  ): void {
     const targetElement = event.target as HTMLElement;
     this.currentTarget = target;
     this.emojiPicker.togglePicker(targetElement);
@@ -176,5 +193,19 @@ export class AddAnnouncementDialogComponent implements OnInit {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+  // Open the priview dialog
+  openPreview(): void {
+    this.closeDialog();
+    console.log('Opening preview dialog...');
+    const dialogRef = this.dialog.open(PreviewComponent, {
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('result-------', result);
+      }
+    });
   }
 }
