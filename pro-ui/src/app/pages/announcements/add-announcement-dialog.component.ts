@@ -28,6 +28,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   maxWordLimit = 10;
   wordCount = 0;
   announcementForm!: FormGroup;
+  currentTarget!: 'formField' | 'textArea'; 
 
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
@@ -43,13 +44,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
   ngOnInit(): void {
     const icons = Quill.import('ui/icons');
     icons.undo = `
-      <svg viewBox="0 0 18 18">
-        <path d="M12 4V1l-5 4.5L12 10V7c3.6 0 5 2.1 5 5 0 3-2 5-5 5-1.9 0-3.4-1-4.5-2.5l-1.4 1.5c1.6 2 3.8 3.5 5.9 3.5 4 0 7-3 7-7s-3-7-7-7z"></path>
-      </svg>`;
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path d="M12.5 8c-3.01 0-5.53 2.13-6.23 5H9l-4 4-4-4h2.73C3.81 9.28 7.73 6 12.5 6c3.58 0 6.67 2.06 8.1 5.03l-1.62.89C17.67 8.82 15.25 8 12.5 8z" />
+</svg>
+`;
+
     icons.redo = `
-      <svg viewBox="0 0 18 18">
-        <path d="M6 14v3l5-4.5L6 9v3c-3.6 0-5-2.1-5-5 0-3 2-5 5-5 1.9 0 3.4 1 4.5 2.5l1.4-1.5C9.4 2 7.2 0.5 5 0.5 1 0.5-2 3.5-2 7.5s3 7 7 7z"></path>
-      </svg>`;
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path d="M11.5 8c3.01 0 5.53 2.13 6.23 5H15l4 4 4-4h-2.73C20.19 9.28 16.27 6 11.5 6c-3.58 0-6.67 2.06-8.1 5.03l1.62.89C6.33 8.82 8.75 8 11.5 8z" />
+</svg>
+`;
       icons.emoji = `
       <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 <mask id="mask0_710_6226" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="21" height="21">
@@ -79,9 +83,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
           handlers: {
             undo: () => this.undoChange(),
             redo: () => this.redoChange(),
+            emoji: (value: any) => {
+              const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+              Object.defineProperty(event, 'target', {
+                value: document.querySelector('.ql-emoji'),
+                enumerable: true,
+              });
+              this.toggleEmojiPicker(event, 'textArea');
+            },
           },
         },
-        emoji: true,
         history: {
           delay: 1000,
           maxStack: 50,
@@ -102,13 +113,22 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
 
     this.emojiPicker.on('emoji', (selection: any) => {
-      this.selectedEmoji = selection.emoji;
-      this.showEmojiPicker = !this.showEmojiPicker;
-      console.log("this.selectedEmoji----"+this.selectedEmoji);
-      console.log("this.showEmojiPicker22----"+this.showEmojiPicker);
-
+      if (this.currentTarget === 'formField') {
+        this.selectedEmoji = selection.emoji;
+      } else if (this.currentTarget === 'textArea') {
+        const range = this.quill.getSelection();
+        if (range) {
+          this.quill.insertText(range.index, selection.emoji, 'user');
+          this.quill.setSelection(range.index + selection.emoji.length);
+        } else {
+          this.quill.insertText(this.quill.getLength() - 1, selection.emoji, 'user');
+        }
+      }
+        this.emojiPicker.hidePicker();
+      this.showEmojiPicker = false;
     });
-  }
+    
+  }  
 
   handleWordLimit(): void {
     const text = this.quill.getText().trim();
@@ -138,12 +158,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.quill.history.redo();
   }
 
-  toggleEmojiPicker(event: MouseEvent): void {
-    this.emojiPicker.togglePicker(event.target);
-    // this.emojiPicker.pickerContainer.style.zIndex = '2000';
-    console.log('event----' + event);
-    this.showEmojiPicker = false;
-    console.log('this.showEmojiPicker----' + this.showEmojiPicker);
+  toggleEmojiPicker(event: MouseEvent | { target: HTMLElement }, target: 'formField' | 'textArea'): void {
+    const targetElement = event.target as HTMLElement;
+    this.currentTarget = target;
+    this.emojiPicker.togglePicker(targetElement);
+    this.showEmojiPicker = !this.showEmojiPicker;
+    console.log(`Emoji Picker toggled for: ${target}`);
   }
 
   saveAnnouncement(): void {
