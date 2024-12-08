@@ -39,7 +39,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_FORMATS, MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
@@ -144,6 +144,7 @@ import { AddAnnouncementDialogComponent } from './pages/announcements/add-announ
     MatTableModule,
     MatSortModule,
     MatProgressSpinnerModule,
+    MatRippleModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]
