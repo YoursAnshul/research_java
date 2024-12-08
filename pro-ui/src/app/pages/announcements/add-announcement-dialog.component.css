@@ -1,6 +1,5 @@
 .full-width {
   width: 100%;
-  margin-top: 20px;
 }
 
 mat-dialog-content {
@@ -15,21 +14,12 @@ mat-dialog-content {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
 }
 
-.author-width {
-  flex: 1;
-}
-
-.display-author-checkbox {
-  margin-top: 5px;
-}
 .date-container {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 20px;
 }
 
 .date-width {
@@ -63,7 +53,6 @@ mat-dialog-content {
 }
 .full-width-button {
   width: 100%;
-  margin-top: 20px;
 }
 
 ::ng-deep .emoji-picker__wrapper {
@@ -113,7 +102,7 @@ mat-dialog-content {
   border: 3px solid #0680cd !important;
 }
 ::ng-deep .custom-form-field .mat-mdc-text-field-wrapper {
-  height: 37px !important;
+  height: 35px !important;
   display: flex;
   align-items: center;
 }
@@ -193,7 +182,6 @@ mat-dialog-content {
   position: relative;
   border: 2px solid #0680cd;
   border-radius: 4px;
-  /* padding: 10px; */
   background-color: #fff;
   margin: 10px 0;
 }
