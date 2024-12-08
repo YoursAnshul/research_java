@@ -47,7 +47,9 @@ mat-dialog-content {
 }
 
 .button-width {
-  height: 30px;
+  height: 23px;
+  font-size: 11px;
+  border: 2px solid !important;
 }
 
 ::ng-deep .emoji-picker__wrapper {
