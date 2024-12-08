@@ -45,15 +45,8 @@ mat-dialog-content {
   border-top: 0;
   height: 170px;
 }
-.button-container {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-}
 
-.full-width-button {
-  width: 186px;
-  border: 2px solid #b5b5b5 !important;
+.button-width {
   height: 30px;
 }
 
@@ -228,17 +221,14 @@ mat-dialog-content {
   margin-top: 1px;
   margin-left: 5px;
 }
-.mat-mdc-outlined-button:not(:disabled) {
-  color: #b5b5b5;
-}
-.save-button {
-  background-color: #b5b5b5 !important;
-  color: #fff;
-}
+
 .author-container {
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
 }
 mat-checkbox {
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
+/* .mat-mdc-outlined-button:not(:disabled) {
+  color: #b5b5b5;
+} */
