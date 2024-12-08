@@ -70,20 +70,20 @@
           <mat-option *ngFor="let l of _languages" value="{{l.codeValues}}">{{l.dropDownItem}}</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field *ngIf="!authenticatedUser?.interviewer">
+        <mat-label>Projects</mat-label>
+        <mat-select multiple
+                    [formControl]="_projectFilter"
+                    (selectionChange)="this.filterChange.emit()">
+          <mat-option value="0">Any Project</mat-option>
+          <mat-optgroup *ngFor="let group of projectGroups"
+                        [label]="group.name">
+            <mat-option *ngFor="let p of group.projects" value="{{p.projectID}}">{{p.projectName}}</mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
     </div>
 
-    <mat-form-field *ngIf="!authenticatedUser?.interviewer">
-      <mat-label>Projects</mat-label>
-      <mat-select multiple
-                  [formControl]="_projectFilter"
-                  (selectionChange)="this.filterChange.emit()">
-        <mat-option value="0">Any Project</mat-option>
-        <mat-optgroup *ngFor="let group of projectGroups"
-                      [label]="group.name">
-          <mat-option *ngFor="let p of group.projects" value="{{p.projectID}}">{{p.projectName}}</mat-option>
-        </mat-optgroup>
-      </mat-select>
-    </mat-form-field>
 
     <div id="conditional-operator-filter-outer" *ngIf="!authenticatedUser?.interviewer">
       <font>&mdash;</font>
