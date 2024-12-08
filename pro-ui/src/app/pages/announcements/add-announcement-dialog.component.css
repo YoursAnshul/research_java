@@ -3,9 +3,12 @@
 }
 
 mat-dialog-content {
-  max-height: 830px;
+  max-height: max(830px, calc(100vh - 150px));
+  max-height: calc(100vh - 150px);
   overflow-y: auto;
+  overflow-x: hidden;
 }
+
 ::ng-deep .mat-mdc-dialog-surface {
   width: 490px !important;
 }
@@ -182,6 +185,7 @@ mat-dialog-content {
   border-radius: 8px;
   background-color: #fff;
   margin: 10px 0;
+  overflow-y: auto;
 }
 
 ::ng-deep .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
@@ -190,7 +194,7 @@ mat-dialog-content {
 }
 
 #editor {
-  min-height: 250px;
+  min-height: 270px;
   overflow-y: auto;
 }
 
