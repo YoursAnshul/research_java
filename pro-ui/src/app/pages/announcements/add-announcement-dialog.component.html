@@ -15,7 +15,8 @@
         appearance="outline"
         class="icon-width custom-form-field title-width mt-2"
       >
-        <input matInput readonly [value]="selectedEmoji" />
+        <input style="width: auto;
+  margin-left: -12px;" matInput readonly [value]="selectedEmoji" />
         <button
           style="margin-left: -50px"
           mat-icon-button
@@ -23,7 +24,7 @@
           (click)="toggleEmojiPicker($event, 'formField')"
         >
           <mat-icon *ngIf="!selectedEmoji"
-            ><svg
+            ><svg style="margin-left: 5px !important;"
               width="21"
               height="21"
               viewBox="0 0 21 21"
