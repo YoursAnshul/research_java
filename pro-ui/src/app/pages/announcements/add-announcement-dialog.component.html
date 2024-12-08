@@ -1,13 +1,11 @@
 <h2 mat-dialog-title>
   Add New Announcement
-  <button
-    mat-icon-button
-    class="close-icon"
-    aria-label="Close"
+  <mat-icon
+    fontIcon="close"
+    class="text-danger close-icon"
+    style="cursor: pointer"
     (click)="closeDialog()"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
+  ></mat-icon>
 </h2>
 
 <mat-dialog-content>
@@ -82,7 +80,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-checkbox [disableRipple]="true">Display Author</mat-checkbox>
+      <mat-checkbox class="mt-2" [disableRipple]="true"
+        >Display Author</mat-checkbox
+      >
     </div>
 
     <div class="date-container mt-1">

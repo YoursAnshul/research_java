@@ -231,14 +231,8 @@ mat-checkbox {
 }
 .close-icon {
   position: absolute;
-  top: 8px;
+  top: 21px;
   right: 8px;
   color: red;
-  background: none;
-  border: none;
   cursor: pointer;
-}
-
-.close-icon mat-icon {
-  font-size: 24px;
 }
