@@ -30,7 +30,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   selectedEmoji: string = '';
   private emojiPicker: any;
   showEmojiPicker = false;
-  maxWordLimit = 10;
+  maxWordLimit = 500;
   wordCount = 0;
   announcementForm!: FormGroup;
   currentTarget!: 'formField' | 'textArea';
