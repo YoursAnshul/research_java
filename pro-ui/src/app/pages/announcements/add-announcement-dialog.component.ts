@@ -86,7 +86,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
             [{ list: 'ordered' }, { list: 'bullet' }],
             ['link', 'blockquote', 'code-block', 'image'],
             [{ color: [] }, { background: [] }],
-            ['clean'],
             ['emoji'],
           ],
           handlers: {
