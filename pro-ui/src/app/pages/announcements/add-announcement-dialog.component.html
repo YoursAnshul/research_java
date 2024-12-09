@@ -15,8 +15,12 @@
         appearance="outline"
         class="icon-width custom-form-field title-width mt-2"
       >
-        <input style="width: auto;
-  margin-left: -12px;" matInput readonly [value]="selectedEmoji" />
+        <input
+          style="width: auto; margin-left: -12px"
+          matInput
+          readonly
+          [value]="selectedEmoji"
+        />
         <button
           style="margin-left: -50px"
           mat-icon-button
@@ -24,7 +28,8 @@
           (click)="toggleEmojiPicker($event, 'formField')"
         >
           <mat-icon *ngIf="!selectedEmoji"
-            ><svg style="margin-left: 5px !important;"
+            ><svg
+              style="margin-left: 5px !important"
               width="21"
               height="21"
               viewBox="0 0 21 21"
@@ -149,17 +154,16 @@
       <div class="col-12 col-lg-6">
         <button
           mat-stroked-button
-          class="w-100 button-width"
-          [disabled]="announcementForm?.invalid"
+          class="w-100 button-width custom-button"
           (click)="openPreview()"
+          [disabled]="announcementForm?.invalid"
         >
           Preview
         </button>
       </div>
       <div class="col-12 col-lg-6">
         <button
-          mat-flat-button
-          class="w-100 button-width"
+          class="my-button w-100 button-width"
           (click)="saveAnnouncement()"
           [disabled]="announcementForm?.invalid"
         >

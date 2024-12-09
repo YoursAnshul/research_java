@@ -52,7 +52,7 @@ mat-dialog-content {
 .button-width {
   height: 23px;
   font-size: 11px;
-  border: 2px solid !important;
+  border-radius: 5px;
 }
 
 ::ng-deep .emoji-picker__wrapper {
@@ -241,4 +241,30 @@ mat-checkbox {
   right: 8px;
   color: red;
   cursor: pointer;
+}
+
+.my-button {
+  background-color: gray; 
+  color: white;
+  border: none;
+}
+
+.my-button:enabled {
+  background-color: #0680CD; 
+  cursor: pointer;
+}
+
+.my-button:enabled:hover {
+  background-color: #056bb3; 
+}
+.custom-button {
+  border: 2px solid #0680CD; 
+  color: #0680CD; 
+  transition: all 0.3s ease; 
+}
+
+.custom-button:disabled {
+  border-color: grey; 
+  color: grey;
+  cursor: not-allowed;
 }

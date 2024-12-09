@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
+import { PreviewComponent } from './preview.component';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -65,10 +66,10 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   openAddAnnouncementDialog(): void {
     console.log('Opening add announcement dialog...');
-    const  dialogRef= this.dialog.open(AddAnnouncementDialogComponent, {
+    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent, {
       width: '600px',
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.announcements.push(result);
       }
@@ -84,6 +85,9 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   viewAnnouncement(announcement: any): void {
     console.log('View announcement:', announcement);
+    this.dialog.open(PreviewComponent, {
+      width: '600px',
+    });
   }
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
@@ -94,7 +98,9 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   setPageSizeOptions(setPageSizeOptionsInput: string) {
     if (setPageSizeOptionsInput) {
-      this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+      this.pageSizeOptions = setPageSizeOptionsInput
+        .split(',')
+        .map((str) => +str);
     }
   }
 }
