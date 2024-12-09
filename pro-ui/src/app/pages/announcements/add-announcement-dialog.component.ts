@@ -72,6 +72,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
 `;
     this.quill = new Quill('#editor', {
       theme: 'snow',
+      placeholder: 'Enter text...',
       modules: {
         toolbar: {
           container: [
