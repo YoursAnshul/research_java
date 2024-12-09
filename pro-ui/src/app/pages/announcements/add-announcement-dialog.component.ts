@@ -19,14 +19,9 @@ export class AddAnnouncementDialogComponent implements OnInit {
   announcement = { title: '', content: '' };
   private quill: any;
   authorList: string[] = ['Hannah Campbell', 'Hannah Campbell'];
-  selectedAuthor: string = this.authorList[0];
-  announcementList: string[] = [
-    'All Users',
-    'Administrators',
-    'Managers',
-    'Employees',
-  ];
-  selectedAnnouncement: string = this.announcementList[0];
+  selectedAuthor: string[] = [];
+  announcementList: string[] = ['CARRA', 'HERO Together', 'Project Eleven'];
+  selectedAnnouncements: string[] = [];
   selectedEmoji: string = '';
   private emojiPicker: any;
   showEmojiPicker = false;
@@ -210,5 +205,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
         console.log('result-------', result);
       }
     });
+  }
+  getTagColor(tag: string): string {
+    switch (tag) {
+      case 'CARRA':
+        return '#74EBA4';
+      case 'HERO Together':
+        return '#F6C867';
+      case 'Project Eleven':
+        return '#87CEFA';
+      default:
+        return '#d3d3d3'; 
+    }
   }
 }

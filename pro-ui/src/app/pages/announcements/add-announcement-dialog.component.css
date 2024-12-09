@@ -244,27 +244,48 @@ mat-checkbox {
 }
 
 .my-button {
-  background-color: gray; 
+  background-color: gray;
   color: white;
   border: none;
 }
 
 .my-button:enabled {
-  background-color: #0680CD; 
+  background-color: #0680cd;
   cursor: pointer;
 }
 
 .my-button:enabled:hover {
-  background-color: #056bb3; 
+  background-color: #056bb3;
 }
 .custom-button {
-  border: 2px solid #0680CD; 
-  color: #0680CD; 
-  transition: all 0.3s ease; 
+  border: 2px solid #0680cd;
+  color: #0680cd;
+  transition: all 0.3s ease;
 }
 
 .custom-button:disabled {
-  border-color: grey; 
+  border-color: grey;
   color: grey;
   cursor: not-allowed;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 0px 5px;
+  border-radius: 12px;
+  background-color: white;
+  color: #333;
+  border: 1px solid black;
+  display: inline-flex;;
+  align-items: center;
+  margin: 2px;
+  height: 18px;
+}
+
+.tag::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background-color: var(--tag-color);
 }

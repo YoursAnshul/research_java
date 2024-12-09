@@ -140,16 +140,35 @@
         style="width: 100%"
       >
         <mat-label>Display Announcement to</mat-label>
-        <mat-select [(value)]="selectedAnnouncement">
+        <mat-select [(value)]="selectedAnnouncements" multiple>
+          <!-- Template for displaying the selected values -->
+          <mat-select-trigger>
+            <span *ngFor="let selected of selectedAnnouncements">
+              <span
+                class="tag"
+                [ngStyle]="{ '--tag-color': getTagColor(selected) }"
+              >
+                {{ selected }}
+              </span>
+            </span>
+          </mat-select-trigger>
+
+          <!-- Template for options in the dropdown -->
           <mat-option
             *ngFor="let announcement of announcementList"
             [value]="announcement"
           >
-            {{ announcement }}
+            <span
+              class="tag"
+              [ngStyle]="{ '--tag-color': getTagColor(announcement) }"
+            >
+              {{ announcement }}
+            </span>
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
+
     <div class="row mt-3 g-3">
       <div class="col-12 col-lg-6">
         <button
