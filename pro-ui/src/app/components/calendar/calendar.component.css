@@ -4,6 +4,8 @@
     border-radius: 5px;
     position: relative;
     margin-top: 30px;
+    width: 100%;
+    box-sizing: border-box; 
 }
 
 .spin {
@@ -15,13 +17,13 @@
 
 .calendar-wrapper {
     display: flex;
-    flex-direction: row;
+    flex-direction: row; 
     justify-content: space-between;
     gap: 1rem;
     margin-bottom: 4px;
     margin-left: 0.4rem;
     margin-right: 0.4rem;
-}
+  }
 
 .legend-container {
     flex: 0 0 18.5em
