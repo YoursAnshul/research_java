@@ -86,7 +86,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-checkbox class="mt-2" [disableRipple]="true"
+      <mat-checkbox class="mt-2" [disableRipple]="true" checked
         >Display Author</mat-checkbox
       >
     </div>
@@ -124,6 +124,7 @@
           matInput
           [matDatepicker]="expirationPicker"
           placeholder="Choose an expiration date"
+          [value]="expirationDate" 
         />
         <mat-datepicker-toggle
           matSuffix

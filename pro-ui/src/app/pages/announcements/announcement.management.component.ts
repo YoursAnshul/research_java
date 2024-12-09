@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
 import { PreviewComponent } from './preview.component';
+import { EditAnnouncementDialogComponent } from './edit-announcement-dialog.component';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -78,6 +79,9 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   editAnnouncement(announcement: any): void {
     console.log('Editing announcement:', announcement);
+    this.dialog.open(EditAnnouncementDialogComponent, {
+      width: '600px',
+    });
   }
 
   deleteAnnouncement(announcement: any): void {

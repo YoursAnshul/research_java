@@ -72,6 +72,7 @@ import { AnnouncementsComponent } from './pages/announcements/announcements.comp
 import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
 import { AddAnnouncementDialogComponent } from './pages/announcements/add-announcement-dialog.component';
 import { PreviewComponent } from './pages/announcements/preview.component';
+import { EditAnnouncementDialogComponent } from './pages/announcements/edit-announcement-dialog.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -117,7 +118,8 @@ import { PreviewComponent } from './pages/announcements/preview.component';
     HoverMessageComponent,
     ParticipantIdComponent,
     AnnouncementsComponent,
-    PreviewComponent
+    PreviewComponent,
+    EditAnnouncementDialogComponent
   ],
   imports: [
     BrowserModule,
