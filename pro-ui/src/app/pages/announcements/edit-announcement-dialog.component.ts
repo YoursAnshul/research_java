@@ -113,7 +113,7 @@ export class EditAnnouncementDialogComponent implements OnInit {
       },
     });
     this.quill.root.innerHTML =
-      'This is a predefined string for the Quill editor.';
+      'Providing information only to users who are trained on or otherwise have access to the specified projects.';
     this.emojiPicker = new EmojiButton();
     if (this.data?.content) {
       this.quill.root.innerHTML = this.data.content;
