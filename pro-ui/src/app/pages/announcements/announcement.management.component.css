@@ -1,10 +1,55 @@
-.announcement-table {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
+.container {
   width: 100%;
-  margin-top: 15px;
+  max-width: 100%;
+  height: auto;
+  padding: 15px;
+  box-sizing: border-box;
+  margin-top: -14px;
 }
+
+.configuration{
+  color: gray;font-size: 12px;
+  margin-top: -31px
+}
+
+.announcement-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  overflow-x: auto;
+  display: block;
+  width: 100% !important;
+  display: table;
+}
+.announcement-table th,
+.announcement-table td {
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+
+.mat-header-row,
+.mat-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.mat-cell,
+.mat-header-cell {
+  flex: 1;
+  min-width: 120px; 
+  box-sizing: border-box;
+}
+
+.mat-paginator {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 .mat-column-start {
   border-right: 1px solid #ddd;
 }
