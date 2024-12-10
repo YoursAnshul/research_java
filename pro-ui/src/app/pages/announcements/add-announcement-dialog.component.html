@@ -140,26 +140,23 @@
         style="width: 100%"
       >
         <mat-label>Display Announcement To</mat-label>
-        <mat-select [(value)]="selectedAnnouncements" multiple>
+        <mat-select [(value)]="selectedProjects" multiple>
           <mat-select-trigger>
-            <span *ngFor="let selected of selectedAnnouncements">
+            <span *ngFor="let selected of selectedProjects">
               <span
                 class="tag"
-                [ngStyle]="{ '--tag-color': getTagColor(selected) }"
+                [ngStyle]="{ '--tag-color': 'red' }"
               >
                 {{ selected }}
               </span>
             </span>
           </mat-select-trigger>
           <mat-option
-            *ngFor="let announcement of announcementList"
-            [value]="announcement"
+            *ngFor="let project of projectList"
+            [value]="project"
           >
-            <span
-              class="tag"
-              [ngStyle]="{ '--tag-color': getTagColor(announcement) }"
-            >
-              {{ announcement }}
+            <span>
+              {{ project }}
             </span>
           </mat-option>
         </mat-select>

@@ -20,8 +20,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
   private quill: any;
   authorList: string[] = ['Hannah Campbell', 'Hannah Campbell'];
   selectedAuthor: string[] = [];
-  announcementList: string[] = ['CARRA', 'HERO Together', 'Project Eleven'];
-  selectedAnnouncements: string[] = [];
+  projectList: string[] = ['CARRA', 'HERO Together', 'Project Eleven'];
+  selectedProjects: string[] = [];
   selectedEmoji: string = '';
   private emojiPicker: any;
   showEmojiPicker = false;
