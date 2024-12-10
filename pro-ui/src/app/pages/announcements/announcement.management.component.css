@@ -98,3 +98,10 @@
   visibility: hidden !important;
   transition: none !important;
 }
+
+::ng-deep .mat-mdc-icon-button .mat-mdc-button-persistent-ripple {
+  top: unset !important;
+  left: unset !important;
+  right: unset  !important;
+  border-radius: unset !important;
+}
