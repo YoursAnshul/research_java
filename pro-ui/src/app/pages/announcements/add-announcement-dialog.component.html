@@ -82,11 +82,14 @@
         <mat-label>Author</mat-label>
         <mat-select [(value)]="selectedAuthor">
           <mat-option *ngFor="let author of authorList" [value]="author">
-            {{ author }}
+            {{ author.userName }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-checkbox class="mt-2" [disableRipple]="true"
+      <mat-checkbox
+        class="mt-2"
+        [disableRipple]="true"
+        formControlName="isAuthor"
         >Display Author</mat-checkbox
       >
     </div>
@@ -124,6 +127,7 @@
           matInput
           [matDatepicker]="expirationPicker"
           placeholder="Choose an expiration date"
+          formControlName="expireDate"
         />
         <mat-datepicker-toggle
           matSuffix
@@ -145,18 +149,15 @@
             <span *ngFor="let selected of selectedProjects">
               <span
                 class="tag"
-                [ngStyle]="{ '--tag-color': 'red' }"
+                [ngStyle]="{ '--tag-color': selected.projectColor }"
               >
-                {{ selected }}
+                {{ selected.projectName }}
               </span>
             </span>
           </mat-select-trigger>
-          <mat-option
-            *ngFor="let project of projectList"
-            [value]="project"
-          >
+          <mat-option *ngFor="let project of projectList" [value]="project">
             <span>
-              {{ project }}
+              {{ project.projectName }}
             </span>
           </mat-option>
         </mat-select>

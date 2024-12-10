@@ -7,6 +7,8 @@ import {
 } from '@angular/material/dialog';
 import { EmojiButton } from '@joeattardi/emoji-button';
 import { PreviewComponent } from './preview.component';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 declare var Quill: any;
 
@@ -18,10 +20,10 @@ declare var Quill: any;
 export class AddAnnouncementDialogComponent implements OnInit {
   announcement = { title: '', content: '' };
   private quill: any;
-  authorList: string[] = ['Hannah Campbell', 'Hannah Campbell'];
-  selectedAuthor: string[] = [];
-  projectList: string[] = ['CARRA', 'HERO Together', 'Project Eleven'];
-  selectedProjects: string[] = [];
+  authorList: any[] = [];
+  selectedAuthor: any[] = [];
+  projectList: any[] = [];
+  selectedProjects: any[] = [];
   selectedEmoji: string = '';
   private emojiPicker: any;
   showEmojiPicker = false;
@@ -34,15 +36,20 @@ export class AddAnnouncementDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private http: HttpClient
   ) {
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
       startDate: ['', Validators.required],
+      expireDate: [''],
+      isAuthor: [''],
     });
   }
 
   ngOnInit(): void {
+    this.getProjectInfo();
+    this.getAuthor();
     const icons = Quill.import('ui/icons');
     icons.undo = `
  <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -183,16 +190,42 @@ export class AddAnnouncementDialogComponent implements OnInit {
 
   saveAnnouncement(): void {
     this.announcement.content = this.quill.root.innerHTML;
+    const plainTextContent = this.quill.root.textContent;
     this.dialogRef.close(this.announcement);
+
     if (this.announcementForm?.valid) {
-      console.log('Announcement saved:', this.announcementForm.value);
+      const selectedAuthorId = this.selectedAuthor[0]?.userId;
+      console.log('Selected Author ID --', selectedAuthorId);
+      const selectedProjectsIds = this.selectedProjects.map(
+        (project) => project.projectId
+      );
+      const announcementData = {
+        icon: this.selectedEmoji,
+        title: this.announcementForm.value.title,
+        bodyText: plainTextContent,
+        authorId: selectedAuthorId,
+        isAuthor: this.announcementForm.value.isAuthor,
+        startDate: this.announcementForm.value.startDate,
+        expireDate: this.announcementForm.value.expireDate,
+        projectIds: selectedProjectsIds,
+      };
+
+      console.log('Final Announcement Data:', announcementData);
+      const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
+      this.http.post(apiUrl, announcementData).subscribe({
+        next: (response: any) => {
+          console.log('Announcement saved successfully:', response);
+        },
+        error: (error: any) => {
+          console.error('Error saving announcement:', error);
+        },
+      });
     }
   }
 
   closeDialog(): void {
     this.dialogRef.close();
   }
-  // Open the priview dialog
   openPreview(): void {
     this.closeDialog();
     console.log('Opening preview dialog...');
@@ -215,7 +248,31 @@ export class AddAnnouncementDialogComponent implements OnInit {
       case 'Project Eleven':
         return '#87CEFA';
       default:
-        return '#d3d3d3'; 
+        return '#d3d3d3';
     }
+  }
+  getProjectInfo(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.projectList = data;
+        console.log(' this.projectList--', this.projectList);
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
+      },
+    });
+  }
+  getAuthor(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.authorList = data;
+        console.log(' this.authorList--', this.projectList);
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
+      },
+    });
   }
 }
