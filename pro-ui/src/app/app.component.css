@@ -57,6 +57,7 @@ body {
          
           border-radius: 15px 15px 0px 15px !important;
           border: 2px 0px 0px 0px !important;
+          margin-top: 10px;
   }
 
   ::ng-deep .mdc-tab__text-label {
