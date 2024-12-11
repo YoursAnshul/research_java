@@ -14,6 +14,7 @@ public class AnnouncementResponse {
 	private Date expireDate;
 	private List<Long> projectIds;
 	private Long announcementId;
+	private List<String> projectNames;
 
 	public String getIcon() {
 		return icon;
@@ -85,6 +86,14 @@ public class AnnouncementResponse {
 
 	public void setAnnouncementId(Long announcementId) {
 		this.announcementId = announcementId;
+	}
+
+	public List<String> getProjectNames() {
+		return projectNames;
+	}
+
+	public void setProjectNames(List<String> projectNames) {
+		this.projectNames = projectNames;
 	}
 
 }

@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.api.response.AnnouncementResponse;
 import com.pro.api.response.AuthorResponse;
+import com.pro.api.response.PageResponse;
 import com.pro.api.response.ProjectResponse;
 import com.pro.api.service.ManageAnnouncements;
 
@@ -39,6 +42,28 @@ public class ManageAnnouncementsController {
 	public ResponseEntity<GeneralResponse> saveAnnouncement(@RequestBody AnnouncementResponse request) {
 		GeneralResponse response = manageAnnouncements.saveAnnouncement(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	@GetMapping("/announcement/{id}")
+	public ResponseEntity<GeneralResponse> getAnnouncement(@PathVariable Long id) {
+		GeneralResponse announcement = manageAnnouncements.getAnnouncement(id);
+		return ResponseEntity.status(HttpStatus.OK).body(announcement);
+	}
+
+	@GetMapping("/list/{page}")
+	public ResponseEntity<PageResponse<AnnouncementResponse>> getAnnouncementList(@PathVariable Integer page,
+			@RequestParam(required = false, value = "sortBy") String sortBy,
+			@RequestParam(required = false, value = "orderBy") String orderBy,
+			@RequestParam(required = false, value = "limit") Integer limit) {
+		int offset = 0;
+		if (limit == null) {
+			limit = 10;
+		}
+		if (page > 0) {
+			offset = (page - 1) * limit;
+		}
+		PageResponse<AnnouncementResponse> response = manageAnnouncements.getList(sortBy, orderBy, limit, offset);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 }

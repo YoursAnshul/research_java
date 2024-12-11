@@ -1,15 +1,18 @@
 package com.pro.api.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.pro.api.controllers.GeneralResponse;
 import com.pro.api.response.AnnouncementResponse;
 import com.pro.api.response.AuthorResponse;
+import com.pro.api.response.PageResponse;
 import com.pro.api.response.ProjectResponse;
 import com.pro.api.service.ManageAnnouncements;
 
@@ -63,14 +66,12 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		String projectIds = (request.getProjectIds() != null && !request.getProjectIds().isEmpty())
 				? request.getProjectIds().stream().map(String::valueOf).collect(Collectors.joining("|"))
 				: null;
-		System.err.println("projectIds---" + projectIds);
-
 		String sql = " INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
-				+ " startdate, expiredate, dispprojects) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				+ " startdate, expiredate, dispprojects, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 		int rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
 				request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-				projectIds);
+				projectIds, request.getIcon());
 
 		GeneralResponse response = new GeneralResponse();
 		if (rowsAffected > 0) {
@@ -80,6 +81,102 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		}
 
 		return response;
+	}
+
+	@Override
+	public GeneralResponse getAnnouncement(Long id) {
+		GeneralResponse response = new GeneralResponse();
+		AnnouncementResponse res = new AnnouncementResponse();
+
+		String sql = "SELECT announcementid, icon, titletext, bodytext, author, dispauthor, startdate, expiredate, dispprojects "
+				+ "FROM core.announcements WHERE announcementid = " + id + "";
+
+		try {
+			res = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+				AnnouncementResponse announcement = new AnnouncementResponse();
+				announcement.setAnnouncementId(rs.getLong("announcementid"));
+				announcement.setTitle(rs.getString("titletext"));
+				announcement.setIcon(rs.getString("icon"));
+				announcement.setBodyText(rs.getString("bodytext"));
+				announcement.setAuthorId(rs.getLong("author"));
+				announcement.setIsAuthor(rs.getBoolean("dispauthor"));
+				announcement.setStartDate(rs.getDate("startdate"));
+				announcement.setExpireDate(rs.getDate("expiredate"));
+				String projectIds = rs.getString("dispprojects");
+				if (projectIds != null && !projectIds.isEmpty()) {
+					List<Long> projectIdList = Arrays.stream(projectIds.split("\\|")).map(Long::valueOf)
+							.collect(Collectors.toList());
+					announcement.setProjectIds(projectIdList);
+				}
+				return announcement;
+			});
+
+			response.Subject = res;
+			response.Message = "Announcement fetched successfully!";
+
+		} catch (EmptyResultDataAccessException e) {
+			response.Message = "Announcement not found for the provided ID.";
+			e.printStackTrace();
+		} catch (Exception e) {
+			response.Message = "An error occurred while fetching the announcement: " + e.getMessage();
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
+	@Override
+	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(
+				" SELECT announcementid, icon, titletext, bodytext, author, dispauthor, startdate, expiredate, dispprojects ");
+		sql.append(" FROM core.announcements");
+
+		if (limit != null) {
+			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
+		}
+		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			AnnouncementResponse announcement = new AnnouncementResponse();
+			announcement.setAnnouncementId(rs.getLong("announcementid"));
+			announcement.setTitle(rs.getString("titletext"));
+			announcement.setIcon(rs.getString("icon"));
+			announcement.setBodyText(rs.getString("bodytext"));
+			announcement.setAuthorId(rs.getLong("author"));
+			announcement.setIsAuthor(rs.getBoolean("dispauthor"));
+			announcement.setStartDate(rs.getDate("startdate"));
+			announcement.setExpireDate(rs.getDate("expiredate"));
+			String projectIds = rs.getString("dispprojects");
+			if (projectIds != null && !projectIds.isEmpty()) {
+				List<Long> projectIdList = Arrays.stream(projectIds.split("\\|")).map(Long::valueOf)
+						.collect(Collectors.toList());
+				List<String> projectNames = getProjectNames(projectIdList);
+				announcement.setProjectNames(projectNames);
+			}
+			return announcement;
+		});
+
+		sql = new StringBuilder();
+		sql.append(" SELECT COUNT(*) AS count");
+		sql.append(" FROM core.announcements ");
+		Long count = jdbcTemplate.queryForObject(sql.toString(), Long.class);
+
+		PageResponse<AnnouncementResponse> response = new PageResponse<AnnouncementResponse>();
+		response.setCount(count);
+		response.setData(list);
+		return response;
+	}
+
+	public List<String> getProjectNames(List<Long> projectIdList) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT projectname FROM core.projects WHERE active = 1 AND projectType <> 4 ");
+		if (projectIdList != null && !projectIdList.isEmpty()) {
+			sql.append("AND projectid IN (");
+			sql.append(projectIdList.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+			sql.append(") ");
+		}
+		sql.append("ORDER BY projectid");
+		List<String> projectNames = jdbcTemplate.queryForList(sql.toString(), String.class);
+		return projectNames;
 	}
 
 }
