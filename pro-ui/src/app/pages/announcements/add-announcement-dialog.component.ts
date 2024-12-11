@@ -21,7 +21,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   announcement = { title: '', content: '' };
   private quill: any;
   authorList: any[] = [];
-  selectedAuthor: any[] = [];
+  selectedAuthor: any = null;
   projectList: any[] = [];
   selectedProjects: any[] = [];
   selectedEmoji: string = '';
@@ -43,7 +43,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
       title: ['', Validators.required],
       startDate: ['', Validators.required],
       expireDate: [''],
-      isAuthor: [''],
+      isAuthor: [false],
     });
   }
 
@@ -192,15 +192,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.announcement.content = this.quill.root.innerHTML;
     const plainTextContent = this.quill.root.textContent;
     this.dialogRef.close(this.announcement);
+    console.log("this.selectedEmoji---------- ", this.selectedEmoji);
+    
 
     if (this.announcementForm?.valid) {
-      const selectedAuthorId = this.selectedAuthor[0]?.userId;
-      console.log('Selected Author ID --', selectedAuthorId);
+      const selectedAuthorId = this.selectedAuthor?.userId;
+    console.log('Selected Author ID --', selectedAuthorId);
       const selectedProjectsIds = this.selectedProjects.map(
         (project) => project.projectId
       );
       const announcementData = {
-        // icon: this.selectedEmoji,
+        icon: this.selectedEmoji,
         title: this.announcementForm.value.title,
         bodyText: plainTextContent,
         authorId: selectedAuthorId,
@@ -268,7 +270,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.authorList = data;
-        console.log(' this.authorList--', this.projectList);
+        console.log(' this.authorList--', this.authorList);
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
