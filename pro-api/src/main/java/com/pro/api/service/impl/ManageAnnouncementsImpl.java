@@ -63,13 +63,14 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		String projectIds = (request.getProjectIds() != null && !request.getProjectIds().isEmpty())
 				? request.getProjectIds().stream().map(String::valueOf).collect(Collectors.joining("|"))
 				: null;
+		System.err.println("projectIds---" + projectIds);
 
 		String sql = " INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
-				+ " startdate, expiredate, dispprojects, annicon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				+ " startdate, expiredate, dispprojects) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		int rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
 				request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-				projectIds, request.getIcon());
+				projectIds);
 
 		GeneralResponse response = new GeneralResponse();
 		if (rowsAffected > 0) {

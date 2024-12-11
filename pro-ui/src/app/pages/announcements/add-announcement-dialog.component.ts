@@ -200,7 +200,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         (project) => project.projectId
       );
       const announcementData = {
-        icon: this.selectedEmoji,
+        // icon: this.selectedEmoji,
         title: this.announcementForm.value.title,
         bodyText: plainTextContent,
         authorId: selectedAuthorId,
