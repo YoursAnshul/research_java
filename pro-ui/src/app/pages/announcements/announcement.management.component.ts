@@ -4,6 +4,8 @@ import { AddAnnouncementDialogComponent } from './add-announcement-dialog.compon
 import { PageEvent } from '@angular/material/paginator';
 import { PreviewComponent } from './preview.component';
 import { EditAnnouncementDialogComponent } from './edit-announcement-dialog.component';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -32,7 +34,7 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   pageEvent!: PageEvent;
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog,private http: HttpClient) {}
 
   ngOnInit(): void {
     this.loadAnnouncements();
@@ -82,6 +84,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.dialog.open(EditAnnouncementDialogComponent, {
       width: '600px',
     });
+    this.getDetails(1);
   }
 
   deleteAnnouncement(announcement: any): void {
@@ -106,5 +109,17 @@ export class ManageAnnouncementsComponent implements OnInit {
         .split(',')
         .map((str) => +str);
     }
+  }
+  getDetails(id: number): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/announcement/${id}`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        console.log(data);
+        
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
+      },
+    });
   }
 }
