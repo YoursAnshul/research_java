@@ -287,7 +287,11 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
   }
 
-  getDetails(id: number | undefined): void {
+  getDetails(id: number | undefined ): void {
+    if (id == null || id === 0) {
+      console.warn('Invalid ID. Skipping API call.');
+      return;
+    }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/announcement/${id}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {

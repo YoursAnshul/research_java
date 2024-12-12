@@ -80,8 +80,9 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
 
   editAnnouncement(announcement: any): void {
-    console.log("announcement--",announcement.id);
-    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
+    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent,{
+      data: announcement
+    });
     dialogRef.afterClosed().subscribe((result) => {
       this.getList(this.pageIndex + 1);
     });
@@ -140,8 +141,9 @@ export class ManageAnnouncementsComponent implements OnInit {
             expiration: formatDate(item?.expireDate),
             title: item?.title || '',
             authorName: item?.authorName || '',
-            displayTo: item?.projectNames?.join(', ') || '',
-            id: item?.announcementId
+            displayTo: item.projectObject,
+            id: item?.announcementId,
+            bodyText: item?.bodyText
           };
         });
 
