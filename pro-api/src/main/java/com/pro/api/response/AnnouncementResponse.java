@@ -15,6 +15,15 @@ public class AnnouncementResponse {
 	private List<Long> projectIds;
 	private Long announcementId;
 	private List<String> projectNames;
+	private String authorName;
+
+	public String getAuthorName() {
+		return authorName;
+	}
+
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
+	}
 
 	public String getIcon() {
 		return icon;

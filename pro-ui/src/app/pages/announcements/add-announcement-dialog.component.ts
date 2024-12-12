@@ -31,7 +31,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   wordCount = 0;
   announcementForm!: FormGroup;
   currentTarget!: 'formField' | 'textArea';
-
+  id: number | undefined
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -44,12 +44,13 @@ export class AddAnnouncementDialogComponent implements OnInit {
       startDate: ['', Validators.required],
       expireDate: [''],
       isAuthor: [false],
-    });
+    });    
   }
 
   ngOnInit(): void {
     this.getProjectInfo();
     this.getAuthor();
+    this.getDetails(this.id);
     const icons = Quill.import('ui/icons');
     icons.undo = `
  <svg width="32" height="32" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -192,12 +193,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.announcement.content = this.quill.root.innerHTML;
     const plainTextContent = this.quill.root.textContent;
     this.dialogRef.close(this.announcement);
-    console.log("this.selectedEmoji---------- ", this.selectedEmoji);
-    
-
     if (this.announcementForm?.valid) {
       const selectedAuthorId = this.selectedAuthor?.userId;
-    console.log('Selected Author ID --', selectedAuthorId);
       const selectedProjectsIds = this.selectedProjects.map(
         (project) => project.projectId
       );
@@ -211,8 +208,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
         expireDate: this.announcementForm.value.expireDate,
         projectIds: selectedProjectsIds,
       };
-
-      console.log('Final Announcement Data:', announcementData);
       const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
       this.http.post(apiUrl, announcementData).subscribe({
         next: (response: any) => {
@@ -258,7 +253,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = data;
-        console.log(' this.projectList--', this.projectList);
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
@@ -274,6 +268,27 @@ export class AddAnnouncementDialogComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
+      },
+    });
+  }
+
+  getDetails(id: number | undefined): void {
+    const apiUrl = `${
+      environment.DataAPIUrl
+    }/manage-announement/announcement/${id}`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        console.log(data.Subject);
+        this.selectedEmoji = data.Subject.icon;
+        this.announcementForm.patchValue({
+          title: data.Subject.title,
+          isAuthor: data.Subject.isAuthor,
+          startDate: data.Subject.startDate,
+          expireDate: data.Subject.expireDate,
+        });
+      },
+      error: (error: any) => {
+        console.error('Error fetching announcement details:', error);
       },
     });
   }

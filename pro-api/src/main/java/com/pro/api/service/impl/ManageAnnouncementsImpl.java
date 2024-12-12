@@ -88,8 +88,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		GeneralResponse response = new GeneralResponse();
 		AnnouncementResponse res = new AnnouncementResponse();
 
-		String sql = "SELECT announcementid, icon, titletext, bodytext, author, dispauthor, startdate, expiredate, dispprojects "
-				+ "FROM core.announcements WHERE announcementid = " + id + "";
+		String sql = "SELECT  a.announcementid, a.icon, a.titletext, a.bodytext, a.author, a.dispauthor, a.startdate, a.expiredate, a.dispprojects "
+				+ " FROM core.announcements a WHERE announcementid = " + id + "";
 
 		try {
 			res = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
@@ -129,9 +129,25 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
-				" SELECT announcementid, icon, titletext, bodytext, author, dispauthor, startdate, expiredate, dispprojects ");
-		sql.append(" FROM core.announcements");
+				" SELECT CONCAT(u.fname, ' ', u.lname) AS userName, announcementid, icon, titletext, bodytext, author, dispauthor, startdate, expiredate, dispprojects ");
+		sql.append(" FROM core.announcements a LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
 
+		if (sortBy != null && orderBy != null) {
+			if (sortBy.equals("startDate")) {
+				sql.append(" ORDER BY startdate " + orderBy + " ");
+			} else if (sortBy.equals("expiration")) {
+				sql.append(" ORDER BY expiredate " + orderBy + "  ");
+
+			} else if (sortBy.equals("title")) {
+				sql.append(" ORDER BY titletext " + orderBy + " ");
+
+			} else if (sortBy.equals("author")) {
+				sql.append(" ORDER BY author " + orderBy + " ");
+
+			}
+		} else {
+			sql.append(" ORDER BY startdate desc ");
+		}
 		if (limit != null) {
 			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
 		}
@@ -141,7 +157,6 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			announcement.setTitle(rs.getString("titletext"));
 			announcement.setIcon(rs.getString("icon"));
 			announcement.setBodyText(rs.getString("bodytext"));
-			announcement.setAuthorId(rs.getLong("author"));
 			announcement.setIsAuthor(rs.getBoolean("dispauthor"));
 			announcement.setStartDate(rs.getDate("startdate"));
 			announcement.setExpireDate(rs.getDate("expiredate"));
@@ -152,6 +167,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 				List<String> projectNames = getProjectNames(projectIdList);
 				announcement.setProjectNames(projectNames);
 			}
+			announcement.setAuthorName(rs.getString("userName"));
 			return announcement;
 		});
 
@@ -178,5 +194,4 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		List<String> projectNames = jdbcTemplate.queryForList(sql.toString(), String.class);
 		return projectNames;
 	}
-
 }

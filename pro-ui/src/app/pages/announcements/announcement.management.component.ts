@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
 import { PreviewComponent } from './preview.component';
 import { EditAnnouncementDialogComponent } from './edit-announcement-dialog.component';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -13,6 +14,9 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./announcement.management.component.css'],
 })
 export class ManageAnnouncementsComponent implements OnInit {
+  @ViewChild(MatSort)
+  sort!: MatSort;
+
   displayedColumns: string[] = [
     'start',
     'expiration',
@@ -31,60 +35,56 @@ export class ManageAnnouncementsComponent implements OnInit {
   showPageSizeOptions = true;
   showFirstLastButtons = true;
   disabled = false;
-
   pageEvent!: PageEvent;
+  sortBy: string = '';
+  orderBy: string = 'asc';
 
-  constructor(private dialog: MatDialog,private http: HttpClient) {}
+  constructor(private dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.loadAnnouncements();
+    this.getList(1);
   }
 
-  loadAnnouncements(): void {
-    const data = [
-      {
-        start: '11/16/2023',
-        expiration: '11/18/2023',
-        title: 'Happy Birthday, Michelle!',
-        author: 'Susan Rogers',
-        displayTo: 'All Users',
-      },
-      {
-        start: '11/17/2023',
-        expiration: '11/17/2023',
-        title: 'Scheduled Maintenance: Friday, November 18',
-        author: 'Rick Lane',
-        displayTo: 'All Users',
-      },
-      {
-        start: '11/03/2023',
-        expiration: '',
-        title: "Remember to 'Time In'!",
-        author: 'Susan Rogers',
-        displayTo: 'All Users',
-      },
-    ];
-    this.announcements = data;
-  }
+  // loadAnnouncements(): void {
+  //   const data = [
+  //     {
+  //       start: '11/16/2023',
+  //       expiration: '11/18/2023',
+  //       title: 'Happy Birthday, Michelle!',
+  //       author: 'Susan Rogers',
+  //       displayTo: 'All Users',
+  //     },
+  //     {
+  //       start: '11/17/2023',
+  //       expiration: '11/17/2023',
+  //       title: 'Scheduled Maintenance: Friday, November 18',
+  //       author: 'Rick Lane',
+  //       displayTo: 'All Users',
+  //     },
+  //     {
+  //       start: '11/03/2023',
+  //       expiration: '',
+  //       title: "Remember to 'Time In'!",
+  //       author: 'Susan Rogers',
+  //       displayTo: 'All Users',
+  //     },
+  //   ];
+  //   this.announcements = data;
+  // }
 
   openAddAnnouncementDialog(): void {
-    console.log('Opening add announcement dialog...');
-    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent, {
-      width: '600px',
-    });
+    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.announcements.push(result);
-      }
+      this.getList(this.pageIndex + 1);
     });
   }
 
   editAnnouncement(announcement: any): void {
-    console.log('Editing announcement:', announcement);
-    this.dialog.open(EditAnnouncementDialogComponent, {
-      width: '600px',
+    console.log("announcement--",announcement.id);
+    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getList(this.pageIndex + 1);
     });
-    this.getDetails(1);
   }
 
   deleteAnnouncement(announcement: any): void {
@@ -101,24 +101,54 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.length = e.length;
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
+    this.getList(this.pageIndex + 1);
   }
-
-  setPageSizeOptions(setPageSizeOptionsInput: string) {
-    if (setPageSizeOptionsInput) {
-      this.pageSizeOptions = setPageSizeOptionsInput
-        .split(',')
-        .map((str) => +str);
+  onSort(column: string): void {
+    if (this.sortBy === column) {
+      this.orderBy = this.orderBy === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = column;
+      this.orderBy = 'asc';
     }
+    this.getList(this.pageIndex + 1);
   }
-  getDetails(id: number): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/announcement/${id}`;
-    this.http.get(apiUrl).subscribe({
+  getList(page: number): void {
+    let params = new HttpParams().set('page', page.toString());
+    if (this.pageSize) {
+      params = params.set('limit', this.pageSize.toString());
+    }
+
+    if (this.sortBy) {
+      params = params.set('sortBy', this.sortBy).set('orderBy', this.orderBy);
+    }
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
+    this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
-        console.log(data);
-        
+        this.announcements = data?.data?.map((item: any) => {
+          const formatDate = (date: any): string => {
+            const d = new Date(date);
+            return !isNaN(d.getTime())
+              ? d.toLocaleDateString('en-US', {
+                  month: '2-digit',
+                  day: '2-digit',
+                  year: 'numeric',
+                })
+              : '';
+          };
+          return {
+            start: formatDate(item?.startDate),
+            expiration: formatDate(item?.expireDate),
+            title: item?.title || '',
+            authorName: item?.authorName || '',
+            displayTo: item?.projectNames?.join(', ') || '',
+            id: item?.announcementId
+          };
+        });
+
+        this.length = data?.totalCount || data?.data?.length;
       },
       error: (error: any) => {
-        console.error('Error fetching project info:', error);
+        console.error('Error fetching announcements:', error);
       },
     });
   }
