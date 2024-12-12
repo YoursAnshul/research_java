@@ -1,5 +1,6 @@
 package com.pro.api.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,13 +67,19 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		String projectIds = (request.getProjectIds() != null && !request.getProjectIds().isEmpty())
 				? request.getProjectIds().stream().map(String::valueOf).collect(Collectors.joining("|"))
 				: null;
-		String sql = " INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
-				+ " startdate, expiredate, dispprojects, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
+		String sql = "";
+		if (request.getAnnouncementId() != null && request.getAnnouncementId() > 0) {
+			sql = "UPDATE core.announcements SET titletext = ?, bodytext = ?, author = ?, dispauthor = ?, "
+					+ " startdate = ?, expiredate = ?, dispprojects = ?, icon = ? WHERE announcementid = ?";
+		} else {
+			sql = "INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
+					+ " startdate, expiredate, dispprojects, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		}
 		int rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
 				request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-				projectIds, request.getIcon());
-
+				projectIds, request.getIcon(),
+				(request.getAnnouncementId() != null && request.getAnnouncementId() > 0) ? request.getAnnouncementId()
+						: null);
 		GeneralResponse response = new GeneralResponse();
 		if (rowsAffected > 0) {
 			response.Message = "Announcement saved successfully!";
@@ -128,9 +135,15 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	@Override
 	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(
-				" SELECT CONCAT(u.fname, ' ', u.lname) AS userName, announcementid, icon, titletext, bodytext, author, dispauthor, startdate, expiredate, dispprojects ");
-		sql.append(" FROM core.announcements a LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
+		sql.append(" SELECT a.announcementid, CONCAT(u.fname, ' ', u.lname) AS userName,  a.icon, ");
+		sql.append(" a.titletext,  a.bodytext,  a.author, a.dispauthor, a.startdate, a.expiredate,  p.dispprojects ");
+		sql.append(" FROM core.announcements a ");
+		sql.append(" LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
+		sql.append(" LEFT JOIN LATERAL (SELECT  ");
+		sql.append(" STRING_AGG(p.projectid::text, ',' ORDER BY p.projectid) AS dispprojects ");
+		sql.append("  FROM  core.projects p ");
+		sql.append("  WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
+		sql.append(" ) AS p ON TRUE ");
 
 		if (sortBy != null && orderBy != null) {
 			if (sortBy.equals("startDate")) {
@@ -146,7 +159,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 			}
 		} else {
-			sql.append(" ORDER BY startdate desc ");
+			sql.append(" ORDER BY announcementid desc ");
 		}
 		if (limit != null) {
 			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
@@ -161,13 +174,22 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			announcement.setStartDate(rs.getDate("startdate"));
 			announcement.setExpireDate(rs.getDate("expiredate"));
 			String projectIds = rs.getString("dispprojects");
-			if (projectIds != null && !projectIds.isEmpty()) {
-				List<Long> projectIdList = Arrays.stream(projectIds.split("\\|")).map(Long::valueOf)
-						.collect(Collectors.toList());
-				List<String> projectNames = getProjectNames(projectIdList);
-				announcement.setProjectNames(projectNames);
+			List<Long> projectIdList = new ArrayList<>();
+			if (projectIds != null && !projectIds.trim().isEmpty()) {
+				String[] projectIdArr = projectIds.split(",");
+				for (String id : projectIdArr) {
+					try {
+						id = id.trim();
+						long projectId = Long.parseLong(id);
+						projectIdList.add(projectId);
+					} catch (NumberFormatException e) {
+						throw new IllegalArgumentException("Invalid project ID format: " + id, e);
+					}
+				}
+				announcement.setProjectIds(projectIdList);
 			}
 			announcement.setAuthorName(rs.getString("userName"));
+			announcement.setProjectObject(getProjectObject(projectIdList));
 			return announcement;
 		});
 
@@ -182,16 +204,24 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		return response;
 	}
 
-	public List<String> getProjectNames(List<Long> projectIdList) {
+	public List<ProjectResponse> getProjectObject(List<Long> projectIdList) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT projectname FROM core.projects WHERE active = 1 AND projectType <> 4 ");
+		sql.append(
+				"SELECT projectid, projectcolor,projectname FROM core.projects WHERE active = 1 AND projectType <> 4 ");
 		if (projectIdList != null && !projectIdList.isEmpty()) {
 			sql.append("AND projectid IN (");
 			sql.append(projectIdList.stream().map(String::valueOf).collect(Collectors.joining(", ")));
 			sql.append(") ");
 		}
 		sql.append("ORDER BY projectid");
-		List<String> projectNames = jdbcTemplate.queryForList(sql.toString(), String.class);
-		return projectNames;
+		List<ProjectResponse> projectResponses = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			ProjectResponse projectResponse = new ProjectResponse();
+			projectResponse.setProjectId(rs.getLong("projectid"));
+			projectResponse.setProjectName(rs.getString("projectname"));
+			projectResponse.setProjectColor(rs.getString("projectcolor"));
+			return projectResponse;
+		});
+
+		return projectResponses;
 	}
 }

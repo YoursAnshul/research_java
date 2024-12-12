@@ -115,3 +115,24 @@
   right: unset  !important;
   border-radius: unset !important;
 }
+
+.tag {
+  font-size: 10px;
+  padding: 0px 5px;
+  border-radius: 12px;
+  background-color: white;
+  color: #333;
+  border: 1px solid black;
+  display: inline-flex;
+  align-items: center;
+  margin: 2px;
+  height: 18px;
+}
+
+.tag::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  background-color: var(--tag-color);
+}

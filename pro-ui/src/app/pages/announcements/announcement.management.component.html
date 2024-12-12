@@ -1,4 +1,3 @@
-
 <div class="container">
   <h2 class="configuration">Configuration / Manage Announcements</h2>
   <h1>Manage Announcements</h1>
@@ -51,16 +50,22 @@
         (click)="onSort('title')"
         style="background-color: #e0e0e0"
       >
-      <span>Title</span>
-      <div
-      style="position: absolute; right: 15px; top: 50%; transform: translateY(-40%); display: flex; align-items: center; gap: 5px;"
-    >
-      <mat-icon
-        matTooltip="Search by title"
-        style="cursor: pointer;"
-        >search</mat-icon
-      >
-    </div>
+        <span>Title</span>
+        <div
+          style="
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-40%);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          "
+        >
+          <mat-icon matTooltip="Search by title" style="cursor: pointer"
+            >search</mat-icon
+          >
+        </div>
       </th>
       <td mat-cell *matCellDef="let data">{{ data.title }}</td>
     </ng-container>
@@ -72,17 +77,25 @@
         mat-sort-header
         (click)="onSort('author')"
         style="background-color: #e0e0e0"
-      >    
+      >
         <span>Author</span>
-      <div
-      style="position: absolute; right: 15px; top: 50%; transform: translateY(-40%); display: flex; align-items: center; gap: 5px;"
-    >
-    <mat-icon
-    matTooltip="Filter by author"
-    style="margin-left: 8px; cursor: pointer;"
-    >filter_list</mat-icon
-  >
-    </div>
+        <div
+          style="
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-40%);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          "
+        >
+          <mat-icon
+            matTooltip="Filter by author"
+            style="margin-left: 8px; cursor: pointer"
+            >filter_list</mat-icon
+          >
+        </div>
       </th>
       <td mat-cell *matCellDef="let data">{{ data.authorName }}</td>
     </ng-container>
@@ -91,7 +104,13 @@
       <th mat-header-cell *matHeaderCellDef style="background-color: #e0e0e0">
         Display Announcements To
       </th>
-      <td mat-cell *matCellDef="let data">{{ data.displayTo }}</td>
+      <td mat-cell *matCellDef="let data">
+        <span *ngFor="let project of data.displayTo">
+          <span class="tag" [ngStyle]="{ '--tag-color': project.projectColor}">
+            {{ project.projectName }}
+          </span>
+        </span>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">

@@ -31,7 +31,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   wordCount = 0;
   announcementForm!: FormGroup;
   currentTarget!: 'formField' | 'textArea';
-  id: number | undefined
+  id: any;
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -44,7 +44,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
       startDate: ['', Validators.required],
       expireDate: [''],
       isAuthor: [false],
-    });    
+    });
+    this.id = data?.id;
   }
 
   ngOnInit(): void {
@@ -199,6 +200,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         (project) => project.projectId
       );
       const announcementData = {
+        announcementId: null,
         icon: this.selectedEmoji,
         title: this.announcementForm.value.title,
         bodyText: plainTextContent,
@@ -208,15 +210,28 @@ export class AddAnnouncementDialogComponent implements OnInit {
         expireDate: this.announcementForm.value.expireDate,
         projectIds: selectedProjectsIds,
       };
-      const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
-      this.http.post(apiUrl, announcementData).subscribe({
-        next: (response: any) => {
-          console.log('Announcement saved successfully:', response);
-        },
-        error: (error: any) => {
-          console.error('Error saving announcement:', error);
-        },
-      });
+      if (this.id) {
+        announcementData.announcementId = this.id;
+        const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
+        this.http.post(apiUrl, announcementData).subscribe({
+          next: (response: any) => {
+            console.log('Announcement saved successfully:', response);
+          },
+          error: (error: any) => {
+            console.error('Error saving announcement:', error);
+          },
+        });
+      } else {
+        const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
+        this.http.post(apiUrl, announcementData).subscribe({
+          next: (response: any) => {
+            console.log('Announcement saved successfully:', response);
+          },
+          error: (error: any) => {
+            console.error('Error saving announcement:', error);
+          },
+        });
+      }
     }
   }
 
@@ -273,9 +288,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   }
 
   getDetails(id: number | undefined): void {
-    const apiUrl = `${
-      environment.DataAPIUrl
-    }/manage-announement/announcement/${id}`;
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/announcement/${id}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         console.log(data.Subject);

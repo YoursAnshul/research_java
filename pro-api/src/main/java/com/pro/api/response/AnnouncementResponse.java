@@ -16,6 +16,24 @@ public class AnnouncementResponse {
 	private Long announcementId;
 	private List<String> projectNames;
 	private String authorName;
+	private List<String> projectColor;
+	private List<ProjectResponse> projectObject;
+
+	public List<ProjectResponse> getProjectObject() {
+		return projectObject;
+	}
+
+	public void setProjectObject(List<ProjectResponse> projectObject) {
+		this.projectObject = projectObject;
+	}
+
+	public List<String> getProjectColor() {
+		return projectColor;
+	}
+
+	public void setProjectColor(List<String> projectColor) {
+		this.projectColor = projectColor;
+	}
 
 	public String getAuthorName() {
 		return authorName;
