@@ -28,7 +28,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName  ");
 		sql.append(" FROM core.users  ");
-		sql.append(" ORDER BY userid ASC ");
+		sql.append(" ORDER BY userName ASC ");
 		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AuthorResponse obj = new AuthorResponse();
 			obj.setUserId(rs.getLong("userid"));
