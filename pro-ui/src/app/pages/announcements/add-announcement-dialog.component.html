@@ -145,17 +145,24 @@
         style="width: 100%"
       >
         <mat-label>Display Announcement To</mat-label>
-        <mat-select
-          [(value)]="selectedProjects"
-          multiple
-        >
+        <mat-select [(value)]="selectedProjects" multiple>
           <mat-checkbox
             [checked]="isAllSelected()"
             [indeterminate]="isIndeterminate()"
             (change)="onCheckboxChange($event)"
           >
-            Select All Projects
+            Any Projects
           </mat-checkbox>
+          <mat-select-trigger>
+            <span *ngFor="let selected of selectedProjects">
+              <span
+                class="tag"
+                [ngStyle]="{ '--tag-color': selected.projectColor }"
+              >
+                {{ selected.projectName }}
+              </span>
+            </span>
+          </mat-select-trigger>
           <mat-option *ngFor="let project of projectList" [value]="project">
             {{ project.projectName }}
           </mat-option>

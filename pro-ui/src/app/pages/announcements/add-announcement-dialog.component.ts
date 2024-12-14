@@ -322,7 +322,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
   }
 
-  isAllSelected(): boolean {
+  isAllSelected(): boolean {    
     return this.selectedProjects.length === this.projectList.length;
   }
 
