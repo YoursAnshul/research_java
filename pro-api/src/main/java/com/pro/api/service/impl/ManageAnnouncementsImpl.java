@@ -39,6 +39,24 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	}
 
 	@Override
+	public AuthorResponse getLoginUser(String email) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName, dispauthor  ");
+		sql.append(
+				" FROM core.users u LEFT JOIN core.announcements a ON CAST(a.author AS smallint) = u.userid  WHERE emailaddr = '"
+						+ email + "' ");
+		sql.append(" ORDER BY userName ASC ");
+		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			AuthorResponse obj = new AuthorResponse();
+			obj.setUserId(rs.getLong("userid"));
+			obj.setUserName(rs.getString("userName"));
+			obj.setIsAuthor(rs.getBoolean("dispauthor"));
+			return obj;
+		});
+		return list != null && !list.isEmpty() ? list.get(0) : new AuthorResponse();
+	}
+
+	@Override
 	public List<ProjectResponse> getAllProjects() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT projectid, projectname, projectcolor ");
@@ -68,18 +86,21 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 				? request.getProjectIds().stream().map(String::valueOf).collect(Collectors.joining("|"))
 				: null;
 		String sql = "";
+		int rowsAffected = 0;
 		if (request.getAnnouncementId() != null && request.getAnnouncementId() > 0) {
 			sql = "UPDATE core.announcements SET titletext = ?, bodytext = ?, author = ?, dispauthor = ?, "
-					+ " startdate = ?, expiredate = ?, dispprojects = ?, icon = ? WHERE announcementid = ?";
+					+ "startdate = ?, expiredate = ?, dispprojects = ?, icon = ? WHERE announcementid = ?";
+			rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
+					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
+					projectIds, request.getIcon(), request.getAnnouncementId()); // Corrected parameter order
 		} else {
 			sql = "INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
-					+ " startdate, expiredate, dispprojects, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "startdate, expiredate, dispprojects, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
+					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
+					projectIds, request.getIcon());
 		}
-		int rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
-				request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-				projectIds, request.getIcon(),
-				(request.getAnnouncementId() != null && request.getAnnouncementId() > 0) ? request.getAnnouncementId()
-						: null);
+
 		GeneralResponse response = new GeneralResponse();
 		if (rowsAffected > 0) {
 			response.Message = "Announcement saved successfully!";

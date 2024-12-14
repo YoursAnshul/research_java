@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
 import { PreviewComponent } from './preview.component';
-import { EditAnnouncementDialogComponent } from './edit-announcement-dialog.component';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatSort } from '@angular/material/sort';
@@ -38,11 +37,12 @@ export class ManageAnnouncementsComponent implements OnInit {
   pageEvent!: PageEvent;
   sortBy: string = '';
   orderBy: string = 'asc';
-
+  selectedProjectList: any[] = [];
+  allProjectList: any[] = [];
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.getList(1);
+    this.getProjectInfo();
   }
 
   // loadAnnouncements(): void {
@@ -80,8 +80,8 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
 
   editAnnouncement(announcement: any): void {
-    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent,{
-      data: announcement
+    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent, {
+      data: announcement,
     });
     dialogRef.afterClosed().subscribe((result) => {
       this.getList(this.pageIndex + 1);
@@ -141,16 +141,32 @@ export class ManageAnnouncementsComponent implements OnInit {
             expiration: formatDate(item?.expireDate),
             title: item?.title || '',
             authorName: item?.authorName || '',
-            displayTo: item.projectObject,
+            displayTo: item?.projectIds?.length
+              ? item?.projectIds?.length !== this.allProjectList.length &&
+                this.allProjectList.length > 0
+                ? item.projectObject
+                : 'Any Projects'
+              : null,
             id: item?.announcementId,
-            bodyText: item?.bodyText
+            bodyText: item?.bodyText,
           };
         });
-
         this.length = data?.totalCount || data?.data?.length;
       },
       error: (error: any) => {
         console.error('Error fetching announcements:', error);
+      },
+    });
+  }
+  getProjectInfo(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.allProjectList = data ? data : [];
+        this.getList(1);
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatDialogRef,
@@ -8,12 +8,14 @@ import {
 import { EmojiButton } from '@joeattardi/emoji-button';
 import { PreviewComponent } from './preview.component';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { IAuthenticatedUser } from '../../interfaces/interfaces';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 declare var Quill: any;
 
@@ -23,6 +25,7 @@ declare var Quill: any;
   styleUrls: ['./add-announcement-dialog.component.css'],
 })
 export class AddAnnouncementDialogComponent implements OnInit {
+  @Input() authenticatedUser!: IAuthenticatedUser;
   announcement = { title: '', content: '' };
   private quill: any;
   authorList: any[] = [];
@@ -38,14 +41,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
   currentTarget!: 'formField' | 'textArea';
   id: any;
   allSelected = false;
-  private _snackBar = inject(MatSnackBar);
+  isAnyProjectsSelected: boolean = false;
+  userObj: any;
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private authenticationService: AuthenticationService
   ) {
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
@@ -57,8 +62,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+        console.log('this.authenticatedUser---' + this.authenticatedUser.eppn);
+        this.userObj = this.authenticatedUser;
+      }
+    );
     this.getProjectInfo();
     this.getAuthor();
+    this.getLoginAuthor(this.userObj.eppn);
     this.getDetails(this.id);
     const icons = Quill.import('ui/icons');
     icons.undo = `
@@ -204,9 +217,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.dialogRef.close(this.announcement);
     if (this.announcementForm?.valid) {
       const selectedAuthorId = this.selectedAuthor?.userId;
-      const selectedProjectsIds = this.selectedProjects.map(
-        (project) => project.projectId
-      );
+      let selectedProjectsIds = [];
+      if (this.isAnyProjectsSelected) {
+        selectedProjectsIds = this.projectList.map(
+          (project) => project.projectId
+        );
+      } else {
+        selectedProjectsIds = this.selectedProjects.map(
+          (project) => project.projectId
+        );
+      }
       const announcementData = {
         announcementId: null,
         icon: this.selectedEmoji,
@@ -224,11 +244,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
         this.http.post(apiUrl, announcementData).subscribe({
           next: (response: any) => {
             console.log('Announcement saved successfully:', response);
-            this.showToastMessage('Announcement update successfully!', 'success');
+            this.showToastMessage(
+              'Announcement update successfully!',
+              'success'
+            );
           },
           error: (error: any) => {
             console.error('Error update announcement:', error);
-            this.showToastMessage('Error update announcement. Please try again.', 'error');
+            this.showToastMessage(
+              'Error update announcement. Please try again.',
+              'error'
+            );
           },
         });
       } else {
@@ -236,12 +262,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
         this.http.post(apiUrl, announcementData).subscribe({
           next: (response: any) => {
             console.log('Announcement saved successfully:', response);
-            this.showToastMessage('Announcement saved successfully!', 'success');
+            this.showToastMessage(
+              'Announcement saved successfully!',
+              'success'
+            );
           },
           error: (error: any) => {
-            console.error('Error saving announcement:', error)
-            this.showToastMessage('Error saving announcement. Please try again.', 'error');
-
+            console.error('Error saving announcement:', error);
+            this.showToastMessage(
+              'Error saving announcement. Please try again.',
+              'error'
+            );
           },
         });
       }
@@ -289,7 +320,24 @@ export class AddAnnouncementDialogComponent implements OnInit {
       },
     });
   }
-
+  getLoginAuthor(email: string): void {
+    const params = new HttpParams().set('email', email);
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
+    this.http.get(apiUrl, { params }).subscribe({
+      next: (data: any) => {
+        this.selectedAuthor = [];
+        this.selectedAuthor = this.authorList.find(
+          (author) => author?.userId === data?.userId
+        );
+        this.announcementForm.patchValue({
+          isAuthor: data?.isAuthor,
+        });
+      },
+      error: (error: any) => {
+        console.error('Error fetching project info:', error);
+      },
+    });
+  }
   getDetails(id: number | undefined): void {
     if (id == null || id === 0) {
       console.warn('Invalid ID. Skipping API call.');
@@ -309,9 +357,11 @@ export class AddAnnouncementDialogComponent implements OnInit {
         if (data.Subject.bodyText) {
           this.quill.root.innerHTML = data.Subject.bodyText;
         }
+        this.selectedAuthor = [];
         this.selectedAuthor = this.authorList.find(
           (author) => author.userId === data.Subject.authorId
         );
+        this.selectedProjects = [];
         this.selectedProjects = this.projectList.filter((project) =>
           data.Subject.projectIds.includes(project.projectId)
         );
@@ -322,8 +372,9 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
   }
 
-  isAllSelected(): boolean {    
-    return this.selectedProjects.length === this.projectList.length;
+  isAllSelected(): boolean {
+    return (this.isAnyProjectsSelected =
+      this.selectedProjects.length === this.projectList.length);
   }
 
   isIndeterminate(): boolean {

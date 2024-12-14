@@ -66,4 +66,9 @@ public class ManageAnnouncementsController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@GetMapping("/user")
+	public ResponseEntity<AuthorResponse> getLoginUser(@RequestParam(required = false, value = "email") String email) {
+		AuthorResponse user = manageAnnouncements.getLoginUser(email);
+		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
 }

@@ -154,12 +154,15 @@
             Any Projects
           </mat-checkbox>
           <mat-select-trigger>
+            <span *ngIf="isAllSelected()">Any Projects</span>
             <span *ngFor="let selected of selectedProjects">
-              <span
-                class="tag"
-                [ngStyle]="{ '--tag-color': selected.projectColor }"
-              >
-                {{ selected.projectName }}
+              <span *ngIf="!isAllSelected()">
+                <span
+                  class="tag"
+                  [ngStyle]="{ '--tag-color': selected.projectColor }"
+                >
+                  {{ selected.projectName }}
+                </span>
               </span>
             </span>
           </mat-select-trigger>

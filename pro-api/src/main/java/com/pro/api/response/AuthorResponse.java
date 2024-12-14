@@ -4,6 +4,15 @@ public class AuthorResponse {
 
 	private Long userId;
 	private String userName;
+	private Boolean isAuthor;
+
+	public Boolean getIsAuthor() {
+		return isAuthor;
+	}
+
+	public void setIsAuthor(Boolean isAuthor) {
+		this.isAuthor = isAuthor;
+	}
 
 	public Long getUserId() {
 		return userId;

@@ -18,6 +18,16 @@ public class AnnouncementResponse {
 	private String authorName;
 	private List<String> projectColor;
 	private List<ProjectResponse> projectObject;
+	private Boolean isAnyProjectsSelected;
+	
+
+	public Boolean getIsAnyProjectsSelected() {
+		return isAnyProjectsSelected;
+	}
+
+	public void setIsAnyProjectsSelected(Boolean isAnyProjectsSelected) {
+		this.isAnyProjectsSelected = isAnyProjectsSelected;
+	}
 
 	public List<ProjectResponse> getProjectObject() {
 		return projectObject;
