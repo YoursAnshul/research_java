@@ -14,4 +14,6 @@ public interface QuickReference {
 	public List<QuickResponse> getQuikProjectInfo(String type);
 
 	public List<QuickResponse> getQuikTeamContact(String type);
+
+	public String getMainVmPhone();
 }

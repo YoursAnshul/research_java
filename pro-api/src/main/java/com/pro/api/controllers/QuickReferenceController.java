@@ -46,4 +46,11 @@ public class QuickReferenceController {
 		return ResponseEntity.ok(response);
 	}
 
+	@GetMapping("/main-vm-phone")
+	public ResponseEntity<GeneralResponse> getMainVmPhone() {
+    String optionValue = quickReference.getMainVmPhone();
+    GeneralResponse response = new GeneralResponse();
+    response.Subject = optionValue;
+    return ResponseEntity.ok(response);
+}
 }

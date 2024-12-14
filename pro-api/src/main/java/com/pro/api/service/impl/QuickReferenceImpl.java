@@ -74,4 +74,12 @@ public class QuickReferenceImpl implements QuickReference {
 		return list;
 	}
 
+	@Override
+	public String getMainVmPhone() {
+    String sql = "SELECT a.optionvalue FROM adminoptions a " +
+                 "JOIN formfields f ON a.formfieldid = f.formfieldid " +
+                 "WHERE f.columnname = 'mainvmphone'";
+    return this.jdbcTemplate.queryForObject(sql, String.class);
+	}
+
 }
