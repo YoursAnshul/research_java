@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MatDialogRef,
@@ -9,6 +9,11 @@ import { EmojiButton } from '@joeattardi/emoji-button';
 import { PreviewComponent } from './preview.component';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 declare var Quill: any;
 
@@ -32,12 +37,15 @@ export class AddAnnouncementDialogComponent implements OnInit {
   announcementForm!: FormGroup;
   currentTarget!: 'formField' | 'textArea';
   id: any;
+  allSelected = false;
+  private _snackBar = inject(MatSnackBar);
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private http: HttpClient
+    private http: HttpClient,
+    private snackBar: MatSnackBar
   ) {
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
@@ -216,9 +224,11 @@ export class AddAnnouncementDialogComponent implements OnInit {
         this.http.post(apiUrl, announcementData).subscribe({
           next: (response: any) => {
             console.log('Announcement saved successfully:', response);
+            this.showToastMessage('Announcement update successfully!', 'success');
           },
           error: (error: any) => {
-            console.error('Error saving announcement:', error);
+            console.error('Error update announcement:', error);
+            this.showToastMessage('Error update announcement. Please try again.', 'error');
           },
         });
       } else {
@@ -226,9 +236,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
         this.http.post(apiUrl, announcementData).subscribe({
           next: (response: any) => {
             console.log('Announcement saved successfully:', response);
+            this.showToastMessage('Announcement saved successfully!', 'success');
           },
           error: (error: any) => {
-            console.error('Error saving announcement:', error);
+            console.error('Error saving announcement:', error)
+            this.showToastMessage('Error saving announcement. Please try again.', 'error');
+
           },
         });
       }
@@ -258,7 +271,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
       next: (data: any) => {
         this.projectList = data;
         console.log(' this.projectList--', this.projectList);
-        
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
@@ -278,7 +290,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
   }
 
-  getDetails(id: number | undefined ): void {
+  getDetails(id: number | undefined): void {
     if (id == null || id === 0) {
       console.warn('Invalid ID. Skipping API call.');
       return;
@@ -307,6 +319,40 @@ export class AddAnnouncementDialogComponent implements OnInit {
       error: (error: any) => {
         console.error('Error fetching announcement details:', error);
       },
+    });
+  }
+
+  isAllSelected(): boolean {
+    return this.selectedProjects.length === this.projectList.length;
+  }
+
+  isIndeterminate(): boolean {
+    return (
+      this.selectedProjects.length > 0 &&
+      this.selectedProjects.length < this.projectList.length
+    );
+  }
+  onCheckboxChange(event: any): void {
+    if (event.checked) {
+      this.selectedProjects = [...this.projectList];
+    } else {
+      this.selectedProjects = [];
+    }
+  }
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
     });
   }
 }
