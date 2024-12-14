@@ -149,16 +149,29 @@ export class CustomPageComponent {
   }
 
   getVoicMailData(): void {
-    this.loading = true; 
+    this.loading = true;
     const apiUrl = `${environment.DataAPIUrl}/quick-reference/list`;
+    const mainVmPhoneApiUrl = `${environment.DataAPIUrl}/quick-reference/main-vm-phone`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.voicemaillist = data?.Subject;
-        this.loading = false; 
+        this.loading = false;
       },
       error: (error: any) => {
-        this.loading = false; 
         console.error('Error fetching voicemails:', error);
+        this.loading = false;
+      },
+    });
+    this.http.get(mainVmPhoneApiUrl).subscribe({
+      next: (data: any) => {
+        const mainPhoneNumber = data?.Subject;
+        if (mainPhoneNumber) {
+          this.voiceMailInstruction1 = `1. Access the voicemail system at ${mainPhoneNumber}`;
+          this.voiceMailInstructionCopy = mainPhoneNumber;
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching voicemail phone number:', error);
       },
     });
   }
