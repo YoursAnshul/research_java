@@ -251,23 +251,14 @@ export class AddAnnouncementDialogComponent implements OnInit {
       }
     });
   }
-  getTagColor(tag: string): string {
-    switch (tag) {
-      case 'CARRA':
-        return '#74EBA4';
-      case 'HERO Together':
-        return '#F6C867';
-      case 'Project Eleven':
-        return '#87CEFA';
-      default:
-        return '#d3d3d3';
-    }
-  }
+
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = data;
+        console.log(' this.projectList--', this.projectList);
+        
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
@@ -303,6 +294,15 @@ export class AddAnnouncementDialogComponent implements OnInit {
           startDate: data.Subject.startDate,
           expireDate: data.Subject.expireDate,
         });
+        if (data.Subject.bodyText) {
+          this.quill.root.innerHTML = data.Subject.bodyText;
+        }
+        this.selectedAuthor = this.authorList.find(
+          (author) => author.userId === data.Subject.authorId
+        );
+        this.selectedProjects = this.projectList.filter((project) =>
+          data.Subject.projectIds.includes(project.projectId)
+        );
       },
       error: (error: any) => {
         console.error('Error fetching announcement details:', error);
