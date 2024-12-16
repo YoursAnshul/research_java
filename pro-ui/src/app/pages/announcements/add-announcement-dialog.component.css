@@ -359,3 +359,8 @@ mat-checkbox {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+
+::ng-deep .ql-emoji {
+  margin-left: -18px;
+}
