@@ -106,21 +106,24 @@
       </th>
       <td mat-cell *matCellDef="let data">
         <span *ngIf="data.displayTo !== 'Any Projects'; else showAnyProjects">
-          <span *ngFor="let project of data.displayTo">
-            <span
-              class="tag"
-              [ngStyle]="{ '--tag-color': project.projectColor }"
-            >
-              {{ project.projectName }}
+          <div class="tags-container">
+            <span *ngFor="let project of data.displayTo">
+              <span
+                class="tag"
+                [ngStyle]="{ '--tag-color': project.projectColor }"
+              >
+                {{ project.projectName }}
+              </span>
             </span>
-          </span>
+          </div>
         </span>
-
+    
         <ng-template #showAnyProjects>
           <span>Any Projects</span>
         </ng-template>
       </td>
     </ng-container>
+    
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef style="background-color: #e0e0e0">

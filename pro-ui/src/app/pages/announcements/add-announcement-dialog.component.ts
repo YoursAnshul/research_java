@@ -384,7 +384,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
     );
   }
   onCheckboxChange(event: any): void {
-    if (event.checked) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
       this.selectedProjects = [...this.projectList];
     } else {
       this.selectedProjects = [];

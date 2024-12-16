@@ -146,13 +146,25 @@
       >
         <mat-label>Display Announcement To</mat-label>
         <mat-select [(value)]="selectedProjects" multiple>
-          <mat-checkbox
+          <!-- <mat-checkbox
             [checked]="isAllSelected()"
             [indeterminate]="isIndeterminate()"
             (change)="onCheckboxChange($event)"
           >
             Any Projects
-          </mat-checkbox>
+          </mat-checkbox> -->
+          <div class="custom-checkbox-container">
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                [checked]="isAllSelected()"
+                [indeterminate]="isIndeterminate()"
+                (change)="onCheckboxChange($event)"
+              />
+              <span class="checkmark"></span>
+              Any Projects
+            </label>
+          </div>
           <mat-select-trigger>
             <span *ngIf="isAllSelected()">Any Projects</span>
             <span *ngFor="let selected of selectedProjects">
