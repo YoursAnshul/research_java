@@ -71,7 +71,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     );
     this.getProjectInfo();
     this.getAuthor();
-    this.getLoginAuthor(this.userObj.eppn);
+    
     this.getDetails(this.id);
     const icons = Quill.import('ui/icons');
     icons.undo = `
@@ -314,6 +314,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
       next: (data: any) => {
         this.authorList = data;
         console.log(' this.authorList--', this.authorList);
+        this.getLoginAuthor(this.userObj.eppn);
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);

@@ -199,7 +199,7 @@ export class HeaderComponent implements OnInit {
       next: (data: any) => {
         const mainPhoneNumber = data?.Subject;
         if (mainPhoneNumber) {
-          this.voiceMailInstruction1 = `1. Access the voicemail system at ${mainPhoneNumber}`;
+          this.voiceMailInstruction1 = `1. Call `;
           this.voiceMailInstructionCopy = mainPhoneNumber;
         }
       },
