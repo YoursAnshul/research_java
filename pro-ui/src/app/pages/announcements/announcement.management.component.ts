@@ -6,6 +6,11 @@ import { PreviewComponent } from './preview.component';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatSort } from '@angular/material/sort';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -39,38 +44,15 @@ export class ManageAnnouncementsComponent implements OnInit {
   orderBy: string = 'asc';
   selectedProjectList: any[] = [];
   allProjectList: any[] = [];
-  constructor(private dialog: MatDialog, private http: HttpClient) {}
+  constructor(
+    private dialog: MatDialog,
+    private http: HttpClient,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.getProjectInfo();
   }
-
-  // loadAnnouncements(): void {
-  //   const data = [
-  //     {
-  //       start: '11/16/2023',
-  //       expiration: '11/18/2023',
-  //       title: 'Happy Birthday, Michelle!',
-  //       author: 'Susan Rogers',
-  //       displayTo: 'All Users',
-  //     },
-  //     {
-  //       start: '11/17/2023',
-  //       expiration: '11/17/2023',
-  //       title: 'Scheduled Maintenance: Friday, November 18',
-  //       author: 'Rick Lane',
-  //       displayTo: 'All Users',
-  //     },
-  //     {
-  //       start: '11/03/2023',
-  //       expiration: '',
-  //       title: "Remember to 'Time In'!",
-  //       author: 'Susan Rogers',
-  //       displayTo: 'All Users',
-  //     },
-  //   ];
-  //   this.announcements = data;
-  // }
 
   openAddAnnouncementDialog(): void {
     const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
@@ -90,15 +72,25 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   deleteAnnouncement(announcement: any): void {
     console.log('Deleting announcement:', announcement);
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}`;
+    this.http.delete(apiUrl).subscribe({
+      next: (data: any) => {
+        this.getList(1);
+        this.showToastMessage('Delete successfully!', 'success');
+      },
+      error: (error: any) => {
+        console.error('Error detete project info:', error);
+      },
+    });
   }
   viewAnnouncement(announcement: any): void {
     console.log('View announcement:', announcement);
     this.dialog.open(PreviewComponent, {
       width: '600px',
-      data: announcement 
+      data: announcement,
     });
   }
-  
+
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
     this.length = e.length;
@@ -170,6 +162,22 @@ export class ManageAnnouncementsComponent implements OnInit {
       error: (error: any) => {
         console.error('Error fetching project info:', error);
       },
+    });
+  }
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
     });
   }
 }

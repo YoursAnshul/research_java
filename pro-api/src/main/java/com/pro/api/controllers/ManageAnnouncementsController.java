@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,5 +71,11 @@ public class ManageAnnouncementsController {
 	public ResponseEntity<AuthorResponse> getLoginUser(@RequestParam(required = false, value = "email") String email) {
 		AuthorResponse user = manageAnnouncements.getLoginUser(email);
 		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<GeneralResponse> delete(@PathVariable Integer id) {
+		GeneralResponse res = manageAnnouncements.delete(id);
+		return ResponseEntity.status(HttpStatus.OK).body(res);
 	}
 }

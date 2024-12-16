@@ -24,4 +24,8 @@ public interface ManageAnnouncements {
 	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset);
 
 	public AuthorResponse getLoginUser(String email);
+
+	public GeneralResponse delete(Integer id);
+
+	public List<ProjectResponse> getProjectObject(List<Long> projectIdList);
 }

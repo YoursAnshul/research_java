@@ -225,6 +225,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		return response;
 	}
 
+	@Override
 	public List<ProjectResponse> getProjectObject(List<Long> projectIdList) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
@@ -244,5 +245,14 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		});
 
 		return projectResponses;
+	}
+
+	@Override
+	public GeneralResponse delete(Integer id) {
+		String sql = "DELETE FROM core.announcements WHERE announcementid = '" + id + "'";
+		this.jdbcTemplate.execute(sql);
+		GeneralResponse respone = new GeneralResponse();
+		respone.Message = "Delete successfully!!";
+		return respone;
 	}
 }
