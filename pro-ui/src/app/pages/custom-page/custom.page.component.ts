@@ -16,10 +16,12 @@ export class CustomPageComponent {
 
 
   firstHeadingVoiceMail = 'Voicemail access instructions';
-  voiceMailInstruction1 = '1. Access the voicemail system at 123-555-1919';
+  voiceMailInstruction1 = '1. Call';
   voiceMailInstructionCopy = '123-555-1919';
-  voiceMailInstruction2 = '2. Enter the project voicemail phone number';
-  voiceMailInstruction3 = '3. Enter the project voicemail PIN';
+  voiceMailInstruction2 = '2. Press the  "*"  star button';
+  voiceMailInstruction3 = '3. Enter "ID" [Voicemail Phone]';
+  voiceMailInstruction4 = '3. Enter "PIN" [Voicemail PIN]';
+
 
   searchTerms: string = '';
 
@@ -166,7 +168,7 @@ export class CustomPageComponent {
       next: (data: any) => {
         const mainPhoneNumber = data?.Subject;
         if (mainPhoneNumber) {
-          this.voiceMailInstruction1 = `1. Access the voicemail system at ${mainPhoneNumber}`;
+          this.voiceMailInstruction1 = `1. Call `;
           this.voiceMailInstructionCopy = mainPhoneNumber;
         }
       },
