@@ -95,8 +95,10 @@ export class ManageAnnouncementsComponent implements OnInit {
     console.log('View announcement:', announcement);
     this.dialog.open(PreviewComponent, {
       width: '600px',
+      data: announcement 
     });
   }
+  
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
     this.length = e.length;

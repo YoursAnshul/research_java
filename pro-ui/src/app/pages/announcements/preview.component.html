@@ -8,30 +8,34 @@
       (click)="closeDialog()"
     ></mat-icon>
 
-    <div *ngFor="let announcement of announcementsList" class="announcement">
-      <p style="font-weight: bold">
-        {{ announcement.title }}
-      </p>
-      <p>{{ announcement.content }}</p>
-      <div class="meta">
-        <div>
-          <small
-            >Posted {{ announcement.date | date : "MM/dd/yyyy" }} by Hannah
-            Campbell</small
-          >
-        </div>
-        <div class="tags">
-          <span
-            *ngFor="let tag of announcement.tags"
-            class="tag"
-            [ngStyle]="{ '--tag-color': getTagColor(tag) }"
-          >
-            {{ tag }}
-          </span>
+    <p style="font-weight: bold">
+      {{ previewobj.title }}
+    </p>
+    <p>{{ previewobj.bodyText }}</p>
+    <div class="meta">
+      <div>
+        <small
+          >Posted {{ previewobj.start | date : "MM/dd/yyyy" }}
+          {{ previewobj.authorName }}</small
+        >
+      </div>
+      <div *ngIf="isString(previewobj.displayTo)">
+        <span>{{ previewobj.displayTo }}</span>
+      </div>
+
+      <div *ngIf="isArray(previewobj.displayTo)">
+        <div class="tags-container">
+          <div *ngFor="let project of previewobj.displayTo">
+            <span
+              class="tag"
+              [ngStyle]="{ '--tag-color': project.projectColor }"
+            >
+              {{ project.projectName }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
-
     <div class="dialog-actions">
       <button mat-flat-button class="w-100" (click)="closePreview()">
         Close Preview
