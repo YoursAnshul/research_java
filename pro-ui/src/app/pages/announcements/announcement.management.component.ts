@@ -145,7 +145,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             bodyText: item?.bodyText,
           };
         });
-        this.length = data?.totalCount || data?.data?.length;
+        this.length = data?.count || data?.data?.length;
       },
       error: (error: any) => {
         console.error('Error fetching announcements:', error);

@@ -81,7 +81,7 @@
 
 ::ng-deep .mat-sort-header-container:not(.mat-sort-header-sorted):after {
   content: "↑↓";
-  font-size: 16px;
+  font-size: 12px;
   position: absolute;
   top: 0;
   right: 0;
@@ -93,7 +93,7 @@
 
 ::ng-deep .mat-sort-header-container.mat-sort-header-sorted:after {
   content: "↑↓";
-  font-size: 16px;
+  font-size: 12px;
   position: absolute;
   top: 0;
   right: 0;

@@ -43,6 +43,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   allSelected = false;
   isAnyProjectsSelected: boolean = false;
   userObj: any;
+  announcementData: any;
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -59,6 +60,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
       isAuthor: [false],
     });
     this.id = data?.id;
+    this.announcementData = data;
   }
 
   ngOnInit(): void {
@@ -71,7 +73,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     );
     this.getProjectInfo();
     this.getAuthor();
-    
+
     this.getDetails(this.id);
     const icons = Quill.import('ui/icons');
     icons.undo = `
@@ -284,15 +286,22 @@ export class AddAnnouncementDialogComponent implements OnInit {
   }
   openPreview(): void {
     this.closeDialog();
-    console.log('Opening preview dialog...');
+    this.announcement.content = this.quill.root.innerHTML;
+    const plainTextContent = this.quill.root.textContent;
+    const selectedAuthorName = this.selectedAuthor?.userName;
+    const announcementData = {
+      title: this.announcementForm.value.title,
+      bodyText: plainTextContent,
+      start: this.announcementForm.value.startDate,
+      authorName: selectedAuthorName,
+      displayTo: this.isAnyProjectsSelected
+        ? 'Any Projects'
+        : this.selectedProjects,
+    };
+    console.log('Opening preview dialog...', announcementData);
     const dialogRef = this.dialog.open(PreviewComponent, {
       width: '600px',
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('result-------', result);
-      }
+      data: announcementData,
     });
   }
 
