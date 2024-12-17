@@ -348,12 +348,14 @@
                         ></p>
                         <div class="contact-item-row-voice-mail-pin-email">
                           <span
-                            class="email-text"
-                            [innerHTML]="
-                              data?.studyemailaddress || ''
-                                | highlight : searchTerms
-                            "
-                          ></span>
+                                class="email-text"
+                                [innerHTML]="
+                                  data?.studyemailaddress?.length > 15 
+                                    ? (data?.studyemailaddress | slice: 0:15) + '...' 
+                                    : data?.studyemailaddress || '' 
+                                    | highlight : searchTerms
+                                "
+                              ></span>
                           <svg
                             *ngIf="data?.studyemailaddress"
                             width="14"
@@ -922,14 +924,14 @@
     text-overflow: ellipsis;
   }
 
+
   .email-text {
-    display: inline-block;
-    max-width: calc(100% - 20px);
-    /* vertical-align: middle;  */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
   .svg-align {
     display: inline-block;

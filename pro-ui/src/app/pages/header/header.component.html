@@ -140,6 +140,9 @@
                           firstHeadingVoiceMail | highlight : searchTerms
                         "
                       ></h4>
+                      <div style="margin-top: -10px;">
+
+                      
                       <div class="contact-item-voice-mail">
                         <div class="contact-item-row-voice-mail-new">
                           <p
@@ -204,6 +207,8 @@
                           ></p>
                         </div>
                       </div>
+                    </div>
+
                     </div>
                     <div class="scroll-container1">
                       <div
@@ -407,13 +412,15 @@
                                 <div
                                   class="contact-item-row-voice-mail-pin-email"
                                 >
-                                  <span
-                                    class="email-text"
-                                    [innerHTML]="
-                                      data?.studyemailaddress || ''
-                                        | highlight : searchTerms
-                                    "
-                                  ></span>
+                                <span
+                                class="email-text"
+                                [innerHTML]="
+                                  data?.studyemailaddress?.length > 15 
+                                    ? (data?.studyemailaddress | slice: 0:15) + '...' 
+                                    : data?.studyemailaddress || '' 
+                                    | highlight : searchTerms
+                                "
+                              ></span>
                                   <svg
                                     *ngIf="data?.studyemailaddress"
                                     width="11"
@@ -783,7 +790,7 @@
     /* padding: 16px; */
   }
   .scroll-container1 {
-    max-height: calc(70vh - 140px);
+    max-height: calc(70vh - 155px);
     /* max-height: 50vh; */
     /* overflow-y: auto; */
     /* padding: 16px; */
@@ -819,6 +826,7 @@
     background-color: #f6c867;
     width: 8px;
     height: auto;
+    margin-top: -10px;
   }
 
   .hero-box .purple-bar {
@@ -854,6 +862,7 @@
   .hero-box .content {
     padding: 0px 16px;
     width: 100%;
+    margin-top: -18px;
   }
 
   .content h2 {
@@ -917,13 +926,15 @@
     display: flex;
     border-bottom: 1px solid #58595b;
     width: 400px;
-    height: 82px;
+    height: 65px;
+    /* margin-top: -15px; */
   }
 
   .voice-mail-box .yellow-bar {
     background-color: #f6c867;
     width: 8px;
-    height: 76px;
+    height: 68px;
+    margin-top: -12px;
   }
 
   .voice-mail-box .purple-bar {
@@ -959,6 +970,7 @@
   .voice-mail-box .content {
     padding: 0px 16px;
     width: 100%;
+    margin-top: -18px;
   }
 
   .contact-item-row-voice-mail {
@@ -1108,15 +1120,14 @@
   }
 
   .email-text {
-    display: inline-block;
-    max-width: calc(100% - 20px);
-    /* vertical-align: middle;  */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 11px;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
   margin-bottom: 5px;
-  }
+}
 
   .svg-align {
     display: inline-block;
