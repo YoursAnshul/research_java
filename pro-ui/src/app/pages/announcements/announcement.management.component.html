@@ -22,7 +22,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('startDate')"
-        style="background-color: #e0e0e0"
+        style="background-color: #e0e0e0; width: 170px"
       >
         Start
       </th>
@@ -35,7 +35,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('expiration')"
-        style="background-color: #e0e0e0"
+        style="background-color: #e0e0e0; width: 170px"
       >
         Expiration
       </th>
@@ -48,13 +48,13 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('title')"
-        style="background-color: #e0e0e0"
+        style="background-color: #e0e0e0; width: 180px"
       >
         <span>Title</span>
         <div
           style="
             position: absolute;
-            right: 15px;
+            right: 20px;
             top: 50%;
             transform: translateY(-40%);
             display: flex;
@@ -62,9 +62,18 @@
             gap: 5px;
           "
         >
-          <mat-icon matTooltip="Search by title" style="cursor: pointer"
-            >search</mat-icon
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
+            <path
+              d="M11.5006 10.47L13.8726 12.8414L13.0889 13.625L10.7175 11.2531C9.83517 11.9604 8.73768 12.3451 7.60681 12.3435C4.8555 12.3435 2.62256 10.1106 2.62256 7.35925C2.62256 4.60794 4.8555 2.375 7.60681 2.375C10.3581 2.375 12.5911 4.60794 12.5911 7.35925C12.5927 8.49012 12.2079 9.58762 11.5006 10.47ZM10.3897 10.059C11.0925 9.33627 11.485 8.36741 11.4834 7.35925C11.4834 5.21713 9.74837 3.48261 7.60681 3.48261C5.46469 3.48261 3.73017 5.21713 3.73017 7.35925C3.73017 9.50081 5.46469 11.2359 7.60681 11.2359C8.61497 11.2375 9.58383 10.845 10.3066 10.1421L10.3897 10.059Z"
+              fill="#B5B5B5"
+            />
+          </svg>
         </div>
       </th>
       <td mat-cell *matCellDef="let data">{{ data.title }}</td>
@@ -76,13 +85,13 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('author')"
-        style="background-color: #e0e0e0"
+        style="background-color: #e0e0e0; width: 160px"
       >
         <span>Author</span>
         <div
           style="
             position: absolute;
-            right: 15px;
+            right: 20px;
             top: 50%;
             transform: translateY(-40%);
             display: flex;
@@ -90,21 +99,41 @@
             gap: 5px;
           "
         >
-          <mat-icon
-            matTooltip="Filter by author"
-            style="margin-left: 8px; cursor: pointer"
-            >filter_list</mat-icon
+          <svg
+            width="11"
+            height="12"
+            viewBox="0 0 11 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
+            <path
+              d="M6.82113 5.99924V10.9242C6.84613 11.1117 6.78363 11.3117 6.63988 11.443C6.58206 11.5009 6.51338 11.5469 6.43777 11.5783C6.36216 11.6096 6.28111 11.6258 6.19925 11.6258C6.1174 11.6258 6.03635 11.6096 5.96074 11.5783C5.88513 11.5469 5.81645 11.5009 5.75863 11.443L4.50238 10.1867C4.43425 10.1201 4.38245 10.0386 4.35101 9.94859C4.31957 9.8586 4.30934 9.76258 4.32113 9.66799V5.99924H4.30238L0.702377 1.38674C0.600882 1.25644 0.555085 1.09127 0.574994 0.927318C0.594903 0.763363 0.678899 0.613954 0.808627 0.511737C0.927377 0.424237 1.05863 0.374237 1.19613 0.374237H9.94613C10.0836 0.374237 10.2149 0.424237 10.3336 0.511737C10.4634 0.613954 10.5474 0.763363 10.5673 0.927318C10.5872 1.09127 10.5414 1.25644 10.4399 1.38674L6.83988 5.99924H6.82113Z"
+              fill="#B5B5B5"
+            />
+          </svg>
         </div>
       </th>
       <td mat-cell *matCellDef="let data">{{ data.authorName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="displayTo">
-      <th mat-header-cell *matHeaderCellDef style="background-color: #e0e0e0">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        style="background-color: #e0e0e0; width: 300px"
+      >
         Display Announcements To
       </th>
-      <td mat-cell *matCellDef="let data">
+      <td
+        mat-cell
+        *matCellDef="let data"
+        style="
+          width: 300px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        "
+      >
         <span *ngIf="data.displayTo !== 'Any Projects'; else showAnyProjects">
           <div class="tags-container">
             <span *ngFor="let project of data.displayTo">
@@ -117,16 +146,19 @@
             </span>
           </div>
         </span>
-    
+
         <ng-template #showAnyProjects>
           <span>Any Projects</span>
         </ng-template>
       </td>
     </ng-container>
-    
 
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef style="background-color: #e0e0e0">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        style="background-color: #e0e0e0; width: 70px"
+      >
         Actions
       </th>
       <td mat-cell *matCellDef="let data">
