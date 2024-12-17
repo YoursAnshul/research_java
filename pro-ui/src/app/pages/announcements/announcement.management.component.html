@@ -9,12 +9,15 @@
   >
     + Add New Announcement
   </button>
-
+  <div *ngIf="isLoading" class="loader-container">
+    <mat-spinner [diameter]="50" color="primary"></mat-spinner>
+  </div>
   <table
     mat-table
     [dataSource]="announcements"
     matSort
     class="announcement-table"
+    *ngIf="!isLoading"
   >
     <ng-container matColumnDef="start">
       <th
@@ -51,9 +54,20 @@
         style="background-color: #e0e0e0; width: 180px"
       >
         <span>Title</span>
+        <input
+            *ngIf="isSearchActive"
+            type="text"
+            placeholder="Search by title"
+            [(ngModel)]="searchTerm"
+            (click)="onInputClick($event)"
+            (input)="applySearch()"
+            (keydown.enter)="onEnterPress()"
+            style="margin: 10px; padding: 5px"
+          />
         <div
           style="
             position: absolute;
+            display: flex;
             right: 20px;
             top: 50%;
             transform: translateY(-40%);
@@ -68,15 +82,24 @@
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            (click)="searchIconClicked($event)"
           >
+            >
             <path
               d="M11.5006 10.47L13.8726 12.8414L13.0889 13.625L10.7175 11.2531C9.83517 11.9604 8.73768 12.3451 7.60681 12.3435C4.8555 12.3435 2.62256 10.1106 2.62256 7.35925C2.62256 4.60794 4.8555 2.375 7.60681 2.375C10.3581 2.375 12.5911 4.60794 12.5911 7.35925C12.5927 8.49012 12.2079 9.58762 11.5006 10.47ZM10.3897 10.059C11.0925 9.33627 11.485 8.36741 11.4834 7.35925C11.4834 5.21713 9.74837 3.48261 7.60681 3.48261C5.46469 3.48261 3.73017 5.21713 3.73017 7.35925C3.73017 9.50081 5.46469 11.2359 7.60681 11.2359C8.61497 11.2375 9.58383 10.845 10.3066 10.1421L10.3897 10.059Z"
               fill="#B5B5B5"
             />
           </svg>
+          
         </div>
       </th>
-      <td mat-cell *matCellDef="let data">{{ data.title }}</td>
+      <td
+        mat-cell
+        *matCellDef="let data"
+        [innerHTML]="data.title | highlight : searchTerm"
+      >
+        {{ data.title }}
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="author">

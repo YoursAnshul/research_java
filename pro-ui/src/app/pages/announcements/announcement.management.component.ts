@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
@@ -44,6 +44,10 @@ export class ManageAnnouncementsComponent implements OnInit {
   orderBy: string = 'asc';
   selectedProjectList: any[] = [];
   allProjectList: any[] = [];
+  isLoading = false;
+  searchTerm: string = '';
+  isSearchActive: boolean = false;
+
   constructor(
     private dialog: MatDialog,
     private http: HttpClient,
@@ -52,6 +56,32 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProjectInfo();
+  }
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const inputElement = document.querySelector('input[type="text"]');
+    if (inputElement && !inputElement.contains(event.target as Node)) {
+      this.isSearchActive = false;
+      this.searchTerm = '';
+    }
+  }
+
+  onInputClick(event: MouseEvent) {
+    event.stopPropagation();
+  }
+  applySearch() {
+    this.searchTerm = this.searchTerm;
+  }
+  onEnterPress() {
+    this.getList(1);
+  }
+  searchIconClicked(event: MouseEvent) {
+    event.stopPropagation();
+    this.isSearchActive = !this.isSearchActive;
+    if (!this.isSearchActive) {
+      this.getList(1);
+      this.searchTerm = '';
+    }
   }
 
   openAddAnnouncementDialog(): void {
@@ -108,6 +138,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.getList(this.pageIndex + 1);
   }
   getList(page: number): void {
+    this.isLoading = true;
     let params = new HttpParams().set('page', page.toString());
     if (this.pageSize) {
       params = params.set('limit', this.pageSize.toString());
@@ -115,6 +146,9 @@ export class ManageAnnouncementsComponent implements OnInit {
 
     if (this.sortBy) {
       params = params.set('sortBy', this.sortBy).set('orderBy', this.orderBy);
+    }
+    if (this.searchTerm) {
+      params = params.set('keyword', this.searchTerm);
     }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
     this.http.get(apiUrl, { params }).subscribe({
@@ -146,8 +180,10 @@ export class ManageAnnouncementsComponent implements OnInit {
           };
         });
         this.length = data?.count || data?.data?.length;
+        this.isLoading = false;
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('Error fetching announcements:', error);
       },
     });
