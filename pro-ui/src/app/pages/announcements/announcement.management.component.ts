@@ -11,6 +11,7 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { ConfirmationDialogComponent } from '../../components/delete-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -101,18 +102,26 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
 
   deleteAnnouncement(announcement: any): void {
-    console.log('Deleting announcement:', announcement);
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}`;
-    this.http.delete(apiUrl).subscribe({
-      next: (data: any) => {
-        this.getList(1);
-        this.showToastMessage('Delete successfully!', 'success');
-      },
-      error: (error: any) => {
-        console.error('Error detete project info:', error);
-      },
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}`;
+        this.http.delete(apiUrl).subscribe({
+          next: (data: any) => {
+            this.getList(1);
+            this.showToastMessage('Delete successfully!', 'success');
+          },
+          error: (error: any) => {
+            console.error('Error deleting announcement:', error);
+          },
+        });
+      } else {
+        console.log('Deletion cancelled');
+      }
     });
   }
+  
   viewAnnouncement(announcement: any): void {
     console.log('View announcement:', announcement);
     this.dialog.open(PreviewComponent, {
