@@ -109,6 +109,7 @@ export class ManageAnnouncementsComponent implements OnInit {
         const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}`;
         this.http.delete(apiUrl).subscribe({
           next: (data: any) => {
+            this.pageIndex=0
             this.getList(1);
             this.showToastMessage('Delete successfully!', 'success');
           },
