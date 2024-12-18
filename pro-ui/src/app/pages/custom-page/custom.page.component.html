@@ -93,198 +93,221 @@
           [(selectedIndex)]="activeTabIndex"
 
         >
-          <mat-tab label="Voicemail Info">
-            <div class="content sticky">
-              <h4
-                style="font-weight: 600; font-family: roboto; font-size: 16px"
-                [innerHTML]="firstHeadingVoiceMail | highlight : searchTerms"
-              ></h4>
-              <div class="contact-item-voice-mail">
-                <div class="contact-item-row-voice-mail-new">
-                  <p
-                    class="stickeky-header"
-                    [innerHTML]="
-                      voiceMailInstruction1 | highlight : searchTerms
-                    "
-                  ></p>
-                  <span style="margin-bottom: 13px; margin-left: 3px; color: #0d6efd; text-decoration: underline;">{{voiceMailInstructionCopy}}</span>
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    (click)="copyToClipboard(voiceMailInstructionCopy)"
-                    class="svg-align"
-                    matTooltip="copy"
-                    matTooltipPosition="above"
-                  >
-                    <path
-                      d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                      stroke="#58595B"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                      stroke="#58595B"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="contact-item-voice-mail">
-                <div class="contact-item-row-voice-mail-new">
-                  <p
-                    [innerHTML]="
-                      voiceMailInstruction2 | highlight : searchTerms
-                    "
-                  ></p>
-                </div>
-              </div>
-              <div class="contact-item-voice-mail">
-                <div class="contact-item-row-voice-mail-new">
-                  <p
-                    [innerHTML]="
-                      voiceMailInstruction3 | highlight : searchTerms
-                    "
-                  ></p>
-                </div>
-              </div>
-              <div class="contact-item-voice-mail">
-                <div class="contact-item-row-voice-mail-new">
-                  <p
-                    [innerHTML]="
-                      voiceMailInstruction4 | highlight : searchTerms
-                    "
-                  ></p>
-                </div>
+        <mat-tab label="Voicemail Info">
+          <div class="content sticky">
+            <h4
+              style="
+                font-weight: 600;
+                font-family: roboto;
+                font-size: 16px;
+              "
+              [innerHTML]="
+                firstHeadingVoiceMail | highlight : searchTerms
+              "
+            ></h4>
+            <div style="margin-top: -10px;">
+
+            
+            <div class="contact-item-voice-mail">
+              <div class="contact-item-row-voice-mail-new">
+                <p
+                  class="stickeky-header"
+                  [innerHTML]="
+                    voiceMailInstruction1 | highlight : searchTerms
+                  "
+                ></p>
+                <span style="margin-bottom: 13px; margin-left: 3px; color: #0d6efd; text-decoration: underline;">{{voiceMailInstructionCopy}}</span>
+                <svg
+                  width="12"
+                  height="13"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  (click)="copyToClipboard(voiceMailInstructionCopy)"
+                  class="svg-align"
+                  matTooltip="copy"
+                  matTooltipPosition="above"
+                >
+                  <path
+                    d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                    stroke="#58595B"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                    stroke="#58595B"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
               </div>
             </div>
-            <div class="scroll-container1">
-              <div
-                class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
-              >
-                <div class="space-y-4">
-                  <!-- dynamic -->
+            <div class="contact-item-voice-mail">
+              <div class="contact-item-row-voice-mail-new">
+                <p
+                  [innerHTML]="
+                    voiceMailInstruction2 | highlight : searchTerms
+                  "
+                ></p>
+              </div>
+            </div>
+            <div class="contact-item-voice-mail">
+              <div class="contact-item-row-voice-mail-new">
+                <p
+                  [innerHTML]="
+                    voiceMailInstruction3 | highlight : searchTerms
+                  "
+                ></p>
+              </div>
+            </div>
+            <div class="contact-item-voice-mail">
+              <div class="contact-item-row-voice-mail-new">
+                <p
+                  [innerHTML]="
+                    voiceMailInstruction4 | highlight : searchTerms
+                  "
+                ></p>
+              </div>
+            </div>
+          </div>
+
+          </div>
+          <div class="scroll-container1">
+            <div
+              class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
+            >
+              <div class="space-y-4">
+                <!-- dynamic -->
+                <div
+                  class="voice-mail-box"
+                  *ngFor="let voicemail of voicemaillist"
+                >
                   <div
-                    class="voice-mail-box"
-                    *ngFor="let voicemail of voicemaillist"
-                  >
-                    <div
-                      class="yellow-bar"
-                      [ngStyle]="{ 'background-color': voicemail.projectColor }"
-                    ></div>
-                    <div class="content">
-                      <h2
+                    class="yellow-bar"
+                    [ngStyle]="{
+                      'background-color': voicemail.projectColor
+                    }"
+                  ></div>
+                  <div class="content">
+                    <h2
+                      [innerHTML]="
+                        voicemail.projectName
+                          | highlight : searchTerms
+                      "
+                    ></h2>
+                    <div class="contact-item">
+                      <p
+                        class="contact-item-color"
                         [innerHTML]="
-                          voicemail.projectName | highlight : searchTerms
+                          voiceMailTollFree1 | highlight : searchTerms
                         "
-                      ></h2>
-                      <div class="contact-item">
+                      ></p>
+                      <div class="contact-item-row-voice-mail">
                         <p
-                          class="contact-item-color"
+                          class="stickeky-header"
                           [innerHTML]="
-                            voiceMailTollFree1 | highlight : searchTerms
+                            voicemail?.voiceMailNumber || ''
+                              | highlight : searchTerms
                           "
                         ></p>
-                        <div class="contact-item-row-voice-mail">
-                          <p
-                            class="stickeky-header"
-                            [innerHTML]="
-                              voicemail?.voiceMailNumber || ''
-                                | highlight : searchTerms
-                            "
-                          ></p>
-                          <svg
-                            *ngIf="voicemail?.voiceMailNumber"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            (click)="
-                              copyToClipboard(voicemail?.voiceMailNumber)
-                            "
-                            class="svg-align"
-                            matTooltip="copy"
-                            matTooltipPosition="above"
-                          >
-                            <path
-                              d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                              stroke="#58595B"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                              stroke="#58595B"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </div>
+                        <svg
+                          *ngIf="voicemail?.voiceMailNumber"
+                          width="11"
+                          height="13"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          (click)="
+                            copyToClipboard(
+                              voicemail?.voiceMailNumber
+                            )
+                          "
+                          class="svg-align"
+                          matTooltip="copy"
+                          matTooltipPosition="above"
+                        >
+                          <path
+                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                            stroke="#58595B"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                          <path
+                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                            stroke="#58595B"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
                       </div>
-                      <div class="contact-item-new">
+                    </div>
+                    <div class="contact-item-new">
+                      <p
+                        style="padding-left: 17px;"
+                        class="contact-item-color"
+                        [innerHTML]="
+                          voiceMailPin1 | highlight : searchTerms
+                        "
+                      ></p>
+                      <div class="contact-item-row-voice-mail-pin">
                         <p
-                          style="padding-left: 17px;"
-                          class="contact-item-color"
-                          [innerHTML]="voiceMailPin1 | highlight : searchTerms"
+                          [innerHTML]="
+                            voicemail?.voiceMailPin || ''
+                              | highlight : searchTerms
+                          "
                         ></p>
-                        <div class="contact-item-row-voice-mail-pin">
-                          <p
-                            [innerHTML]="
-                              voicemail?.voiceMailPin || ''
-                                | highlight : searchTerms
-                            "
-                          ></p>
-                          <svg
-                            *ngIf="voicemail?.voiceMailPin"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 14 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            (click)="copyToClipboard(voicemail?.voiceMailPin)"
-                            class="svg-align"
-                            matTooltip="copy"
-                            matTooltipPosition="above"
-                          >
-                            <path
-                              d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
-                              stroke="#58595B"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
-                              stroke="#58595B"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        </div>
+                        <svg
+                          *ngIf="voicemail?.voiceMailPin"
+                          width="11"
+                          height="13"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          (click)="
+                            copyToClipboard(voicemail?.voiceMailPin)
+                          "
+                          class="svg-align"
+                          matTooltip="copy"
+                          matTooltipPosition="above"
+                        >
+                          <path
+                            d="M3.66675 5.44463C3.66675 4.97307 3.85407 4.52083 4.18751 4.18739C4.52095 3.85395 4.97319 3.66663 5.44475 3.66663H11.2221C11.4556 3.66663 11.6868 3.71262 11.9025 3.80197C12.1182 3.89132 12.3142 4.02229 12.4793 4.18739C12.6444 4.35249 12.7754 4.5485 12.8647 4.76421C12.9541 4.97993 13.0001 5.21114 13.0001 5.44463V11.222C13.0001 11.4554 12.9541 11.6867 12.8647 11.9024C12.7754 12.1181 12.6444 12.3141 12.4793 12.4792C12.3142 12.6443 12.1182 12.7753 11.9025 12.8646C11.6868 12.954 11.4556 13 11.2221 13H5.44475C5.21126 13 4.98005 12.954 4.76434 12.8646C4.54862 12.7753 4.35261 12.6443 4.18751 12.4792C4.02241 12.3141 3.89144 12.1181 3.80209 11.9024C3.71274 11.6867 3.66675 11.4554 3.66675 11.222V5.44463Z"
+                            stroke="#58595B"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                          <path
+                            d="M1.67467 10.158C1.47 10.0417 1.29977 9.87332 1.18127 9.66993C1.06277 9.46653 1.00023 9.23539 1 9V2.33333C1 1.6 1.6 1 2.33333 1H9C9.5 1 9.772 1.25667 10 1.66667"
+                            stroke="#58595B"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </mat-tab>
+          </div>
+        </mat-tab>
           <mat-tab label="Project Info">
             <div class="scroll-container">
               <div
                 class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
               >
                 <div class="space-y-4">
-                  <div class="hero-box" *ngFor="let data of projectinfolist">
+                  <div
+                    class="hero-box"
+                    *ngFor="let data of projectinfolist"
+                  >
                     <div
                       class="yellow-bar"
                       [ngStyle]="{
@@ -294,15 +317,18 @@
                     <div class="content">
                       <h2
                         [innerHTML]="
-                          data?.projectName || '' | highlight : searchTerms
+                          data?.projectName || ''
+                            | highlight : searchTerms
                         "
                       ></h2>
                       <div class="contact-item">
                         <p
                           class="contact-item-color"
-                          [innerHTML]="tollFree1 | highlight : searchTerms"
+                          [innerHTML]="
+                            tollFree1 | highlight : searchTerms
+                          "
                         ></p>
-                        <div class="contact-item-row-voice-mail">
+                        <div class="contact-item-row-voice-mail-info">
                           <p
                             class="stickeky-header"
                             [innerHTML]="
@@ -312,13 +338,15 @@
                           ></p>
                           <svg
                             *ngIf="data?.tollfreenumber"
-                            width="14"
-                            height="14"
+                            width="11"
+                            height="13"
                             viewBox="0 0 14 14"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                             (click)="
-                              copyToClipboard(data?.tollfreenumber || '')
+                              copyToClipboard(
+                                data?.tollfreenumber || ''
+                              )
                             "
                             class="svg-align"
                             matTooltip="copy"
@@ -346,25 +374,29 @@
                           class="contact-item-color"
                           [innerHTML]="email1 | highlight : searchTerms"
                         ></p>
-                        <div class="contact-item-row-voice-mail-pin-email">
-                          <span
-                                class="email-text"
-                                [innerHTML]="
-                                  data?.studyemailaddress?.length > 15 
-                                    ? (data?.studyemailaddress | slice: 0:15) + '...' 
-                                    : data?.studyemailaddress || '' 
-                                    | highlight : searchTerms
-                                "
-                              ></span>
+                        <div
+                          class="contact-item-row-voice-mail-pin-email"
+                        >
+                        <span
+                        class="email-text"
+                        [innerHTML]="
+                          data?.studyemailaddress?.length > 15 
+                            ? (data?.studyemailaddress | slice: 0:15) + '...' 
+                            : data?.studyemailaddress || '' 
+                            | highlight : searchTerms
+                        "
+                      ></span>
                           <svg
                             *ngIf="data?.studyemailaddress"
-                            width="14"
-                            height="14"
+                            width="11"
+                            height="13"
                             viewBox="0 0 14 14"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                             (click)="
-                              copyToClipboard(data?.studyemailaddress || '')
+                              copyToClipboard(
+                                data?.studyemailaddress || ''
+                              )
                             "
                             class="svg-align"
                             matTooltip="copy"
@@ -404,6 +436,7 @@
                           class="show-more-less"
                         >
                           {{ data.showMore ? 'Show Less' : 'Show More' }}
+                          
                         </a>
                       </div>
                     </div>
@@ -504,8 +537,8 @@
                       ></span>
                       <svg
                         *ngIf="contact?.emailAddress"
-                        width="14"
-                        height="14"
+                        width="12"
+                        height="13"
                         viewBox="0 0 14 14"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -548,8 +581,8 @@
                       ></span>
                       <svg
                         *ngIf="contact?.escalationphone"
-                        width="14"
-                        height="14"
+                        width="12"
+                        height="13"
                         viewBox="0 0 14 14"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -604,13 +637,13 @@
   }
 
   .scroll-container {
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh  - 170px);
 
     /* overflow-y: auto; */
     /* padding: 16px; */
   }
   .scroll-container1 {
-    max-height: calc(88vh - 200px);
+    max-height: calc(88vh  - 184px);
     /* max-height: 50vh; */
     /* overflow-y: auto; */
     /* padding: 16px; */
@@ -626,6 +659,7 @@
     z-index: 1000;
     background-color: #fff;
     padding: 8px;
+    margin-top: -13px;
   }
 
   .sticky-header-tabs {
@@ -646,6 +680,8 @@
     background-color: #f6c867;
     width: 8px;
     height: auto;
+    margin-top: -10px;
+    margin-bottom: 10px;
   }
 
   .hero-box .purple-bar {
@@ -679,12 +715,13 @@
   }
 
   .hero-box .content {
-    padding: 10px 16px;
+    padding: 0px 16px;
     width: 100%;
+    margin-top: -14px;
   }
 
   .content h2 {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
     margin: 0 0 10px 0;
     color: #000;
@@ -705,7 +742,7 @@
     display: flex;
     /* justify-content: space-between; */
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 0.1;
     /* margin-right: 78px; */
   }
 
@@ -713,13 +750,15 @@
     display: flex;
     /* justify-content: space-between; */
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.0;
     /* margin-left: 20px; */
     /* margin-right: 18px; */
   }
 
   .contact-item-color {
     color: #6c757d;
+    text-wrap: nowrap;
+    font-size: 11px;
   }
 
   .contact-item span {
@@ -728,8 +767,9 @@
   }
 
   .description {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.4;
+    margin-bottom: 8px;
   }
 
   .mat-menu-panel {
@@ -742,48 +782,55 @@
     display: flex;
     border-bottom: 1px solid #58595b;
     width: 400px;
-    height: 110px;
+    height: 65px;
+    /* margin-top: -15px; */
+  }
+
+  ::ng-deep #pro-app .mat-mdc-tab.mdc-tab {
+    max-width: unset !important;
   }
 
   .voice-mail-box .yellow-bar {
     background-color: #f6c867;
     width: 8px;
-    height: 104px;
+    height: 68px;
+    margin-top: -12px;
   }
 
   .voice-mail-box .purple-bar {
     background-color: #7373e8;
     width: 8px;
-    height: 104px;
+    height: 90px;
   }
 
   .voice-mail-box .purple-dark-bar {
     background-color: #9400d3;
     width: 8px;
-    height: 104px;
+    height: 90px;
   }
 
   .voice-mail-box .green-dark-bar {
     background-color: #00a542;
     width: 8px;
-    height: 104px;
+    height: 90px;
   }
 
   .voice-mail-box .light-blue-bar {
     background-color: #87cefa;
     width: 8px;
-    height: 104px;
+    height: 90px;
   }
 
   .voice-mail-box .light-pink-bar {
     background-color: #ff9083;
     width: 8px;
-    height: 104px;
+    height: 90px;
   }
 
   .voice-mail-box .content {
-    padding: 10px 16px;
+    padding: 0px 16px;
     width: 100%;
+    margin-top: -14px;
   }
 
   .contact-item-row-voice-mail {
@@ -791,13 +838,8 @@
     align-items: center;
     /* margin-right: 45px; */
     margin-left: 10px;
-  }
-
-  .contact-item-row-voice-mail-pin {
-    display: flex;
-    align-items: center;
-    /* margin-right: 163px; */
-    margin-left: 12px;
+    font-size: 11px;
+    margin-top: -3px;
   }
 
   .contact-item-row-voice-mail-new {
@@ -806,11 +848,19 @@
     /* margin-right: 45px; */
   }
 
+  .contact-item-row-voice-mail-pin {
+    display: flex;
+    align-items: center;
+    /* margin-right: 163px; */
+    margin-left: 8px;
+    font-size: 11px;
+  }
+
   .contact-item-voice-mail {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
-    line-height: 1;
+    font-size: 11px;
+    line-height: 0.9;
   }
 
   .custom-tabs .mat-tab-label {
@@ -820,14 +870,14 @@
   .custom-tabs .mat-tab-label:last-child {
     margin-right: 0;
   }
-  ::ng-deep #pro-app .mat-mdc-tab.mdc-tab {
-    max-width: unset !important;
-  }
 
   /* team contacts */
   .quick-reference-new {
     margin-bottom: 10px;
     padding: 16px;
+  }
+  .quick-reference {
+    color: #6c757d;
   }
 
   .font-containt {
@@ -881,6 +931,12 @@
     width: 13px !important;
     height: 13px !important;
   }
+  ::ng-deep .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab{
+    max-height: 40px !important;
+  }
+  ::ng-deep .mat-mdc-tab-label-container{
+    margin-top: 0px !important;
+  }
   ::ng-deep .mat-mdc-checkbox {
     --mdc-form-field-label-text-size: 12px !important;
   }
@@ -899,6 +955,14 @@
     border-radius: unset !important;
     pointer-events: unset !important;
   }
+  ::ng-deep .mat-mdc-tab-body-content[style*="visibility: hidden"] {
+    visibility: visible !important;
+    display: block !important;
+  }
+
+  ::ng-deep .mat-mdc-tab-group-dynamic-height .mat-mdc-tab-body-content {
+    overflow: auto !important;
+  }
   .sticky {
     position: sticky;
     top: 0;
@@ -913,17 +977,13 @@
     background: #fff;
     padding-left: 20px;
   }
-  .quick-reference {
-    color: #6c757d;
-  }
 
   .contact-item-row-voice-mail-pin-email {
-    margin-left: 30px;
+    margin-left: 29px;
     /* white-space: nowrap; */
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
 
   .email-text {
   display: inline-block;
@@ -931,6 +991,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 11px;
+  margin-bottom: 5px;
 }
 
   .svg-align {
@@ -938,6 +1000,7 @@
     vertical-align: middle;
     cursor: pointer;
     margin-left: 5px;
+    margin-top: -4px;
   }
   .tab-container {
     position: relative;
@@ -950,10 +1013,19 @@
     transform: translate(-50%, -50%);
     z-index: 10;
   }
-
   .show-more-less {
   color: blue;
   cursor: pointer;
   text-decoration: underline;
 }
+
+.contact-item-row-voice-mail-info{
+  display: flex;
+    align-items: center;
+    /* margin-right: 45px; */
+    margin-left: 12px;
+    font-size: 11px;
+    margin-top: -5px;
+}
+
 </style>

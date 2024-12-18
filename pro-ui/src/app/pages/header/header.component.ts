@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
   voiceMailInstructionCopy = '123-555-1919';
   voiceMailInstruction2 = '2. Press the  "*"  star button';
   voiceMailInstruction3 = '3. Enter "ID" [Voicemail Phone]';
-  voiceMailInstruction4 = '3. Enter "PIN" [Voicemail PIN]';
+  voiceMailInstruction4 = '4. Enter "PIN" [Voicemail PIN]';
 
 
   searchTerms: string = '';
