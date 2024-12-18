@@ -154,7 +154,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	}
 
 	@Override
-	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset) {
+	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset,
+			String keyword) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT a.announcementid, CONCAT(u.fname, ' ', u.lname) AS userName,  a.icon, ");
 		sql.append(" a.titletext,  a.bodytext,  a.author, a.dispauthor, a.startdate, a.expiredate,  p.dispprojects ");
@@ -165,7 +166,9 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append("  FROM  core.projects p ");
 		sql.append("  WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
 		sql.append(" ) AS p ON TRUE ");
-
+		if (keyword != null && !keyword.isEmpty()) {
+			sql.append(" WHERE a.titletext LIKE  '%" + keyword + "%' ");
+		}
 		if (sortBy != null && orderBy != null) {
 			if (sortBy.equals("startDate")) {
 				sql.append(" ORDER BY startdate " + orderBy + " ");

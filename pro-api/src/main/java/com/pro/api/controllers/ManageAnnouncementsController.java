@@ -55,7 +55,8 @@ public class ManageAnnouncementsController {
 	public ResponseEntity<PageResponse<AnnouncementResponse>> getAnnouncementList(@PathVariable Integer page,
 			@RequestParam(required = false, value = "sortBy") String sortBy,
 			@RequestParam(required = false, value = "orderBy") String orderBy,
-			@RequestParam(required = false, value = "limit") Integer limit) {
+			@RequestParam(required = false, value = "limit") Integer limit,
+			@RequestParam(required = false, value = "keyword") String keyword) {
 		int offset = 0;
 		if (limit == null) {
 			limit = 10;
@@ -63,7 +64,8 @@ public class ManageAnnouncementsController {
 		if (page > 0) {
 			offset = (page - 1) * limit;
 		}
-		PageResponse<AnnouncementResponse> response = manageAnnouncements.getList(sortBy, orderBy, limit, offset);
+		PageResponse<AnnouncementResponse> response = manageAnnouncements.getList(sortBy, orderBy, limit, offset,
+				keyword);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
