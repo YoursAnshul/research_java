@@ -55,15 +55,15 @@
       >
         <span>Title</span>
         <input
-            *ngIf="isSearchActive"
-            type="text"
-            placeholder="Search by title"
-            [(ngModel)]="searchTerm"
-            (click)="onInputClick($event)"
-            (input)="applySearch()"
-            (keydown.enter)="onEnterPress()"
-            style="margin: 10px; padding: 5px"
-          />
+          *ngIf="isSearchActive"
+          type="text"
+          placeholder="Search by title"
+          [(ngModel)]="searchTerm"
+          (click)="onInputClick($event)"
+          (input)="applySearch()"
+          (keydown.enter)="onEnterPress()"
+          style="margin: 10px; padding: 5px"
+        />
         <div
           style="
             position: absolute;
@@ -90,7 +90,6 @@
               fill="#B5B5B5"
             />
           </svg>
-          
         </div>
       </th>
       <td
@@ -107,20 +106,38 @@
         mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-        (click)="onSort('author')"
-        style="background-color: #e0e0e0; width: 160px"
+        (click)="isFilterActive ? null : onSort('author')"
+        style="background-color: #e0e0e0; width: 160px; position: relative"
       >
         <span>Author</span>
+        <mat-form-field
+          *ngIf="isFilterActive"
+          appearance="fill"
+          style="margin-left: 10px; width: 200px"
+        >
+          <mat-label>Filter</mat-label>
+          <mat-select
+            [(value)]="selectedAuthor"
+            (selectionChange)="filterAuthors($event)"
+          >
+            <mat-option *ngFor="let author of filteredAuthors" [value]="author">
+              {{ author }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
         <div
           style="
             position: absolute;
             right: 20px;
-            top: 65%;
-            transform: translateY(-40%);
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             align-items: center;
             gap: 5px;
+            cursor: pointer;
           "
+          (click)="filterIconClicked($event)"
         >
           <svg
             width="11"
@@ -132,7 +149,7 @@
             <path
               d="M6.82113 5.99924V10.9242C6.84613 11.1117 6.78363 11.3117 6.63988 11.443C6.58206 11.5009 6.51338 11.5469 6.43777 11.5783C6.36216 11.6096 6.28111 11.6258 6.19925 11.6258C6.1174 11.6258 6.03635 11.6096 5.96074 11.5783C5.88513 11.5469 5.81645 11.5009 5.75863 11.443L4.50238 10.1867C4.43425 10.1201 4.38245 10.0386 4.35101 9.94859C4.31957 9.8586 4.30934 9.76258 4.32113 9.66799V5.99924H4.30238L0.702377 1.38674C0.600882 1.25644 0.555085 1.09127 0.574994 0.927318C0.594903 0.763363 0.678899 0.613954 0.808627 0.511737C0.927377 0.424237 1.05863 0.374237 1.19613 0.374237H9.94613C10.0836 0.374237 10.2149 0.424237 10.3336 0.511737C10.4634 0.613954 10.5474 0.763363 10.5673 0.927318C10.5872 1.09127 10.5414 1.25644 10.4399 1.38674L6.83988 5.99924H6.82113Z"
               fill="#B5B5B5"
-            />
+            ></path>
           </svg>
         </div>
       </th>

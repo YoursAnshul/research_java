@@ -155,7 +155,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 	@Override
 	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset,
-			String keyword) {
+			String keyword, String authorName) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT a.announcementid, CONCAT(u.fname, ' ', u.lname) AS userName,  a.icon, ");
 		sql.append(" a.titletext,  a.bodytext,  a.author, a.dispauthor, a.startdate, a.expiredate,  p.dispprojects ");
@@ -165,9 +165,12 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append(" STRING_AGG(p.projectid::text, ',' ORDER BY p.projectid) AS dispprojects ");
 		sql.append("  FROM  core.projects p ");
 		sql.append("  WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
-		sql.append(" ) AS p ON TRUE ");
+		sql.append(" ) AS p ON TRUE  WHERE 1=1 ");
 		if (keyword != null && !keyword.isEmpty()) {
-			sql.append(" WHERE a.titletext LIKE  '%" + keyword + "%' ");
+			sql.append(" AND a.titletext LIKE  '%" + keyword + "%' ");
+		}
+		if (authorName != null && !authorName.isEmpty()) {
+			sql.append(" AND CONCAT(u.fname, ' ', u.lname) = '" + authorName + "' ");
 		}
 		if (sortBy != null && orderBy != null) {
 			if (sortBy.equals("startDate")) {
@@ -258,4 +261,15 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		respone.Message = "Delete successfully!!";
 		return respone;
 	}
+
+	@Override
+	public List<String> getAuthors() {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT DISTINCT CONCAT(u.fname, ' ', u.lname) AS userName ");
+		sql.append(" FROM core.announcements a ");
+		sql.append(" INNER JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
+		List<String> list = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> rs.getString("userName"));
+		return list;
+	}
+
 }

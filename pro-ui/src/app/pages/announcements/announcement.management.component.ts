@@ -48,6 +48,11 @@ export class ManageAnnouncementsComponent implements OnInit {
   isLoading = false;
   searchTerm: string = '';
   isSearchActive: boolean = false;
+  allAuthors: string[] = [];
+  filteredAuthors: string[] = [];
+  selectedAuthor: string | null = null;
+  isFilterActive: boolean = false;
+  isAllSelected: boolean = false;
 
   constructor(
     private dialog: MatDialog,
@@ -103,13 +108,13 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   deleteAnnouncement(announcement: any): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}`;
         this.http.delete(apiUrl).subscribe({
           next: (data: any) => {
-            this.pageIndex=0
+            this.pageIndex = 0;
             this.getList(1);
             this.showToastMessage('Delete successfully!', 'success');
           },
@@ -122,7 +127,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       }
     });
   }
-  
+
   viewAnnouncement(announcement: any): void {
     console.log('View announcement:', announcement);
     this.dialog.open(PreviewComponent, {
@@ -159,6 +164,9 @@ export class ManageAnnouncementsComponent implements OnInit {
     }
     if (this.searchTerm) {
       params = params.set('keyword', this.searchTerm);
+    }
+    if (this.selectedAuthor) {
+      params = params.set('authorName', this.selectedAuthor);
     }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
     this.http.get(apiUrl, { params }).subscribe({
@@ -225,5 +233,28 @@ export class ManageAnnouncementsComponent implements OnInit {
       horizontalPosition: horizontalPosition,
       verticalPosition: verticalPosition,
     });
+  }
+
+  getAuthors(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/all-authors`;
+    this.http.get<string[]>(apiUrl).subscribe({
+      next: (data: any) => {
+        this.allAuthors = data ? data : [];
+        this.filteredAuthors = this.allAuthors;
+      },
+      error: (error: any) => {
+        console.error('Error fetching authors:', error);
+      },
+    });
+  }
+
+  filterAuthors(event: any): void {
+    this.getList(1);
+  }
+
+  filterIconClicked(event: MouseEvent): void {
+    event.stopPropagation();
+    this.getAuthors();
+    this.isFilterActive = !this.isFilterActive;
   }
 }

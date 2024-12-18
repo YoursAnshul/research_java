@@ -22,11 +22,13 @@ public interface ManageAnnouncements {
 	public GeneralResponse getAnnouncement(Long id);
 
 	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset,
-			String keyword);
+			String keyword, String authorName);
 
 	public AuthorResponse getLoginUser(String email);
 
 	public GeneralResponse delete(Integer id);
 
 	public List<ProjectResponse> getProjectObject(List<Long> projectIdList);
+
+	public List<String> getAuthors();
 }

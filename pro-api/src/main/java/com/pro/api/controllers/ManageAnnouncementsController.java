@@ -56,7 +56,8 @@ public class ManageAnnouncementsController {
 			@RequestParam(required = false, value = "sortBy") String sortBy,
 			@RequestParam(required = false, value = "orderBy") String orderBy,
 			@RequestParam(required = false, value = "limit") Integer limit,
-			@RequestParam(required = false, value = "keyword") String keyword) {
+			@RequestParam(required = false, value = "keyword") String keyword,
+			@RequestParam(required = false, value = "authorName") String authorName) {
 		int offset = 0;
 		if (limit == null) {
 			limit = 10;
@@ -65,7 +66,7 @@ public class ManageAnnouncementsController {
 			offset = (page - 1) * limit;
 		}
 		PageResponse<AnnouncementResponse> response = manageAnnouncements.getList(sortBy, orderBy, limit, offset,
-				keyword);
+				keyword, authorName);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -79,5 +80,11 @@ public class ManageAnnouncementsController {
 	public ResponseEntity<GeneralResponse> delete(@PathVariable Integer id) {
 		GeneralResponse res = manageAnnouncements.delete(id);
 		return ResponseEntity.status(HttpStatus.OK).body(res);
+	}
+
+	@GetMapping("/all-authors")
+	public ResponseEntity<List<String>> getAuthorList() {
+		List<String> authors = manageAnnouncements.getAuthors();
+		return ResponseEntity.status(HttpStatus.OK).body(authors);
 	}
 }
