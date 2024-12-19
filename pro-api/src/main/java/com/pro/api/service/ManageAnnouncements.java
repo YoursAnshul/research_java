@@ -31,4 +31,6 @@ public interface ManageAnnouncements {
 	public List<ProjectResponse> getProjectObject(List<Long> projectIdList);
 
 	public List<String> getAuthors();
+
+	public GeneralResponse getAnnouncementList();
 }

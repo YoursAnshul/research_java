@@ -87,4 +87,10 @@ public class ManageAnnouncementsController {
 		List<String> authors = manageAnnouncements.getAuthors();
 		return ResponseEntity.status(HttpStatus.OK).body(authors);
 	}
+
+	@GetMapping("/list")
+	public ResponseEntity<GeneralResponse> getAouncementList() {
+		GeneralResponse announcementList = manageAnnouncements.getAnnouncementList();
+		return ResponseEntity.status(HttpStatus.OK).body(announcementList);
+	}
 }

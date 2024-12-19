@@ -272,4 +272,53 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		return list;
 	}
 
+	@Override
+	public GeneralResponse getAnnouncementList() {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT a.announcementid, CONCAT(u.fname, ' ', u.lname) AS userName, a.icon, ");
+		sql.append(" a.titletext, a.bodytext, a.author, a.dispauthor, a.startdate, a.expiredate, p.dispprojects ");
+		sql.append(" FROM core.announcements a ");
+		sql.append(" LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
+		sql.append(" LEFT JOIN LATERAL (SELECT ");
+		sql.append(" STRING_AGG(p.projectid::text, ',' ORDER BY p.projectid) AS dispprojects ");
+		sql.append(" FROM core.projects p ");
+		sql.append(" WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
+		sql.append(" ) AS p ON TRUE ");
+		sql.append(" WHERE NOW()::date = a.startdate AND a.startdate <= a.expiredate ");
+		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			AnnouncementResponse announcement = new AnnouncementResponse();
+			announcement.setAnnouncementId(rs.getLong("announcementid"));
+			announcement.setTitle(rs.getString("titletext"));
+			announcement.setIcon(rs.getString("icon"));
+			announcement.setBodyText(rs.getString("bodytext"));
+			announcement.setIsAuthor(rs.getBoolean("dispauthor"));
+			announcement.setStartDate(rs.getDate("startdate"));
+			announcement.setExpireDate(rs.getDate("expiredate"));
+
+			String projectIds = rs.getString("dispprojects");
+			List<Long> projectIdList = new ArrayList<>();
+			if (projectIds != null && !projectIds.trim().isEmpty()) {
+				String[] projectIdArr = projectIds.split(",");
+				for (String id : projectIdArr) {
+					try {
+						id = id.trim();
+						long projectId = Long.parseLong(id);
+						projectIdList.add(projectId);
+					} catch (NumberFormatException e) {
+						throw new IllegalArgumentException("Invalid project ID format: " + id, e);
+					}
+				}
+				announcement.setProjectIds(projectIdList);
+			}
+
+			announcement.setAuthorName(rs.getString("userName"));
+			announcement.setProjectObject(getProjectObject(projectIdList));
+			return announcement;
+		});
+
+		GeneralResponse response = new GeneralResponse();
+		response.Subject = list;
+		return response;
+	}
+
 }

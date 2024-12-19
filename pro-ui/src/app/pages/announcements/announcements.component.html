@@ -49,18 +49,18 @@
       </svg>
       {{ announcement.title }}
     </h4>
-    <p>{{ announcement.content }}</p>
+    <p>{{ announcement.bodyText }}</p>
     <div class="meta">
       <div>
-        <small>Posted {{ announcement.date | date : "MM/dd/yyyy" }}</small>
+        <small>Posted {{ announcement.startDate | date : "MM/dd/yyyy" }} by {{announcement.authorName}}</small>
       </div>
       <div class="tags">
         <span
-          *ngFor="let tag of announcement.tags"
+          *ngFor="let project of announcement.projectObject"
           class="tag"
-          [ngStyle]="{ '--tag-color': getTagColor(tag) }"
+          [ngStyle]="{ '--tag-color': project.projectColor }"
         >
-          {{ tag }}
+          {{ project.projectName }}
         </span>
       </div>
     </div>
