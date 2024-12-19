@@ -64,12 +64,36 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.getProjectInfo();
   }
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent): void {
+  onDocumentClick(event: MouseEvent): void {
     const inputElement = document.querySelector('input[type="text"]');
-    if (inputElement && !inputElement.contains(event.target as Node)) {
+    const filterContainer = document.querySelector('.filter-container');
+
+    if (inputElement && inputElement.contains(event.target as Node)) {
+      return;
+    }
+
+    if (!filterContainer || !filterContainer.contains(event.target as Node)) {
       this.isSearchActive = false;
       this.searchTerm = '';
     }
+
+    if (filterContainer && !filterContainer.contains(event.target as Node)) {
+      this.isFilterActive = false;
+      this.filteredAuthors = [];
+      this.selectedAuthor = '';
+      this.getList(1);
+    }
+  }
+  
+  filterAuthors(event: any): void {
+    event.stopPropagation();
+    this.getList(1);
+  }
+
+  filterIconClicked(event: MouseEvent): void {
+    event.stopPropagation();
+    this.getAuthors();
+    this.isFilterActive = !this.isFilterActive;
   }
 
   onInputClick(event: MouseEvent) {
@@ -248,13 +272,4 @@ export class ManageAnnouncementsComponent implements OnInit {
     });
   }
 
-  filterAuthors(event: any): void {
-    this.getList(1);
-  }
-
-  filterIconClicked(event: MouseEvent): void {
-    event.stopPropagation();
-    this.getAuthors();
-    this.isFilterActive = !this.isFilterActive;
-  }
 }

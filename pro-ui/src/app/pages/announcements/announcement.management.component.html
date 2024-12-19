@@ -54,7 +54,7 @@
         style="background-color: #e0e0e0; width: 180px"
       >
         <span>Title</span>
-        
+
         <div
           style="
             position: absolute;
@@ -67,16 +67,16 @@
             gap: 5px;
           "
         >
-        <input
-          *ngIf="isSearchActive"
-          type="text"
-          placeholder="Search by title"
-          [(ngModel)]="searchTerm"
-          (click)="onInputClick($event)"
-          (input)="applySearch()"
-          (keydown.enter)="onEnterPress()"
-          style="margin-left: 6px; width: 100px;"
-        />
+          <input
+            *ngIf="isSearchActive"
+            type="text"
+            placeholder="Search by title"
+            [(ngModel)]="searchTerm"
+            (click)="onInputClick($event)"
+            (input)="applySearch()"
+            (keydown.enter)="onEnterPress()"
+            style="margin-left: 6px; width: 100px"
+          />
           <svg
             width="16"
             height="16"
@@ -111,21 +111,25 @@
         style="background-color: #e0e0e0; width: 160px; position: relative"
       >
         <span>Author</span>
-        <mat-form-field class="filter-form-field"
+
+        <div
+          class="filter-container"
           *ngIf="isFilterActive"
-          appearance="fill"
-          style="margin-left: 10px; width: 200px"
+          style="margin-top: 10px; width: 200px; position: relative"
         >
-          <mat-label>Filter</mat-label>
-          <mat-select class="filter-select"
-            [(value)]="selectedAuthor"
-            (selectionChange)="filterAuthors($event)"
+          <select
+            id="authorFilter"
+            class="filter-select"
+            [(ngModel)]="selectedAuthor"
+            (change)="filterAuthors($event)"
+            style="width: 80%; padding: 5px; font-size: 12px"
           >
-            <mat-option *ngFor="let author of filteredAuthors" [value]="author">
+            <option value="">All Authors</option>
+            <option *ngFor="let author of filteredAuthors" [value]="author">
               {{ author }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </option>
+          </select>
+        </div>
 
         <div
           style="
@@ -137,10 +141,12 @@
             align-items: center;
             gap: 5px;
             cursor: pointer;
+            z-index: 1;
           "
           (click)="filterIconClicked($event)"
         >
-          <svg style="margin-top: 10px;"
+          <svg
+            style="margin-top: 10px"
             width="11"
             height="12"
             viewBox="0 0 11 12"
@@ -305,7 +311,6 @@
   </mat-paginator>
 </div>
 
-
 <style>
   /* ::ng-deep .mat-mdc-text-field-wrapper{
   height: 35px !important
@@ -317,10 +322,10 @@
   margin-top: -18px;
 } */
 
-.filter-form-field ::ng-deep .mat-mdc-text-field-wrapper{
-  height: 45px !important
-}
-/* .filter-form-field ::ng-deep  .mat-mdc-text-field-wrapper{
-  margin-left: 40px !important;
-} */
+  .filter-form-field ::ng-deep .mat-mdc-text-field-wrapper {
+    height: 45px !important;
+  }
+  .filter-form-field ::ng-deep .mat-mdc-text-field-wrapper {
+    margin-left: 40px !important;
+  }
 </style>
