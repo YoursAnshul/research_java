@@ -216,7 +216,9 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 				announcement.setProjectIds(projectIdList);
 			}
 			announcement.setAuthorName(rs.getString("userName"));
-			announcement.setProjectObject(getProjectObject(projectIdList));
+			if (projectIdList != null && !projectIdList.isEmpty()) {
+				announcement.setProjectObject(getProjectObject(projectIdList));
+			}
 			return announcement;
 		});
 
@@ -236,11 +238,9 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		StringBuilder sql = new StringBuilder();
 		sql.append(
 				"SELECT projectid, projectcolor,projectname FROM core.projects WHERE active = 1 AND projectType <> 4 ");
-		if (projectIdList != null && !projectIdList.isEmpty()) {
-			sql.append("AND projectid IN (");
-			sql.append(projectIdList.stream().map(String::valueOf).collect(Collectors.joining(", ")));
-			sql.append(") ");
-		}
+		sql.append("AND projectid IN (");
+		sql.append(projectIdList.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+		sql.append(") ");
 		sql.append("ORDER BY projectid");
 		List<ProjectResponse> projectResponses = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ProjectResponse projectResponse = new ProjectResponse();
@@ -312,7 +312,9 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			}
 
 			announcement.setAuthorName(rs.getString("userName"));
-			announcement.setProjectObject(getProjectObject(projectIdList));
+			if (projectIdList != null && !projectIdList.isEmpty()) {
+				announcement.setProjectObject(getProjectObject(projectIdList));
+			}
 			return announcement;
 		});
 
