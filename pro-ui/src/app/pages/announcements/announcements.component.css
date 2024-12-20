@@ -81,3 +81,10 @@
   display: inline-flex;
   margin-right: 8px;
 }
+.no-data {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
