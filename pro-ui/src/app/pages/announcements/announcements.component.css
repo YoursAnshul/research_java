@@ -90,3 +90,16 @@
   font-size: 14px;
   font-style: italic;
 }
+.show-more-btn {
+  background: none;
+  border: none;
+  color: #007bff; 
+  text-decoration: underline;
+  font-size: 12px; 
+  cursor: pointer;
+  padding: 0;
+}
+
+.show-more-btn:hover {
+  color: #0056b3;
+}
