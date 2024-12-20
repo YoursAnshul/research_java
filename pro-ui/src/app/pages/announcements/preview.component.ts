@@ -13,10 +13,9 @@ export class PreviewComponent implements OnInit {
     public dialogRef: MatDialogRef<PreviewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.previewobj = data;
+    this.previewobj = data;    
   }
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   closePreview(): void {
     this.closeDialog();
@@ -28,7 +27,6 @@ export class PreviewComponent implements OnInit {
     return typeof value === 'string';
   }
 
-  // Method to check if displayTo is an array
   isArray(value: any): boolean {
     return Array.isArray(value);
   }

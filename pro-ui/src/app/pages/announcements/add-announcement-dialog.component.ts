@@ -339,9 +339,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
         this.selectedAuthor = this.authorList.find(
           (author) => author?.userId === data?.userId
         );
-        this.announcementForm.patchValue({
-          isAuthor: data?.isAuthor,
-        });
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
