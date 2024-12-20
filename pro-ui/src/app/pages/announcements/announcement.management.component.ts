@@ -84,7 +84,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       this.getList(1);
     }
   }
-  
+
   filterAuthors(event: any): void {
     event.stopPropagation();
     this.getList(1);
@@ -92,8 +92,11 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   filterIconClicked(event: MouseEvent): void {
     event.stopPropagation();
-    this.getAuthors();
     this.isFilterActive = !this.isFilterActive;
+    if (this.isFilterActive) {
+      this.getAuthors();
+      this.selectedAuthor = '';
+    }
   }
 
   onInputClick(event: MouseEvent) {
@@ -271,5 +274,4 @@ export class ManageAnnouncementsComponent implements OnInit {
       },
     });
   }
-
 }
