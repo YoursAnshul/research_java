@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject, catchError, tap } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { ICoreHours, ICurrentUser, IFormFieldVariable, IGeneralResponse, ITimeCard, IUser, IUserMin } from '../../interfaces/interfaces';
+import { ICoreHours, ICurrentUser, IFormFieldVariable, IGeneralResponse, ITimeCard } from '../../interfaces/interfaces';
 import { LogsService } from '../logs/logs.service';
 import { environment } from '../../../environments/environment';
+import { User } from '../../models/data/user';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ export class UsersService {
 
   private apiRootUrl = `${environment.DataAPIUrl}/api/users`;
   public currentUser: BehaviorSubject<ICurrentUser> = new BehaviorSubject<ICurrentUser>({} as ICurrentUser);
-  public selectedUser: BehaviorSubject<IUser> = new BehaviorSubject<IUser>({} as IUser);
-  public allUsersMin: BehaviorSubject<IUserMin[]> = new BehaviorSubject<IUserMin[]>([] as IUserMin[]);
+  public selectedUser: BehaviorSubject<User> = new BehaviorSubject<User>({} as User);
+  public allUsersMin: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([] as User[]);
 
   errorMessage!: string;
 
@@ -32,7 +33,7 @@ export class UsersService {
     this.http.get<IGeneralResponse>(`${this.apiRootUrl}/min`).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.allUsersMin.next(<IUserMin[]>response.Subject);
+          this.allUsersMin.next(<User[]>response.Subject);
         }
       },
       error => {
@@ -97,7 +98,7 @@ export class UsersService {
     this.getUserByNetId(netId).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.selectedUser.next(<IUser>response.Subject);
+          this.selectedUser.next(<User>response.Subject);
         }
       }
     );
@@ -124,11 +125,11 @@ export class UsersService {
     return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/timecards`, timecard);
   }
 
-  saveUser(user: IUser): Observable<IGeneralResponse> {
+  saveUser(user: User): Observable<IGeneralResponse> {
     return this.http.post<IGeneralResponse>(this.apiRootUrl, user);
   }
 
-  SaveActiveAndLock(users: IUserMin[]): Observable<IGeneralResponse> {
+  SaveActiveAndLock(users: User[]): Observable<IGeneralResponse> {
     return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/saveActiveAndLock`, users);
   }
 

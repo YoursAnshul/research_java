@@ -1,0 +1,30 @@
+<!-- header -->
+@for (headerItem of headerItems; track headerItem) {
+    <div class="table-cell border border-1 border-[#B5B5B5] align-bottom p-2 bg-[#e5e5e580] font-medium"
+        style="background-color: #e5e5e580;">
+
+        <div class="flex items-center justify-between">
+        
+            <!-- html label support -->
+            @if (headerItem.label) {
+                <div [innerHTML]="headerItem.label"></div>
+            }
+
+            <!-- select all checkbox -->
+            @if (headerItem.selectAll) {
+                <input type="checkbox"
+                [checked]="allSelected"
+                (change)="toggleAllSelected()">
+            }
+
+            <!-- column actions -->
+            <div>
+                <app-column-actions
+                    [headerItem]="headerItem"
+                    (headerItemChange)="headerItemChange(headerItem)"></app-column-actions>
+            </div>
+
+        </div>
+
+    </div>
+}

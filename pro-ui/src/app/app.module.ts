@@ -73,6 +73,11 @@ import { ManageAnnouncementsComponent } from './pages/announcements/announcement
 import { AddAnnouncementDialogComponent } from './pages/announcements/add-announcement-dialog.component';
 import { PreviewComponent } from './pages/announcements/preview.component';
 import { EditAnnouncementDialogComponent } from './pages/announcements/edit-announcement-dialog.component';
+import { AddUserComponent } from './components/add-user/add-user.component';
+import { TablePaginatorComponent } from './components/table-paginator/table-paginator.component';
+import { ColumnActionsComponent } from './components/column-actions/column-actions.component';
+import { TableHeaderComponent } from './components/table-header/table-header.component';
+import {TrainedOnProjectsComponent} from "./components/trained-on-projects/trained-on-projects.component";
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -119,7 +124,12 @@ import { EditAnnouncementDialogComponent } from './pages/announcements/edit-anno
     ParticipantIdComponent,
     AnnouncementsComponent,
     PreviewComponent,
-    EditAnnouncementDialogComponent
+    EditAnnouncementDialogComponent,
+    AddUserComponent,
+    TablePaginatorComponent,
+    ColumnActionsComponent,
+    TableHeaderComponent,
+    TrainedOnProjectsComponent
   ],
   imports: [
     BrowserModule,

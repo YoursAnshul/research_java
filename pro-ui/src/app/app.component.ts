@@ -125,7 +125,15 @@ export class AppComponent {
     this.matIconRegistry.addSvgIcon(
       'visibility',
       this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/visibility.svg')
-    );   
+    );  
+    this.matIconRegistry.addSvgIcon(
+      'user-square',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/user-square.svg')
+    );  
+    this.matIconRegistry.addSvgIcon(
+      'info',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/info.svg')
+    );  
      this.configurationService.appConfig.subscribe(
       appConfig => {
         if (appConfig) {

@@ -29,6 +29,7 @@ interface Participant {
   language?: string;
   site?: string;
   localTime?: string;
+  participantIn?: number;
 }
 
 @Component({
@@ -105,7 +106,8 @@ export class ParticipantSearchComponent {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.participants = response.Subject.map((res: any) => {
             const { dob: dateOfBirth, project, participantno: participantId, participantfname: participantFName, participantlname: participantLName,
-              phone: phoneId, phonetype: phoneType, contactsource: contactSource, contactfname: contactFName, contactlname: contactLName
+              phone: phoneId, phonetype: phoneType, contactsource: contactSource, contactfname: contactFName, contactlname: contactLName,
+              participantin: participantIn
             } = res;
             return {
               dateOfBirth,
@@ -117,7 +119,8 @@ export class ParticipantSearchComponent {
               phoneType,
               contactSource,
               contactFName,
-              contactLName
+              contactLName,
+              participantIn
             }
           });
           this.dataSource.data = [...this.participants];
@@ -190,7 +193,8 @@ export class ParticipantSearchComponent {
   selectRow(row: Participant) {
     this.selectedParticipant = {
       ...row,
-      participantName: `${row.participantFName} ${row.participantLName}`
+      participantName: `${row.participantFName} ${row.participantLName}`,
+      recordLocation: this.getParticipantIn(row.participantIn , 'value')
     };
   }
 
@@ -207,25 +211,18 @@ export class ParticipantSearchComponent {
   moveToPage(event: MouseEvent, id: string): void {
     event.stopPropagation();
     const url = this.router.createUrlTree(['/participants', id]).toString();
-    const width = 500;
-    const height = 1000;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
-
     window.open(
       url,
-      "_blank",
-      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
-    );
+      "_blank")
   }
 
   moveToParticipantsPage(event: MouseEvent): void {
     event.stopPropagation();
     const url = 'search-participants';
-    const width = 500;
+    const width = 1100;
     const height = 1000;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
 
     window.open(
       url,
@@ -234,4 +231,16 @@ export class ParticipantSearchComponent {
     );
   }
 
+  getParticipantIn(participantIn: number | undefined, type: string = 'Icon') {
+    switch (participantIn) {
+      case 1:
+        return type === 'Icon' ? 'P' : 'PRO';
+      case 2:
+        return type === 'Icon' ? 'C' : 'Comm Hub';
+      case 3:
+        return type === 'Icon' ? 'M' : 'Model';
+      default:
+        return  type === 'Icon' ? '' : 'Undefined';
+    }
+  }
 }

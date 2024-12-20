@@ -4,7 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { scheduled } from 'rxjs';
 import { Utils } from '../../classes/utils';
-import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUser, IUserMin, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings} from '../../interfaces/interfaces';
+import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings} from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { GlobalsService } from '../../services/globals/globals.service';
@@ -13,6 +13,7 @@ import { RequestsService } from '../../services/requests/requests.service';
 import { ProjectsService } from '../../services/projects/projects.service';
 import { UsersService } from '../../services/users/users.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
+import { User } from '../../models/data/user';
 
 @Component({
   selector: 'app-schedule',
@@ -45,11 +46,11 @@ export class ScheduleComponent implements OnInit {
   filteredUserSchedulesCustom: ISchedule[] = [];
   addedSchedules: ISchedule[] = [];
   initialSchedule: ISchedule = {} as ISchedule;
-  allUsers: IUserMin[] = [];
+  allUsers: User[] = [];
   allProjects: IProjectMin[] = [];
-  filteredUsers: IUserMin[] = [];
+  filteredUsers: User[] = [];
   filteredProjects: IProjectMin[] = [];
-  availableUsers: IUserMin[] = [];
+  availableUsers: User[] = [];
   availableProjects: IProjectMin[] = [];
   languages!: IDropDownValue[];
   selectedDate: Date;
@@ -69,7 +70,7 @@ export class ScheduleComponent implements OnInit {
   blockOutDates: IBlockOutDate[] = [];
   lockDate!: Date;
   unlockDate!: Date;
-  currentUser: IUserMin = {} as IUserMin;
+  currentUser: User = {} as User;
 
   //validation
   addTabInvalid: boolean = false;
@@ -223,7 +224,7 @@ export class ScheduleComponent implements OnInit {
 
         //try to set current user
         if (this.allUsers.length > 0) {
-          this.currentUser = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as IUserMin;
+          this.currentUser = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
         }
 
         //restrict schedules shown if user is interviewer-only
@@ -253,7 +254,7 @@ export class ScheduleComponent implements OnInit {
 
         //try to set current user
         if (this.authenticatedUser) {
-          this.currentUser = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as IUserMin;
+          this.currentUser = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
         }
 
         //restrict schedules shown if user is interviewer-only
@@ -1259,7 +1260,7 @@ export class ScheduleComponent implements OnInit {
 
     if (netId) {
       //update the display name and user id
-      let user: IUserMin | undefined = this.availableUsers.find(x => x.dempoid == netId);
+      let user: User | undefined = this.availableUsers.find(x => x.dempoid == netId);
       if (user) {
         newSchedule.fname = user.fname;
         newSchedule.lname = user.lname;
@@ -1609,7 +1610,7 @@ export class ScheduleComponent implements OnInit {
       if (this.authenticatedUser.interviewer
         && !this.authenticatedUser.resourceGroup
         && !this.authenticatedUser.admin) {
-        let user: IUserMin = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as IUserMin;
+        let user: User = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
         this.availableProjects = this.availableProjects.filter(x => (x.projectType == 'Administrative' || Utils.pipeStringToArray(user.trainedon).includes(x.projectID.toString())));
       }
     }
@@ -1666,7 +1667,7 @@ export class ScheduleComponent implements OnInit {
       netId = this.contextNetId;
     }
 
-    let user: IUserMin = this.allUsers.find(x => x.dempoid == netId) as IUserMin;
+    let user: User = this.allUsers.find(x => x.dempoid == netId) as User;
     let project: IProjectMin | null = null;
     if (projectName) {
       project = this.allProjects.find(x => x.projectName.toUpperCase() == projectName.toUpperCase()) as IProjectMin;
@@ -1729,7 +1730,7 @@ export class ScheduleComponent implements OnInit {
       netId = this.contextNetId;
     }
 
-    let user: IUserMin = this.allUsers.find(x => x.dempoid == netId) as IUserMin;
+    let user: User = this.allUsers.find(x => x.dempoid == netId) as User;
     let project: IProjectMin | null = null;
     if (projectName) {
       project = this.allProjects.find(x => x.projectName.toUpperCase() == projectName.toUpperCase()) as IProjectMin;
@@ -2141,7 +2142,7 @@ export class ScheduleComponent implements OnInit {
     let htmlMessage: string = '';
 
     if (!this.currentUser) {
-      this.currentUser = {} as IUserMin;
+      this.currentUser = {} as User;
       htmlMessage = 'No scheduling level assigned.';
     }
 

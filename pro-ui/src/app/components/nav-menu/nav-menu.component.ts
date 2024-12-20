@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Utils } from '../../classes/utils';
-import { IActionButton, IAuthenticatedUser, IProjectMin, IUser, IUserMin } from '../../interfaces/interfaces';
+import { IActionButton, IAuthenticatedUser, IProjectMin } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { GlobalsService } from '../../services/globals/globals.service';
 import { ProjectsService } from '../../services/projects/projects.service';
 import { UsersService } from '../../services/users/users.service';
+import { User } from '../../models/data/user';
 
 @Component({
   selector: 'app-nav-menu',
@@ -18,8 +19,8 @@ export class NavMenuComponent implements OnInit {
   allProjects: IProjectMin[] = [];
   currentChanges: boolean = false;
   allowNavigation: boolean = true;
-  allUsers: IUserMin[] = [];
-  authenticatedUserProfile: IUserMin = {} as IUserMin;
+  allUsers: User[] = [];
+  authenticatedUserProfile: User = {} as User;
   trainedOnCommHubProject: boolean = false;
 
   constructor(private authenticationService: AuthenticationService,
@@ -142,7 +143,7 @@ export class NavMenuComponent implements OnInit {
     if (!this.authenticatedUser || this.allUsers.length < 1 || this.allProjects.length < 1)
       return;
 
-    this.authenticatedUserProfile = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as IUserMin;
+    this.authenticatedUserProfile = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
     let commHubProjects: IProjectMin[] = this.allProjects.filter(
       function (project) {
         if (project.projectDisplayId) {

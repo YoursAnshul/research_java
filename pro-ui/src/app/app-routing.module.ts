@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: 'assignments', component: AssignmentsComponent},
   { path: 'participants', component: ParticipantsComponent},
   { path: 'search-participants',  data: { hideHeaderFooter: true }, component: ParticipantSearchComponent},
-  { path: 'participants/:id',  data: { hideHeaderFooter: true }, component: ParticipantIdComponent},
+  { path: 'participants/:id',  component: ParticipantIdComponent},
   { path: 'projects', component: ProjectsComponent},
   { path: 'communications', component: CommunicationsComponent},
   { path: 'reports', component: ReportsComponent},

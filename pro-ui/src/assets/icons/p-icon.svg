@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Circle Background -->
+  <circle cx="12" cy="12" r="12" fill="#0680CD" />
+  <!-- Text Letter -->
+  <text x="50%" y="50%" fill="#ffffff" dominant-baseline="middle" text-anchor="middle" font-size="12" font-weight="bold">
+    P
+  </text>
+</svg>

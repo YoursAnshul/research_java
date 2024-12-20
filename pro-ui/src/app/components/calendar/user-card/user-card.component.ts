@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IUser, IUserMin } from '../../../interfaces/interfaces';
+import { User } from '../../../models/data/user';
 
 @Component({
   selector: 'app-user-card',
@@ -8,7 +8,7 @@ import { IUser, IUserMin } from '../../../interfaces/interfaces';
 })
 export class UserCardComponent implements OnInit {
 
-  @Input() user!: IUserMin;
+  @Input() user!: User;
   languages!: string[];
 
   constructor() { }

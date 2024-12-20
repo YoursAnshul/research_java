@@ -25,38 +25,41 @@
   </div>
 
   <div id="day-calendar-user-schedules">
-    <div class="user-schedule-row" *ngFor="let us of userSchedules">
-
-      <app-user-card class="user-card"
-                     [user]="us.user"
-                     (dblclick)="openUserSchedule(us.user.dempoid)"></app-user-card>
-
-      <div class="schedule-card"
-           *ngFor="let schedule of us.schedules"
-           (dblclick)="openUserSchedule(us.user.dempoid, schedule.projectName)"
-           (mouseenter)="displayHoverMessage($event, schedule, us)"
-           (mouseleave)="hideHoverMessage()"
-           [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
-        <div class="center-align-container">
-          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
-          <!--<app-project-swatch [customStyle]="customProjectSwatch(schedule.ProjectColor, schedule.ScheduledHours)"></app-project-swatch>-->
-          <div
-               [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
-            <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</span>
+    @for (us of userSchedules; track us) {
+      <div class="user-schedule-row">
+        <app-user-card class="user-card"
+          [user]="us.user"
+        (dblclick)="openUserSchedule(us.user.dempoid)"></app-user-card>
+        @for (schedule of us.schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(us.user.dempoid, schedule.projectName)"
+            (mouseenter)="displayHoverMessage($event, schedule, us)"
+            (mouseleave)="hideHoverMessage()"
+            [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <!--<app-project-swatch [customStyle]="customProjectSwatch(schedule.ProjectColor, schedule.ScheduledHours)"></app-project-swatch>-->
+              <div
+                [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
+                <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</span>
+              </div>
+              <!--<font class="project-time" *ngIf="schedule.ScheduledHours > 1.5">
+              {{schedule.StartTime}} - {{schedule.EndTime}}
+            </font>-->
           </div>
-          <!--<font class="project-time" *ngIf="schedule.ScheduledHours > 1.5">
-          {{schedule.StartTime}} - {{schedule.EndTime}}
-        </font>-->
         </div>
-      </div>
+      }
     </div>
+  }
 
-    <div class="user-card"></div>
+  <div class="user-card"></div>
+  @if ((userSchedules || []).length < 1) {
     <div class="no-results bold italic"
-         *ngIf="(userSchedules || []).length < 1">
+      >
       No schedules found for this day...
     </div>
-  </div>
+  }
+</div>
 </div>
 
 <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>

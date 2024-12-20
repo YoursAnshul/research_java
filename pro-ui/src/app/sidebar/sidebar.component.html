@@ -1,55 +1,68 @@
 <!-- app.component.html -->
 <div class="sidenav-container">
-    <div class="sidenav" [ngClass]="{'collapsed': isCollapsed}" [@slideInOut]="isCollapsed ? 'out' : 'in'">
-        <!-- Toggle Button -->
-        <div *ngIf="!isCollapsed" class="menu-border menu">
-            <span> Menu</span>
-            <button (click)="toggleNav()" class="toggle-button"  style="margin: 10px 10px 10px 7px;">
-                <mat-icon svgIcon="close"></mat-icon>
-            </button>
-        </div>
-        <div *ngIf="isCollapsed" class="menu-border menu" >
-            <button (click)="toggleNav()" class="toggle-button" style="margin: 10px 7px 10px 7px;">
-                <mat-icon svgIcon="menu"></mat-icon>
-            </button>
-        </div>
-        <div class="seprator"><div></div></div>
-
-        <!-- Menu Items -->
-        <ul>
-            <ng-container *ngFor="let group of menuItems; let i = index">
-                <ng-container *ngFor="let item of group">
-                  <li
-                    [ngClass]="{'selected': isActiveRoute(item.route)}"
-                    (click)="selectItem(item.id)" ngbTooltip="{{item.label}}" 
-                    placement="right" *ngIf="isCollapsed">
-                    <mat-icon svgIcon="{{item.icon}}"></mat-icon>
-                  </li>
-                  <li
-                  [ngClass]="{'selected': isActiveRoute(item.route)}"
-                  (click)="selectItem(item.id)" *ngIf="!isCollapsed">
-                  <mat-icon svgIcon="{{item.icon}}"></mat-icon>
-                  <span class="menu-label">{{item.label}}</span>
-                </li>
-                 
-                </ng-container>
-                <!-- Separator after each group except the last one -->
-                <div *ngIf="i < menuItems.length - 1" class="seprator" style="padding-top: 10px;"><div></div></div>
-              </ng-container>
-            <!-- Add more menu items -->
-          <div class="menu-border ht" [ngClass]="{'interviewer': isInterviewer}"></div>
-        </ul>
-        
-    </div>
-
-    <div class="main-content">
-      <!-- page content router -->
-      <router-outlet />
-      <app-schedule id="schedule-modal"
-      *ngIf="showSchedule"></app-schedule>
-      <app-participant-search id="participant-search-modal"
-      *ngIf="showParticipantModal"></app-participant-search>
-      <div id="hover-message" [class.hidden]="!showHoverMessage">
+  <div class="sidenav" [ngClass]="{'collapsed': isCollapsed}" [@slideInOut]="isCollapsed ? 'out' : 'in'">
+    <!-- Toggle Button -->
+    @if (!isCollapsed) {
+      <div class="menu-border menu">
+        <span> Menu</span>
+        <button (click)="toggleNav()" class="toggle-button"  style="margin: 10px 10px 10px 7px;">
+          <mat-icon svgIcon="close"></mat-icon>
+        </button>
       </div>
+    }
+    @if (isCollapsed) {
+      <div class="menu-border menu" >
+        <button (click)="toggleNav()" class="toggle-button" style="margin: 10px 7px 10px 7px;">
+          <mat-icon svgIcon="menu"></mat-icon>
+        </button>
+      </div>
+    }
+    <div class="seprator"><div></div></div>
+
+    <!-- Menu Items -->
+    <ul>
+      @for (group of menuItems; track group; let i = $index) {
+        @for (item of group; track item) {
+          @if (isCollapsed) {
+            <li
+              [ngClass]="{'selected': isActiveRoute(item.route)}"
+              (click)="selectItem(item.id)" ngbTooltip="{{item.label}}"
+              placement="right">
+              <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+            </li>
+          }
+          @if (!isCollapsed) {
+            <li
+              [ngClass]="{'selected': isActiveRoute(item.route)}"
+              (click)="selectItem(item.id)">
+              <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+              <span class="menu-label">{{item.label}}</span>
+            </li>
+          }
+        }
+        <!-- Separator after each group except the last one -->
+        @if (i < menuItems.length - 1) {
+          <div class="seprator" style="padding-top: 10px;"><div></div></div>
+        }
+      }
+      <!-- Add more menu items -->
+      <div class="menu-border ht" [ngClass]="{'interviewer': isInterviewer}"></div>
+    </ul>
+
+  </div>
+
+  <div class="main-content">
+    <!-- page content router -->
+    <router-outlet />
+    @if (showSchedule) {
+      <app-schedule id="schedule-modal"
+      ></app-schedule>
+    }
+    @if (showParticipantModal) {
+      <app-participant-search id="participant-search-modal"
+      ></app-participant-search>
+    }
+    <div id="hover-message" [class.hidden]="!showHoverMessage">
     </div>
+  </div>
 </div>

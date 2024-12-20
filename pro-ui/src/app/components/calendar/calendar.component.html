@@ -18,7 +18,9 @@
     <mat-tab label="Day">
       <div class="calendar-wrapper">
         <div class="legend-container">
-          <app-legend *ngIf="tabIndex == 0" [userSchedules]="filteredUserSchedulesDay"></app-legend>
+          @if (tabIndex == 0) {
+            <app-legend [userSchedules]="filteredUserSchedulesDay"></app-legend>
+          }
         </div>
         <div>
         </div>
@@ -47,7 +49,9 @@
     <mat-tab label="Week">
       <div class="calendar-wrapper">
         <div class="legend-container">
-          <app-legend *ngIf="tabIndex == 1" [weekSchedules]="weekSchedules"></app-legend>
+          @if (tabIndex == 1) {
+            <app-legend [weekSchedules]="weekSchedules"></app-legend>
+          }
         </div>
         <div>
         </div>
@@ -77,7 +81,9 @@
     <mat-tab label="Month">
       <div class="calendar-wrapper">
         <div class="legend-container">
-          <app-legend *ngIf="tabIndex == 2" [monthSchedules]="monthSchedules"></app-legend>
+          @if (tabIndex == 2) {
+            <app-legend [monthSchedules]="monthSchedules"></app-legend>
+          }
         </div>
         <div [ngClass] ="authenticatedUser?.interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="month-calendar-controls"
@@ -108,6 +114,6 @@
 
 <style>
   ::ng-deep .mdc-tab__text-label {
-    font-size: 12px !important;
-  }
+  font-size: 12px !important;
+}
 </style>

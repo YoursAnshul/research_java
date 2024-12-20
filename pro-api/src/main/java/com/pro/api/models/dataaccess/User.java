@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 @Entity
 @Table(name = "users")
@@ -142,9 +143,9 @@ public class User {
 	@Column(name = "tempagency")
 	private String tempagency;
 
-	@Lob
-	@Column(columnDefinition="bytea" ,name = "userimage")
-	private byte[] userImage;
+	// @Lob
+	// @Column(name = "userimage")
+	// private String userImage;
 
 	@Column(columnDefinition="text", length=10485760 ,name = "notes")
 	private String notes;
@@ -580,13 +581,13 @@ public class User {
 		this.tempagency = tempagency;
 	}
 
-	public byte[] getUserImage() {
-		return userImage;
-	}
+	// public byte[] getUserImage() {
+	// 	return Base64.getDecoder().decode(userImage);
+	// }
 
-	public void setUserImage(byte[] userImage) {
-		this.userImage = userImage;
-	}
+	// public void setUserImage(byte[] userImage) {
+	// 	this.userImage = Base64.getEncoder().encodeToString(userImage);
+	// }
 
 	public String getNotes() {
 		return notes;

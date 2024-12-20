@@ -1,0 +1,55 @@
+<div class="w-full max-h-[300px] text-xs">
+    <div class="w-fit float-right flex">
+        <div class="m-2 content-center">Items per page: </div>
+        <select class="p-2 m-2 rounded-lg bg-white border border-duke-gray content-center outline-none"
+            [(ngModel)]="pageSize" (change)="changePageSize($event)">
+            @for (pageSizeOption of pageSizeOptions; track pageSizeOption) {
+                <option [value]="pageSizeOption">{{ pageSizeOption }}</option>
+            }
+        </select>
+        <div class="m-2 content-center">{{ getPageStart() }} – {{ getPageEnd() }} of {{ (sourceData || []).length }}</div>
+        <div class="flex m-2 content-center">
+            <!-- first -->
+            <div class="p-2"
+                [class.text-duke-gray-dark]="canNavFirst()"
+                [class.text-duke-gray-light]="!canNavFirst()"
+                [class.cursor-pointer]="canNavFirst()"
+                (click)="navFirst()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-left">
+                    <polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline>
+                </svg>
+            </div>
+            <!-- previous -->
+            <div class="p-2"
+                [class.text-duke-gray-dark]="canNavPrevious()"
+                [class.text-duke-gray-light]="!canNavPrevious()"
+                [class.cursor-pointer]="canNavPrevious()"
+                (click)="navPrevious()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </div>
+            <!-- next -->
+            <div class="p-2"
+                [class.text-duke-gray-dark]="canNavNext()"
+                [class.text-duke-gray-light]="!canNavNext()"
+                [class.cursor-pointer]="canNavNext()"
+                (click)="navNext()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </div>
+            <!-- last -->
+            <div class="p-2"
+                [class.text-duke-gray-dark]="canNavLast()"
+                [class.text-duke-gray-light]="!canNavLast()"
+                [class.cursor-pointer]="canNavLast()"
+                (click)="navLast()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right">
+                    <polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+

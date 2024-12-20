@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { IUser, ISchedule, IUserSchedule, IUserMin, IFormFieldVariable, IProjectMin, IDropDownValue, IFormField, IMonthSchedules, IWeekSchedules, IAnyFilter, IAuthenticatedUser, IWeekStartAndEnd, IProject } from '../../interfaces/interfaces';
+import { ISchedule, IUserSchedule, IFormFieldVariable, IProjectMin, IDropDownValue, IFormField, IMonthSchedules, IWeekSchedules, IAnyFilter, IAuthenticatedUser, IWeekStartAndEnd, IProject } from '../../interfaces/interfaces';
 import { UsersService } from '../../services/users/users.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -8,6 +8,7 @@ import { ConfigurationService } from '../../services/configuration/configuration
 import { ProjectsService } from '../../services/projects/projects.service';
 import { LogsService } from '../../services/logs/logs.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { User } from '../../models/data/user';
 
 @Component({
   selector: 'app-calendar',
@@ -16,10 +17,10 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 })
 export class CalendarComponent implements OnInit {
   @Input() authenticatedUser!: IAuthenticatedUser;
-  @Input() contextUser!: IUser;
+  @Input() contextUser!: User;
   @Input() contextProject!: IProject;
   //SCHEDULES
-  allUsers!: IUserMin[];
+  allUsers!: User[];
   //top level schedules - only changes when date changes
   userSchedulesMonth!: ISchedule[];
   //filter month and week versions

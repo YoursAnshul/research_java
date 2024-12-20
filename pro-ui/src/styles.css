@@ -12,6 +12,14 @@ html {
     --mdc-filled-text-field-disabled-label-text-color: #0680CD;
     --mdc-filled-text-field-container-color: #fff;
     --mat-sort-arrow-color: #0680CD;
+    --mdc-outlined-text-field-error-label-text-color: #DC4A38;
+    --mdc-outlined-text-field-label-text-size: 14px;
+    --mdc-checkbox-selected-focus-icon-color: #0680CD;
+    --mdc-checkbox-selected-hover-icon-color: #0680CD;
+    --mdc-checkbox-selected-icon-color: #0680CD;
+    --mdc-checkbox-selected-pressed-icon-color: #0680CD;
+    --mdc-checkbox-unselected-icon-color: #0680CD;
+    --mdc-checkbox-unselected-focus-icon-color: #0680CD;
 }
 
 .mat-mdc-tab-group,
@@ -40,20 +48,21 @@ html {
     display: none !important;
 }
 
-#pro-app .invalid, #pro-ep-app .invalid .mat-select-value-text {
-  color: #f44336;
+#pro-app .invalid,
+#pro-ep-app .invalid .mat-select-value-text {
+    color: #f44336;
 }
 
 
 #pro-app .invalid-emphasis {
-  color: #f44336;
-  font-size: 1.2em;
+    color: #f44336;
+    font-size: 1.2em;
 }
 
 #pro-app .invalid-button {
-  background-color: #f44336;
-  border: 1px solid #f44336;
-  font-style: italic;
+    background-color: #f44336;
+    border: 1px solid #f44336;
+    font-style: italic;
 }
 
 .mdc-floating-label {
@@ -244,4 +253,80 @@ html {
 
 .ctm-select .mat-mdc-select-arrow svg {
     top: 65% !important;
+}
+
+
+.add-user-tab .mat-mdc-tab-header {
+    padding: 0px 16px 8px 16px;
+    margin: 0px !important;
+}
+
+.add-user-tab .mat-mdc-tab.mdc-tab {
+    padding: 5px 15px 5px 15px;
+
+}
+
+.add-user-tab .mdc-tab__text-label {
+    font-family: Roboto;
+    font-size: 14px !important;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.1px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #262626 !important;
+
+}
+
+.add-user-tab .mdc-tab--active .mdc-tab__text-label {
+    color: #1874CA !important;
+    font-weight: 600 !important;
+
+}
+
+.add-user-tab .mat-mdc-tab-ripple {
+    background-color: #fff !important;
+}
+
+.add-user-tab .mdc-tab-indicator {
+    background-color: #fff !important;
+}
+
+#pro-app .add-user-tab .mat-mdc-tab-labels div:nth-child(1) {
+    max-width: 100px !important;
+
+}
+
+#pro-app .add-user-tab .mat-mdc-tab-labels div:nth-child(2) {
+    max-width: 115px !important;
+
+}
+
+#pro-app .add-user-tab .mat-mdc-tab-labels div:nth-child(3) {
+    max-width: 168px !important;
+
+}
+
+.add-user-tab .mat-mdc-tab-list {
+    margin: 0px;
+}
+
+.mdc-floating-label--required {
+    color: #DC4A38 !important;
+}
+
+.app-user .mdc-checkbox .mdc-checkbox__background {
+    left: 0px !important;
+}
+
+.app-user .mdc-checkbox {
+    padding-left: 0px;
+}
+
+.app-user .mdc-label {
+    color: #00569B;
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: 400;
 }

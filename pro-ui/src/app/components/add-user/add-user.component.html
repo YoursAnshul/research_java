@@ -1,0 +1,240 @@
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <span class="breadcrumb-item">Users</span>
+        <span class="breadcrumb-item">Add New User</span>
+    </nav>
+
+    <!-- Card with Tabs -->
+    <mat-card>
+        <div class="add-user-container">
+            <div>
+                <mat-icon class="user-icon" svgIcon="user-square"></mat-icon>
+                <div class="upload">
+                    <span>
+                        Upload Photo
+                    </span>
+                    <mat-icon class="info-icon" svgIcon="info"></mat-icon>
+                </div>
+            </div>
+            <div class="add-user-title">Add New User</div>
+        </div>
+        <div class="divider"></div>
+      <!-- Buttons -->
+      <div class="actions">
+        <button mat-raised-button color="primary" [disabled]="!userForm.valid">Save</button>
+        <button mat-raised-button color="warn">Cancel</button>
+      </div>
+        <!-- Tabs -->
+        <mat-tab-group class="add-user-tab"  (selectedTabChange)="onTabChanged($event)">
+          <!-- Tab 1: Scheduling -->
+          <mat-tab label="Scheduling" *ngIf="!createForm">
+            <ng-template mat-tab-label>
+              <span [class.invalid-emphasis]="coreHoursInvalid">Scheduling</span>
+              <span class="invalid-emphasis"
+                    *ngIf="coreHoursInvalid">&nbsp;<sup>**</sup></span>
+
+            </ng-template>
+
+              <div class="user-fields-container">
+                <span class="bold">Core Hours Monthly</span>
+                <table id="core-hours-table">
+                  <thead>
+                  <tr id="core-hours-header" class="bold">
+                    <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
+                    <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
+                  </tr>
+                  </thead>
+                  <tr>
+                    <td *ngFor="let ch of numSequence(14); let i = index">
+                      <mat-form-field class="coreHoursInput">
+                        <input type="text"  matInput
+                               [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                               (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
+                               (keypress)="numberRestrict($event)"
+                               name="core-hours-{{i}}"
+                               autocomplete="off"
+                               maxlength="4">
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+            </mat-tab>
+            <!-- Tab 1: User Details -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    User Details <span class="required">*</span>
+                </ng-template>
+                <form [formGroup]="userForm" class="user-form">
+                    <!-- Row 1 -->
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label class="red">First Name</mat-label>
+                            <input matInput formControlName="firstName" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label class="red">Last Name</mat-label>
+                            <input matInput formControlName="lastName" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label class="red">NetID</mat-label>
+                            <input matInput formControlName="netId" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label class="red">Unique ID</mat-label>
+                            <input matInput formControlName="uniqueId" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="ctm">
+                            <mat-label class="red">Status</mat-label>
+                            <mat-select formControlName="status">
+                                <mat-option value="active">Active</mat-option>
+                                <mat-option value="inactive">Inactive</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label>Preferred First Name</mat-label>
+                            <input matInput formControlName="preferredFirstName" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label>Preferred Last Name</mat-label>
+                            <input matInput formControlName="preferredLastName" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label class="red">Role</mat-label>
+                            <mat-select formControlName="role">
+                                <mat-option value="active">Active</mat-option>
+                                <mat-option value="inactive">Inactive</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label class="red">Employment Status</mat-label>
+                            <mat-select formControlName="employmentStatus">
+                                <mat-option value="active">Active</mat-option>
+                                <mat-option value="inactive">Inactive</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-checkbox class="app-user" formControlName="canNotEditLockedSchedule">Can Edit Locked
+                            Schedule</mat-checkbox>
+                    </div>
+
+                    <div class="row">
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label>Job Title</mat-label>
+                            <mat-select formControlName="jobTitle">
+                                <mat-option value="active">Active</mat-option>
+                                <mat-option value="inactive">Inactive</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label>Languages</mat-label>
+                            <mat-select formControlName="languages">
+                                <mat-option value="active">Active</mat-option>
+                                <mat-option value="inactive">Inactive</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="black ctm">
+                            <mat-label>Manager</mat-label>
+                            <input matInput formControlName="manager" />
+                        </mat-form-field>
+                        <div class="schedule">
+                            <mat-form-field appearance="outline" class="black ctm">
+                                <mat-label> Scheduling Level</mat-label>
+                                <mat-select formControlName="schedulingLevel">
+                                    <mat-option value="active">Active</mat-option>
+                                    <mat-option value="inactive">Inactive</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-icon svgIcon="info" class="info"  style="color: #FF5733;"></mat-icon>
+                        </div>
+                        <mat-checkbox class="app-user" formControlName="canNotEditLockedSchedule">Can Edit Locked
+                            Schedule</mat-checkbox>
+                    </div>
+                </form>
+            </mat-tab>
+
+
+            <!-- Tab 3: Hiring Info -->
+            <mat-tab label="Personal Contact Info">
+
+            </mat-tab>
+          <!--requests-->
+        <!--  <mat-tab label="Requests"
+                   *ngIf="createForm">
+            <ng-template mat-tab-label>
+              <span>Requests</span>
+            </ng-template>
+
+            &lt;!&ndash;requests table&ndash;&gt;
+            <table id="user-requests-table" mat-table [dataSource]="requests" class="mat-elevation-z8"
+                   *ngIf="requests.length > 0">
+
+              <ng-container matColumnDef="RequestType"><th mat-header-cell *matHeaderCellDef>Request Type</th><td mat-cell *matCellDef="let req"> {{req?.requestType}} </td></ng-container>
+              <ng-container matColumnDef="InterviewerEmpName"><th mat-header-cell *matHeaderCellDef>Interviewer</th><td mat-cell *matCellDef="let req"> {{req?.interviewerEmpName}} </td></ng-container>
+              <ng-container matColumnDef="ResourceTeamMemberName"><th mat-header-cell *matHeaderCellDef>Resource Team Member</th><td mat-cell *matCellDef="let req"> {{req?.resourceTeamMemberName}} </td></ng-container>
+              <ng-container matColumnDef="RequestDate"><th mat-header-cell *matHeaderCellDef>Request Date</th><td mat-cell *matCellDef="let req"> {{formatDateOnlyToString(req?.requestDate)}} </td></ng-container>
+              <ng-container matColumnDef="RequestDetails"><th mat-header-cell *matHeaderCellDef>Request Details</th><td mat-cell *matCellDef="let req"> {{req?.requestDetails}} </td></ng-container>
+              <ng-container matColumnDef="Decision"><th mat-header-cell *matHeaderCellDef>Decision</th><td mat-cell *matCellDef="let req"> {{req?.decision}} </td></ng-container>
+              <ng-container matColumnDef="Notes"><th mat-header-cell *matHeaderCellDef>Notes</th><td mat-cell *matCellDef="let req"> {{req?.notes}} </td></ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="requestTableColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: requestTableColumns;"></tr>
+
+            </table>
+
+            <div id="user-requests-no-results" class="user-requests-results"
+                 *ngIf="requests.length < 1">
+              {{noRequestsResultsMessage}}
+            </div>
+          </mat-tab>-->
+
+        </mat-tab-group>
+      <div *ngIf="isTrainedOnVisible">
+        <app-trained-on-projects [trainedOnProjects]="trainedOnProjects"
+                                 [notTrainedOnProjects]="notTrainedOnProjects"
+                                 [listingOnly]="readOnly"
+                                 (trainedOnChange)="trainedOnChange($event)"
+                                 *ngIf="!createForm"></app-trained-on-projects>
+      </div>
+
+
+<!--
+
+
+      <div *ngIf="!isUserCalendarVisible">
+        <div id="user-calendar"
+             *ngIf="createForm">
+          <span class="shift-schedule-heading">Shift Schedule</span>
+          <app-calendar [authenticatedUser]="authenticatedUser"
+                        [contextUser]="selectedUser"></app-calendar>
+        </div>
+      </div>
+-->
+
+
+    </mat-card>
+</div>

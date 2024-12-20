@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
-import { ILegend, ISchedule, IUserMin, IUserSchedule } from '../../../interfaces/interfaces';
+import { ILegend, ISchedule, IUserSchedule } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 

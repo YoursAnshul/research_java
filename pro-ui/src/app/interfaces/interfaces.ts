@@ -1,100 +1,5 @@
 import { FormControl } from "@angular/forms";
-
-export interface IUser {
-  userid: number;
-  dempoid: string;
-  status: string;
-  active?: boolean | null;
-  corehours?: number | null;
-  employmenttype?: number | null;
-  fname: string;
-  lname: string;
-  permstartdate?: Date | null;
-  permenddate?: Date | null;
-  tempstartdate?: Date | null;
-  tempenddate?: Date | null;
-  uinit: string;
-  role?: number | null;
-  schedulinglevel?: number | null;
-  scheduledisplay?: number | null;
-  title: string;
-  defaultproject?: number | null;
-  phonenumber: string;
-  phonenumber1: string;
-  phonenumber2: string;
-  emailaddr: string;
-  emailaddr1: string;
-  bypasslockout?: number | null;
-  aislenumber?: number | null;
-  teamgroup: string;
-  workgroup: string;
-  cubeoffice?: number | null;
-  spanish?: number | null;
-  language: string;
-  canedit?: boolean | null;
-  trainedon: string;
-  citidate?: Date | null;
-  introemail?: boolean | null;
-  introemaildate?: Date | null;
-  phonescreen?: boolean | null;
-  phonescreendate?: Date | null;
-  facetoface?: boolean | null;
-  facetofacedate?: Date | null;
-  welcomeemail?: boolean | null;
-  welcomeemaildate?: Date | null;
-  orientationdate?: Date | null;
-  referral: string;
-  tempagency: string;
-  userImage: string | null;
-  notes: string;
-  emercontactnumber: string;
-  emercontactnumber2: string;
-  emercontactname: string;
-  emercontactname2: string;
-  emercontactrel: string;
-  emercontactrel2: string;
-  dob?: Date | null;
-  state: string;
-  city: string;
-  zipcode: string;
-  homeaddress: string;
-  phonenumber3: string;
-  hiatusstartdate?: Date | null;
-  computernumber: string;
-  badgeidnumber: string;
-  acdagentnumber: string;
-  uniqueid: string;
-  preferredfname: string;
-  preferredlname: string;
-  entryFormName: string;
-  buddy?: boolean;
-  entryDt?: Date | null;
-  entryBy: string;
-  modDt?: Date | null;
-  modBy: string;
-}
-
-export interface IUserMin {
-  userid: number;
-  dempoid: string;
-  displayName: string | null;
-  fname: string;
-  lname: string;
-  preferredfname: string;
-  preferredlname: string;
-  language: string;
-  role: number;
-  buddy?: boolean;
-  employmenttype?: number;
-  trainedon: string;
-  trainedOnArray: string[];
-  active?: boolean;
-  canEdit?: boolean;
-  selected?: boolean;
-  checked?: boolean;
-  changed?: boolean;
-  schedulinglevel?: number;
-}
+import { User } from "../models/data/user";
 
 export interface ITimeCard {
   timeCardId: number;
@@ -113,7 +18,7 @@ export interface ITimeCard {
 }
 
 export interface ICurrentUser {
-  user: IUser;
+  user: User;
   timecards: ITimeCard[];
 }
 
@@ -168,7 +73,7 @@ export interface IProject {
   entryBy: string | null;
   modDt: Date | null;
   modBy: string | null;
-  trainedOnUsersMin?: IUserMin[];
+  trainedOnUsersMin?: User[];
   trainedOnUsers?: string[];
   notTrainedOnUsers?: string[];
 }
@@ -184,7 +89,7 @@ export interface IProjectMin {
   projectColor: string;
   projectType?: string | null;
   selected?: boolean;
-  trainedOnUsersMin?: IUserMin[];
+  trainedOnUsersMin?: User[];
   trainedOnUsers?: string[];
   notTrainedOnUsers?: string[];
 }
@@ -367,7 +272,7 @@ export interface IScheduleMin {
 }
 
 export interface IUserSchedule {
-  user: IUserMin;
+  user: User;
   schedules: Array<ISchedule>;
 }
 
@@ -499,7 +404,7 @@ export interface ICoreHours {
 
 export interface IUserCoreHours {
   coreHours: any;
-  user: IUserMin;
+  user: User;
 }
 
 export interface IForecastHours {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { IAllConfiguration, IAdminOptionsVariable, IFormField, IFormFieldVariable, ISaveResponse, IUser, IGeneralResponse, IBlockOutDate } from '../../interfaces/interfaces';
+import { IAllConfiguration, IAdminOptionsVariable, IFormField, IFormFieldVariable, ISaveResponse, IGeneralResponse, IBlockOutDate } from '../../interfaces/interfaces';
 import { environment } from '../../../environments/environment';
 import { AppConfig } from '../../models/presentation/app-config';
 
@@ -19,6 +19,30 @@ export class ConfigurationService {
     this.setLanguages();
   }
 
+  getAllConfiguration(): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(this.apiRootUrl);
+  }
+
+  //get app configuration
+  setAppConfiguration(): void {
+    this.http.get<IGeneralResponse>(this.apiRootUrl + '/frontEndConfiguration').subscribe(
+      response => {
+        this.appConfig.next(<AppConfig>response.Subject);
+      }
+    );
+  }
+
+  saveConfigurationVariables(configurations: IAdminOptionsVariable[]): Observable<IGeneralResponse> {
+    return this.http.put<IGeneralResponse>(`${this.apiRootUrl}/adminOptionVariables`, configurations);
+  }
+
+  saveFieldNames(formFields: IFormFieldVariable[]): Observable<IGeneralResponse> {
+    return this.http.put<IGeneralResponse>(`${this.apiRootUrl}/formFieldVariables`, formFields);
+  }
+
+  saveCodeLists(formFields: IFormFieldVariable[]): Observable<IGeneralResponse> {
+    return this.http.put<IGeneralResponse>(`${this.apiRootUrl}/dropDownLists`, formFields);
+  }
 
   setLanguages(): void {
     this.http.get<IGeneralResponse>(`${this.apiRootUrl}/languages`).subscribe(
@@ -34,13 +58,20 @@ export class ConfigurationService {
     );
   }
 
-  //get app configuration
-  setAppConfiguration(): void {
-    this.http.get<IGeneralResponse>(this.apiRootUrl + '/frontEndConfiguration').subscribe(
-      response => {
-        this.appConfig.next(<AppConfig>response.Subject);
-      }
-    );
+  getUserFields(): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/userFields`);
+  }
+
+  getProjectFields(): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/projectFields`);
+  }
+
+  getFormField(fieldName: string): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/formField/${fieldName}`);
+  }
+
+  getFormFieldsByTable(tableName: string): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/formFieldsByTable/${tableName}`);
   }
 
   //get lock date
@@ -53,4 +84,31 @@ export class ConfigurationService {
   getBlockOutDates(): Observable<IGeneralResponse> {
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/blockOutDates`);
   }
+
+  //save a block-out date
+  saveBlockOutDate(blockOutDate: IBlockOutDate): Observable<IGeneralResponse> {
+    return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/blockOutDates`, blockOutDate);
+  }
+
+  //delete a block-out date
+  deleteBlockOutDate(blockOutDate: IBlockOutDate): Observable<IGeneralResponse> {
+    return this.http.request<IGeneralResponse>('delete', `${this.apiRootUrl}/blockOutDates`, { body: blockOutDate });
+  }
+
+  //comm hub
+  //add default comm hub configuration
+  addDefaultCommHubConfig(projectId: number): Observable<IGeneralResponse> {
+    return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/commHubConfig`, { projectId: projectId });
+  }
+
+  //delete comm hub configuration
+  deleteCommHubConfig(projectId: number): Observable<IGeneralResponse> {
+    return this.http.request<IGeneralResponse>('delete', `${this.apiRootUrl}/commHubConfig`, { body: projectId });
+  }
+
+  //delete comm hub form field
+  deleteCommHubFormField(FormFieldId: number): Observable<IGeneralResponse> {
+    return this.http.request<IGeneralResponse>('delete', `${this.apiRootUrl}/commHubFormField`, { body: FormFieldId });
+  }
+
 }

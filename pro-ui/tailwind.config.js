@@ -10,6 +10,14 @@ module.exports = {
         DEFAULT: '#00569b',
         'light': '#7ba6dc',
       },
+      'button-blue': {
+        DEFAULT: '#0680CD',
+      },
+      'duke-gray': {
+        'dark': '#777777',
+        DEFAULT: '#b5b5b5',
+        'light': '#e0e0e0',
+      }
     },
     extend: {},
   },

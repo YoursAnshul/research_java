@@ -26,6 +26,7 @@ public class ViPartLookupList {
 	private String contactsource;
 	private String contactfname;
 	private String contactlname;
+	private Integer participantin;
 
 	public Integer getUpid() {
 		return upid;
@@ -121,6 +122,14 @@ public class ViPartLookupList {
 
 	public void setPartcontactsid(Integer partcontactsid) {
 		this.partcontactsid = partcontactsid;
+	}
+
+	public Integer getParticipantin() {
+		return participantin;
+	}
+
+	public void setParticipantin(Integer participantin) {
+		this.participantin = participantin;
 	}
 
 }

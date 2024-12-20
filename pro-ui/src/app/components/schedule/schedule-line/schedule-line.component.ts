@@ -1,12 +1,13 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
-import { IActionButton, IAuthenticatedUser, IBlockOutDate, IProjectGroup, IProjectMin, ISchedule, IScheduleMin, ITimeCode, IUserMin, IUserSchedule } from '../../../interfaces/interfaces';
+import { IActionButton, IAuthenticatedUser, IBlockOutDate, IProjectGroup, IProjectMin, ISchedule, IScheduleMin, ITimeCode, IUserSchedule } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { LogsService } from '../../../services/logs/logs.service';
 import { ProjectsService } from '../../../services/projects/projects.service';
 import { UsersService } from '../../../services/users/users.service';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
+import { User } from '../../../models/data/user';
 
 @Component({
   selector: 'app-schedule-line',
@@ -16,7 +17,7 @@ import { UserSchedulesService } from '../../../services/userSchedules/user-sched
 export class ScheduleLineComponent implements OnInit {
   //inputs
   @Input() schedule!: ISchedule;
-  @Input() allUsers!: IUserMin[];
+  @Input() allUsers!: User[];
   @Input() allProjects!: IProjectMin[];
   @Input() timeCodes!: ITimeCode[];
   @Input() authenticatedUser!: IAuthenticatedUser;
@@ -63,9 +64,9 @@ export class ScheduleLineComponent implements OnInit {
   }
 
   //filter projects to user trained on projects
-  setTrainedOnProjects(user: IUserMin | null = null): void {
+  setTrainedOnProjects(user: User | null = null): void {
     if (!user) {
-      user = this.allUsers.find(x => x.dempoid == this.schedule.dempoid) as IUserMin;
+      user = this.allUsers.find(x => x.dempoid == this.schedule.dempoid) as User;
     }
 
     this.trainedOnProjects = this.allProjects.filter(x => ((x.projectType == 'Administrative') || (Utils.pipeStringToArray((user ? user.trainedon : '')).includes(x.projectID.toString()) && x.active && (x.projectDisplayId.split('|').includes('2')))));
@@ -114,7 +115,7 @@ export class ScheduleLineComponent implements OnInit {
     }
 
     //update the display name and user id
-    let user: IUserMin | undefined = this.allUsers.find(x => x.dempoid == this.schedule.dempoid);
+    let user: User | undefined = this.allUsers.find(x => x.dempoid == this.schedule.dempoid);
     if (user) {
       this.schedule.fname = user.fname;
       this.schedule.lname = user.lname;
