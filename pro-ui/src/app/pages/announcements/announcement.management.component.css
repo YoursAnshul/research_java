@@ -30,6 +30,8 @@
   text-align: left;
   white-space: nowrap;
   border: 1px solid #ddd;
+  color: #262626;
+  font-size: 12px;
 }
 
 .announcement-table th {
@@ -37,6 +39,8 @@
   text-align: left;
   white-space: nowrap;
   border: 1px solid #6d6b6b;
+  color: #262626;
+  font-size: 12px;
 }
 
 .mat-header-row,
