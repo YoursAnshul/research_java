@@ -57,15 +57,15 @@ public class QuickReferenceImpl implements QuickReference {
 	@Override
 	public List<QuickResponse> getQuikTeamContact(String type) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("  select userid,u.dempoid,  u.escalationphone, emailaddr, f.dropdownitem as roletext, ");
+		sql.append("  select userid,u.dempoid,  u.phonenumber, emailaddr, f.dropdownitem as roletext, ");
 		sql.append("  u.role , coalesce(nullif(u.preferredfname, ''), u.fname) ||' '||  ");
 		sql.append("  coalesce (nullif(u.preferredlname, ''), u.lname) as fullname from core.users u ");
 		sql.append("  join (select codevalues, dropdownitem from core.dropdownvalues where formfieldid = 10)f ");
-		sql.append("  on u.role = f.codevalues where u.active = true and u.role <> 4 order by fullname asc ");
+		sql.append("  on u.role = f.codevalues where  u.role <> 4 order by fullname asc ");
 		List<QuickResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			QuickResponse quickResponse = new QuickResponse();
 			quickResponse.setUsername(rs.getString("fullname"));
-			quickResponse.setEscalationphone(rs.getString("escalationphone"));
+			quickResponse.setEscalationphone(rs.getString("phonenumber"));
 			quickResponse.setEmailAddress(rs.getString("emailaddr"));
 			quickResponse.setRole(rs.getString("roletext"));
 			return quickResponse;
@@ -76,10 +76,12 @@ public class QuickReferenceImpl implements QuickReference {
 
 	@Override
 	public String getMainVmPhone() {
-    String sql = "SELECT a.optionvalue FROM adminoptions a " +
-                 "JOIN formfields f ON a.formfieldid = f.formfieldid " +
-                 "WHERE f.columnname = 'mainvmphone'";
-    return this.jdbcTemplate.queryForObject(sql, String.class);
+	    String sql = "SELECT a.optionvalue FROM adminoptions a " +
+	                 "JOIN formfields f ON a.formfieldid = f.formfieldid " +
+	                 "WHERE f.columnname = 'mainvmphone'";
+	    List<String> results = this.jdbcTemplate.query(sql, (rs, rowNum) -> rs.getString("optionvalue"));
+	    return results.isEmpty() ? null : results.get(0);
 	}
+
 
 }
