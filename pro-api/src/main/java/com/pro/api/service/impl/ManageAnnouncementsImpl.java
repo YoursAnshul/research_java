@@ -241,7 +241,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append("AND projectid IN (");
 		sql.append(projectIdList.stream().map(String::valueOf).collect(Collectors.joining(", ")));
 		sql.append(") ");
-		sql.append("ORDER BY projectname ASC ");
+		sql.append("ORDER BY projectid ASC ");
 		List<ProjectResponse> projectResponses = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ProjectResponse projectResponse = new ProjectResponse();
 			projectResponse.setProjectId(rs.getLong("projectid"));
