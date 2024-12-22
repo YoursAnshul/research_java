@@ -51,9 +51,10 @@
           <small
             >Posted {{ announcement.startDate | date : "MM/dd/yyyy" }} by
           </small>
-          <small *ngIf="announcement.isAuthor">{{
+          <small>{{ announcement.authorName }}</small>
+          <!-- <small *ngIf="announcement.isAuthor">{{
             announcement.authorName
-          }}</small>
+          }}</small> -->
         </div>
         <div class="tags">
           <span
