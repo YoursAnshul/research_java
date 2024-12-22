@@ -24,8 +24,12 @@
       />
     </g>
   </svg>
-  <h3 style="margin-right: 90px">Announcements</h3>
-  <a routerLink="/announcement-management" class="manage-link"
+  <h3>Announcements</h3>
+  <a
+    *ngIf="!userObj.interviewer"
+    routerLink="/announcement-management"
+    [queryParams]="{ path: 'home' }"
+    class="manage-link"
     >Manage Announcements</a
   >
 </div>

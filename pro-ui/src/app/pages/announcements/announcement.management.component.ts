@@ -12,6 +12,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from '../../components/delete-dialog/confirmation-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -53,14 +54,17 @@ export class ManageAnnouncementsComponent implements OnInit {
   selectedAuthors: string[] = [];
   isFilterActive: boolean = false;
   isAllSelected: boolean = false;
+  path: string | null = null;
 
   constructor(
     private dialog: MatDialog,
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.path = this.activatedRoute.snapshot.queryParamMap.get('path');
     this.getProjectInfo();
   }
   @HostListener('document:click', ['$event'])

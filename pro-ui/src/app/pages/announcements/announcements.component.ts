@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { IAuthenticatedUser } from '../../interfaces/interfaces';
 
 interface Announcement {
   title: string;
@@ -10,7 +12,7 @@ interface Announcement {
   icon: string;
   isFullText?: boolean;
   projectObject?: any[];
-  isAuthor: boolean
+  isAuthor: boolean;
 }
 @Component({
   selector: 'app-announcements',
@@ -18,10 +20,21 @@ interface Announcement {
   styleUrls: ['./announcements.component.css'],
 })
 export class AnnouncementsComponent implements OnInit {
+  @Input() authenticatedUser!: IAuthenticatedUser;
   announcementsList: Announcement[] = [];
   maxLength = 100;
-  constructor(private http: HttpClient) {}
+  userObj: any;
+  constructor(
+    private http: HttpClient,
+    private authenticationService: AuthenticationService
+  ) {}
   ngOnInit(): void {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+        this.userObj = this.authenticatedUser;        
+      }
+    );
     this.getAnnouncementList();
   }
   getAnnouncementList(): void {
