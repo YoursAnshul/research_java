@@ -10,6 +10,7 @@ interface Announcement {
   icon: string;
   isFullText?: boolean;
   projectObject?: any[];
+  isAuthor:boolean
 }
 @Component({
   selector: 'app-announcements',
