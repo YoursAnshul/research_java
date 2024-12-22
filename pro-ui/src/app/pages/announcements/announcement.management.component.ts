@@ -50,7 +50,7 @@ export class ManageAnnouncementsComponent implements OnInit {
   isSearchActive: boolean = false;
   allAuthors: string[] = [];
   filteredAuthors: string[] = [];
-  selectedAuthor: string | null = null;
+  selectedAuthors: string[] = [];
   isFilterActive: boolean = false;
   isAllSelected: boolean = false;
 
@@ -80,13 +80,28 @@ export class ManageAnnouncementsComponent implements OnInit {
     if (filterContainer && !filterContainer.contains(event.target as Node)) {
       this.isFilterActive = false;
       this.filteredAuthors = [];
-      this.selectedAuthor = '';
+      this.selectedAuthors = [];
       this.getList(1);
     }
   }
 
-  filterAuthors(event: any): void {
-    event.stopPropagation();
+  onAuthorSelection(author: string, isSelected: boolean): void {
+    if (isSelected) {
+      this.selectedAuthors.push(author);
+    } else {
+      const index = this.selectedAuthors.indexOf(author);
+      if (index >= 0) {
+        this.selectedAuthors.splice(index, 1);
+      }
+    }
+    this.isAllSelected =
+      this.selectedAuthors.length === this.filteredAuthors.length;
+  }
+
+  onSelectionChange(event: any): void {
+    this.selectedAuthors = this.selectedAuthors.filter(
+      (author) => author !== undefined && author !== null
+    );
     this.getList(1);
   }
 
@@ -95,7 +110,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.isFilterActive = !this.isFilterActive;
     if (this.isFilterActive) {
       this.getAuthors();
-      this.selectedAuthor = '';
+      this.selectedAuthors = [];
     }
   }
 
@@ -192,8 +207,11 @@ export class ManageAnnouncementsComponent implements OnInit {
     if (this.searchTerm) {
       params = params.set('keyword', this.searchTerm);
     }
-    if (this.selectedAuthor) {
-      params = params.set('authorName', this.selectedAuthor);
+    if (this.selectedAuthors && this.selectedAuthors.length > 0) {
+      params = params.set(
+        'authorName',
+        this.selectedAuthors.map((author) => `'${author}'`).join(',')
+      );
     }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
     this.http.get(apiUrl, { params }).subscribe({
@@ -222,7 +240,7 @@ export class ManageAnnouncementsComponent implements OnInit {
               : null,
             id: item?.announcementId,
             bodyText: item?.bodyText,
-            isAuthor:item?.isAuthor
+            isAuthor: item?.isAuthor,
           };
         });
         this.length = data?.count || data?.data?.length;

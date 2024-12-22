@@ -123,18 +123,22 @@
           *ngIf="isFilterActive"
           style="margin-top: 10px; width: 200px; position: relative"
         >
-          <select
-            id="authorFilter"
-            class="filter-select"
-            [(ngModel)]="selectedAuthor"
-            (change)="filterAuthors($event)"
-            style="width: 80%; padding: 5px; font-size: 12px"
-          >
-            <option value="">All Authors</option>
-            <option *ngFor="let author of filteredAuthors" [value]="author">
-              {{ author }}
-            </option>
-          </select>
+          <mat-form-field appearance="outline" style="width: 80%" class="custom-form-field-1">
+            <mat-label>Filter by Author</mat-label>
+            <mat-select
+              [(value)]="selectedAuthors"
+              (selectionChange)="onSelectionChange($event)"
+              multiple
+            >
+              <mat-option
+                *ngFor="let author of filteredAuthors"
+                [value]="author"
+                (click)="$event.stopPropagation()"
+              >
+                {{ author }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <div
