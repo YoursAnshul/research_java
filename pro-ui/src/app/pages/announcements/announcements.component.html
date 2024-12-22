@@ -35,7 +35,9 @@
   >
     <div *ngFor="let announcement of announcementsList" class="announcement">
       <h4>{{ announcement.icon }}{{ announcement.title }}</h4>
-      <div class="announcement-text">
+      <p>{{ announcement.bodyText }}</p>
+
+      <!-- <div class="announcement-text">
         <p>{{ getTruncatedText(announcement) }}</p>
         <button
           *ngIf="announcement.bodyText.length > maxLength"
@@ -44,7 +46,7 @@
         >
           {{ announcement.isFullText ? "Show Less" : "Show More" }}
         </button>
-      </div>
+      </div> -->
 
       <div class="meta">
         <div>
