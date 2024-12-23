@@ -1,4 +1,10 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddAnnouncementDialogComponent } from './add-announcement-dialog.component';
 import { PageEvent } from '@angular/material/paginator';
@@ -13,6 +19,8 @@ import {
 } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from '../../components/delete-dialog/confirmation-dialog.component';
 import { ActivatedRoute } from '@angular/router';
+import { IAuthenticatedUser } from '../../interfaces/interfaces';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -20,6 +28,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./announcement.management.component.css'],
 })
 export class ManageAnnouncementsComponent implements OnInit {
+  @Input() authenticatedUser!: IAuthenticatedUser;
+
   @ViewChild(MatSort)
   sort!: MatSort;
 
@@ -55,16 +65,26 @@ export class ManageAnnouncementsComponent implements OnInit {
   isFilterActive: boolean = false;
   isAllSelected: boolean = false;
   path: string | null = null;
+  userObj: any;
 
   constructor(
     private dialog: MatDialog,
     private http: HttpClient,
     private snackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
     this.path = this.activatedRoute.snapshot.queryParamMap.get('path');
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+        this.userObj = this.authenticatedUser;
+        console.log(this.userObj);
+        
+      }
+    );
     this.getProjectInfo();
   }
   @HostListener('document:click', ['$event'])

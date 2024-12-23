@@ -1,4 +1,11 @@
-<div class="container">
+<div *ngIf="userObj.interviewer" class="center-message">
+  <div class="message-wrapper">
+    <mat-icon class="logo">error</mat-icon>
+    <p class="message">You don't have access</p>
+  </div>
+</div>
+
+<div class="container" *ngIf="userObj == null || !userObj.interviewer">
   <h2 class="configuration">Configuration / Manage Announcements</h2>
   <h1>Manage Announcements</h1>
 
@@ -123,7 +130,11 @@
           *ngIf="isFilterActive"
           style="margin-top: 10px; width: 200px; position: relative"
         >
-          <mat-form-field appearance="outline" style="width: 80%" class="custom-form-field-1">
+          <mat-form-field
+            appearance="outline"
+            style="width: 80%"
+            class="custom-form-field-1"
+          >
             <mat-label>Filter by Author</mat-label>
             <mat-select
               [(value)]="selectedAuthors"
@@ -307,21 +318,21 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+  <mat-paginator
+    *ngIf="announcements.length > 0"
+    #paginator
+    (page)="handlePageEvent($event)"
+    [length]="length"
+    [pageSize]="pageSize"
+    [disabled]="disabled"
+    [showFirstLastButtons]="showFirstLastButtons"
+    [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
+    [hidePageSize]="hidePageSize"
+    [pageIndex]="pageIndex"
+    aria-label="Select page"
+  >
+  </mat-paginator>
 </div>
-<mat-paginator
-  *ngIf="announcements.length > 0"
-  #paginator
-  (page)="handlePageEvent($event)"
-  [length]="length"
-  [pageSize]="pageSize"
-  [disabled]="disabled"
-  [showFirstLastButtons]="showFirstLastButtons"
-  [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
-  [hidePageSize]="hidePageSize"
-  [pageIndex]="pageIndex"
-  aria-label="Select page"
->
-</mat-paginator>
 <style>
   .filter-form-field ::ng-deep .mat-mdc-text-field-wrapper {
     height: 45px !important;
