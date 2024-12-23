@@ -57,7 +57,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
       title: ['', Validators.required],
       startDate: ['', Validators.required],
       expireDate: [''],
-      isAuthor: [false],
+      isAuthor: [true],
     });
     this.id = data?.id;
     this.announcementData = data;
