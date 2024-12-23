@@ -24,15 +24,18 @@
       />
     </g>
   </svg>
-  <h3>Announcements</h3>
+  <h3 class="announcement-title">Announcements</h3>
   <a
     *ngIf="!userObj.interviewer"
     routerLink="/announcement-management"
     [queryParams]="{ path: 'home' }"
     class="manage-link"
-    >Manage Announcements</a
   >
+    Manage Announcements
+  </a>
 </div>
+
+
 <div class="announcements-panel">
   <ng-container
     *ngIf="announcementsList && announcementsList.length > 0; else noData"
