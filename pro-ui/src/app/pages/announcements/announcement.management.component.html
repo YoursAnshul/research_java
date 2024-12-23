@@ -1,20 +1,5 @@
 <div class="container">
-  <h2 class="configuration">
-    <span
-      *ngIf="path === 'home'; else configuration"
-      style="color: #0680cd; text-decoration: underline; cursor: pointer"
-      routerLink="/home"
-    >
-      Home
-    </span>
-    <ng-template #configuration>
-      <span style="color: #0680cd; text-decoration: underline; cursor: pointer">
-        Configuration
-      </span>
-    </ng-template>
-    / Manage Announcements
-  </h2>
-
+  <h2 class="configuration">Configuration / Manage Announcements</h2>
   <h1>Manage Announcements</h1>
 
   <button
@@ -46,7 +31,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('startDate')"
-        style="background-color: #e0e0e0; width: 170px"
+        style="background-color: #e5e5e580; width: 170px"
       >
         Start
       </th>
@@ -59,7 +44,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('expiration')"
-        style="background-color: #e0e0e0; width: 170px"
+        style="background-color: #e5e5e580; width: 170px"
       >
         Expiration
       </th>
@@ -72,7 +57,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('title')"
-        style="background-color: #e0e0e0; width: 180px"
+        style="background-color: #e5e5e580; width: 180px"
       >
         <span>Title</span>
 
@@ -129,7 +114,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="isFilterActive ? null : onSort('author')"
-        style="background-color: #e0e0e0; width: 160px; position: relative"
+        style="background-color: #e5e5e580; width: 160px; position: relative"
       >
         <span>Author</span>
 
@@ -138,11 +123,7 @@
           *ngIf="isFilterActive"
           style="margin-top: 10px; width: 200px; position: relative"
         >
-          <mat-form-field
-            appearance="outline"
-            style="width: 80%"
-            class="custom-form-field-1"
-          >
+          <mat-form-field appearance="outline" style="width: 80%" class="custom-form-field-1">
             <mat-label>Filter by Author</mat-label>
             <mat-select
               [(value)]="selectedAuthors"
@@ -153,6 +134,7 @@
                 *ngFor="let author of filteredAuthors"
                 [value]="author"
                 (click)="$event.stopPropagation()"
+                class="custom-height"
               >
                 {{ author }}
               </mat-option>
@@ -196,7 +178,7 @@
       <th
         mat-header-cell
         *matHeaderCellDef
-        style="background-color: #e0e0e0; width: 300px"
+        style="background-color: #e5e5e580; width: 300px"
       >
         Display Announcements To
       </th>
@@ -233,7 +215,7 @@
       <th
         mat-header-cell
         *matHeaderCellDef
-        style="background-color: #e0e0e0; width: 70px"
+        style="background-color: #e5e5e580; width: 70px"
       >
         Actions
       </th>

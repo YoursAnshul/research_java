@@ -268,19 +268,17 @@
   border-color: #0680cd 2px solid !important;
 }
 
-
 ::ng-deep .custom-form-field-1 .mat-mdc-text-field-wrapper {
   height: 35px !important;
   display: flex;
   align-items: center;
 }
 
-::ng-deep  .custom-form-field-1 .mat-mdc-select-trigger{
+::ng-deep .custom-form-field-1 .mat-mdc-select-trigger {
   font-size: 12px;
-
 }
 
-::ng-deep  .mat-mdc-option .mdc-list-item__primary-text{
+::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
   font-size: 12px !important;
 }
 
@@ -321,7 +319,10 @@
   font-size: 14px;
 }
 
-::ng-deep  .mat-pseudo-checkbox{
+::ng-deep .mat-pseudo-checkbox {
   height: 14px !important;
   width: 14px !important;
+}
+::ng-deep .mat-mdc-option.custom-height {
+  min-height: 0px !important;
 }
