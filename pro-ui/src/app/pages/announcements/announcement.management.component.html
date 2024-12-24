@@ -36,7 +36,7 @@
     mat-table
     [dataSource]="announcements"
     matSort
-    class="announcement-table custom-table-height"
+    class="announcement-table"
     *ngIf="!isLoading && announcements.length > 0"
   >
     <ng-container matColumnDef="start">
@@ -143,15 +143,28 @@
             class="custom-form-field-1"
           >
             <mat-label>Filter by Author</mat-label>
-            <mat-select
-              [(value)]="selectedAuthors"
-              (selectionChange)="onSelectionChange($event)"
-              multiple
-            >
+            <mat-select [(value)]="selectedAuthors" multiple>
+              <div>
+                <label
+                  for=""
+                  style="cursor: pointer"
+                >
+                  <input
+                    style="cursor: pointer"
+                    type="checkbox"
+                    [checked]="isAllSelected()"
+                    [indeterminate]="isIndeterminate()"
+                    (change)="selectAllAuthors($event)" 
+                  />
+                  <span class="checkmark"></span>
+                  Select All
+                </label>
+              </div>
+
               <mat-option
-                *ngFor="let author of filteredAuthors"
+                *ngFor="let author of allAuthors"
                 [value]="author"
-                (click)="$event.stopPropagation()"
+                (click)="onSelectionChange($event)"
                 class="custom-height"
               >
                 {{ author }}
