@@ -36,7 +36,7 @@
     mat-table
     [dataSource]="announcements"
     matSort
-    class="announcement-table"
+    class="announcement-table custom-table-height"
     *ngIf="!isLoading && announcements.length > 0"
   >
     <ng-container matColumnDef="start">

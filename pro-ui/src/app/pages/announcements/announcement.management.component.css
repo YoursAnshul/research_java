@@ -326,6 +326,10 @@
 ::ng-deep .mat-mdc-option.custom-height {
   min-height: 0px !important;
 }
+
+::ng-deep .mat-mdc-header-row{
+  height: unset !important;
+}
 .center-message {
   display: flex;
   justify-content: center;
@@ -361,4 +365,24 @@
   .message-wrapper {
     width: 90%;
   }
+}
+
+
+.custom-table-height th.mat-header-cell, 
+.custom-table-height td.mat-cell {
+  padding: 4px 8px; /* Adjust padding to make the rows shorter */
+  height: 30px; /* Optional: Set a specific height */
+}
+
+.custom-table-height tr.mat-row, 
+.custom-table-height tr.mat-header-row {
+  height: 30px; /* Decrease the overall row height */
+}
+
+.custom-table-height mat-form-field {
+  margin-top: 0 !important; /* Adjust form-field margin if affecting height */
+}
+
+.custom-table-height .filter-container {
+  margin-top: 5px !important; /* Fine-tune spacing in filters */
 }
