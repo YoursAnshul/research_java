@@ -18,7 +18,6 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from '../../components/delete-dialog/confirmation-dialog.component';
-import { ActivatedRoute } from '@angular/router';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
@@ -71,12 +70,10 @@ export class ManageAnnouncementsComponent implements OnInit {
     private dialog: MatDialog,
     private http: HttpClient,
     private snackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute,
     private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit(): void {
-    this.path = this.activatedRoute.snapshot.queryParamMap.get('path');
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;

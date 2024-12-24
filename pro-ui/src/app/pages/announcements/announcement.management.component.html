@@ -8,17 +8,11 @@
 <div class="container" *ngIf="userObj == null || !userObj.interviewer">
   <h2 class="configuration">
     <span
-      *ngIf="path === 'home'; else configuration"
       style="color: #0680cd; text-decoration: underline; cursor: pointer"
       routerLink="/home"
     >
       Home
     </span>
-    <ng-template #configuration>
-      <span style="color: #0680cd; text-decoration: underline; cursor: pointer">
-        Configuration
-      </span>
-    </ng-template>
     / Manage Announcements
   </h2>
 

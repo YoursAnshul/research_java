@@ -75,7 +75,7 @@ export class SidebarComponent {
               { id: 8, icon: 'shield_person', label: 'Users', route: '/users' },
               { id: 9, icon: 'calendar_month', label: 'Forecasting', route: '/forecasting' },
               { id: 10, icon: 'chat', label: 'Requests', route: '/requests' },
-              { id: 11, icon: 'settings', label: 'Configuration', route: '/announcement-management' },
+              { id: 11, icon: 'settings', label: 'Configuration', route: '/configuration' },
             ])
         }
       }
