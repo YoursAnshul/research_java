@@ -284,7 +284,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append(" FROM core.projects p ");
 		sql.append(" WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
 		sql.append(" ) AS p ON TRUE ");
-		sql.append(" WHERE a.startdate <= CURRENT_DATE AND a.expiredate >= CURRENT_DATE ");
+		sql.append(" WHERE a.startdate <= CURRENT_DATE AND a.expiredate >= CURRENT_DATE  ORDER BY a.startdate DESC ");
 		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AnnouncementResponse announcement = new AnnouncementResponse();
 			announcement.setAnnouncementId(rs.getLong("announcementid"));
