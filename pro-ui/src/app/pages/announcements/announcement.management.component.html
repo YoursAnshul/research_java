@@ -148,13 +148,13 @@
                 <label
                   for=""
                   style="cursor: pointer"
+                  (click)="selectAllAuthors($event)"
                 >
                   <input
                     style="cursor: pointer"
                     type="checkbox"
                     [checked]="isAllSelected()"
                     [indeterminate]="isIndeterminate()"
-                    (change)="selectAllAuthors($event)" 
                   />
                   <span class="checkmark"></span>
                   Select All
