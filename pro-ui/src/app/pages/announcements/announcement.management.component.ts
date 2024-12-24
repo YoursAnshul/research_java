@@ -62,7 +62,6 @@ export class ManageAnnouncementsComponent implements OnInit {
   filteredAuthors: string[] = [];
   selectedAuthors: string[] = [];
   isFilterActive: boolean = false;
-  isAllSelected: boolean = false;
   path: string | null = null;
   userObj: any;
 
@@ -79,7 +78,6 @@ export class ManageAnnouncementsComponent implements OnInit {
         this.authenticatedUser = authenticatedUser;
         this.userObj = this.authenticatedUser;
         console.log(this.userObj);
-        
       }
     );
     this.getProjectInfo();
@@ -115,8 +113,26 @@ export class ManageAnnouncementsComponent implements OnInit {
         this.selectedAuthors.splice(index, 1);
       }
     }
-    this.isAllSelected =
-      this.selectedAuthors.length === this.filteredAuthors.length;
+  }
+  isAllSelected(): boolean {
+    return this.selectedAuthors.length === this.allAuthors.length;
+  }
+  isIndeterminate(): boolean {
+    return (
+      this.selectedAuthors.length > 0 &&
+      this.selectedAuthors.length < this.allAuthors.length
+    );
+  }
+  selectAllAuthors(event: any): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    console.log("isChecked--",isChecked);
+    
+    if (isChecked) {
+      this.selectedAuthors = [...this.allAuthors]; 
+    } else {
+      this.selectedAuthors = []; 
+    }
+    this.getList(1)
   }
 
   onSelectionChange(event: any): void {
