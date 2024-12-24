@@ -1,0 +1,65 @@
+.dialog-container {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    gap: 10px;
+    flex-direction: column;
+    width: 100%;
+}
+
+.error-icon {
+    width: 54px;
+    height: 54px;
+    font-size: 54px;
+}
+
+.heading {
+    font-family: Roboto;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 21.09px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #262626;
+}
+
+.dialog-content {
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.41px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+
+}
+
+.dialog-actions {
+    padding: 10px 0px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-direction: column;
+    width: 100%;
+}
+
+button {
+    width: 100%;
+    height: 30px;
+    font-size: 11px;
+}
+
+.confirm {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16.41px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    gap: 10px;
+}

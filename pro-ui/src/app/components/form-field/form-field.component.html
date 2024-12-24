@@ -1,0 +1,122 @@
+<!--text input-->
+<div
+    *ngIf="formField.formFieldVariable.formField.fieldType == 'textbox' || formField.formFieldVariable.formField.fieldType == 'email' || formField.formFieldVariable.formField.fieldType == 'phone'">
+
+    <mat-form-field appearance="outline" class="black ctm">
+        <mat-label [class.red]="this.formField.formFieldVariable.formField.required && !this.formField.value"
+            [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
+        <input type="text" matInput [(ngModel)]="formField.value"
+            placeholder="{{formField.formFieldVariable.formField.fieldLabel}}" (keyup)="setChanged($event)"
+            (keypress)="validateKey($event)" [disabled]="readOnly" [class.read-only]="readOnly"
+            [required]="formField.formFieldVariable.formField.required || false"
+            [class.invalid]="this.formField.invalid" name="{{formField.formFieldVariable.formField.fieldLabel}}"
+            autocomplete="off" (paste)="!this.formField.formFieldVariable.formField.requireConfirmation">
+    </mat-form-field>
+    <div class="validation-message" *ngIf="(formField?.validationMessage || []).length > 0">
+        **{{formField?.validationMessage}}</div>
+</div>
+
+<!--select input-->
+<div 
+     *ngIf="formField.formFieldVariable.formField.fieldType == 'selectbox'">
+  <mat-form-field appearance="outline" class="ctm">
+    <mat-label [class.red]="this.formField.formFieldVariable.formField.required && !this.formField.value" [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
+    <mat-select [(ngModel)]="formField.value"
+                [compareWith]="compareSelectValues"
+                (selectionChange)="setChanged($event)"
+                [disabled]="readOnly"
+                [class.read-only]="readOnly"
+                [required]="formField.formFieldVariable.formField.required || false"
+                [class.invalid]="this.formField.invalid"
+                name="{{formField.formFieldVariable.formField.fieldLabel}}"
+                autocomplete="off">
+      <mat-option></mat-option>
+      <mat-option *ngFor="let dv of formField.formFieldVariable.dropDownValues" value="{{dv.codeValues}}">
+        {{dv.dropDownItem}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+
+<!--checkbox input-->
+<div *ngIf="formField.formFieldVariable.formField.fieldType == 'checkbox'">
+  <mat-checkbox labelPosition="after"
+                class="app-user"
+                [(ngModel)]="formField.value"
+                (change)="setChanged($event)"
+                [disabled]="readOnly"
+                [class.read-only]="readOnly"
+                name="{{formField.formFieldVariable.formField.fieldLabel}}">{{formField.formFieldVariable.formField.fieldLabel}}</mat-checkbox>
+</div>
+
+<!--multi select input-->
+<div *ngIf="formField.formFieldVariable.formField.fieldType == 'combobox'">
+  <mat-form-field appearance="outline" class="ctm">
+    <mat-label [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
+    <mat-select multiple
+                [(ngModel)]="formField.value"
+                (selectionChange)="setChanged($event)"
+                [disabled]="readOnly"
+                [class.read-only]="readOnly"
+                [required]="formField.formFieldVariable.formField.required || false"
+                [class.invalid]="this.formField.invalid"
+                name="{{formField.formFieldVariable.formField.fieldLabel}}"
+                autocomplete="off">
+      <mat-option *ngFor="let dv of formField.formFieldVariable.dropDownValues" value="{{dv.codeValues}}">{{dv.dropDownItem}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!--date input-->
+<mat-form-field  appearance="outline" class="black ctm" *ngIf="formField.formFieldVariable.formField.fieldType == 'dateonly' || formField.formFieldVariable.formField.fieldType == 'dob'">
+  <mat-label [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
+  <input matInput [matDatepicker]="datePicker"
+         [class.invalid]="this.formField.invalid"
+         [disabled]="readOnly"
+         [class.read-only]="readOnly"
+         [required]="formField.formFieldVariable.formField.required || false"
+         [(ngModel)]="formField.value"
+         (dateChange)="setChanged($event)"
+         autocomplete="off" />
+  <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+  <mat-datepicker #datePicker
+                  startView="month"></mat-datepicker>
+</mat-form-field>
+
+<!--long text box-->
+<div *ngIf="formField.formFieldVariable.formField.fieldType == 'longtextbox'">
+  <mat-form-field appearance="outline" class="black wd516">
+    <mat-label [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
+    <textarea matInput
+    style="height: 68px;"
+              [(ngModel)]="formField.value"
+              placeholder="{{formField.formFieldVariable.formField.fieldLabel}}"
+              (keyup)="setChanged($event)"
+              [disabled]="readOnly"
+              [class.read-only]="readOnly"
+              [required]="formField.formFieldVariable.formField.required || false"
+              [class.invalid]="this.formField.invalid"
+              name="{{formField.formFieldVariable.formField.fieldLabel}}"
+              autocomplete="off">
+    </textarea>
+  </mat-form-field>
+</div>
+
+<!--number input-->
+<div *ngIf="formField.formFieldVariable.formField.fieldType == 'number'">
+  <mat-form-field appearance="outline" class="black ctm">
+    <mat-label [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
+    <input type="number" matInput
+           [(ngModel)]="formField.value"
+           placeholder="{{formField.formFieldVariable.formField.fieldLabel}}"
+           (keyup)="setChanged($event)"
+           [disabled]="readOnly"
+           [class.read-only]="readOnly"
+           [required]="formField.formFieldVariable.formField.required || false"
+           [class.invalid]="this.formField.invalid"
+           name="{{formField.formFieldVariable.formField.fieldLabel}}"
+           autocomplete="off">
+  </mat-form-field>
+</div>
+

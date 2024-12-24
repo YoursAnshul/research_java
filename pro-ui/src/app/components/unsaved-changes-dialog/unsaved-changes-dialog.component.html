@@ -1,0 +1,27 @@
+<div class="dialog-container" *ngIf="dialogType === 'error'">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <span class="heading">You have unsaved changes</span>
+    <span class="dialog-content">
+        Are you sure you want to close the Add a New User window? Changes will be lost.
+    </span>
+
+    <div class="dialog-actions">
+        <button mat-flat-button color="primary">Close Window</button>
+        <button mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
+    </div>
+</div>
+
+<div class="dialog-container" *ngIf="dialogType === 'confirmation'">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <div class="confirm">
+        <span>
+            The NetID entered for this user is <strong>{{netId}}</strong>.       
+        </span>
+        <span> This cannot be changed after this user is saved.</span>
+        <span> Is this the correct NetID?</span>
+    </div>
+    <div class="dialog-actions">
+        <button mat-flat-button color="primary">Yes, Save User</button>
+        <button mat-stroked-button color="primary" (click)="cancel()">No, Cancel</button>
+    </div>
+</div>

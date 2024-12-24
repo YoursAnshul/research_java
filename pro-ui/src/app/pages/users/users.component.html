@@ -1,4 +1,4 @@
-<div class="text-[#262626] w-fit">
+<div class="text-[#262626] w-fit" *ngIf="!createUser">
     <div class="text-xl font-medium mb-6">
         Users
     </div>
@@ -52,7 +52,7 @@
 
             <!-- add new user button -->
             <div class="float-right">
-                <button class="text-xs text-white border-2 border-button-blue shadow-none py-1 px-3 bg-button-blue rounded-md">
+                <button class="text-xs text-white border-2 border-button-blue shadow-none py-1 px-3 bg-button-blue rounded-md" (click)="createNewUser()">
                     + Add New User
                 </button>
             </div>
@@ -156,4 +156,8 @@
         [sourceData]="filteredUsers"
         [(paginatedData)]="paginatedUsers"></app-table-paginator>
         
+</div>
+
+<div *ngIf="createUser">
+    <app-add-user/>
 </div>

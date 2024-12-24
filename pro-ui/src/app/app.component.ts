@@ -134,6 +134,10 @@ export class AppComponent {
       'info',
       this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/info.svg')
     );  
+    this.matIconRegistry.addSvgIcon(
+      'blue-info',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/blue_info.svg')
+    ); 
      this.configurationService.appConfig.subscribe(
       appConfig => {
         if (appConfig) {

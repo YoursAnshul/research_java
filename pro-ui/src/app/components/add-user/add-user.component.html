@@ -20,170 +20,141 @@
             <div class="add-user-title">Add New User</div>
         </div>
         <div class="divider"></div>
-      <!-- Buttons -->
-      <div class="actions">
-        <button mat-raised-button color="primary" [disabled]="!userForm.valid">Save</button>
-        <button mat-raised-button color="warn">Cancel</button>
-      </div>
         <!-- Tabs -->
-        <mat-tab-group class="add-user-tab"  (selectedTabChange)="onTabChanged($event)">
-          <!-- Tab 1: Scheduling -->
-          <mat-tab label="Scheduling" *ngIf="!createForm">
-            <ng-template mat-tab-label>
-              <span [class.invalid-emphasis]="coreHoursInvalid">Scheduling</span>
-              <span class="invalid-emphasis"
-                    *ngIf="coreHoursInvalid">&nbsp;<sup>**</sup></span>
+        <mat-tab-group class="add-user-tab" (selectedTabChange)="onTabChanged($event)">
+            <!-- Tab 1: Scheduling -->
+            <mat-tab label="Scheduling" *ngIf="!createForm">
+                <ng-template mat-tab-label>
+                    <span [class.invalid-emphasis]="coreHoursInvalid">Scheduling</span>
+                    <span class="invalid-emphasis" *ngIf="coreHoursInvalid">&nbsp;<sup>**</sup></span>
 
-            </ng-template>
+                </ng-template>
 
-              <div class="user-fields-container">
-                <span class="bold">Core Hours Monthly</span>
-                <table id="core-hours-table">
-                  <thead>
-                  <tr id="core-hours-header" class="bold">
-                    <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
-                  </tr>
-                  </thead>
-                  <tr>
-                    <td *ngFor="let ch of numSequence(14); let i = index">
-                      <mat-form-field class="coreHoursInput">
-                        <input type="text"  matInput
-                               [(ngModel)]="coreHours['coreHours' + (i + 1)]"
-                               (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
-                               (keypress)="numberRestrict($event)"
-                               name="core-hours-{{i}}"
-                               autocomplete="off"
-                               maxlength="4">
-                      </mat-form-field>
-                    </td>
-                  </tr>
-                </table>
-              </div>
+                <div class="user-fields-container">
+                    <span class="bold">Core Hours Monthly</span>
+                    <table id="core-hours-table">
+                        <thead>
+                            <tr id="core-hours-header" class="bold">
+                                <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
+                                <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td *ngFor="let ch of numSequence(14); let i = index">
+                                <mat-form-field class="coreHoursInput">
+                                    <input type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                                        (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
+                                        (keypress)="numberRestrict($event)" name="core-hours-{{i}}" autocomplete="off"
+                                        maxlength="4">
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
             </mat-tab>
             <!-- Tab 1: User Details -->
             <mat-tab>
                 <ng-template mat-tab-label>
-                    User Details <span class="required">*</span>
+                    <span [ngClass]="{'invalid-tab': isUserFormInvalid}"> User Details </span><span class="required"
+                        *ngIf="tab2Invalid">*</span>
                 </ng-template>
-                <form [formGroup]="userForm" class="user-form">
-                    <!-- Row 1 -->
+                <div *ngIf="!tab2UserFields">
+                    Loading profile...
+                </div>
+                <div *ngIf="tab2UserFields">
                     <div class="row">
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label class="red">First Name</mat-label>
-                            <input matInput formControlName="firstName" required />
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label class="red">Last Name</mat-label>
-                            <input matInput formControlName="lastName" required />
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label class="red">NetID</mat-label>
-                            <input matInput formControlName="netId" required />
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label class="red">Unique ID</mat-label>
-                            <input matInput formControlName="uniqueId" required />
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="ctm">
-                            <mat-label class="red">Status</mat-label>
-                            <mat-select formControlName="status">
-                                <mat-option value="active">Active</mat-option>
-                                <mat-option value="inactive">Inactive</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="row">
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label>Preferred First Name</mat-label>
-                            <input matInput formControlName="preferredFirstName" />
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label>Preferred Last Name</mat-label>
-                            <input matInput formControlName="preferredLastName" />
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label class="red">Role</mat-label>
-                            <mat-select formControlName="role">
-                                <mat-option value="active">Active</mat-option>
-                                <mat-option value="inactive">Inactive</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label class="red">Employment Status</mat-label>
-                            <mat-select formControlName="employmentStatus">
-                                <mat-option value="active">Active</mat-option>
-                                <mat-option value="inactive">Inactive</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-checkbox class="app-user" formControlName="canNotEditLockedSchedule">Can Edit Locked
-                            Schedule</mat-checkbox>
-                    </div>
-
-                    <div class="row">
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label>Job Title</mat-label>
-                            <mat-select formControlName="jobTitle">
-                                <mat-option value="active">Active</mat-option>
-                                <mat-option value="inactive">Inactive</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label>Languages</mat-label>
-                            <mat-select formControlName="languages">
-                                <mat-option value="active">Active</mat-option>
-                                <mat-option value="inactive">Inactive</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field appearance="outline" class="black ctm">
-                            <mat-label>Manager</mat-label>
-                            <input matInput formControlName="manager" />
-                        </mat-form-field>
-                        <div class="schedule">
-                            <mat-form-field appearance="outline" class="black ctm">
-                                <mat-label> Scheduling Level</mat-label>
-                                <mat-select formControlName="schedulingLevel">
-                                    <mat-option value="active">Active</mat-option>
-                                    <mat-option value="inactive">Inactive</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-icon svgIcon="info" class="info"  style="color: #FF5733;"></mat-icon>
+                        <div *ngFor="let ff of tab2UserFields;"
+                            [class.relative]="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                            [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                            [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+                            <app-form-field [formField]="ff" [readOnly]="readOnly || disableRules(ff)"
+                                [contextUser]="selectedUser" [allProjectsMin]="activeProjects"
+                                [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+                            </app-form-field>
+                            <mat-icon svgIcon="blue-info" class="info blue-info"
+                                *ngIf="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                                (mouseenter)="displaySchedulingLevelInfo($event)"
+                                (mouseleave)="hideSchedulingLevelInfo()"></mat-icon>
                         </div>
-                        <mat-checkbox class="app-user" formControlName="canNotEditLockedSchedule">Can Edit Locked
-                            Schedule</mat-checkbox>
+
+                        <div class="hr"></div>
+                        <div class="row section">
+                            <div class="sub-heading">Work Contact Info</div>
+                            <div *ngFor="let ff of tab2_1UserFields;"
+                                [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                                [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+                                <app-form-field [formField]="ff" [readOnly]="readOnly || disableRules(ff)"
+                                    [contextUser]="selectedUser" [allProjectsMin]="activeProjects"
+                                    [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+                                </app-form-field>
+                            </div>
+                        </div>
+
+                        <div class="hr"></div>
+                        <div class="row section">
+                            <div class="sub-heading">Hiring</div>
+                            <div *ngFor="let ff of tab2_2UserFields;"
+                                [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                                [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+                                <app-form-field [formField]="ff" [readOnly]="readOnly || disableRules(ff)"
+                                    [contextUser]="selectedUser" [allProjectsMin]="activeProjects"
+                                    [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+                                </app-form-field>
+                            </div>
+                        </div>
+
+                        <div class="hr"></div>
+                        <div class="row section">
+                            <div class="sub-heading">Certification</div>
+                            <div *ngFor="let ff of tab2_3UserFields;"
+                                [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                                [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+                                <app-form-field [formField]="ff" [readOnly]="readOnly || disableRules(ff)"
+                                    [contextUser]="selectedUser" [allProjectsMin]="activeProjects"
+                                    [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+                                </app-form-field>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </mat-tab>
 
 
             <!-- Tab 3: Hiring Info -->
             <mat-tab label="Personal Contact Info">
-
+                <div *ngIf="!tab3UserFields">
+                    Loading profile...
+                </div>
+                <div *ngIf="tab3UserFields">
+                    <div class="row" style="width: 80%">
+                        <div *ngFor="let ff of tab3UserFields;"
+                            [class.relative]="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                            [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                            [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+                            <app-form-field [formField]="ff" [readOnly]="readOnly || disableRules(ff)"
+                                [contextUser]="selectedUser" [allProjectsMin]="activeProjects"
+                                [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+                            </app-form-field>
+                          
+                        </div>
+                    </div>
+                </div>    
             </mat-tab>
-          <!--requests-->
-        <!--  <mat-tab label="Requests"
+            <!--requests-->
+            <!--  <mat-tab label="Requests"
                    *ngIf="createForm">
             <ng-template mat-tab-label>
               <span>Requests</span>
@@ -213,16 +184,14 @@
           </mat-tab>-->
 
         </mat-tab-group>
-      <div *ngIf="isTrainedOnVisible">
-        <app-trained-on-projects [trainedOnProjects]="trainedOnProjects"
-                                 [notTrainedOnProjects]="notTrainedOnProjects"
-                                 [listingOnly]="readOnly"
-                                 (trainedOnChange)="trainedOnChange($event)"
-                                 *ngIf="!createForm"></app-trained-on-projects>
-      </div>
+        <div *ngIf="isTrainedOnVisible">
+            <app-trained-on-projects [trainedOnProjects]="trainedOnProjects"
+                [notTrainedOnProjects]="notTrainedOnProjects" [listingOnly]="readOnly"
+                (trainedOnChange)="trainedOnChange($event)" *ngIf="!createForm"></app-trained-on-projects>
+        </div>
 
 
-<!--
+        <!--
 
 
       <div *ngIf="!isUserCalendarVisible">
@@ -235,6 +204,12 @@
       </div>
 -->
 
-
+        <!-- Buttons -->
+        <div class="actions">
+            <button class="btn-outline" (click)="showUnsavedChangesDialog()">Cancel</button>
+            <button mat-raised-button color="primary submit" [disabled]="tab2Invalid"
+                (click)="confirmDialog()">Save</button>
+        </div>
     </mat-card>
+
 </div>

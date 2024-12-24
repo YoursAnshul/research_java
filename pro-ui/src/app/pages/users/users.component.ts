@@ -20,7 +20,7 @@ export class UsersComponent {
   public allUsersSelected: boolean = false;
 
   public roles: IFormFieldVariable | undefined = undefined;
-
+  public createUser: boolean  = false;
   //Table definition
   public headerItems: TableHeaderItem[] = [
     new TableHeaderItem(null, null, false, false, false, true),
@@ -148,6 +148,10 @@ export class UsersComponent {
 
   public formatDateOnlyToString(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
     return Utils.formatDateOnlyToString(dateToFormat);
+  }
+
+  public createNewUser() {
+    this.createUser = true;
   }
 
 }

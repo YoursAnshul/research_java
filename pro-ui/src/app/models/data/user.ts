@@ -16,11 +16,11 @@ export class User {
     public tempstartdate?: Date | null;
     public tempenddate?: Date | null;
     public uinit: string = '';
-    public role?: number | null;
-    public schedulinglevel?: number | null;
-    public scheduledisplay?: number | null;
+    public role?: number | null = 0;
+    public schedulinglevel?: number | null = 0;
+    public scheduledisplay?: number | null = 0;
     public title: string = '';
-    public defaultproject?: number | null;
+    public defaultproject?: number | null = 0;
     public phonenumber: string = '';
     public phonenumber1: string = '';
     public phonenumber2: string = '';
@@ -33,14 +33,11 @@ export class User {
     public cubeoffice?: number | null;
     public spanish?: number | null;
     public language: string = '';
-    public canedit?: boolean | null;
+    public canedit?: boolean | null = undefined;
     public trainedon: string = '';
     public citidate?: Date | null;
     public introemail?: boolean | null;
     public introemaildate?: Date | null;
-    public phonescreen?: boolean | null;
-    public phonescreendate?: Date | null;
-    public facetoface?: boolean | null;
     public facetofacedate?: Date | null;
     public welcomeemail?: boolean | null;
     public welcomeemaildate?: Date | null;
@@ -69,7 +66,7 @@ export class User {
     public preferredfname: string = '';
     public preferredlname: string = '';
     public entryFormName: string = '';
-    public buddy?: boolean;
+    public buddy?: boolean = false;
     public trainedOnArray!: string[];
     public entryDt?: Date | null;
     public entryBy: string = '';
@@ -79,7 +76,24 @@ export class User {
     public selected?: boolean;
     public checked?: boolean;
     public changed?: boolean;
-
-    constructor() { }
+    public empstatus: string = ''
+    public manager: string = ''
+    public hiatuscomments: string = ''
+    public phonenumber4: string = '';
+    public certification?: Date | null;
+    public miscellaneous?: Date | null;
+    public certnotes?: string = '';
+    constructor() {
+        this.cubeoffice = 0;
+        this.facetofacedate = undefined;
+        this.orientationdate = undefined;
+        this.permstartdate = undefined;
+        this.permenddate = undefined;
+        this.tempstartdate = undefined;
+        this.tempenddate = undefined;
+        this.certification = undefined;
+        this.miscellaneous = undefined;
+        this.dob = undefined;
+     }
 
 }

@@ -12,10 +12,12 @@ import {
   ICoreHours, IDropDownValue,
   IFormFieldInstance, IFormFieldVariable,
   IProjectMin,
-  IRequest,
+  IRequest
 } from "../../interfaces/interfaces";
 import {Utils} from "../../classes/utils";
 import { User } from '../../models/data/user';
+import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-user',
@@ -35,7 +37,6 @@ export class AddUserComponent implements OnInit{
   @Input() isUserCalendarVisible = true;
   @Input() isTrainedOnVisible = true;
   @Output() userSaved = new EventEmitter<User>();
-  userForm: FormGroup;
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];
@@ -55,12 +56,18 @@ export class AddUserComponent implements OnInit{
   activeFormField!: IFormFieldInstance;
   tab1UserFields!: IFormFieldInstance[];
   tab2UserFields!: IFormFieldInstance[];
+  tab2_1UserFields!: IFormFieldInstance[];
+  tab2_2UserFields!: IFormFieldInstance[];
+  tab2_3UserFields!: IFormFieldInstance[];
   tab3UserFields!: IFormFieldInstance[];
   tab4UserFields!: IFormFieldInstance[];
   errorMessage!: string;
 
   requestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes'];
   noRequestsResultsMessage: string = 'Loading requests...';
+  invalid: boolean = true;
+  isUserFormInvalid: boolean = false;
+  tab2Invalid: boolean = false;
 
   constructor(private fb: FormBuilder,private globalsService: GlobalsService,
   private authenticationService: AuthenticationService,
@@ -68,35 +75,12 @@ export class AddUserComponent implements OnInit{
   private configurationService: ConfigurationService,
   private projectsService: ProjectsService,
   private requestsService: RequestsService,
-  private logsService: LogsService) {
-    this.userForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      netId: ['', Validators.required],
-      uniqueId: ['', Validators.required],
-      status: ['', Validators.required],
-      preferredFirstName: [''],
-      preferredLastName: [''],
-      role: ['', Validators.required],
-      employmentStatus: ['', Validators.required],
-      canNotEditLockedSchedule: [false],
-      jobTitle: [''],
-      languages: [''],
-      manager: [''],
-      schedulingLevel: [{ value: '', disabled: false }],
-      notes: [''],
-      workEmail: ['', Validators.required],
-      workPhone: [''],
-
-      badgeId: [''],
-      referredBy: [''],
-      interviewDate: [''],
-      orientationDate: [''],
-    });
+  private logsService: LogsService, private dialog: MatDialog) {
 
     if (!this.createForm) {
       this.selectedUser = this.blankUser();
       this.coreHours = {} as ICoreHours;
+      this.tab2Invalid = true;
     }
 
     //get user form fields to build the forms
@@ -388,6 +372,8 @@ export class AddUserComponent implements OnInit{
     // Based on the new tab, some tasks are performed.
     // For example, loading different data, updating the UI, etc.
     console.log('Tab changed: ', event);
+    this.isUserFormInvalid = this.tab2Invalid;
+   
     // Implementation...
     if (event.index == 0) {
       this.isUserCalendarVisible = true;
@@ -395,6 +381,7 @@ export class AddUserComponent implements OnInit{
     } else if (event.index == 1) {
       this.isUserCalendarVisible = false;
       this.isTrainedOnVisible = false;
+      this.isUserFormInvalid = false;
     } else if (event.index == 2) {
       this.isUserCalendarVisible = false;
       this.isTrainedOnVisible = false;
@@ -412,6 +399,9 @@ export class AddUserComponent implements OnInit{
     let u: any = user;
     for (var property in u) {
       let propertyFormFieldVariable: IFormFieldVariable | undefined = userFields.find(x => (x.formField?.columnName ? x.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
+      if(!propertyFormFieldVariable) {
+      
+      }
       if (propertyFormFieldVariable) {
         let value: any = u[property];
 
@@ -435,7 +425,6 @@ export class AddUserComponent implements OnInit{
 
     //set current core hours
     this.setCurrentCoreHours();
-
     this.userFormFields.sort((x, y) => {
       return x.formFieldVariable.formField.formOrder - y.formFieldVariable.formField.formOrder;
     });
@@ -443,10 +432,13 @@ export class AddUserComponent implements OnInit{
     this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
     //assign to tab arrays
     this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2');
-    this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '3');
+    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 0);
+    this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
     this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
-
+    this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 1);
+    this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 2);
+    this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 3);
+   
     this.validateRequiredFields();
 
   }
@@ -522,6 +514,253 @@ export class AddUserComponent implements OnInit{
   }
 
   private validateRequiredFields() {
+    for (var i = 0; i < this.userFormFields.length; i++) {
+      if (this.userFormFields[i].formFieldVariable.formField.required) {
+        //if null
+        if (!this.userFormFields[i].value) {
+          this.invalid = true;
+          this.userFormFields[i].invalid = true;
+        } else if (this.userFormFields[i].formFieldVariable.formField.fieldType == 'textbox'
+          || this.userFormFields[i].formFieldVariable.formField.fieldType == 'longtextbox') {
+          //if text is blank or empty
+          if (this.userFormFields[i].value.replace(/\s/g, '') == '') {
+            this.invalid = true;
+            this.userFormFields[i].invalid = true;
+          } else {
+            this.invalid = false;
+            this.userFormFields[i].invalid = false;
+          }
+        } else {
+          this.userFormFields[i].invalid = false;
+        }
 
+       
+      }
+
+      //make sure to correctly set invalid to false for default project when it's not required (it can be ruled invalid before determined that it shouldn't be required, but this above only looks at required fields to mark valid/invalid)
+      if (this.userFormFields[i].formFieldVariable.formField?.columnName == 'defaultproject'
+        && !this.userFormFields[i].formFieldVariable.formField.required) {
+        this.userFormFields[i].invalid = false;
+      }
+     
+     }
+      if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+      if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+
+
+    //tab validation
+    this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
+   
   }
+
+  disableRules(formField: IFormFieldInstance): boolean {
+    //netid
+    if (formField.formFieldVariable.formField?.columnName == 'dempoid1' && !this.createForm) {
+      return true;
+    }
+
+    //shoehorn in required temp/perm date checking before anything that could return a true/false
+    if (formField.formFieldVariable.formField?.columnName == 'permstartdate' || formField.formFieldVariable.formField?.columnName == 'permstartdate') {
+      let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
+      let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
+      if (permStartDateField) {
+        permStartDateField.formFieldVariable.formField.required = true;
+        if (permStartDateField.value) {
+          permStartDateField.formFieldVariable.formField.required = false;
+          permStartDateField.invalid = false;
+
+          if (tempStartDateField) {
+            tempStartDateField.formFieldVariable.formField.required = false;
+            tempStartDateField.invalid = false;
+          }
+          this.validateRequiredFields();
+        }
+      }
+      if (tempStartDateField) {
+        tempStartDateField.formFieldVariable.formField.required = true;
+        if (tempStartDateField.value) {
+
+          if (permStartDateField) {
+            permStartDateField.formFieldVariable.formField.required = false;
+            permStartDateField.invalid = false;
+          }
+
+          tempStartDateField.formFieldVariable.formField.required = false;
+          tempStartDateField.invalid = false;
+          this.validateRequiredFields();
+        }
+      }
+    }
+
+    //employment type
+    if (formField.formFieldVariable.formField?.columnName == 'employmenttype' && this.activeFormField.value == true) {
+      formField.value = null;
+      return true;
+    }
+
+    //core hours
+    if (formField.formFieldVariable.formField?.columnName == 'corehours') {
+      return true;
+    }
+
+    //---------------------------------------------------------------------------
+    // checkboxes/dates parent/child relationships
+    //---------------------------------------------------------------------------
+    //phone screen
+    if (formField.formFieldVariable.formField?.columnName == 'phonescreendate' && !this.validParentChild('phonescreen', '1')) {
+      formField.value = null;
+      return true;
+    }
+
+    //introduction email
+    if (formField.formFieldVariable.formField?.columnName == 'introemaildate' && !this.validParentChild('introemail', '1')) {
+      formField.value = null;
+      return true;
+    }
+
+    //face to face
+    if (formField.formFieldVariable.formField?.columnName == 'facetofacedate' && !this.validParentChild('facetoface', '1')) {
+      formField.value = null;
+      return true;
+    }
+
+    //welcome email
+    if (formField.formFieldVariable.formField?.columnName == 'welcomeemaildate' && !this.validParentChild('welcomeemail', '1')) {
+      formField.value = null;
+      return true;
+    }
+
+    //hiatus start date
+    if (formField.formFieldVariable.formField?.columnName == 'hiatusstartdate' && !this.validParentChild('employmenttype', 'hiatus', true)) {
+      formField.value = null;
+      return true;
+    }
+
+    //scheduling level
+    if (formField.formFieldVariable.formField?.columnName == 'schedulinglevel') {
+      if (!this.validParentChild('role', 'Interviewer', true)) {
+        formField.value = null;
+        formField.formFieldVariable.formField.required = false;
+        formField.invalid = false;
+        this.validateRequiredFields();
+        return true;
+      } else {
+        formField.formFieldVariable.formField.required = true;
+        this.validateRequiredFields();
+      }
+    }
+
+    return false;
+  }
+  validParentChild(parent: string, parentValue: string, valueIsDropdown: boolean = false): boolean {
+    let parentField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == parent);
+    if (!parentField) {
+      return false;
+    }
+    if (!parentField.value) {
+      return false;
+    }
+
+    if (valueIsDropdown) {
+      let parentDropdownValues: IDropDownValue | undefined = (parentField.formFieldVariable.dropDownValues || []).find(x => (x.dropDownItem || '').toUpperCase() == parentValue.toUpperCase());
+      if (parentDropdownValues) {
+        parentValue = (parentDropdownValues.codeValues || '').toString();
+      }
+    }
+
+    if (<string>parentField.value == parentValue) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  displaySchedulingLevelInfo(event: any): void {
+    let htmlMessage: string = '';
+
+    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
+    htmlMessage = htmlMessage + "<p><ul>";
+    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
+    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
+    htmlMessage = htmlMessage + "</ul></p>";
+    htmlMessage = htmlMessage + "<br />";
+    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
+    htmlMessage = htmlMessage + "<p><ul>";
+    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
+    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
+    htmlMessage = htmlMessage + "</ul></p>";
+    htmlMessage = htmlMessage + "<br />";
+    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
+    htmlMessage = htmlMessage + "<p><ul>";
+    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+    htmlMessage = htmlMessage + "</ul></p>";
+
+    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
+    hoverMessage.innerHTML = htmlMessage;
+
+    this.globalsService.showHoverMessage.next(true);
+
+    hoverMessage.style.top = '0px';
+    hoverMessage.style.left = event.clientX + 'px';
+  }
+
+  hideSchedulingLevelInfo(): void {
+    this.globalsService.showHoverMessage.next(false);
+  }
+  
+  openDialog(data: any): void {
+    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+      width: '300px',
+      data: {
+        ...data
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Changes will be discarded.');
+        // Logic for closing the window or navigating away
+      } else {
+        console.log('Stayed on the page.');
+      }
+    });
+  }
+
+  showUnsavedChangesDialog(): void {
+    this.openDialog({
+      dialogType: 'error', // Pass dialog type here
+      message: 'This is a message!',  // You can customize the message based on dialog type
+      onClose: (result: boolean) => {
+        console.log('Dialog closed with result: ', result);
+      }
+    })
+  }
+
+ confirmDialog(): void {
+    this.openDialog({
+      dialogType: 'confirmation', // Pass dialog type here
+      netId: 'test',  // You can customize the message based on dialog type
+      onClose: (result: boolean) => {
+        console.log('Dialog closed with result: ', result);
+      }
+    })
+  }
+
 }

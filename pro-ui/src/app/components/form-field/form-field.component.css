@@ -1,0 +1,97 @@
+mat-form-field {
+    width: 250px;
+    padding: 0px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.required {
+    color: #DC4A38;
+    margin-left: 3px;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.user-form {
+
+    margin-top: 8px;
+}
+
+/* Set the height of the form field */
+.mat-mdc-form-field.ctm {
+    height: 35px;
+    /* Desired height */
+    display: flex;
+    /* Align content properly */
+    align-items: center;
+    /* Center inner content vertically */
+
+}
+
+.red {
+    color: #DC4A38;
+}
+
+.mdc-floating-label--required {
+    color: #DC4A38 !important;
+}
+
+.mat-mdc-form-field.ctm-select {
+    border-top: 1px solid #B5B5B5;
+    border-left: 1px solid #B5B5B5;
+    border-right: 1px solid #B5B5B5;
+    border-radius: 4px !important;
+    height: 35px;
+}
+
+.select {
+    background-color: white;
+    border-top: 0.5px solid lightskyblue;
+    border-left: 0.5px solid lightskyblue;
+    border-right: 0.5px solid lightskyblue;
+    border-radius: 4px 4px 0 0;
+}
+
+mat-checkbox {
+    width: 250px;
+    padding: 0px;
+}
+
+.mdc-label {
+    color: red;
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab {
+    min-width: 200px;
+}
+
+.mat-form-field {
+    width: 150px;
+    margin: 5px;
+}
+
+.user-field {
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 5px;
+    margin-left: 15px;
+    width: 270px;
+}
+
+.long-text-field {
+    width: 400px;
+    height: 100px;
+    margin-bottom: 50px;
+}
+
+app-form-field {
+    display: inline-block;
+}
+
+.wd516 {
+    width: 516px !important;
+  }

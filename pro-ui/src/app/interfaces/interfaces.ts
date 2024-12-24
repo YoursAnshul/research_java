@@ -134,6 +134,7 @@ export interface IFormField {
   entryBy: string;
   modDt?: Date;
   modBy: string;
+  formSection?: number
 }
 
 export interface IAdminOptionsVariable {
