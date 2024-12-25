@@ -90,13 +90,14 @@
           <input
             *ngIf="isSearchActive"
             type="text"
-            placeholder="Search by title"
+            placeholder="Find"
             [(ngModel)]="searchTerm"
             (click)="onInputClick($event)"
             (input)="applySearch()"
             (keydown.enter)="onEnterPress()"
             style="margin-left: 6px; width: 100px"
           />
+
           <svg
             width="16"
             height="16"
@@ -144,7 +145,7 @@
           >
             <mat-label>Filter by Author</mat-label>
             <mat-select [(value)]="selectedAuthors" multiple>
-              <div style="margin-left: 16px;">
+              <div style="margin-left: 16px">
                 <label
                   for=""
                   style="cursor: pointer"
@@ -156,7 +157,12 @@
                     [checked]="isAllSelected()"
                     [indeterminate]="isIndeterminate()"
                   />
-                  <span class="checkmark" style="margin-left: 15px; font-size: 13px;"> Select All</span>
+                  <span
+                    class="checkmark"
+                    style="margin-left: 15px; font-size: 13px"
+                  >
+                    Select All</span
+                  >
                 </label>
               </div>
 
