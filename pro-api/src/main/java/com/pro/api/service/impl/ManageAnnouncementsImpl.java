@@ -167,7 +167,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append("  WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
 		sql.append(" ) AS p ON TRUE  WHERE 1=1 ");
 		if (keyword != null && !keyword.isEmpty()) {
-			sql.append(" AND a.titletext LIKE  '%" + keyword + "%' ");
+			keyword = keyword.toLowerCase();
+			sql.append(" AND  LOWER(a.titletext) LIKE  '%" + keyword + "%' ");
 		}
 		if (authorName != null && !authorName.isEmpty()) {
 			sql.append(" AND CONCAT(u.fname, ' ', u.lname) IN (" + authorName + ") ");
