@@ -90,26 +90,15 @@ export class ManageAnnouncementsComponent implements OnInit {
     if (inputElement && !inputElement.contains(event.target as Node)) {
       this.isSearchActive = false;
       this.searchTerm = '';
-      this.pageIndex=0;
+      this.pageIndex = 0;
       this.getList(this.pageIndex + 1);
     }
     if (filterContainer && !filterContainer.contains(event.target as Node)) {
       this.isFilterActive = false;
       this.filteredAuthors = [];
       this.selectedAuthors = [];
-      this.pageIndex=0;
+      this.pageIndex = 0;
       this.getList(this.pageIndex + 1);
-    }
-  }
-
-  onAuthorSelection(author: string, isSelected: boolean): void {
-    if (isSelected) {
-      this.selectedAuthors.push(author);
-    } else {
-      const index = this.selectedAuthors.indexOf(author);
-      if (index >= 0) {
-        this.selectedAuthors.splice(index, 1);
-      }
     }
   }
 
@@ -137,7 +126,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     } else {
       this.selectedAuthors = [];
     }
-    this.pageIndex=0;
+    this.pageIndex = 0;
     this.getList(this.pageIndex + 1);
   }
 
@@ -145,7 +134,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.selectedAuthors = this.selectedAuthors.filter(
       (author) => author !== undefined && author !== null
     );
-    this.pageIndex=0;
+    this.pageIndex = 0;
     this.getList(this.pageIndex + 1);
   }
 
@@ -165,14 +154,14 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.searchTerm = this.searchTerm;
   }
   onEnterPress() {
-    this.pageIndex=0;
+    this.pageIndex = 0;
     this.getList(this.pageIndex + 1);
   }
   searchIconClicked(event: MouseEvent) {
     event.stopPropagation();
     this.isSearchActive = !this.isSearchActive;
     if (!this.isSearchActive) {
-      this.pageIndex=0;
+      this.pageIndex = 0;
       this.getList(this.pageIndex + 1);
       this.searchTerm = '';
     }
@@ -181,7 +170,7 @@ export class ManageAnnouncementsComponent implements OnInit {
   openAddAnnouncementDialog(): void {
     const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
     dialogRef.afterClosed().subscribe((result) => {
-      this.pageIndex=0;
+      this.pageIndex = 0;
       this.getList(this.pageIndex + 1);
     });
   }
@@ -191,7 +180,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       data: announcement,
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.pageIndex=0;
+      this.pageIndex = 0;
       this.getList(this.pageIndex + 1);
     });
   }
@@ -240,7 +229,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       this.sortBy = column;
       this.orderBy = 'asc';
     }
-    this.pageIndex=0;
+    this.pageIndex = 0;
     this.getList(this.pageIndex + 1);
   }
   getList(page: number): void {
@@ -292,7 +281,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             isAuthor: item?.isAuthor,
           };
         });
-        this.length=0;
+        this.length = 0;
         this.length = data?.count || data?.data?.length;
         this.isLoading = false;
       },
@@ -307,7 +296,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjectList = data ? data : [];
-        this.pageIndex=0;
+        this.pageIndex = 0;
         this.getList(this.pageIndex + 1);
       },
       error: (error: any) => {
