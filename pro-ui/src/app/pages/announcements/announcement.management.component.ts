@@ -114,6 +114,13 @@ export class ManageAnnouncementsComponent implements OnInit {
       }
     }
   }
+
+  onKeyDown(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent; 
+    if (keyboardEvent.key === ' ') {
+      event.stopPropagation(); 
+    }
+  }
   isAllSelected(): boolean {
     return this.selectedAuthors.length === this.allAuthors.length;
   }
