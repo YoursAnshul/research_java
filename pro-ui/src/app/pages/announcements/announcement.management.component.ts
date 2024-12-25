@@ -90,13 +90,15 @@ export class ManageAnnouncementsComponent implements OnInit {
     if (inputElement && !inputElement.contains(event.target as Node)) {
       this.isSearchActive = false;
       this.searchTerm = '';
-      this.getList(1);
+      this.pageIndex=0;
+      this.getList(this.pageIndex + 1);
     }
     if (filterContainer && !filterContainer.contains(event.target as Node)) {
       this.isFilterActive = false;
       this.filteredAuthors = [];
       this.selectedAuthors = [];
-      this.getList(1);
+      this.pageIndex=0;
+      this.getList(this.pageIndex + 1);
     }
   }
 
@@ -135,14 +137,16 @@ export class ManageAnnouncementsComponent implements OnInit {
     } else {
       this.selectedAuthors = [];
     }
-    this.getList(1);
+    this.pageIndex=0;
+    this.getList(this.pageIndex + 1);
   }
 
   onSelectionChange(event: any): void {
     this.selectedAuthors = this.selectedAuthors.filter(
       (author) => author !== undefined && author !== null
     );
-    this.getList(1);
+    this.pageIndex=0;
+    this.getList(this.pageIndex + 1);
   }
 
   filterIconClicked(event: MouseEvent): void {
@@ -161,13 +165,14 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.searchTerm = this.searchTerm;
   }
   onEnterPress() {
-    this.getList(1);
+    this.pageIndex=0;
+    this.getList(this.pageIndex + 1);
   }
   searchIconClicked(event: MouseEvent) {
     event.stopPropagation();
     this.isSearchActive = !this.isSearchActive;
     if (!this.isSearchActive) {
-      this.getList(1);
+      this.getList(this.pageIndex + 1);
       this.searchTerm = '';
     }
   }
@@ -197,7 +202,7 @@ export class ManageAnnouncementsComponent implements OnInit {
         this.http.delete(apiUrl).subscribe({
           next: (data: any) => {
             this.pageIndex = 0;
-            this.getList(1);
+            this.getList(this.pageIndex + 1);
             this.showToastMessage('Delete successfully!', 'success');
           },
           error: (error: any) => {
@@ -236,7 +241,7 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   getList(page: number): void {
     this.isLoading = true;
-    let params = new HttpParams().set('page', page.toString());
+    let params = new HttpParams();
     if (this.pageSize) {
       params = params.set('limit', this.pageSize.toString());
     }
@@ -283,6 +288,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             isAuthor: item?.isAuthor,
           };
         });
+        this.length=0;
         this.length = data?.count || data?.data?.length;
         this.isLoading = false;
       },
@@ -297,7 +303,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjectList = data ? data : [];
-        this.getList(1);
+        this.getList(this.pageIndex + 1);
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
