@@ -87,15 +87,11 @@ export class ManageAnnouncementsComponent implements OnInit {
     const inputElement = document.querySelector('input[type="text"]');
     const filterContainer = document.querySelector('.filter-container');
 
-    if (inputElement && inputElement.contains(event.target as Node)) {
-      return;
-    }
-
-    if (!filterContainer || !filterContainer.contains(event.target as Node)) {
+    if (inputElement && !inputElement.contains(event.target as Node)) {
       this.isSearchActive = false;
       this.searchTerm = '';
+      this.getList(1);
     }
-
     if (filterContainer && !filterContainer.contains(event.target as Node)) {
       this.isFilterActive = false;
       this.filteredAuthors = [];
@@ -116,9 +112,9 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
 
   onKeyDown(event: Event): void {
-    const keyboardEvent = event as KeyboardEvent; 
+    const keyboardEvent = event as KeyboardEvent;
     if (keyboardEvent.key === ' ') {
-      event.stopPropagation(); 
+      event.stopPropagation();
     }
   }
   isAllSelected(): boolean {
@@ -132,14 +128,14 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   selectAllAuthors(event: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log("isChecked--",isChecked);
-    
+    console.log('isChecked--', isChecked);
+
     if (isChecked) {
-      this.selectedAuthors = [...this.allAuthors]; 
+      this.selectedAuthors = [...this.allAuthors];
     } else {
-      this.selectedAuthors = []; 
+      this.selectedAuthors = [];
     }
-    this.getList(1)
+    this.getList(1);
   }
 
   onSelectionChange(event: any): void {
