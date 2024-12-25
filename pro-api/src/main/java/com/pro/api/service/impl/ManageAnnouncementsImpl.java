@@ -226,7 +226,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql = new StringBuilder();
 		sql.append(" SELECT COUNT(*) AS count");
 		sql.append(" FROM core.announcements a ");
-		sql.append(" LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
+		sql.append(" LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid WHERE 1=1 ");
 		if (keyword != null && !keyword.isEmpty()) {
 			keyword = keyword.toLowerCase();
 			sql.append(" AND  LOWER(a.titletext) LIKE  '%" + keyword + "%' ");
