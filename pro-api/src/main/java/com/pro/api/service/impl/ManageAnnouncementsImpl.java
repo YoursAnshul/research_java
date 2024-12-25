@@ -225,7 +225,15 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 		sql = new StringBuilder();
 		sql.append(" SELECT COUNT(*) AS count");
-		sql.append(" FROM core.announcements ");
+		sql.append(" FROM core.announcements a ");
+		sql.append(" LEFT JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
+		if (keyword != null && !keyword.isEmpty()) {
+			keyword = keyword.toLowerCase();
+			sql.append(" AND  LOWER(a.titletext) LIKE  '%" + keyword + "%' ");
+		}
+		if (authorName != null && !authorName.isEmpty()) {
+			sql.append(" AND CONCAT(u.fname, ' ', u.lname) IN (" + authorName + ") ");
+		}
 		Long count = jdbcTemplate.queryForObject(sql.toString(), Long.class);
 
 		PageResponse<AnnouncementResponse> response = new PageResponse<AnnouncementResponse>();
