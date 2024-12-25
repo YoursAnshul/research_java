@@ -144,7 +144,7 @@
           >
             <mat-label>Filter by Author</mat-label>
             <mat-select [(value)]="selectedAuthors" multiple>
-              <div>
+              <div style="margin-left: 16px;">
                 <label
                   for=""
                   style="cursor: pointer"
@@ -156,8 +156,7 @@
                     [checked]="isAllSelected()"
                     [indeterminate]="isIndeterminate()"
                   />
-                  <span class="checkmark"></span>
-                  Select All
+                  <span class="checkmark" style="margin-left: 15px; font-size: 13px;"> Select All</span>
                 </label>
               </div>
 
