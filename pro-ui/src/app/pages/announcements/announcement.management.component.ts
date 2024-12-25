@@ -172,6 +172,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     event.stopPropagation();
     this.isSearchActive = !this.isSearchActive;
     if (!this.isSearchActive) {
+      this.pageIndex=0;
       this.getList(this.pageIndex + 1);
       this.searchTerm = '';
     }
@@ -180,6 +181,7 @@ export class ManageAnnouncementsComponent implements OnInit {
   openAddAnnouncementDialog(): void {
     const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
     dialogRef.afterClosed().subscribe((result) => {
+      this.pageIndex=0;
       this.getList(this.pageIndex + 1);
     });
   }
@@ -189,6 +191,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       data: announcement,
     });
     dialogRef.afterClosed().subscribe((result) => {
+      this.pageIndex=0;
       this.getList(this.pageIndex + 1);
     });
   }
@@ -237,6 +240,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       this.sortBy = column;
       this.orderBy = 'asc';
     }
+    this.pageIndex=0;
     this.getList(this.pageIndex + 1);
   }
   getList(page: number): void {
@@ -303,6 +307,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjectList = data ? data : [];
+        this.pageIndex=0;
         this.getList(this.pageIndex + 1);
       },
       error: (error: any) => {
