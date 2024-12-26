@@ -89,11 +89,16 @@ export class ManageAnnouncementsComponent implements OnInit {
 
     if (inputElement && !inputElement.contains(event.target as Node)) {
       this.isSearchActive = false;
-      if(this.searchTerm){
+      if (this.searchTerm) {
         this.searchTerm = '';
-        this.getList(this.pageIndex+1);
+        this.getList(this.pageIndex + 1);
       }
       this.pageIndex = 0;
+    }
+    if (!this.announcements || this.announcements.length === 0) {
+      this.searchTerm = '';
+      this.pageIndex = 0;
+      this.getList(this.pageIndex + 1);
     }
     if (filterContainer && !filterContainer.contains(event.target as Node)) {
       this.isFilterActive = false;
