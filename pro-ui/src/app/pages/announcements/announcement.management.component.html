@@ -144,10 +144,11 @@
             appearance="outline"
             style="width: 80%"
             class="custom-form-field-1"
+            (click) ="$event.stopPropagation()"
           >
             <mat-label>Filter by Author</mat-label>
             <mat-select [(value)]="selectedAuthors" multiple (click) ="$event.stopPropagation()">
-              <div style="margin-left: 16px">
+              <div style="margin-left: 16px" >
                 <label
                   for=""
                   style="cursor: pointer"
