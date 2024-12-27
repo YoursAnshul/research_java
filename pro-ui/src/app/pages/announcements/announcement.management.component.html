@@ -32,7 +32,7 @@
   >
     No Data Available
   </div>
-  
+
   <table
     mat-table
     [dataSource]="announcements"
@@ -46,7 +46,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('startDate')"
-        style="background-color: #e5e5e580; width: 170px"
+        style="background-color: #e5e5e580; width: 100px"
       >
         Start
       </th>
@@ -59,7 +59,7 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('expiration')"
-        style="background-color: #e5e5e580; width: 170px"
+        style="background-color: #e5e5e580; width: 100px"
       >
         Expiration
       </th>
@@ -72,10 +72,10 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('title')"
-        style="background-color: #e5e5e580; width: 180px"
+        style="background-color: #e5e5e580; width: 200px"
       >
         <span>Title</span>
-    
+
         <div
           style="
             position: absolute;
@@ -88,18 +88,18 @@
             gap: 5px;
           "
         >
-        <input
-        *ngIf="isSearchActive"
-        type="text"
-        placeholder="Find"
-        [(ngModel)]="searchTerm"
-        (click)="onInputClick($event)"
-        (input)="applySearch()"
-        (keydown)="onKeyDown($event)"
-        (keydown.enter)="onEnterPress()"
-        style="margin-left: 6px; width: 100px"
-      />
-    
+          <input
+            *ngIf="isSearchActive"
+            type="text"
+            placeholder="Find"
+            [(ngModel)]="searchTerm"
+            (click)="onInputClick($event)"
+            (input)="applySearch()"
+            (keydown)="onKeyDown($event)"
+            (keydown.enter)="onEnterPress()"
+            style="margin-left: 6px; width: 100px"
+          />
+
           <svg
             width="16"
             height="16"
@@ -123,7 +123,6 @@
         {{ data.title }}
       </td>
     </ng-container>
-    
 
     <ng-container matColumnDef="author">
       <th
@@ -131,24 +130,33 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="isFilterActive ? null : onSort('author')"
-        style="background-color: #e5e5e580; width: 160px; position: relative"
+        style="background-color: #e5e5e580; width: 250px; position: relative"
       >
         <span>Author</span>
 
         <div
-          class="filter-container"
           *ngIf="isFilterActive"
-          style="margin-top: 10px; width: 200px; position: relative"
+          style="
+            margin-top: 10px;
+            width: 200px;
+            position: absolute;
+            right: 0 !important;
+            display: flex;
+          "
         >
           <mat-form-field
             appearance="outline"
             style="width: 80%"
             class="custom-form-field-1"
-            (click) ="$event.stopPropagation()"
+            (click)="$event.stopPropagation()"
           >
             <mat-label>Filter by Author</mat-label>
-            <mat-select [(value)]="selectedAuthors" multiple (click) ="$event.stopPropagation()">
-              <div style="margin-left: 16px" >
+            <mat-select
+              [(value)]="selectedAuthors"
+              multiple
+              (click)="$event.stopPropagation()"
+            >
+              <div style="margin-left: 16px">
                 <label
                   for=""
                   style="cursor: pointer"
