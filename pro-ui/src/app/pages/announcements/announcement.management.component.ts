@@ -281,6 +281,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             id: item?.announcementId,
             bodyText: item?.bodyText,
             isAuthor: item?.isAuthor,
+            icon: item?.icon
           };
         });
         this.length = 0;
