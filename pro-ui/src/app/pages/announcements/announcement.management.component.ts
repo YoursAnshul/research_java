@@ -85,8 +85,6 @@ export class ManageAnnouncementsComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const inputElement = document.querySelector('input[type="text"]');
-    const filterContainer = document.querySelector('.filter-container');
-
     if (inputElement && !inputElement.contains(event.target as Node)) {
       this.isSearchActive = false;
       if (this.searchTerm) {
@@ -97,13 +95,6 @@ export class ManageAnnouncementsComponent implements OnInit {
     }
     if (!this.announcements || this.announcements.length === 0) {
       this.searchTerm = '';
-      this.pageIndex = 0;
-      this.getList(this.pageIndex + 1);
-    }
-    if (filterContainer && !filterContainer.contains(event.target as Node)) {
-      this.isFilterActive = false;
-      this.filteredAuthors = [];
-      this.selectedAuthors = [];
       this.pageIndex = 0;
       this.getList(this.pageIndex + 1);
     }
@@ -126,23 +117,28 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   selectAllAuthors(event: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
-    console.log('isChecked--', isChecked);
-
     if (isChecked) {
       this.selectedAuthors = [...this.allAuthors];
     } else {
       this.selectedAuthors = [];
     }
+  }
+  applyFilter(): void {
+    this.isFilterActive = false;
     this.pageIndex = 0;
     this.getList(this.pageIndex + 1);
   }
 
+  resetFilter(): void {
+    this.selectedAuthors = [];
+    this.isFilterActive = false;
+    this.pageIndex = 0;
+    this.getList(this.pageIndex + 1);
+  }
   onSelectionChange(event: any): void {
     this.selectedAuthors = this.selectedAuthors.filter(
       (author) => author !== undefined && author !== null
     );
-    this.pageIndex = 0;
-    this.getList(this.pageIndex + 1);
   }
 
   filterIconClicked(event: MouseEvent): void {
@@ -150,7 +146,6 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.isFilterActive = !this.isFilterActive;
     if (this.isFilterActive) {
       this.getAuthors();
-      this.selectedAuthors = [];
     }
   }
 

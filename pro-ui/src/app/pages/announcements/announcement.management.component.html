@@ -185,6 +185,50 @@
               >
                 {{ author }}
               </mat-option>
+              <div
+                style="
+                  display: flex;
+                  justify-content: flex-end;
+                  gap: 10px;
+                  padding: 5px 0;
+                "
+              >
+                <button
+                  mat-button
+                  (click)="applyFilter()"
+                  style="
+                    min-width: 30px;
+                    height: 25px;
+                    border: 1px solid #cccccc;
+                    border-radius: 3px;
+                    background-color: white;
+                    font-size: 12px;
+                    color: #333;
+                    cursor: pointer;
+                    transition: background-color 0.2s, border-color 0.2s;
+                  "
+                >
+                  OK
+                </button>
+                <button
+                  mat-button
+                  (click)="resetFilter()"
+                  style="
+                    margin-right: 5px;
+                    min-width: 30px;
+                    height: 25px;
+                    border: 1px solid #cccccc;
+                    border-radius: 3px;
+                    background-color: white;
+                    font-size: 12px;
+                    color: #333;
+                    cursor: pointer;
+                    transition: background-color 0.2s, border-color 0.2s;
+                  "
+                >
+                  Cancel
+                </button>
+              </div>
             </mat-select>
           </mat-form-field>
         </div>
