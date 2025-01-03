@@ -72,7 +72,16 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="onSort('title')"
-        style="background-color: #e5e5e580; width: 200px"
+        style="
+          background-color: #e5e5e580;
+          width: 250px;
+          min-width: 250px;
+          max-width: 250px;
+          position: relative;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        "
       >
         <span>Title</span>
 
@@ -97,10 +106,11 @@
             (input)="applySearch()"
             (keydown)="onKeyDown($event)"
             (keydown.enter)="onEnterPress()"
-            style="margin-left: 6px; width: 100px"
+            style="margin-left: 6px; width: 100px ; margin-bottom: 5px;"
           />
 
           <svg
+            style="margin-bottom: 3px;"
             width="16"
             height="16"
             viewBox="0 0 16 16"
@@ -119,8 +129,7 @@
         mat-cell
         *matCellDef="let data"
         [innerHTML]="data.icon + ' ' + (data.title | highlight : searchTerm)"
-        >
-      </td>
+      ></td>
     </ng-container>
 
     <ng-container matColumnDef="author">
@@ -129,7 +138,16 @@
         *matHeaderCellDef
         mat-sort-header
         (click)="isFilterActive ? null : onSort('author')"
-        style="background-color: #e5e5e580; width: 250px; position: relative"
+        style="
+          background-color: #e5e5e580;
+          width: 250px;
+          min-width: 250px;
+          max-width: 250px;
+          position: relative;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        "
       >
         <span>Author</span>
 
@@ -141,6 +159,8 @@
             position: absolute;
             right: 0 !important;
             display: flex;
+            max-width: 180px;
+            margin-bottom: 5px;
           "
         >
           <mat-form-field
@@ -247,7 +267,7 @@
           (click)="filterIconClicked($event)"
         >
           <svg
-            style="margin-top: 10px"
+            style="margin-top: 10px; margin-bottom: 3px;"
             width="11"
             height="12"
             viewBox="0 0 11 12"

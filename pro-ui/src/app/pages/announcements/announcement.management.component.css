@@ -91,7 +91,7 @@
   content: "↑↓";
   font-size: 12px;
   position: absolute;
-  top: 50%;
+  top: 40%;
   right: 0;
   transform: translateY(-50%);
   height: 15px;
