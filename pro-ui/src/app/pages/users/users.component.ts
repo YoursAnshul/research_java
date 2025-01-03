@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { User } from '../../models/data/user';
-import { IDropDownValue, IFormFieldVariable, IProjectGroup } from '../../interfaces/interfaces';
+import { IDropDownValue, IFormFieldVariable, IProjectMin } from '../../interfaces/interfaces';
 import { MatTableDataSource } from '@angular/material/table';
 import { TableHeaderItem } from '../../models/presentation/table-header-item';
 import { UsersService } from '../../services/users/users.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { Utils } from '../../classes/utils';
+import { ProjectsService } from '../../services/projects/projects.service';
+import { SelectedValue } from '../../models/presentation/selected-value';
+import { GlobalsService } from '../../services/globals/globals.service';
+import { UserActions } from '../../models/presentation/enums';
+import {user} from "@joeattardi/emoji-button/dist/icons";
 
 @Component({
   selector: 'app-users',
@@ -16,101 +21,263 @@ export class UsersComponent {
 
   public allUsers: User[] | undefined = undefined;
   public filteredUsers: User[] | undefined = undefined;
-  public selectedUser: User | null = null;
+  public selectedUser!: User ;
   public allUsersSelected: boolean = false;
+  @Input() showSelectedUser = false;
+
+  //user status
+  public activeDv: IDropDownValue = {codeValues: 1, dropDownItem: 'Active', sortOrder: 1};
+  public userStatusDv: IDropDownValue[] = [
+    this.activeDv,
+    {codeValues: 0, dropDownItem: 'Terminated', sortOrder: 2},
+  ];
+  public selectedUserStatus: SelectedValue[] = [new SelectedValue(1, this.activeDv)];
+
+  //edit schedule status
+  public canEditDv: IDropDownValue[] = [
+    {codeValues: 0, dropDownItem: 'Locked', sortOrder: 1},
+    {codeValues: 1, dropDownItem: 'Unlocked', sortOrder: 2},
+  ];
+  public selectedCanEdit: SelectedValue[] = [];
+
+  //trained on/not trained on
+  public trainedOn: number = 1;
+
+  //trained on projects
+  public activeProjects: IProjectMin[] = [];
+  public activeProjectsDv: IDropDownValue[] = [];
+  public selectedProjects: SelectedValue[] = [];
 
   public roles: IFormFieldVariable | undefined = undefined;
+  public selectedRoles: SelectedValue[] = [];
   public createUser: boolean  = false;
+  
   //Table definition
+  public netIdHeaderItem: TableHeaderItem = new TableHeaderItem('NetID', 'dempoid', false, true, true, false);
+  public firstNameHeaderItem: TableHeaderItem = new TableHeaderItem('First Name', 'fname', false, true, true, false);
+  public lastNameHeaderItem: TableHeaderItem = new TableHeaderItem('Last Name', 'lname', false, true, true, false);
+  public emailHeaderItem: TableHeaderItem = new TableHeaderItem('Email Address', 'emailaddr', false, true, true, false);
+  public userStatusHeaderItem: TableHeaderItem = new TableHeaderItem('User Status', 'status', true, false, true, false, this.userStatusDv, false);
+  public roleHeaderItem: TableHeaderItem = new TableHeaderItem('Role', 'role', true, false, true, false, undefined, true);
+  public canEditHeaderItem: TableHeaderItem = new TableHeaderItem('Edit Schedule Status', 'canedit', true, false, true, false, this.canEditDv, true);
   public headerItems: TableHeaderItem[] = [
     new TableHeaderItem(null, null, false, false, false, true),
-    new TableHeaderItem('NetID', 'dempoid', false, true, true, false),
-    new TableHeaderItem('First Name', 'fname', false, true, true, false),
-    new TableHeaderItem('Last Name', 'lname', false, true, true, false),
-    new TableHeaderItem('Email Address', 'emailaddr', false, true, true, false),
-    new TableHeaderItem('User Status', 'status', true, false, true, false),
-    new TableHeaderItem('Role', 'role', true, false, true, false),
+    this.netIdHeaderItem,
+    this.firstNameHeaderItem,
+    this.lastNameHeaderItem,
+    this.emailHeaderItem,
+    this.userStatusHeaderItem,
+    this.roleHeaderItem,
     new TableHeaderItem('Temp Start Date', 'tempstartdate', false, false, true, false),
     new TableHeaderItem('Perm Start Date', 'permstartdate', false, false, true, false),
-    new TableHeaderItem('Edit Schedule Status', 'canedit', true, false, true, false),
+    this.canEditHeaderItem,
     new TableHeaderItem(null, null, false, false, false, false),
   ];
   public pageSize: number = 10;
   public paginatedUsers: User[] = [];
 
+  public userActions = UserActions;
+
   //General
   public errorMessage!: string;
 
   constructor(private usersService: UsersService,
+    private projectsService: ProjectsService,
     private configurationService: ConfigurationService,
+    private globalsService: GlobalsService,
   ) {
 
-    //get users
-    this.usersService.getAllUsers().subscribe( {
-      next: (response) => {
-        
-        this.allUsers = <User[]>response.Subject;
-
-        //only users with status
-        this.allUsers = this.allUsers.filter(user => user.status);
-                
-        //default sort by first name
-        this.filteredUsers = this.allUsers.
-        sort((a, b) => {
-          const nameA = a.preferredfname || a.fname;
-          const nameB = b.preferredfname || b.fname;
-          return nameA.localeCompare(nameB);
-        });
-
-        //default filter by active users
-        this.filteredUsers = this.filteredUsers.filter(user => user.status == '1');
-
-        //initial pagination
-        this.paginatedUsers = this.filteredUsers.slice(0, this.pageSize);
-      },
-      error: (error) => {
-        this.errorMessage = <string>(error.message);
-        console.log(this.errorMessage);
-      },
-    });
-
-    //get role form field
+    this.getAllUsers();
 
     //get scheduling frequency values
     this.configurationService.getFormField('Role').subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.roles = <IFormFieldVariable>response.Subject;
+
+          if (this.roles.dropDownValues) {
+            let roleHeaderItem: TableHeaderItem | undefined = this.headerItems.find(x => x.name === 'role');
+
+            if (roleHeaderItem) {
+              roleHeaderItem.filterOptions = this.roles.dropDownValues;
+            }
+          }
+
         }
+      }
+    );
+
+    //get active projects
+    this.projectsService.allProjectsMin.subscribe(
+      allProjects => {
+        this.activeProjects = allProjects.filter(x => (x.active && x.projectType !== 'Administrative'));
+
+        //setup active projects as an iDropDownValue type
+        this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
       }
     );
 
   }
 
   ngOnInit(): void {
+    this.userStatusHeaderItem.filterValue = this.selectedUserStatus;
   }
 
-  public toggleUserSelection(user: User): void {
-    user.selected = !user.selected;
+  //set pagination
+  public paginate(): void {
+    if (this.filteredUsers) {
+      this.paginatedUsers = this.filteredUsers.slice(0, this.pageSize);
+    }
   }
 
-  public toggleAllUsersSelected(): void {
-    this.allUsers?.forEach(user => user.selected = this.allUsersSelected);
-  }
+  //apply filters
+  public applyFilters(): void {
 
-  public headerItemsChange(): void {
+    this.filteredUsers = (this.allUsers || []).
+    sort((a, b) => {
+      const nameA = a.preferredfname || a.fname;
+      const nameB = b.preferredfname || b.fname;
+      return nameA.localeCompare(nameB);
+    });
+
+    //filter by user status
+    if (this.selectedUserStatus.length > 0) {
+      this.filteredUsers = this.filteredUsers.filter(user => this.selectedUserStatus.map(x => x.value).includes(user.status == '1' ? 1 : 0));
+    }
+
+    //filter by can edit
+    if (this.selectedCanEdit.length > 0) {
+      this.filteredUsers = this.filteredUsers.filter(user => this.selectedCanEdit.map(x => x.value).includes(user.canedit ? 1 : 0));
+    }
+
+    //filter by trained on/not trained on
+    if (this.selectedProjects.length > 0
+      && (this.selectedProjects || [new SelectedValue('')])[0].value !== '0'
+    ) {
+
+      if (this.trainedOn == 1) {
+
+          this.filteredUsers = this.filteredUsers.filter(user =>
+            Utils.arrayIncludesAll(
+              this.selectedProjects.map(x => x.value.toString()),
+              Utils.pipeStringToArray(user.trainedon)
+            )
+          );
+
+      } else if (this.trainedOn == 0) {
+        
+        this.filteredUsers = this.filteredUsers.filter(user =>
+          !Utils.arrayIncludesAny(
+            this.selectedProjects.map(x => x.value.toString()),
+            Utils.pipeStringToArray(user.trainedon)
+          )
+        );
+
+      }
+    } else if (this.trainedOn == 0) {
+      this.filteredUsers = this.filteredUsers.filter(user => !user.trainedon);
+    }
+
+    //filter by roles
+    if (this.selectedRoles.length > 0
+      && (this.selectedRoles || [new SelectedValue('')])[0].value !== '0'
+    ) {
+      this.filteredUsers = this.filteredUsers.filter(user => this.selectedRoles.map(x => x.value).includes(user.role));
+    }
+
+    //filter by netId search
+    if (this.netIdHeaderItem.searchValue) {
+      this.filteredUsers = this.filteredUsers.filter(user => (user.dempoid || '').toLowerCase
+        ().includes((this.netIdHeaderItem.searchValue || '').toLowerCase()));
+    }
+
+    //filter by first name search
+    if (this.firstNameHeaderItem.searchValue) {
+      this.filteredUsers = this.filteredUsers.filter(user => (user.fname || '').toLowerCase
+        ().includes((this.firstNameHeaderItem.searchValue || '').toLowerCase()));
+    }
+
+    //filter by last name search
+    if (this.lastNameHeaderItem.searchValue) {
+      this.filteredUsers = this.filteredUsers.filter(user => (user.lname || '').toLowerCase
+        ().includes((this.lastNameHeaderItem.searchValue || '').toLowerCase()));
+    }
+
+    //filter by email search
+    if (this.emailHeaderItem.searchValue) {
+      this.filteredUsers = this.filteredUsers.filter(user => (user.emailaddr || '').toLowerCase
+        ().includes((this.emailHeaderItem.searchValue || '').toLowerCase()));
+    }
+
+    //sort users
     this.sortUsers();
+
+    this.paginate();
+
   }
 
+  //detect change on quick filters
+  public quickFilterChange(event: any): void {
+
+    this.userStatusHeaderItem.filterValue = this.selectedUserStatus;
+    this.canEditHeaderItem.filterValue = this.selectedCanEdit;
+    this.applyFilters();
+
+  }
+  
+  //filter the users on header item change
+  public headerItemsChange(headerItems: TableHeaderItem[]): void {
+    
+    this.selectedUserStatus = this.userStatusHeaderItem.filterValue;
+    this.selectedCanEdit = this.canEditHeaderItem.filterValue;
+    this.selectedRoles = this.roleHeaderItem.filterValue;
+    this.applyFilters();
+
+  }
+
+  //reset all filters
+  public resetFilters(): void {
+    this.selectedUserStatus = [new SelectedValue(1, this.activeDv)];
+    this.selectedCanEdit = [];
+    this.selectedRoles = [];
+    this.selectedProjects = [];
+    this.trainedOn = 1;
+
+    //reset the inline table header search filters
+    this.netIdHeaderItem.searchValue = '';
+    this.firstNameHeaderItem.searchValue = '';
+    this.lastNameHeaderItem.searchValue = '';
+    this.emailHeaderItem.searchValue = '';
+    
+    //reset the inline table header filters
+    this.userStatusHeaderItem.filterValue = this.selectedUserStatus;
+    this.canEditHeaderItem.filterValue = this.selectedCanEdit;
+    this.roleHeaderItem.filterValue = this.selectedRoles;
+
+    this.applyFilters();
+  }
+
+  //set a user as selected when clicked/checked
+  public toggleUserSelection(user: User): void {
+    user.checked = !user.checked;
+  }
+
+  //toggle all users selected
+  public toggleAllUsersSelected(): void {
+    this.filteredUsers?.forEach(user => user.checked = this.allUsersSelected);
+    this.applyFilters();
+  }
+
+  //sort the users
   public sortUsers(): void {
     if (this.filteredUsers) {
 
       for (var i = 0; i < this.headerItems.length; i++) {
         if (this.headerItems[i].sortDirection) {
 
-          
+
           this.filteredUsers = this.filteredUsers.sort((a, b) => {
-            
+
             let aValue: any = a[this.headerItems[i].name as keyof User];
             let bValue: any = b[this.headerItems[i].name as keyof User];
             if (this.headerItems[i].sortDirection == 'desc') {
@@ -133,11 +300,12 @@ export class UsersComponent {
         }
       }
       
-      this.paginatedUsers = this.filteredUsers.slice(0, this.pageSize);
+      this.paginate();
 
     }
   }
 
+  //get the display value for a role
   public getRoleDisplay(roleId: number): string {
     if (this.roles?.dropDownValues) {
       let role: IDropDownValue | undefined = this.roles.dropDownValues.find(option => option.codeValues == roleId);
@@ -146,12 +314,141 @@ export class UsersComponent {
     return '';
   }
 
+  //utility format function
   public formatDateOnlyToString(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
     return Utils.formatDateOnlyToString(dateToFormat);
   }
 
+  public makeSelectedUserVisible(user:User){
+    this.showSelectedUser=true
+    this.selectedUser = user;
+  }
+
   public createNewUser() {
     this.createUser = true;
+  }
+
+  onUserAdded(user: any) {
+    this.createUser = false;
+    this.showSelectedUser =  false;
+     //get users
+     this.usersService.getAllUsers().subscribe( {
+      next: (response) => {
+
+        this.allUsers = <User[]>response.Subject;
+
+        //only users with status
+        this.allUsers = this.allUsers.filter(user => user.status);
+
+        //default sort by first name
+        this.filteredUsers = this.allUsers.
+        sort((a, b) => {
+          const nameA = a.preferredfname || a.fname;
+          const nameB = b.preferredfname || b.fname;
+          return nameA.localeCompare(nameB);
+        });
+
+        //default filter by active users
+        this.filteredUsers = this.filteredUsers.filter(user => user.status == '1');
+
+        //initial pagination
+        this.paginate();
+      },
+      error: (error) => {
+        this.errorMessage = <string>(error.message);
+        console.log(this.errorMessage);
+      },
+    });
+   }
+
+  //execute batch action on selected users
+  executeUserAction(userAction: UserActions): void {
+    if (!this.filteredUsers) {
+      return;
+    }
+
+    let checkedUsers: User[] = this.filteredUsers.filter(x => x.checked);
+    let action = '';
+
+    for (var i = 0; i < checkedUsers.length; i++) {
+      checkedUsers[i].checked = false;
+      //unlock schedule
+      if (userAction == UserActions.Unlock) {
+        checkedUsers[i].canEdit = true;
+        action = 'User Schedule Unlock';
+      }
+      //lock schedule
+      if (userAction == UserActions.Lock) {
+        checkedUsers[i].canEdit = false;
+        action = 'User Schedule Lock';
+      }
+      //deactivate user
+      if (userAction == UserActions.Deactivate) {
+        checkedUsers[i].active = false;
+        action = 'User Deactivation';
+      }
+      //activate user
+      if (userAction == UserActions.Activate) {
+        checkedUsers[i].active = true;
+        action = 'User Activation';
+      }
+      
+      //unselect all users
+      this.allUsersSelected = false;
+      this.toggleAllUsersSelected();
+      
+    }
+
+    //pass to save user api to save
+    this.usersService.SaveActiveAndLock(checkedUsers).subscribe(
+      response => {
+
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          // this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', action + ' complete!', ['OK']));
+          this.getAllUsers();
+        } else {
+          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to execute ' + action + '', ['OK']));
+        }
+      },
+      error => {
+        this.errorMessage = <string>(error.message);
+        this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to execute ' + action + ':<br />' + this.errorMessage, ['OK']));
+      }
+    );
+
+  }
+
+  getAllUsers() {
+
+    //get users
+    this.usersService.getAllUsers().subscribe( {
+      next: (response) => {
+        
+        this.allUsers = <User[]>response.Subject;
+
+        //only users with status
+        this.allUsers = this.allUsers.filter(user => user.status);
+                
+        //default sort by first name
+        this.filteredUsers = this.allUsers.
+        sort((a, b) => {
+          const nameA = a.preferredfname || a.fname;
+          const nameB = b.preferredfname || b.fname;
+          return nameA.localeCompare(nameB);
+        });
+
+        //initial pagination
+        this.paginate();
+
+        this.applyFilters();
+
+      },
+      error: (error) => {
+        this.errorMessage = <string>(error.message);
+        console.log(this.errorMessage);
+      },
+    });
+
   }
 
 }

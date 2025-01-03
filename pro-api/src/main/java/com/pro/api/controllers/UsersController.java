@@ -724,9 +724,9 @@ public DirContext getUserDetails(String duid) {
 		user.setDisplayName("duke");
 
 		//set the below as needed for testing locally
-		user.interviewer = true;
-		user.resourceGroup = false;
-		user.admin = false;
+		// user.interviewer = true;
+		user.resourceGroup = true;
+		user.admin = true;
 		// user.resourceGroup = false;
 		// user.admin = false;
 

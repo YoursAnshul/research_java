@@ -1,0 +1,65 @@
+<div class="relative text-xs text-button-blue">
+    @if (selectedValues.length > 0
+        || anyValueSelected) {
+        <label class="absolute mt-[-6px] ml-4 px-1 bg-white whitespace-nowrap">{{fieldLabel}}</label>            
+    }
+
+    @if (!hideInput) {
+        <div id="any-filter"
+            class="border-2 border-button-blue shadow-none py-[0.3rem] px-2 bg-white rounded-md flex cursor-pointer min-h-9"
+            (click)="toggleDropdown()">
+
+            <div class="w-full">
+                <div class="float-left pt-1">
+                    {{getSelectedValues()}}
+                </div>
+                <div class="float-right mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+        </div>
+    }
+    
+    @if (showDropdown) {
+        <div class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none min-w-[200px]"
+            [class.min-w-[225px]]="hideInput"
+            [class.ml-[-15px]]="hideInput"
+            [class.mt-2]="hideInput">
+            <!-- any select -->
+            @if (multiSelect && anyLabel.length > 0) {
+                <div class="py-1 border-b border-b-1 border-b-duke-gray-light w-full flex items-center gap-1 px-2">
+                    <input class="cursor-pointer" type="checkbox"
+                        (click)="selectAny($event)"
+                        [checked]="anyValueSelected" />
+                    <div class="cursor-pointer"
+                        (click)="selectAny()">Any {{anyLabel}}</div>
+                </div>
+            }
+            
+            @if(dropDownValues.length < 1) {
+                <div class="py-1 w-full flex items-center gap-1 px-2">
+                    Loading...
+                </div>
+            }
+
+            <!-- dropdown -->
+            @for (dv of dropDownValues; track dv) {
+                <div class="py-1 border-t-1 border-t-duke-gray-light w-full flex items-center gap-1 px-2"
+                    [class.border-t]="dv !== dropDownValues[0] && dropDownValues.length > 1"
+                    [class.bg-button-blue-light]="isValueSelected(dv)">
+
+                    @if (multiSelect) {
+                        <input class="cursor-pointer" type="checkbox"
+                            (change)="toggleSelectedValue(dv)"
+                            [checked]="isValueSelected(dv)" />
+                    }
+                    <div class="cursor-pointer w-full"
+                        (click)="toggleSelectedValue(dv)">{{dv?.dropDownItem}}</div>
+                </div>
+            }
+        </div>
+    }
+</div>

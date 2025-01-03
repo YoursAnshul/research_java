@@ -213,3 +213,5 @@ pro-ui/src/app/pages/book-refrence/book.component.html
 *.log
 /pro-api/logs
 pro-api/logs/pro_api_application.log
+*.class
+*.class
