@@ -44,7 +44,7 @@ export class User {
     public orientationdate?: Date | null;
     public referral: string = '';
     public tempagency: string = '';
-    public userImage: string | undefined = undefined;
+    public userImage: string | null = null;
     public notes: string = '';
     public emercontactnumber: string = '';
     public emercontactnumber2: string = '';

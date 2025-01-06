@@ -78,8 +78,10 @@ import { TablePaginatorComponent } from './components/table-paginator/table-pagi
 import { ColumnActionsComponent } from './components/column-actions/column-actions.component';
 import { TableHeaderComponent } from './components/table-header/table-header.component';
 import {TrainedOnProjectsComponent} from "./components/trained-on-projects/trained-on-projects.component";
+import {ViewUserComponent} from "./components/view-user/view-user.component";
 import { FormFieldComponent } from './components/form-field/form-field.component';
 import { UnsavedChangesDialogComponent } from './components/unsaved-changes-dialog/unsaved-changes-dialog.component';
+import { SelectComponent } from './components/form-inputs/select/select.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -132,8 +134,11 @@ import { UnsavedChangesDialogComponent } from './components/unsaved-changes-dial
     ColumnActionsComponent,
     TableHeaderComponent,
     TrainedOnProjectsComponent,
+    ViewUserComponent,
+    TrainedOnProjectsComponent,
     FormFieldComponent,
-    UnsavedChangesDialogComponent
+    UnsavedChangesDialogComponent,
+    SelectComponent
   ],
   imports: [
     BrowserModule,

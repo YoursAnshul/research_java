@@ -12,6 +12,7 @@ module.exports = {
       },
       'button-blue': {
         DEFAULT: '#0680CD',
+        'light': '#0680cd47',
       },
       'duke-gray': {
         'dark': '#777777',

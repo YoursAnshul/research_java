@@ -10,10 +10,12 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class UnsavedChangesDialogComponent {
   dialogType: string;
   netId: string;
+  saveUser: any = () =>{ };
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<UnsavedChangesDialogComponent>) {
     console.log('---- data>', data);
     this.dialogType = data.dialogType; // 'confirmation' or 'error' or any other type
     this.netId = data.netId;
+    this.saveUser = data.saveUser;
   }
 
   close(): void {
@@ -22,5 +24,14 @@ export class UnsavedChangesDialogComponent {
 
   cancel(): void {
     this.dialogRef.close(false); // Stay on the page
+  }
+
+  closeWindon(): void {
+    this.dialogRef.close("close");
+  }
+  save(): void {
+    this.saveUser().then((r:any )=> {
+      this.dialogRef.close("save");
+    })
   }
 }

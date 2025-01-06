@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TableHeaderItem } from '../../models/presentation/table-header-item';
+import { Utils } from '../../classes/utils';
 
 @Component({
   selector: 'app-table-header',

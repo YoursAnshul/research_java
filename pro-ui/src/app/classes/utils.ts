@@ -429,4 +429,17 @@ export class Utils {
 
   }
 
+  //----------------------------------------------
+  // Numbers
+  //----------------------------------------------
+  
+  //check if a value is a number and return it as a number if it is
+  public static ifNumber(value: any): any {
+    if (!isNaN(value) && value !== null && value !== '') {
+      return Number(value);
+    }
+
+    return value;
+  }
+
 }

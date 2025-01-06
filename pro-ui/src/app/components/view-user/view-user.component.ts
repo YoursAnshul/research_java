@@ -12,7 +12,7 @@ import {
   ICoreHours, IDropDownValue,
   IFormFieldInstance, IFormFieldVariable,
   IProjectMin,
-  IRequest
+  IRequest,
 } from "../../interfaces/interfaces";
 import {Utils} from "../../classes/utils";
 import { User } from '../../models/data/user';
@@ -20,11 +20,11 @@ import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-add-user',
-  templateUrl: './add-user.component.html',
-  styleUrls: ['./add-user.component.css'],
+  selector: 'app-view-user',
+  templateUrl: './view-user.component.html',
+  styleUrls: ['./view-user.component.css'],
 })
-export class AddUserComponent implements OnInit{
+export class ViewUserComponent implements OnInit{
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
 
     if (this.changed || this.createForm) {
@@ -33,16 +33,17 @@ export class AddUserComponent implements OnInit{
     }
   }
 
-  @Input() createForm: boolean = false;
+  @Input() createForm: boolean = true;
   @Input() isUserCalendarVisible = true;
   @Input() isTrainedOnVisible = true;
-  @Input() viewUser: User | undefined = undefined;
+  @Input() viewUser: User | undefined ;
   @Output() userSaved = new EventEmitter<User>();
   @Output() closewindow = new EventEmitter<void>();
-  
+
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];
+
   trainedOnProjects!: IProjectMin[];
   notTrainedOnProjects!: IProjectMin[];
   requestCodeDropDown!: IDropDownValue[];
@@ -64,6 +65,8 @@ export class AddUserComponent implements OnInit{
   tab2_3UserFields!: IFormFieldInstance[];
   tab3UserFields!: IFormFieldInstance[];
   tab4UserFields!: IFormFieldInstance[];
+  public roles: IFormFieldVariable | undefined = undefined;
+  public activeProjectsDv: IDropDownValue[] = [];
   errorMessage!: string;
 
   requestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes'];
@@ -75,23 +78,31 @@ export class AddUserComponent implements OnInit{
   errorMessageForImage: string | null = null;
   acceptedFormats = ['image/jpeg', 'image/png'];
   maxFileSizeMB = 10;
+  isEdit: boolean = true;
 
   constructor(private fb: FormBuilder,private globalsService: GlobalsService,
-  private authenticationService: AuthenticationService,
-  private usersService: UsersService,
-  private configurationService: ConfigurationService,
-  private projectsService: ProjectsService,
-  private requestsService: RequestsService,
-  private logsService: LogsService, private dialog: MatDialog) {
+              private authenticationService: AuthenticationService,
+              private usersService: UsersService,
+              private configurationService: ConfigurationService,
+              private projectsService: ProjectsService,
+              private requestsService: RequestsService,
+              private logsService: LogsService, private dialog: MatDialog) {
     if(this.viewUser){
       this.selectedUser = this.viewUser;
-      this.createForm = true;
     }
-    if (this.createForm) {
+
+    this.configurationService.getFormField('Role').subscribe(
+        response => {
+          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+            this.roles = <IFormFieldVariable>response.Subject;
+          }
+        }
+    );
+
+/*    if (!this.createForm) {
       this.selectedUser = this.blankUser();
       this.coreHours = {} as ICoreHours;
-      this.tab2Invalid = true;
-    }
+    }*/
 
     //get user form fields to build the forms
     this.configurationService.getUserFields().subscribe(
@@ -99,10 +110,9 @@ export class AddUserComponent implements OnInit{
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           let userFields: IFormFieldVariable[] = <IFormFieldVariable[]>response.Subject;
           this.userFields = userFields;
-          console.log('this.createForm => ', this.createForm);
-          console.log('this.selectedUser  => ', this.selectedUser )
+
           //set selected user to a blank user object if creating a new object
-          if (this.createForm) {
+          if (!this.createForm) {
             this.selectedUser = this.blankUser();
             //this.selectedUser = {} as IUser;
             //set trained/not trained on if not already set and if we have already populated active projects
@@ -127,7 +137,9 @@ export class AddUserComponent implements OnInit{
     //get active projects
     this.projectsService.allProjectsMin.subscribe(
       allProjects => {
-        this.activeProjects = allProjects.filter(x => (x.active /*&& x.projectType !== 'Administrative'*/));
+        this.activeProjects = allProjects.filter(x => (x.active && x.projectType !== 'Administrative'));
+        //setup active projects as an iDropDownValue type
+        this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
         this.setNotTrainedOn();
       }
     );
@@ -176,41 +188,9 @@ export class AddUserComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
+    this.isEdit = true;
     if (this.createForm) {
 
-
-      this.selectedUser = this.blankUser();
-      this.coreHours = {} as ICoreHours;
-
-      //default core hours
-      let ch: any = this.coreHours;
-      let currentDate: Date = new Date();
-      ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-      ch.coreHours1 = 0;
-      ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      ch.coreHours2 = 0;
-      for (var i = 1; i < 13; i++) {
-        console.log(ch);
-        ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
-        ch['coreHours' + (i + 2)] = 0;
-      }
-      console.log(ch);
-
-      this.coreHours = ch;
-
-      //set trained/not trained on if not already set and if we have already populated active projects
-      if (this.activeProjects) {
-        this.setTrainedOn();
-        this.setNotTrainedOn();
-      }
-
-      //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
-      if (this.userFields && this.createForm) {
-        this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
-      }
-    } else {
-      
       //subscribe to the selected user
       this.usersService.selectedUser.subscribe(
         user => {
@@ -291,11 +271,47 @@ export class AddUserComponent implements OnInit{
           }
 
           //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
-          if (this.userFields && this.createForm) {
+          if (this.userFields && !this.createForm) {
             this.mapUserFieldsAndAssignTabs(user, this.userFields);
           }
         }
       );
+
+    }
+    if (!this.createForm) {
+
+
+      if(this.viewUser){
+        this.selectedUser = this.viewUser;
+      }
+      this.coreHours = {} as ICoreHours;
+
+      //default core hours
+      let ch: any = this.coreHours;
+      let currentDate: Date = new Date();
+      ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      ch.coreHours1 = 0;
+      ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      ch.coreHours2 = 0;
+      for (var i = 1; i < 13; i++) {
+        console.log(ch);
+        ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+        ch['coreHours' + (i + 2)] = 0;
+      }
+      console.log(ch);
+
+      this.coreHours = ch;
+
+      //set trained/not trained on if not already set and if we have already populated active projects
+      if (this.activeProjects) {
+        this.setTrainedOn();
+        this.setNotTrainedOn();
+      }
+
+      //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
+      if (this.userFields && !this.createForm) {
+        this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
+      }
     }
   }
 
@@ -313,8 +329,34 @@ export class AddUserComponent implements OnInit{
     if (this.authenticatedUser?.projectTeam || this.authenticatedUser?.admin) {
       return false;
     } else {
-      return false;
+      return true;
     }
+  }
+
+  public getRoleDisplay(roleId: number): string {
+    if (this.roles?.dropDownValues) {
+      let role: IDropDownValue | undefined = this.roles.dropDownValues.find(option => option.codeValues == roleId);
+      return role?.dropDownItem ? role.dropDownItem : '';
+    }
+    return '';
+  }
+
+  public getTrainingProjects(trainingData: string): string[] {
+    if (trainingData) {
+      return trainingData
+        .split('|')
+        .map(projectId => this.getProjectDisplayName(Number(projectId))).filter(x => x != "");
+    } else {
+      return [];
+    }
+  }
+
+  private getProjectDisplayName(projectId: number): string {
+    return this.getProjectDisplay(projectId);
+  }
+
+  public getProjectDisplay(projectId: number){
+    return this.activeProjectsDv.find((project) => project.codeValues === projectId)?.dropDownItem || '';
   }
 
 
@@ -328,6 +370,10 @@ export class AddUserComponent implements OnInit{
     this.setNotTrainedOn();
     this.changed = true;
     this.globalsService.currentChanges.next(true);
+  }
+
+  showUser(selectedUser: User){
+
   }
 
 
@@ -353,7 +399,7 @@ export class AddUserComponent implements OnInit{
   }
 
   setNotTrainedOn(): void {
-   // this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
+    // this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
     this.notTrainedOnProjects = this.activeProjects;
   }
 
@@ -381,8 +427,9 @@ export class AddUserComponent implements OnInit{
     // Based on the new tab, some tasks are performed.
     // For example, loading different data, updating the UI, etc.
     console.log('Tab changed: ', event);
+    // Implementation...
     this.isUserFormInvalid = this.tab2Invalid;
-   
+
     // Implementation...
     if (event.index == 0) {
       this.isUserCalendarVisible = true;
@@ -408,9 +455,6 @@ export class AddUserComponent implements OnInit{
     let u: any = user;
     for (var property in u) {
       let propertyFormFieldVariable: IFormFieldVariable | undefined = userFields.find(x => (x.formField?.columnName ? x.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
-      if(!propertyFormFieldVariable) {
-      
-      }
       if (propertyFormFieldVariable) {
         let value: any = u[property];
 
@@ -434,6 +478,7 @@ export class AddUserComponent implements OnInit{
 
     //set current core hours
     this.setCurrentCoreHours();
+
     this.userFormFields.sort((x, y) => {
       return x.formFieldVariable.formField.formOrder - y.formFieldVariable.formField.formOrder;
     });
@@ -543,7 +588,7 @@ export class AddUserComponent implements OnInit{
           this.userFormFields[i].invalid = false;
         }
 
-       
+
       }
 
       //make sure to correctly set invalid to false for default project when it's not required (it can be ruled invalid before determined that it shouldn't be required, but this above only looks at required fields to mark valid/invalid)
@@ -551,7 +596,7 @@ export class AddUserComponent implements OnInit{
         && !this.userFormFields[i].formFieldVariable.formField.required) {
         this.userFormFields[i].invalid = false;
       }
-     
+
      }
       if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
       if (!this.tab2Invalid) {
@@ -559,7 +604,209 @@ export class AddUserComponent implements OnInit{
       }
     //tab validation
     this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
-   
+
+  }
+
+  public editUser(){
+
+  }
+
+  public getActiveStatus(selected:User){
+    let color: string = selected.active ? 'Green' : 'Gray';
+    return {
+      'background-color': color
+    }
+  }
+
+  public getSwatchColor(item: string) {
+    let color: string = this.activeProjects.find((project) => project.projectName === item)?.projectColor || '';
+    return {
+      'background-color': color
+    }
+  }
+
+  public getDefaultProjectColor(projectId:Number){
+    let color: string = this.activeProjects.find((project) => project.projectID === projectId)?.projectColor || '';
+    return {
+      'background-color': color
+    }
+  }
+
+  validParentChild(parent: string, parentValue: string, valueIsDropdown: boolean = false): boolean {
+    let parentField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == parent);
+    if (!parentField) {
+      return false;
+    }
+    if (!parentField.value) {
+      return false;
+    }
+
+    if (valueIsDropdown) {
+      let parentDropdownValues: IDropDownValue | undefined = (parentField.formFieldVariable.dropDownValues || []).find(x => (x.dropDownItem || '').toUpperCase() == parentValue.toUpperCase());
+      if (parentDropdownValues) {
+        parentValue = (parentDropdownValues.codeValues || '').toString();
+      }
+    }
+
+    if (<string>parentField.value == parentValue) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  openDialog(data: any): void {
+    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+      width: '300px',
+      data: {
+        ...data
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == 'close') {
+        this.closewindow.emit();
+      } else if (result == 'save') {
+        this.userSaved.emit(this.selectedUser);
+      }
+    });
+  }
+
+  showUnsavedChangesDialog(): void {
+    this.openDialog({
+      dialogType: 'error'
+    })
+  }
+
+  confirmDialog(): void {
+    this.mapUserFieldsBackToUser();
+
+    this.openDialog({
+      dialogType: 'confirmation', // Pass dialog type here
+      netId: this.selectedUser.dempoid,  // You can customize the message based on dialog type
+      saveUser: () => {
+        //set modified metadata
+        this.selectedUser.modBy = this.authenticatedUser.netID;
+        this.selectedUser.modDt = new Date();
+
+        //set created metadata (if applicable)
+        this.selectedUser.entryBy = this.authenticatedUser.netID;
+        this.selectedUser.entryDt = new Date();
+        this.selectedUser.userImage = this.previewUrl;
+
+        //pass to save user api to save
+
+        return new Promise((resolver, reject) => {
+          this.usersService.saveUser(this.selectedUser).subscribe(
+            response => {
+              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+
+                //make sure the netid is set or core hours won't save
+                this.coreHours.dempoid = this.selectedUser.dempoid;
+                for (var i = 1; i < 15; i++) {
+                  this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
+                }
+                /* this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
+                   response => {
+                     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
+                     } else {
+                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
+                     }
+
+                     //set changed to false to re-disable the save button
+                     this.changed = false;
+                     this.globalsService.currentChanges.next(false);
+
+                     //set ID for "selected" user if user is newly added
+                     if (this.selectedUser.userid < 1) {
+                       let subject: User = <User>response.Subject;
+                       this.selectedUser.userid = subject.userid;
+                     }
+
+                     //sync users trained on
+                     this.usersService.setAllUsersMin();
+
+                     this.usersService.setSelectedUser(this.selectedUser.dempoid);
+
+                     this.userSaved.emit(this.selectedUser);
+
+                   }); */
+                resolver("Saved Succesfully user")
+              } else {
+                this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
+                this.logsService.logError(response.Message);
+              }
+
+            },
+            error => {
+              this.errorMessage = <string>(error.message);
+              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
+              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            }
+          );
+        });
+      }
+    })
+  }
+
+  //map field values back to user
+  mapUserFieldsBackToUser(): void {
+    //assign values to user from form field instances
+    let su: any = this.selectedUser;
+    for (var property in su) {
+      let propertyFormFieldInstance: IFormFieldInstance | undefined = this.userFormFields.find(x => (x.formFieldVariable.formField?.columnName ? x.formFieldVariable.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
+
+      if (propertyFormFieldInstance) {
+        let value: any = propertyFormFieldInstance.value;
+
+        //turn arrays (comboboxes/multi-select types) into pipe-delimited strings
+        if (propertyFormFieldInstance.formFieldVariable.formField.fieldType.includes('combo')) {
+          if (Array.isArray(value)) {
+            value = (<string[]>(value)).join('|');
+          }
+        }
+
+        if (property === 'userImage') {
+          //only set this if the userImage has not changed
+          if (this.selectedUser.userImage === value) {
+            su[property] = value;
+          }
+        } else {
+          //set the value for all other properties
+          //other than UserImage
+          su[property] = value;
+        }
+      }
+    }
+    this.selectedUser = su;
+  }
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!this.acceptedFormats.includes(file.type)) {
+      this.errorMessage = 'Invalid format. Please upload a JPEG or PNG.';
+      this.previewUrl = null;
+      return;
+    }
+
+    // Validate file size
+    if (file.size > this.maxFileSizeMB * 1024 * 1024) {
+      this.errorMessage = `File size exceeds ${this.maxFileSizeMB} MB.`;
+      this.previewUrl = null;
+      return;
+    }
+
+    // Generate preview
+    this.errorMessageForImage = null;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
 
   disableRules(formField: IFormFieldInstance): boolean {
@@ -661,28 +908,7 @@ export class AddUserComponent implements OnInit{
 
     return false;
   }
-  validParentChild(parent: string, parentValue: string, valueIsDropdown: boolean = false): boolean {
-    let parentField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == parent);
-    if (!parentField) {
-      return false;
-    }
-    if (!parentField.value) {
-      return false;
-    }
 
-    if (valueIsDropdown) {
-      let parentDropdownValues: IDropDownValue | undefined = (parentField.formFieldVariable.dropDownValues || []).find(x => (x.dropDownItem || '').toUpperCase() == parentValue.toUpperCase());
-      if (parentDropdownValues) {
-        parentValue = (parentDropdownValues.codeValues || '').toString();
-      }
-    }
-
-    if (<string>parentField.value == parentValue) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   displaySchedulingLevelInfo(event: any): void {
     let htmlMessage: string = '';
@@ -733,166 +959,10 @@ export class AddUserComponent implements OnInit{
   hideSchedulingLevelInfo(): void {
     this.globalsService.showHoverMessage.next(false);
   }
-  
-  openDialog(data: any): void {
-    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
-      width: '300px',
-      data: {
-        ...data
-      }
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == 'close') {
-        this.closewindow.emit();
-      } else if (result == 'save') {
-        this.userSaved.emit(this.selectedUser);
-      }
-    });
-  }
-
-  showUnsavedChangesDialog(): void {
-    this.openDialog({
-      dialogType: 'error'
-    })
-  }
-
-  confirmDialog(): void {
-    this.mapUserFieldsBackToUser();
-
-    this.openDialog({
-      dialogType: 'confirmation', // Pass dialog type here
-      netId: this.selectedUser.dempoid,  // You can customize the message based on dialog type 
-      saveUser: () => {
-        //set modified metadata
-        this.selectedUser.modBy = this.authenticatedUser.netID;
-        this.selectedUser.modDt = new Date();
-
-        //set created metadata (if applicable)
-        this.selectedUser.entryBy = this.authenticatedUser.netID;
-        this.selectedUser.entryDt = new Date();
-        this.selectedUser.userImage = this.previewUrl;
-
-        //pass to save user api to save
-
-        return new Promise((resolver, reject) => {
-          this.usersService.saveUser(this.selectedUser).subscribe(
-            response => {
-              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-
-                //make sure the netid is set or core hours won't save
-                this.coreHours.dempoid = this.selectedUser.dempoid;
-                for (var i = 1; i < 15; i++) {
-                  this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
-                }
-                /* this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
-                   response => {
-                     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
-                     } else {
-                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
-                     }
-   
-                     //set changed to false to re-disable the save button
-                     this.changed = false;
-                     this.globalsService.currentChanges.next(false);
-   
-                     //set ID for "selected" user if user is newly added
-                     if (this.selectedUser.userid < 1) {
-                       let subject: User = <User>response.Subject;
-                       this.selectedUser.userid = subject.userid;
-                     }
-   
-                     //sync users trained on
-                     this.usersService.setAllUsersMin();
-   
-                     this.usersService.setSelectedUser(this.selectedUser.dempoid);
-   
-                     this.userSaved.emit(this.selectedUser);
-   
-                   }); */
-                resolver("Saved Succesfully user")
-              } else {
-                this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
-                this.logsService.logError(response.Message);
-              }
-
-            },
-            error => {
-              this.errorMessage = <string>(error.message);
-              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
-              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-            }
-          );
-        });
-      }
-    })
-  }
-
-  //map field values back to user
-  mapUserFieldsBackToUser(): void {
-    //assign values to user from form field instances
-    let su: any = this.selectedUser;
-    for (var property in su) {
-      let propertyFormFieldInstance: IFormFieldInstance | undefined = this.userFormFields.find(x => (x.formFieldVariable.formField?.columnName ? x.formFieldVariable.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
-
-      if (propertyFormFieldInstance) {
-        let value: any = propertyFormFieldInstance.value;
-
-        //turn arrays (comboboxes/multi-select types) into pipe-delimited strings
-        if (propertyFormFieldInstance.formFieldVariable.formField.fieldType.includes('combo')) {
-          if (Array.isArray(value)) {
-            value = (<string[]>(value)).join('|');
-          }
-        }
-
-        if (property === 'userImage') {
-          //only set this if the userImage has not changed
-          if (this.selectedUser.userImage === value) {
-            su[property] = value;
-          }
-        } else {
-          //set the value for all other properties
-          //other than UserImage
-          su[property] = value;
-        }
-      }
-    }
-    this.selectedUser = su;
-  }
-
-  onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!this.acceptedFormats.includes(file.type)) {
-      this.errorMessage = 'Invalid format. Please upload a JPEG or PNG.';
-      this.previewUrl = null;
-      return;
-    }
-
-    // Validate file size
-    if (file.size > this.maxFileSizeMB * 1024 * 1024) {
-      this.errorMessage = `File size exceeds ${this.maxFileSizeMB} MB.`;
-      this.previewUrl = null;
-      return;
-    }
-
-    // Generate preview
-    this.errorMessageForImage = null;
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.previewUrl = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  getTitle(): string {
-    if(this.createForm) {
-      return 'Add New User';
-    }
-    return `${this.selectedUser?.fname} ${this.selectedUser?.lname}`
+  clickOnEdit(): void {
+    this.isEdit = false;
+    this.isTrainedOnVisible=false;
   }
 
 }

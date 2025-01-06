@@ -6,7 +6,7 @@
     </span>
 
     <div class="dialog-actions">
-        <button mat-flat-button color="primary">Close Window</button>
+        <button mat-flat-button color="primary" (click)="closeWindon()">Close Window</button>
         <button mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
     </div>
 </div>
@@ -21,7 +21,7 @@
         <span> Is this the correct NetID?</span>
     </div>
     <div class="dialog-actions">
-        <button mat-flat-button color="primary">Yes, Save User</button>
+        <button mat-flat-button color="primary" (click)="save()">Yes, Save User</button>
         <button mat-stroked-button color="primary" (click)="cancel()">No, Cancel</button>
     </div>
 </div>

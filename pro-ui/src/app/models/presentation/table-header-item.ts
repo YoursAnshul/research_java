@@ -1,3 +1,5 @@
+import { IDropDownValue } from "../../interfaces/interfaces";
+
 export class TableHeaderItem {
 
     public label: string | null = '';
@@ -10,15 +12,21 @@ export class TableHeaderItem {
     // ui states
     public searchValue: string = '';
     public filterValue: any[] = [];
+    public filterOptions: IDropDownValue[] = [];
+    public filterAny: boolean = false;
     public sortDirection: string = ''; // 'asc' or 'desc'
 
-    constructor(label: string | null, name: string | null, filterable: boolean, searchable: boolean, sortable: boolean, selectAll: boolean) {
+    constructor(label: string | null, name: string | null, filterable: boolean, searchable: boolean, sortable: boolean, selectAll: boolean, filterOptions: IDropDownValue[] | undefined = undefined, filterAny: boolean = false) {
         this.label = label;
         this.name = name;
         this.filterable = filterable;
         this.searchable = searchable;
         this.sortable = sortable;
         this.selectAll = selectAll;
+        if (filterOptions) {
+            this.filterOptions = filterOptions;
+        }
+        this.filterAny = filterAny;
     }
 
 }
