@@ -15,7 +15,9 @@
     <div class="meta">
       <div>
         <small>Posted {{ previewobj.start | date : "MM/dd/yyyy" }} </small>
-        <small *ngIf="previewobj.isAuthor"> {{ previewobj.authorName }}</small>
+        <small *ngIf="previewobj?.isAuthor && previewobj.authorName">
+          by {{ previewobj.authorName }}</small
+        >
       </div>
       <div *ngIf="isString(previewobj.displayTo)">
         <span>{{ previewobj.displayTo }}</span>
