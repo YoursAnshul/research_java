@@ -1,8 +1,8 @@
 .announcements-panel {
-  max-height: 625px;
+  /* max-height: 625px; */
   padding: 16px;
   border-left: 1px solid #ccc;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   font-family: "Roboto", sans-serif;
   color: #262626;
   border: 1px solid #c2c2c2;
@@ -109,3 +109,18 @@
 .show-more-btn:hover {
   color: #0056b3;
 }
+.underlined-link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+
+.underlined-link:hover {
+  text-decoration: none;
+  color: darkblue;
+}
+
+.show-more-btn {
+  margin-top: 10px;
+}
+

@@ -35,15 +35,32 @@
   </a>
 </div>
 
-
 <div class="announcements-panel">
   <ng-container
     *ngIf="announcementsList && announcementsList.length > 0; else noData"
   >
     <div *ngFor="let announcement of announcementsList" class="announcement">
-      <h4>{{ announcement.icon }}{{ announcement.title }}</h4>
+      <h4>
+        {{ announcement.icon ? announcement.icon + "&nbsp;" : ""
+        }}{{ announcement.title }}
+      </h4>
+
       <div class="announcement-text">
-        <p>{{ getTruncatedText(announcement) }}</p>
+        <p>
+          <span
+            *ngFor="let part of getHighlightedTextParts(announcement.bodyText)"
+          >
+            <span *ngIf="!part.isLink" [innerHTML]="part.text"></span>
+            <a
+              *ngIf="part.isLink"
+              [href]="'https://' + part.text"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="underlined-link"
+              >{{ part.text }}</a
+            >
+          </span>
+        </p>
         <button
           *ngIf="announcement.bodyText.length > maxLength"
           (click)="toggleText(announcement)"
@@ -62,14 +79,34 @@
             announcement.authorName
           }}</small>
         </div>
+
         <div class="tags">
           <span
-            *ngFor="let project of announcement.projectObject"
-            class="tag"
-            [ngStyle]="{ '--tag-color': project.projectColor }"
+            *ngIf="
+              announcement &&
+              announcement.projectObject &&
+              announcement.projectObject.length > 0 &&
+              allProjectList &&
+              allProjectList.length > 0 &&
+              announcement.projectObject.length === allProjectList.length
+            "
           >
-            {{ project.projectName }}
+            Any Projects
           </span>
+
+          <ng-container
+            *ngIf="
+              announcement?.projectObject?.length !== allProjectList?.length
+            "
+          >
+            <span
+              *ngFor="let project of announcement.projectObject"
+              class="tag"
+              [ngStyle]="{ '--tag-color': project.projectColor }"
+            >
+              {{ project.projectName }}
+            </span>
+          </ng-container>
         </div>
       </div>
     </div>
