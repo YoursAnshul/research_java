@@ -258,6 +258,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       next: (data: any) => {
         this.announcements = data?.data?.map((item: any) => {
           const formatDate = (date: any): string => {
+            if (!date) return '';
             const d = new Date(date);
             return !isNaN(d.getTime())
               ? d.toLocaleDateString('en-US', {
@@ -281,7 +282,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             id: item?.announcementId,
             bodyText: item?.bodyText,
             isAuthor: item?.isAuthor,
-            icon: item?.icon
+            icon: item?.icon,
           };
         });
         this.length = 0;

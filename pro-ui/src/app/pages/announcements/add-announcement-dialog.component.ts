@@ -56,7 +56,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
       startDate: ['', Validators.required],
-      expireDate: [''],
+      expireDate: [null],
       isAuthor: [true],
     });
     this.id = data?.id;
@@ -237,7 +237,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         authorId: selectedAuthorId,
         isAuthor: this.announcementForm.value.isAuthor,
         startDate: this.announcementForm.value.startDate,
-        expireDate: this.announcementForm.value.expireDate,
+        expireDate: this.announcementForm.value.expireDate || null,
         projectIds: selectedProjectsIds,
       };
       if (this.id) {
@@ -359,7 +359,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
           title: data.Subject.title,
           isAuthor: data.Subject.isAuthor,
           startDate: data.Subject.startDate,
-          expireDate: data.Subject.expireDate,
+          expireDate: data.Subject.expireDate || null,
         });
         if (data.Subject.bodyText) {
           this.quill.root.innerHTML = data.Subject.bodyText;
