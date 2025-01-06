@@ -15,7 +15,7 @@ public interface CoreHourRepository extends JpaRepository<CoreHour, Integer> {
 
 	List<CoreHour> findAllByDempoidAndCoreHoursIdNot(String dempoid, int coreHoursId);
 
-	@Query("SELECT ch FROM CoreHour ch JOIN User u on ch.dempoid=u.dempoid WHERE u.active = true AND u.dempoid IS NOT NULL")
+	@Query("SELECT ch FROM CoreHour ch JOIN User u on ch.dempoid=u.dempoid WHERE u.status = 1 AND u.dempoid IS NOT NULL")
 	List<CoreHour> findActiveCoreHours();
 
 	@Query("SELECT ch FROM CoreHour ch " + "WHERE ch.modDt < :currentMonthStart " + "AND ch.dempoid IS NOT NULL "

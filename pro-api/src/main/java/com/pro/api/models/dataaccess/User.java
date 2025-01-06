@@ -18,16 +18,13 @@ public class User {
 	private String dempoid;
 
 	@Column(name = "status")
-	private String status;
-
-	@Column(name = "active")
-	private Boolean active;
+	private Integer status;
 
 	@Column(name = "corehours")
 	private Short corehours;
 
-	@Column(name = "employmenttype")
-	private Short employmenttype;
+	@Column(name = "empstatus")
+	private Short empstatus;
 
 	@Column(name = "fname")
 	private String fname;
@@ -47,17 +44,11 @@ public class User {
 	@Column(name = "tempenddate")
 	private LocalDate tempenddate;
 
-	@Column(name = "uinit")
-	private String uinit;
-
 	@Column(name = "role")
 	private Integer role;
 
 	@Column(name = "schedulinglevel")
 	private Integer schedulinglevel;
-
-	@Column(name = "scheduledisplay")
-	private Integer scheduledisplay;
 
 	@Column(name = "title")
 	private String title;
@@ -80,23 +71,8 @@ public class User {
 	@Column(name = "emailaddr1")
 	private String emailaddr1;
 
-	@Column(name = "bypasslockout")
-	private Integer bypasslockout;
-
-	@Column(name = "aislenumber")
-	private Short aislenumber;
-
-	@Column(name = "teamgroup")
-	private String teamgroup;
-
-	@Column(name = "workgroup")
-	private String workgroup;
-
 	@Column(name = "cubeoffice")
 	private Short cubeoffice;
-
-	@Column(name = "Spanish")
-	private Integer spanish;
 
 	@Column(name = "language")
 	private String language;
@@ -107,36 +83,12 @@ public class User {
 	@Column(name = "trainedon")
 	private String trainedon;
 
-	@Column(name = "citidate")
-	private LocalDate citidate;
-
-	@Column(name = "introemail")
-	private Boolean introemail;
-
-	@Column(name = "introemaildate")
-	private LocalDate introemaildate;
-
-	@Column(name = "phonescreen")
-	private Boolean phonescreen;
-
-	@Column(name = "phonescreendate")
-	private LocalDate phonescreendate;
-
-	@Column(name = "facetoface")
-	private Boolean facetoface;
-
 	@Column(name = "facetofacedate")
 	private LocalDate facetofacedate;
 
-	@Column(name = "welcomeemail")
-	private Boolean welcomeemail;
-
-	@Column(name = "welcomeemaildate")
-	private LocalDate welcomeemaildate;
-
 	@Column(name = "orientationdate")
 	private LocalDate orientationdate;
-
+	
 	@Column(name = "referral")
 	private String referral;
 
@@ -186,9 +138,6 @@ public class User {
 	@Column(name = "phonenumber3")
 	private String phonenumber3;
 
-	@Column(name = "hiatusstartdate")
-	private LocalDate hiatusstartdate;
-
 	@Column(name = "computernumber")
 	private String computernumber;
 
@@ -224,7 +173,22 @@ public class User {
 
 	@Column(name = "buddy")
 	private Boolean buddy;
-
+	
+	@Column(name = "active")
+	private Boolean active;
+	
+	@Column(name = "certification")
+	private LocalDate certification;
+	
+	@Column(name = "miscellaneous")
+	private LocalDate miscellaneous;
+	
+	@Column(columnDefinition="text", length=10485760 ,name = "certnotes")
+	private String certnotes;
+	
+	@Column(name = "manager")
+	private String manager;
+	
 	public User() {
 
 	}
@@ -245,20 +209,12 @@ public class User {
 		this.dempoid = dempoid;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
 	}
 
 	public Short getCorehours() {
@@ -269,12 +225,12 @@ public class User {
 		this.corehours = corehours;
 	}
 
-	public Short getEmploymenttype() {
-		return employmenttype;
+	public Short getEmpstatus() {
+		return empstatus;
 	}
 
-	public void setEmploymenttype(Short employmenttype) {
-		this.employmenttype = employmenttype;
+	public void setEmpstatus(Short empstatus) {
+		this.empstatus = empstatus;
 	}
 
 	public String getFname() {
@@ -325,14 +281,6 @@ public class User {
 		this.tempenddate = tempenddate;
 	}
 
-	public String getUinit() {
-		return uinit;
-	}
-
-	public void setUinit(String uinit) {
-		this.uinit = uinit;
-	}
-
 	public Integer getRole() {
 		return role;
 	}
@@ -347,14 +295,6 @@ public class User {
 
 	public void setSchedulinglevel(Integer schedulinglevel) {
 		this.schedulinglevel = schedulinglevel;
-	}
-
-	public Integer getScheduledisplay() {
-		return scheduledisplay;
-	}
-
-	public void setScheduledisplay(Integer scheduledisplay) {
-		this.scheduledisplay = scheduledisplay;
 	}
 
 	public String getTitle() {
@@ -413,52 +353,12 @@ public class User {
 		this.emailaddr1 = emailaddr1;
 	}
 
-	public Integer getBypasslockout() {
-		return bypasslockout;
-	}
-
-	public void setBypasslockout(Integer bypasslockout) {
-		this.bypasslockout = bypasslockout;
-	}
-
-	public Short getAislenumber() {
-		return aislenumber;
-	}
-
-	public void setAislenumber(Short aislenumber) {
-		this.aislenumber = aislenumber;
-	}
-
-	public String getTeamgroup() {
-		return teamgroup;
-	}
-
-	public void setTeamgroup(String teamgroup) {
-		this.teamgroup = teamgroup;
-	}
-
-	public String getWorkgroup() {
-		return workgroup;
-	}
-
-	public void setWorkgroup(String workgroup) {
-		this.workgroup = workgroup;
-	}
-
 	public Short getCubeoffice() {
 		return cubeoffice;
 	}
 
 	public void setCubeoffice(Short cubeoffice) {
 		this.cubeoffice = cubeoffice;
-	}
-
-	public Integer getSpanish() {
-		return spanish;
-	}
-
-	public void setSpanish(Integer spanish) {
-		this.spanish = spanish;
 	}
 
 	public String getLanguage() {
@@ -485,76 +385,12 @@ public class User {
 		this.trainedon = trainedon;
 	}
 
-	public LocalDate getCitidate() {
-		return citidate;
-	}
-
-	public void setCitidate(LocalDate citidate) {
-		this.citidate = citidate;
-	}
-
-	public Boolean getIntroemail() {
-		return introemail;
-	}
-
-	public void setIntroemail(Boolean introemail) {
-		this.introemail = introemail;
-	}
-
-	public LocalDate getIntroemaildate() {
-		return introemaildate;
-	}
-
-	public void setIntroemaildate(LocalDate introemaildate) {
-		this.introemaildate = introemaildate;
-	}
-
-	public Boolean getPhonescreen() {
-		return phonescreen;
-	}
-
-	public void setPhonescreen(Boolean phonescreen) {
-		this.phonescreen = phonescreen;
-	}
-
-	public LocalDate getPhonescreendate() {
-		return phonescreendate;
-	}
-
-	public void setPhonescreendate(LocalDate phonescreendate) {
-		this.phonescreendate = phonescreendate;
-	}
-
-	public Boolean getFacetoface() {
-		return facetoface;
-	}
-
-	public void setFacetoface(Boolean facetoface) {
-		this.facetoface = facetoface;
-	}
-
 	public LocalDate getFacetofacedate() {
 		return facetofacedate;
 	}
 
 	public void setFacetofacedate(LocalDate facetofacedate) {
 		this.facetofacedate = facetofacedate;
-	}
-
-	public Boolean getWelcomeemail() {
-		return welcomeemail;
-	}
-
-	public void setWelcomeemail(Boolean welcomeemail) {
-		this.welcomeemail = welcomeemail;
-	}
-
-	public LocalDate getWelcomeemaildate() {
-		return welcomeemaildate;
-	}
-
-	public void setWelcomeemaildate(LocalDate welcomeemaildate) {
-		this.welcomeemaildate = welcomeemaildate;
 	}
 
 	public LocalDate getOrientationdate() {
@@ -693,14 +529,6 @@ public class User {
 		this.phonenumber3 = phonenumber3;
 	}
 
-	public LocalDate getHiatusstartdate() {
-		return hiatusstartdate;
-	}
-
-	public void setHiatusstartdate(LocalDate hiatusstartdate) {
-		this.hiatusstartdate = hiatusstartdate;
-	}
-
 	public String getComputernumber() {
 		return computernumber;
 	}
@@ -797,4 +625,44 @@ public class User {
 		this.buddy = buddy;
 	}
 
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public LocalDate getCertification() {
+		return certification;
+	}
+
+	public void setCertification(LocalDate certification) {
+		this.certification = certification;
+	}
+
+	public LocalDate getMiscellaneous() {
+		return miscellaneous;
+	}
+
+	public void setMiscellaneous(LocalDate miscellaneous) {
+		this.miscellaneous = miscellaneous;
+	}
+
+	public String getCertnotes() {
+		return certnotes;
+	}
+
+	public void setCertnotes(String certnotes) {
+		this.certnotes = certnotes;
+	}
+	
+	public String getManager() {
+		return this.manager;
+	}
+	
+	public void setManager(String manager) {
+		this.manager = manager;
+	}
+	
 }
