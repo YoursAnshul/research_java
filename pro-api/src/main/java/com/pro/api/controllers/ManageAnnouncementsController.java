@@ -83,9 +83,11 @@ public class ManageAnnouncementsController {
 	}
 
 	@GetMapping("/all-authors")
-	public ResponseEntity<List<String>> getAuthorList() {
-		List<String> authors = manageAnnouncements.getAuthors();
-		return ResponseEntity.status(HttpStatus.OK).body(authors);
+	public ResponseEntity<GeneralResponse> getAuthorList() {
+		List<AuthorResponse> authors = manageAnnouncements.getAuthors();
+		GeneralResponse response = new GeneralResponse();
+		response.Subject = authors;
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/list")

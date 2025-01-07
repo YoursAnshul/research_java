@@ -15,422 +15,175 @@
     </span>
     / Manage Announcements
   </h2>
-
-  <button
-    mat-raised-button
-    style="background-color: #0680cd; color: white"
-    (click)="openAddAnnouncementDialog()"
-  >
-    + Add New Announcement
-  </button>
+  <div>
+    <button
+      mat-raised-button
+      style="background-color: #0680cd; color: white"
+      (click)="openAddAnnouncementDialog()"
+    >
+      + Add New Announcement
+    </button>
+  </div>
   <div *ngIf="isLoading" class="loader-container">
     <mat-spinner [diameter]="50" color="primary"></mat-spinner>
   </div>
-  <div
-    *ngIf="!isLoading && (!announcements || announcements.length === 0)"
-    class="no-data"
-  >
-    No Data Available
-  </div>
 
-  <table
-    mat-table
-    [dataSource]="announcements"
-    matSort
-    class="announcement-table"
-    *ngIf="!isLoading && announcements.length > 0"
-  >
-    <ng-container matColumnDef="start">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        (click)="onSort('startDate')"
-        style="background-color: #e5e5e580; width: 100px"
-      >
-        Start
-      </th>
-      <td mat-cell *matCellDef="let data">{{ data.start }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="expiration">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        (click)="onSort('expiration')"
-        style="background-color: #e5e5e580; width: 100px"
-      >
-        Expiration
-      </th>
-      <td *matCellDef="let data" mat-cell>
-        {{ data?.expiration  }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="title">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        (click)="onSort('title')"
-        style="
-          background-color: #e5e5e580;
-          width: 250px;
-          min-width: 250px;
-          max-width: 250px;
-          position: relative;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        "
-      >
-        <span>Title</span>
-
-        <div
-          style="
-            position: absolute;
-            display: flex;
-            right: 20px;
-            top: 60%;
-            transform: translateY(-40%);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-          "
-        >
-          <input
-            *ngIf="isSearchActive"
-            type="text"
-            placeholder="Find"
-            [(ngModel)]="searchTerm"
-            (click)="onInputClick($event)"
-            (input)="applySearch()"
-            (keydown)="onKeyDown($event)"
-            (keydown.enter)="onEnterPress()"
-            style="margin-left: 6px; width: 100px; margin-bottom: 5px"
-          />
-
-          <svg
-            style="margin-bottom: 3px"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            (click)="searchIconClicked($event)"
+  <div class="table-container">
+    <div class="table text-sm mt-2">
+      <div class="table-body">
+        <app-table-header
+          class="table-row"
+          [(headerItems)]="headerItems"
+          (headerItemsChange)="headerItemsChange($event)"
+        ></app-table-header>
+        @if (announcements !== undefined && announcements.length > 0) {
+        <div *ngFor="let announcement of announcements" class="table-row">
+          <div
+            class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
+            style="width: 150px"
           >
-            <path
-              d="M11.5006 10.47L13.8726 12.8414L13.0889 13.625L10.7175 11.2531C9.83517 11.9604 8.73768 12.3451 7.60681 12.3435C4.8555 12.3435 2.62256 10.1106 2.62256 7.35925C2.62256 4.60794 4.8555 2.375 7.60681 2.375C10.3581 2.375 12.5911 4.60794 12.5911 7.35925C12.5927 8.49012 12.2079 9.58762 11.5006 10.47ZM10.3897 10.059C11.0925 9.33627 11.485 8.36741 11.4834 7.35925C11.4834 5.21713 9.74837 3.48261 7.60681 3.48261C5.46469 3.48261 3.73017 5.21713 3.73017 7.35925C3.73017 9.50081 5.46469 11.2359 7.60681 11.2359C8.61497 11.2375 9.58383 10.845 10.3066 10.1421L10.3897 10.059Z"
-              fill="#B5B5B5"
-            />
-          </svg>
-        </div>
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let data"
-        [innerHTML]="data.icon + ' ' + (data.title | highlight : searchTerm)"
-      ></td>
-    </ng-container>
-
-    <ng-container matColumnDef="author">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        mat-sort-header
-        (click)="isFilterActive ? null : onSort('author')"
-        style="
-          background-color: #e5e5e580;
-          width: 300px;
-          min-width: 300px;
-          max-width: 300px;
-          position: relative;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        "
-      >
-        <span>Author</span>
-
-        <div
-          *ngIf="isFilterActive"
-          style="
-            margin-top: 10px;
-            width: 230px;
-            position: absolute;
-            right: 0 !important;
-            display: flex;
-            flex-direction: column;
-            max-width: 230px;
-            margin-bottom: 5px;
-          "
-        >
-          <mat-form-field
-            appearance="outline"
-            style="width: 80%; padding: 10px"
-            class="custom-form-field-1"
-            (click)="$event.stopPropagation()"
-          >
-            <mat-label>Filter by Author</mat-label>
-            <mat-select
-              [(value)]="selectedAuthors"
-              multiple
-              (click)="$event.stopPropagation()"
-            >
-              <div
-                style="
-                  max-height: 150px;
-                  overflow-y: auto;
-                  padding: 0 10px;
-                  margin-bottom: 10px;
-                "
-              >
-                <div style="margin-left: 16px">
-                  <label
-                    for=""
-                    style="cursor: pointer"
-                    (click)="selectAllAuthors($event)"
-                  >
-                    <input
-                      style="cursor: pointer"
-                      type="checkbox"
-                      [checked]="isAllSelected()"
-                      [indeterminate]="isIndeterminate()"
-                    />
-                    <span
-                      class="checkmark"
-                      style="margin-left: 15px; font-size: 13px"
-                    >
-                      Select All</span
-                    >
-                  </label>
-                </div>
-
-                <mat-option
-                  *ngFor="let author of allAuthors"
-                  [value]="author"
-                  (click)="onSelectionChange($event)"
-                  class="custom-height"
-                >
-                  {{ author }}
-                </mat-option>
-              </div>
-
-              <div
-                style="
-                  display: flex;
-                  justify-content: flex-end;
-                  gap: 10px;
-                  padding: 5px 10px;
-                  border-top: 1px solid #ccc;
-                "
-              >
-                <button
-                  mat-button
-                  (click)="applyFilter()"
-                  style="
-                    min-width: 30px;
-                    height: 25px;
-                    border: 1px solid #cccccc;
-                    border-radius: 3px;
-                    background-color: white;
-                    font-size: 12px;
-                    color: #333;
-                    cursor: pointer;
-                    transition: background-color 0.2s, border-color 0.2s;
-                  "
-                >
-                  OK
-                </button>
-                <button
-                  mat-button
-                  (click)="resetFilter()"
-                  style="
-                    margin-right: 5px;
-                    min-width: 30px;
-                    height: 25px;
-                    border: 1px solid #cccccc;
-                    border-radius: 3px;
-                    background-color: white;
-                    font-size: 12px;
-                    color: #333;
-                    cursor: pointer;
-                    transition: background-color 0.2s, border-color 0.2s;
-                  "
-                >
-                  Reset
-                </button>
-              </div>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div
-          style="
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            z-index: 1;
-          "
-          (click)="filterIconClicked($event)"
-        >
-          <svg
-            style="margin-top: 10px; margin-bottom: 3px"
-            width="11"
-            height="12"
-            viewBox="0 0 11 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6.82113 5.99924V10.9242C6.84613 11.1117 6.78363 11.3117 6.63988 11.443C6.58206 11.5009 6.51338 11.5469 6.43777 11.5783C6.36216 11.6096 6.28111 11.6258 6.19925 11.6258C6.1174 11.6258 6.03635 11.6096 5.96074 11.5783C5.88513 11.5469 5.81645 11.5009 5.75863 11.443L4.50238 10.1867C4.43425 10.1201 4.38245 10.0386 4.35101 9.94859C4.31957 9.8586 4.30934 9.76258 4.32113 9.66799V5.99924H4.30238L0.702377 1.38674C0.600882 1.25644 0.555085 1.09127 0.574994 0.927318C0.594903 0.763363 0.678899 0.613954 0.808627 0.511737C0.927377 0.424237 1.05863 0.374237 1.19613 0.374237H9.94613C10.0836 0.374237 10.2149 0.424237 10.3336 0.511737C10.4634 0.613954 10.5474 0.763363 10.5673 0.927318C10.5872 1.09127 10.5414 1.25644 10.4399 1.38674L6.83988 5.99924H6.82113Z"
-              fill="#B5B5B5"
-            ></path>
-          </svg>
-        </div>
-      </th>
-      <td mat-cell *matCellDef="let data">{{ data.authorName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="displayTo">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        style="background-color: #e5e5e580; width: 300px"
-      >
-        Display Announcements To
-      </th>
-      <td
-        mat-cell
-        *matCellDef="let data"
-        style="
-          width: 300px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        "
-      >
-        <span *ngIf="data.displayTo !== 'Any Projects'; else showAnyProjects">
-          <div class="tags-container">
-            <span *ngFor="let project of data.displayTo">
-              <span
-                class="tag"
-                [ngStyle]="{ '--tag-color': project.projectColor }"
-              >
-                {{ project.projectName }}
-              </span>
-            </span>
+            {{ announcement.start }}
           </div>
-        </span>
-
-        <ng-template #showAnyProjects>
-          <span>Any Projects</span>
-        </ng-template>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-        style="background-color: #e5e5e580; width: 70px"
-      >
-        Actions
-      </th>
-      <td mat-cell *matCellDef="let data">
-        <button mat-icon-button (click)="viewAnnouncement(data)">
-          <svg
-            width="17"
-            height="16"
-            viewBox="0 0 17 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
+            style="width: 150px"
           >
-            <mask
-              id="mask0_591_21648"
-              style="mask-type: alpha"
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="17"
-              height="16"
-            >
-              <rect x="0.5" width="16" height="16" fill="#D9D9D9" />
-            </mask>
-            <g mask="url(#mask0_591_21648)">
-              <path
-                d="M8.50008 10.6667C9.33342 10.6667 10.0417 10.375 10.6251 9.79169C11.2084 9.20835 11.5001 8.50002 11.5001 7.66669C11.5001 6.83335 11.2084 6.12502 10.6251 5.54169C10.0417 4.95835 9.33342 4.66669 8.50008 4.66669C7.66675 4.66669 6.95842 4.95835 6.37508 5.54169C5.79175 6.12502 5.50008 6.83335 5.50008 7.66669C5.50008 8.50002 5.79175 9.20835 6.37508 9.79169C6.95842 10.375 7.66675 10.6667 8.50008 10.6667ZM8.50008 9.46669C8.00008 9.46669 7.57508 9.29169 7.22508 8.94169C6.87508 8.59169 6.70008 8.16669 6.70008 7.66669C6.70008 7.16669 6.87508 6.74169 7.22508 6.39169C7.57508 6.04169 8.00008 5.86669 8.50008 5.86669C9.00008 5.86669 9.42508 6.04169 9.77508 6.39169C10.1251 6.74169 10.3001 7.16669 10.3001 7.66669C10.3001 8.16669 10.1251 8.59169 9.77508 8.94169C9.42508 9.29169 9.00008 9.46669 8.50008 9.46669ZM8.50008 12.6667C6.87786 12.6667 5.40008 12.2139 4.06675 11.3084C2.73341 10.4028 1.76675 9.18891 1.16675 7.66669C1.76675 6.14446 2.73341 4.93058 4.06675 4.02502C5.40008 3.11946 6.87786 2.66669 8.50008 2.66669C10.1223 2.66669 11.6001 3.11946 12.9334 4.02502C14.2667 4.93058 15.2334 6.14446 15.8334 7.66669C15.2334 9.18891 14.2667 10.4028 12.9334 11.3084C11.6001 12.2139 10.1223 12.6667 8.50008 12.6667ZM8.50008 11.3334C9.75564 11.3334 10.9084 11.0028 11.9584 10.3417C13.0084 9.68058 13.8112 8.78891 14.3667 7.66669C13.8112 6.54446 13.0084 5.6528 11.9584 4.99169C10.9084 4.33058 9.75564 4.00002 8.50008 4.00002C7.24453 4.00002 6.09175 4.33058 5.04175 4.99169C3.99175 5.6528 3.18897 6.54446 2.63341 7.66669C3.18897 8.78891 3.99175 9.68058 5.04175 10.3417C6.09175 11.0028 7.24453 11.3334 8.50008 11.3334Z"
-                fill="#0680CD"
-              />
-            </g>
-          </svg>
-        </button>
-        <button mat-icon-button (click)="editAnnouncement(data)">
-          <svg
-            width="17"
-            height="16"
-            viewBox="0 0 17 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            {{ announcement.expiration }}
+          </div>
+          <div
+            class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
+            style="width: 200px"
           >
-            <mask
-              id="mask0_591_21651"
-              style="mask-type: alpha"
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="17"
-              height="16"
-            >
-              <rect x="0.5" width="16" height="16" fill="#D9D9D9" />
-            </mask>
-            <g mask="url(#mask0_591_21651)">
-              <path
-                d="M3.83333 12.6667H4.78333L11.3 6.15L10.35 5.2L3.83333 11.7167V12.6667ZM2.5 14V11.1667L11.3 2.38333C11.4333 2.26111 11.5806 2.16667 11.7417 2.1C11.9028 2.03333 12.0722 2 12.25 2C12.4278 2 12.6 2.03333 12.7667 2.1C12.9333 2.16667 13.0778 2.26667 13.2 2.4L14.1167 3.33333C14.25 3.45556 14.3472 3.6 14.4083 3.76667C14.4694 3.93333 14.5 4.1 14.5 4.26667C14.5 4.44444 14.4694 4.61389 14.4083 4.775C14.3472 4.93611 14.25 5.08333 14.1167 5.21667L5.33333 14H2.5ZM10.8167 5.68333L10.35 5.2L11.3 6.15L10.8167 5.68333Z"
-                fill="#00569B"
-              />
-            </g>
-          </svg>
-        </button>
-        <button mat-icon-button color="warn" (click)="deleteAnnouncement(data)">
-          <svg
-            width="17"
-            height="16"
-            viewBox="0 0 17 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            {{ announcement.icon }} {{ announcement.title }}
+          </div>
+          <div
+            class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
+            style="width: 200px"
           >
-            <mask
-              id="mask0_591_21654"
-              style="mask-type: alpha"
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="17"
-              height="16"
+            {{ announcement.authorName }}
+          </div>
+          <div
+            class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle fixed-width"
+          >
+            <ng-container
+              *ngIf="
+                announcement.displayTo !== 'Any Projects';
+                else showAnyProjects
+              "
             >
-              <rect x="0.5" width="16" height="16" fill="#D9D9D9" />
-            </mask>
-            <g mask="url(#mask0_591_21654)">
-              <path
-                d="M6.76675 11L8.50008 9.26667L10.2334 11L11.1667 10.0667L9.43342 8.33333L11.1667 6.6L10.2334 5.66667L8.50008 7.4L6.76675 5.66667L5.83341 6.6L7.56675 8.33333L5.83341 10.0667L6.76675 11ZM5.16675 14C4.80008 14 4.48619 13.8694 4.22508 13.6083C3.96397 13.3472 3.83341 13.0333 3.83341 12.6667V4H3.16675V2.66667H6.50008V2H10.5001V2.66667H13.8334V4H13.1667V12.6667C13.1667 13.0333 13.0362 13.3472 12.7751 13.6083C12.514 13.8694 12.2001 14 11.8334 14H5.16675Z"
-                fill="#DC4A38"
-              />
-            </g>
-          </svg>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+              <div class="tags-container">
+                <span *ngFor="let project of announcement.displayTo">
+                  <span
+                    class="tag"
+                    [ngStyle]="{ '--tag-color': project.projectColor }"
+                  >
+                    {{ project.projectName }}
+                  </span>
+                </span>
+              </div>
+            </ng-container>
+            <ng-template #showAnyProjects>
+              <span>Any Projects</span>
+            </ng-template>
+          </div>
+          <div
+            class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
+            style="width: 200px"
+          >
+            <button mat-icon-button (click)="viewAnnouncement(announcement)">
+              <svg
+                width="17"
+                height="16"
+                viewBox="0 0 17 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <mask
+                  id="mask0_591_21648"
+                  style="mask-type: alpha"
+                  maskUnits="userSpaceOnUse"
+                  x="0"
+                  y="0"
+                  width="17"
+                  height="16"
+                >
+                  <rect x="0.5" width="16" height="16" fill="#D9D9D9" />
+                </mask>
+                <g mask="url(#mask0_591_21648)">
+                  <path
+                    d="M8.50008 10.6667C9.33342 10.6667 10.0417 10.375 10.6251 9.79169C11.2084 9.20835 11.5001 8.50002 11.5001 7.66669C11.5001 6.83335 11.2084 6.12502 10.6251 5.54169C10.0417 4.95835 9.33342 4.66669 8.50008 4.66669C7.66675 4.66669 6.95842 4.95835 6.37508 5.54169C5.79175 6.12502 5.50008 6.83335 5.50008 7.66669C5.50008 8.50002 5.79175 9.20835 6.37508 9.79169C6.95842 10.375 7.66675 10.6667 8.50008 10.6667ZM8.50008 9.46669C8.00008 9.46669 7.57508 9.29169 7.22508 8.94169C6.87508 8.59169 6.70008 8.16669 6.70008 7.66669C6.70008 7.16669 6.87508 6.74169 7.22508 6.39169C7.57508 6.04169 8.00008 5.86669 8.50008 5.86669C9.00008 5.86669 9.42508 6.04169 9.77508 6.39169C10.1251 6.74169 10.3001 7.16669 10.3001 7.66669C10.3001 8.16669 10.1251 8.59169 9.77508 8.94169C9.42508 9.29169 9.00008 9.46669 8.50008 9.46669ZM8.50008 12.6667C6.87786 12.6667 5.40008 12.2139 4.06675 11.3084C2.73341 10.4028 1.76675 9.18891 1.16675 7.66669C1.76675 6.14446 2.73341 4.93058 4.06675 4.02502C5.40008 3.11946 6.87786 2.66669 8.50008 2.66669C10.1223 2.66669 11.6001 3.11946 12.9334 4.02502C14.2667 4.93058 15.2334 6.14446 15.8334 7.66669C15.2334 9.18891 14.2667 10.4028 12.9334 11.3084C11.6001 12.2139 10.1223 12.6667 8.50008 12.6667ZM8.50008 11.3334C9.75564 11.3334 10.9084 11.0028 11.9584 10.3417C13.0084 9.68058 13.8112 8.78891 14.3667 7.66669C13.8112 6.54446 13.0084 5.6528 11.9584 4.99169C10.9084 4.33058 9.75564 4.00002 8.50008 4.00002C7.24453 4.00002 6.09175 4.33058 5.04175 4.99169C3.99175 5.6528 3.18897 6.54446 2.63341 7.66669C3.18897 8.78891 3.99175 9.68058 5.04175 10.3417C6.09175 11.0028 7.24453 11.3334 8.50008 11.3334Z"
+                    fill="#0680CD"
+                  />
+                </g>
+              </svg>
+            </button>
+            <button mat-icon-button (click)="editAnnouncement(announcement)">
+              <svg
+                width="17"
+                height="16"
+                viewBox="0 0 17 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <mask
+                  id="mask0_591_21651"
+                  style="mask-type: alpha"
+                  maskUnits="userSpaceOnUse"
+                  x="0"
+                  y="0"
+                  width="17"
+                  height="16"
+                >
+                  <rect x="0.5" width="16" height="16" fill="#D9D9D9" />
+                </mask>
+                <g mask="url(#mask0_591_21651)">
+                  <path
+                    d="M3.83333 12.6667H4.78333L11.3 6.15L10.35 5.2L3.83333 11.7167V12.6667ZM2.5 14V11.1667L11.3 2.38333C11.4333 2.26111 11.5806 2.16667 11.7417 2.1C11.9028 2.03333 12.0722 2 12.25 2C12.4278 2 12.6 2.03333 12.7667 2.1C12.9333 2.16667 13.0778 2.26667 13.2 2.4L14.1167 3.33333C14.25 3.45556 14.3472 3.6 14.4083 3.76667C14.4694 3.93333 14.5 4.1 14.5 4.26667C14.5 4.44444 14.4694 4.61389 14.4083 4.775C14.3472 4.93611 14.25 5.08333 14.1167 5.21667L5.33333 14H2.5ZM10.8167 5.68333L10.35 5.2L11.3 6.15L10.8167 5.68333Z"
+                    fill="#00569B"
+                  />
+                </g>
+              </svg>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteAnnouncement(announcement)"
+            >
+              <svg
+                width="17"
+                height="16"
+                viewBox="0 0 17 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <mask
+                  id="mask0_591_21654"
+                  style="mask-type: alpha"
+                  maskUnits="userSpaceOnUse"
+                  x="0"
+                  y="0"
+                  width="17"
+                  height="16"
+                >
+                  <rect x="0.5" width="16" height="16" fill="#D9D9D9" />
+                </mask>
+                <g mask="url(#mask0_591_21654)">
+                  <path
+                    d="M6.76675 11L8.50008 9.26667L10.2334 11L11.1667 10.0667L9.43342 8.33333L11.1667 6.6L10.2334 5.66667L8.50008 7.4L6.76675 5.66667L5.83341 6.6L7.56675 8.33333L5.83341 10.0667L6.76675 11ZM5.16675 14C4.80008 14 4.48619 13.8694 4.22508 13.6083C3.96397 13.3472 3.83341 13.0333 3.83341 12.6667V4H3.16675V2.66667H6.50008V2H10.5001V2.66667H13.8334V4H13.1667V12.6667C13.1667 13.0333 13.0362 13.3472 12.7751 13.6083C12.514 13.8694 12.2001 14 11.8334 14H5.16675Z"
+                    fill="#DC4A38"
+                  />
+                </g>
+              </svg>
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  @if (announcements !== undefined && announcements.length === 0) {
+  <div class="w-full text-sm">No users found</div>
+  }
   <mat-paginator
     *ngIf="announcements.length > 0"
     #paginator
@@ -446,11 +199,3 @@
   >
   </mat-paginator>
 </div>
-<style>
-  .filter-form-field ::ng-deep .mat-mdc-text-field-wrapper {
-    height: 45px !important;
-  }
-  .filter-form-field ::ng-deep .mat-mdc-text-field-wrapper {
-    margin-left: 40px !important;
-  }
-</style>

@@ -30,7 +30,7 @@ public interface ManageAnnouncements {
 
 	public List<ProjectResponse> getProjectObject(List<Long> projectIdList);
 
-	public List<String> getAuthors();
+	public List<AuthorResponse> getAuthors();
 
 	public GeneralResponse getAnnouncementList();
 }

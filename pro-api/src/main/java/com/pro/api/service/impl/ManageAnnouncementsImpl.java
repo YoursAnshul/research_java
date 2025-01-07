@@ -174,7 +174,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			sql.append(" AND CONCAT(u.fname, ' ', u.lname) IN (" + authorName + ") ");
 		}
 		if (sortBy != null && orderBy != null) {
-			if (sortBy.equals("startDate")) {
+			if (sortBy.equals("startdate")) {
 				sql.append(" ORDER BY startdate " + orderBy + " ");
 			} else if (sortBy.equals("expiration")) {
 				sql.append(" ORDER BY expiredate " + orderBy + "  ");
@@ -272,12 +272,17 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	}
 
 	@Override
-	public List<String> getAuthors() {
+	public List<AuthorResponse> getAuthors() {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT DISTINCT CONCAT(u.fname, ' ', u.lname) AS userName ");
+		sql.append(" SELECT DISTINCT u.userid, CONCAT(u.fname, ' ', u.lname) AS userName ");
 		sql.append(" FROM core.announcements a ");
 		sql.append(" INNER JOIN core.users u ON CAST(a.author AS smallint) = u.userid ");
-		List<String> list = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> rs.getString("userName"));
+		List<AuthorResponse> list = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			AuthorResponse res = new AuthorResponse();
+			res.setUserName(rs.getString("userName"));
+			res.setUserId(rs.getLong("userid"));
+			return res;
+		});
 		return list;
 	}
 
@@ -293,7 +298,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append(" FROM core.projects p ");
 		sql.append(" WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
 		sql.append(" ) AS p ON TRUE ");
-		sql.append(" WHERE a.startdate <= CURRENT_DATE AND (a.expiredate >= CURRENT_DATE or a.expiredate is null)  ORDER BY a.startdate DESC ");
+		sql.append(
+				" WHERE a.startdate <= CURRENT_DATE AND (a.expiredate >= CURRENT_DATE or a.expiredate is null)  ORDER BY a.startdate DESC ");
 
 		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AnnouncementResponse announcement = new AnnouncementResponse();

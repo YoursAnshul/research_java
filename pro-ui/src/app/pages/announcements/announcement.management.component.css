@@ -326,7 +326,7 @@
   min-height: 0px !important;
 }
 
-::ng-deep .mat-mdc-header-row{
+::ng-deep .mat-mdc-header-row {
   height: unset !important;
 }
 .center-message {
@@ -334,7 +334,7 @@
   justify-content: center;
   align-items: center;
   height: 80vh;
-  background-color: #f3f4f6; 
+  background-color: #f3f4f6;
 }
 
 .message-wrapper {
@@ -366,22 +366,27 @@
   }
 }
 
-
-.custom-table-height th.mat-header-cell, 
+.custom-table-height th.mat-header-cell,
 .custom-table-height td.mat-cell {
-  padding: 4px 8px; /* Adjust padding to make the rows shorter */
-  height: 30px; /* Optional: Set a specific height */
+  padding: 4px 8px;
+  height: 30px;
 }
 
-.custom-table-height tr.mat-row, 
+.custom-table-height tr.mat-row,
 .custom-table-height tr.mat-header-row {
-  height: 30px; /* Decrease the overall row height */
+  height: 30px;
 }
 
 .custom-table-height mat-form-field {
-  margin-top: 0 !important; /* Adjust form-field margin if affecting height */
+  margin-top: 0 !important;
 }
 
 .custom-table-height .filter-container {
-  margin-top: 5px !important; /* Fine-tune spacing in filters */
+  margin-top: 5px !important;
+}
+.fixed-width {
+  width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
