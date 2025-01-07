@@ -12,9 +12,9 @@
       {{ previewobj.title }}
     </p>
     <!-- <p>{{ previewobj.bodyText }}</p> -->
-    <div
+    <div 
     [innerHTML]="getSafeHtml(previewobj.bodyText)"
-    class="announcement-body"
+    class="announcement-body announcement-text"
   ></div>
     <div class="meta">
       <div>
@@ -47,3 +47,11 @@
     </div>
   </div>
 </div>
+<style>
+  ::ng-deep .announcement-text a {
+    color: blue !important; 
+    text-decoration: underline !important; 
+    cursor: pointer !important;
+  }
+  
+  </style>
