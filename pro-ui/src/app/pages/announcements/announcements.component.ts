@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface Announcement {
   title: string;
@@ -27,7 +28,7 @@ export class AnnouncementsComponent implements OnInit {
   allProjectList: any[] = [];
   constructor(
     private http: HttpClient,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,private sanitizer: DomSanitizer
   ) {}
   ngOnInit(): void {
     this.authenticationService.authenticatedUser.subscribe(
@@ -38,6 +39,16 @@ export class AnnouncementsComponent implements OnInit {
     );
     this.getAnnouncementList();
     this.getProjectInfo();
+  }
+  getSafeHtml(htmlString: string): SafeHtml {
+    console.log("htmlString---------- ", htmlString);
+  
+    if (!htmlString) return '';
+      const updatedHtmlString = htmlString.replace(/<a\s+(.*?)href="(?!https?:\/\/)(.*?)"/g, (match, preAttributes, url) => {
+      return `<a ${preAttributes}href="https://${url}"`;
+    });
+  
+    return this.sanitizer.bypassSecurityTrustHtml(updatedHtmlString);
   }
   getAnnouncementList(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list`;

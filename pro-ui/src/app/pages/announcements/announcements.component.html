@@ -46,21 +46,10 @@
       </h4>
 
       <div class="announcement-text">
-        <p>
-          <span
-            *ngFor="let part of getHighlightedTextParts(announcement.bodyText)"
-          >
-            <span *ngIf="!part.isLink" [innerHTML]="part.text"></span>
-            <a
-              *ngIf="part.isLink"
-              [href]="'https://' + part.text"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="underlined-link"
-              >{{ part.text }}</a
-            >
-          </span>
-        </p>
+        <div
+          [innerHTML]="getSafeHtml(announcement.bodyText)"
+          class="announcement-body"
+        ></div>
         <button
           *ngIf="announcement.bodyText.length > maxLength"
           (click)="toggleText(announcement)"
@@ -117,3 +106,13 @@
     </div>
   </ng-template>
 </div>
+
+
+<style>
+::ng-deep .announcement-text a {
+  color: blue !important; 
+  text-decoration: underline !important; 
+  cursor: pointer !important;
+}
+
+</style>

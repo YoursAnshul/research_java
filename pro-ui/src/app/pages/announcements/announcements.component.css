@@ -1,11 +1,12 @@
 .announcements-panel {
-  /* max-height: 625px; */
+  max-height: 630px;
   padding: 16px;
   border-left: 1px solid #ccc;
-  /* overflow-y: auto; */
+  overflow-y: auto;
   font-family: "Roboto", sans-serif;
   color: #262626;
   border: 1px solid #c2c2c2;
+  /* width: 450px; */
 }
 
 .announcements-header {

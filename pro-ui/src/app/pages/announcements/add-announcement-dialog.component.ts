@@ -106,12 +106,14 @@ export class AddAnnouncementDialogComponent implements OnInit {
       modules: {
         toolbar: {
           container: [
+            
             ['undo', 'redo'],
             [{ header: [1, 2, 3, false] }],
             [{ align: [] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'blockquote', 'code-block', 'image'],
+            ['link'],
+            ['blockquote', 'code-block', 'image'],
             [{ color: [] }, { background: [] }],
             ['emoji'],
           ],
@@ -149,6 +151,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
       (delta: any, oldDelta: any, source: string) => {
         if (source === 'user') {
           this.handleWordLimit();
+          const content = this.quill.root.innerHTML;
+    console.log('Editor content with hyperlinks:', content);
         }
       }
     );
@@ -233,7 +237,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         announcementId: null,
         icon: this.selectedEmoji,
         title: this.announcementForm.value.title,
-        bodyText: plainTextContent,
+        bodyText: this.announcement.content,
         authorId: selectedAuthorId,
         isAuthor: this.announcementForm.value.isAuthor,
         startDate: this.announcementForm.value.startDate,
