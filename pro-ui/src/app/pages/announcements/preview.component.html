@@ -11,7 +11,11 @@
     <p style="font-weight: bold">
       {{ previewobj.title }}
     </p>
-    <p>{{ previewobj.bodyText }}</p>
+    <!-- <p>{{ previewobj.bodyText }}</p> -->
+    <div
+    [innerHTML]="getSafeHtml(previewobj.bodyText)"
+    class="announcement-body"
+  ></div>
     <div class="meta">
       <div>
         <small>Posted {{ previewobj.start | date : "MM/dd/yyyy" }} </small>
