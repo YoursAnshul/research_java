@@ -58,6 +58,7 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   sortBy: string = '';
   orderBy: string = '';
+  searchTerm: string = '';
 
   isLoading = false;
   userObj: any;
@@ -88,13 +89,20 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   public headerItemsChange(headerItems: TableHeaderItem[]): void {
     this.headerItems = headerItems;
+    this.searchTerm = ''
     this.getSort();
   }
   getSort(): void {
     for (var i = 0; i < this.headerItems.length; i++) {
+      if(this.headerItems[i].searchValue){
+        console.log("this.headerItems[i]---------- ",this.headerItems[i].searchValue);
+        this.searchTerm = this.headerItems[i].searchValue;
+      }
+      
       if (this.headerItems[i].sortDirection && this.headerItems[i].name) {
         this.sortBy = this.headerItems[i].name || '';
         this.orderBy = this.headerItems[i].sortDirection || '';
+
       }
     }
     this.getList(this.pageIndex + 1);
@@ -120,6 +128,9 @@ export class ManageAnnouncementsComponent implements OnInit {
     if (this.sortBy) {
       params = params.set('sortBy', this.sortBy).set('orderBy', this.orderBy);
     }
+    if (this.searchTerm) {
+      params = params.set('keyword', this.searchTerm);
+    }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
     this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
