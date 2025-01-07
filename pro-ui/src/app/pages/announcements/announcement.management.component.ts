@@ -15,9 +15,11 @@ import { PreviewComponent } from './preview.component';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import {
   IAuthenticatedUser,
+  IDropDownValue,
   IFormFieldVariable,
 } from '../../interfaces/interfaces';
 import { SelectedValue } from '../../models/presentation/selected-value';
+import { Utils } from '../../classes/utils';
 
 @Component({
   selector: 'app-manage-announcements',
@@ -26,12 +28,21 @@ import { SelectedValue } from '../../models/presentation/selected-value';
 })
 export class ManageAnnouncementsComponent implements OnInit {
   @Input() authenticatedUser!: IAuthenticatedUser;
-
+  public roleHeaderItem: TableHeaderItem = new TableHeaderItem(
+    'Author',
+    'author',
+    true,
+    false,
+    true,
+    false,
+    undefined,
+    true
+  );
   public headerItems: TableHeaderItem[] = [
     new TableHeaderItem('Start', 'startdate', false, false, true, false),
     new TableHeaderItem('Expiration', 'expiration', false, false, true, false),
     new TableHeaderItem('Title', 'title', false, true, true, false),
-    new TableHeaderItem('Author', 'author', true, false, true, false),
+    this.roleHeaderItem,
     new TableHeaderItem(
       'Display Announcements To',
       'display_announcement_to',
@@ -62,11 +73,9 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   isLoading = false;
   userObj: any;
-  allAuthors: string[] = [];
-  filteredAuthors: string[] = [];
   public authores: IFormFieldVariable | undefined = undefined;
   public selectedAuthores: SelectedValue[] = [];
-
+  public selectCommaSeparatedAuthores: string = '';
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -89,22 +98,28 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   public headerItemsChange(headerItems: TableHeaderItem[]): void {
     this.headerItems = headerItems;
-    this.searchTerm = ''
-    this.getSort();
+    this.searchTerm = '';
+    this.selectedAuthores = this.roleHeaderItem.filterValue;
+    this.applyFilter();
   }
-  getSort(): void {
+  applyFilter(): void {
     for (var i = 0; i < this.headerItems.length; i++) {
-      if(this.headerItems[i].searchValue){
-        console.log("this.headerItems[i]---------- ",this.headerItems[i].searchValue);
+      if (this.headerItems[i].searchValue) {
         this.searchTerm = this.headerItems[i].searchValue;
       }
-      
+
       if (this.headerItems[i].sortDirection && this.headerItems[i].name) {
         this.sortBy = this.headerItems[i].name || '';
         this.orderBy = this.headerItems[i].sortDirection || '';
-
       }
     }
+    this.selectCommaSeparatedAuthores =
+      this.selectedAuthores && this.selectedAuthores.length > 0
+        ? this.selectedAuthores
+            .map((author) => `'${author.item?.dropDownItem || ''}'`) 
+            .join(', ')
+        : ''; 
+
     this.getList(this.pageIndex + 1);
   }
   getProjectInfo(): void {
@@ -130,7 +145,10 @@ export class ManageAnnouncementsComponent implements OnInit {
     }
     if (this.searchTerm) {
       params = params.set('keyword', this.searchTerm);
-    }
+    }
+    if (this.selectCommaSeparatedAuthores) {
+      params = params.set('authorName', this.selectCommaSeparatedAuthores);
+    }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
     this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
@@ -240,10 +258,20 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   getAuthors(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/all-authors`;
-    this.http.get<string[]>(apiUrl).subscribe({
+    this.http.get<any>(apiUrl).subscribe({
       next: (data: any) => {
-        this.allAuthors = data ? data : [];
-        this.filteredAuthors = this.allAuthors;
+        if (data?.Subject) {
+          const authorDropDownValues = Utils.convertObjectArrayToDropDownValues(
+            data.Subject,
+            'userId',
+            'userName'
+          );
+          const roleHeaderItem: TableHeaderItem | undefined =
+            this.headerItems.find((x) => x.name === 'author');
+          if (roleHeaderItem) {
+            roleHeaderItem.filterOptions = authorDropDownValues;
+          }
+        }
       },
       error: (error: any) => {
         console.error('Error fetching authors:', error);

@@ -170,9 +170,10 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			keyword = keyword.toLowerCase();
 			sql.append(" AND  LOWER(a.titletext) LIKE  '%" + keyword + "%' ");
 		}
-		if (authorName != null && !authorName.isEmpty()) {
+		if (authorName != null && !authorName.isEmpty() && !authorName.equals("''")) {
 			sql.append(" AND CONCAT(u.fname, ' ', u.lname) IN (" + authorName + ") ");
 		}
+		System.out.println(sql.toString());
 		if (sortBy != null && orderBy != null) {
 			if (sortBy.equals("startdate")) {
 				sql.append(" ORDER BY startdate " + orderBy + " ");
