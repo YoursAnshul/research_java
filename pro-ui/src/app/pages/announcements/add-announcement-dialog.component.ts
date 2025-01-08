@@ -287,7 +287,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.dialogRef.close();
   }
   openPreview(): void {
-    // this.closeDialog();
+    this.closeDialog();
     this.announcement.content = this.quill.root.innerHTML;
     const plainTextContent = this.quill.root.textContent;
     const selectedAuthorName = this.selectedAuthor?.userName;
@@ -300,9 +300,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
         ? 'Any Projects'
         : this.selectedProjects,
     };
-    const dialogRef = this.dialog.open(PreviewComponent, {
+    const previewDialogRef = this.dialog.open(PreviewComponent, {
       width: '600px',
       data: announcementData,
+    });
+  
+    previewDialogRef.afterClosed().subscribe(() => {
+      this.dialog.open(AddAnnouncementDialogComponent, {
+        width: '600px',
+        data: this.announcementData, 
+      });
     });
   }
 
