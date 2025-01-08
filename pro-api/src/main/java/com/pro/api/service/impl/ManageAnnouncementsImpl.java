@@ -184,7 +184,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 				sql.append(" ORDER BY titletext " + orderBy + " ");
 
 			} else if (sortBy.equals("author")) {
-				sql.append(" ORDER BY author " + orderBy + " ");
+				sql.append(" ORDER BY userName " + orderBy + " ");
 
 			}
 		} else {

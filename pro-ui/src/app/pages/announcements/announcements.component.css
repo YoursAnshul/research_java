@@ -30,7 +30,7 @@
 
 .announcement-title {
   color: #0680cd;
-  text-decoration: underline;
+  /* text-decoration: underline; */
   cursor: pointer;
   margin-left: 8px;         
 }
