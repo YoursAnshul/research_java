@@ -187,6 +187,19 @@ mat-dialog-content {
   margin: 10px 0;
   overflow-y: auto;
 }
+::ng-deep .editor-container .ql-tooltip.ql-editing {
+  left: 50% !important;
+  top: 30px !important;
+  transform: translateX(-50%) !important;
+  transform-origin: center !important;
+}
+
+::ng-deep .editor-container .ql-tooltip {
+  left: 50% !important;
+  top: 30px !important;
+  transform: translateX(-50%) !important;
+  transform-origin: center !important;
+}
 
 ::ng-deep .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
   background-color: transparent !important;
@@ -275,7 +288,7 @@ mat-checkbox {
   border-radius: 12px;
   background-color: white;
   color: #333;
-  border: 1px solid #B5B5B5;
+  border: 1px solid #b5b5b5;
   display: inline-flex;
   align-items: center;
   margin: 2px;
@@ -312,14 +325,14 @@ mat-checkbox {
 }
 
 .custom-checkbox input {
-  display: none; 
+  display: none;
 }
 
 .custom-checkbox .checkmark {
   width: 14px;
   height: 14px;
   border: 2px solid #b0b0b0;
-  background-color: #fff; 
+  background-color: #fff;
   margin-right: 8px;
   position: relative;
   display: inline-block;
@@ -328,7 +341,7 @@ mat-checkbox {
 }
 
 .custom-checkbox input:checked + .checkmark {
-  background-color: #007bff; 
+  background-color: #007bff;
   border-color: #007bff;
 }
 
@@ -360,7 +373,6 @@ mat-checkbox {
   transform: translate(-50%, -50%);
 }
 
-
 ::ng-deep .ql-emoji {
   margin-left: -18px;
 }
@@ -372,8 +384,8 @@ mat-checkbox {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; 
-  background: rgba(255, 255, 255, 0.7); 
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.7);
 }
 .button-loader {
   display: inline-block;

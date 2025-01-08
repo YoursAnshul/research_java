@@ -67,7 +67,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
-        console.log('this.authenticatedUser---' + this.authenticatedUser.eppn);
         this.userObj = this.authenticatedUser;
       }
     );
@@ -106,7 +105,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
       modules: {
         toolbar: {
           container: [
-            
             ['undo', 'redo'],
             [{ header: [1, 2, 3, false] }],
             [{ align: [] }],
@@ -152,7 +150,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         if (source === 'user') {
           this.handleWordLimit();
           const content = this.quill.root.innerHTML;
-    console.log('Editor content with hyperlinks:', content);
+          console.log('Editor content with hyperlinks:', content);
         }
       }
     );
@@ -289,7 +287,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.dialogRef.close();
   }
   openPreview(): void {
-    this.closeDialog();
+    // this.closeDialog();
     this.announcement.content = this.quill.root.innerHTML;
     const plainTextContent = this.quill.root.textContent;
     const selectedAuthorName = this.selectedAuthor?.userName;
@@ -302,7 +300,6 @@ export class AddAnnouncementDialogComponent implements OnInit {
         ? 'Any Projects'
         : this.selectedProjects,
     };
-    console.log('Opening preview dialog...', announcementData);
     const dialogRef = this.dialog.open(PreviewComponent, {
       width: '600px',
       data: announcementData,

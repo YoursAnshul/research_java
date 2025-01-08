@@ -204,11 +204,11 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.getList(this.pageIndex + 1);
   }
   viewAnnouncement(announcement: any): void {
-    console.log('View announcement:', announcement);
     this.dialog.open(PreviewComponent, {
       width: '600px',
       data: announcement,
     });
+    
   }
   editAnnouncement(announcement: any): void {
     const dialogRef = this.dialog.open(AddAnnouncementDialogComponent, {
