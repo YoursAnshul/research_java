@@ -106,11 +106,15 @@ export class ManageAnnouncementsComponent implements OnInit {
     for (var i = 0; i < this.headerItems.length; i++) {
       if (this.headerItems[i].searchValue) {
         this.searchTerm = this.headerItems[i].searchValue;
+        this.pageIndex =0;
+        this.getList(this.pageIndex + 1);
       }
 
       if (this.headerItems[i].sortDirection && this.headerItems[i].name) {
         this.sortBy = this.headerItems[i].name || '';
         this.orderBy = this.headerItems[i].sortDirection || '';
+        this.pageIndex =0;
+        this.getList(this.pageIndex + 1);
       }
     }
     this.selectCommaSeparatedAuthores =
@@ -120,7 +124,6 @@ export class ManageAnnouncementsComponent implements OnInit {
             .join(', ')
         : ''; 
 
-    this.getList(this.pageIndex + 1);
   }
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
