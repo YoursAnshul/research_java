@@ -189,14 +189,14 @@ mat-dialog-content {
 }
 ::ng-deep .editor-container .ql-tooltip.ql-editing {
   left: 50% !important;
-  top: 30px !important;
+  top: 130px !important;
   transform: translateX(-50%) !important;
   transform-origin: center !important;
 }
 
 ::ng-deep .editor-container .ql-tooltip {
   left: 50% !important;
-  top: 30px !important;
+  top: 130px !important;
   transform: translateX(-50%) !important;
   transform-origin: center !important;
 }
