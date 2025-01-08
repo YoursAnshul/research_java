@@ -385,7 +385,7 @@
   margin-top: 5px !important;
 }
 .fixed-width {
-  width: 350px;
+  width: 400px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

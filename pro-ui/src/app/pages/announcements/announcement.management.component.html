@@ -40,13 +40,13 @@
         <div *ngFor="let announcement of announcements" class="table-row">
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
-            style="width: 150px"
+            style="width: 170px"
           >
             {{ announcement.start }}
           </div>
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
-            style="width: 150px"
+            style="width: 170px"
           >
             {{ announcement.expiration }}
           </div>
@@ -58,7 +58,7 @@
           </div>
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
-            style="width: 200px"
+            style="width: 220px"
           >
             <!-- {{ announcement.authorName }} -->
             {{ announcement.authorName }}
@@ -89,7 +89,7 @@
           </div>
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
-            style="width: 200px"
+            style="width: 140px"
           >
             <button mat-icon-button (click)="viewAnnouncement(announcement)">
               <svg
@@ -118,7 +118,7 @@
                 </g>
               </svg>
             </button>
-            <button mat-icon-button (click)="editAnnouncement(announcement)">
+            <button mat-icon-button (click)="editAnnouncement(announcement)" style="margin-left: -15px;">
               <svg
                 width="17"
                 height="16"
@@ -145,7 +145,7 @@
                 </g>
               </svg>
             </button>
-            <button
+            <button style="margin-left: -15px;"
               mat-icon-button
               color="warn"
               (click)="deleteAnnouncement(announcement)"
