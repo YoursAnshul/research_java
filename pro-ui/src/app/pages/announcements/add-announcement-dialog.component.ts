@@ -295,7 +295,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
       bodyText: plainTextContent,
       start: this.announcementForm.value.startDate,
       authorName: selectedAuthorName,
-      displayTo: this.isAnyProjectsSelected
+      displayTo: this.isAnyProjectsSelected,
+      isAuthor: this.announcementForm.value.isAuthor
         ? 'Any Projects'
         : this.selectedProjects,
     };
