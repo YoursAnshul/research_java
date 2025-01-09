@@ -27,7 +27,6 @@ export class ProjectsService {
           console.log(response.Message);
         } else {
           this.logsService.logError(response.Message);
-          console.log(response.Message);
         }
       },
       error => {

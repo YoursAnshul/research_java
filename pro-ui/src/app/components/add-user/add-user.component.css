@@ -505,3 +505,13 @@ app-form-field {
   height: 100%; /* Maintain full height */
   object-fit: cover; /* Ensures the image is cropped to fill the container */
 }
+
+.cursor {
+  cursor: pointer;
+  color: #0680cd;
+  text-decoration: underline;
+}
+
+.upper {
+  text-transform: uppercase;
+}

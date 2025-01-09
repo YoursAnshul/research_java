@@ -17,6 +17,7 @@ import { CustomPageComponent } from './pages/custom-page/custom.page.component';
 import { ParticipantIdComponent } from './components/participant-id/participant-id.component';
 import { ParticipantSearchComponent } from './components/participant-search/participant-search.component';
 import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
+import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
 
 const routes: Routes = [
 
@@ -37,6 +38,7 @@ const routes: Routes = [
   { path: 'configuration', component: ConfigurationComponent},
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent},
   { path: 'announcement-management', component: ManageAnnouncementsComponent},
+  { path: 'scheduling-info', data: { hideHeaderFooter: true }, component: SchedulingInfoComponent},
   
   //{ path: 'test', component: TestComponent },
 ];

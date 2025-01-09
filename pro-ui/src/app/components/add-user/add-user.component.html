@@ -1,8 +1,8 @@
 <div class="container">
     <!-- Breadcrumb -->
     <nav class="breadcrumb">
-        <span class="breadcrumb-item">Users</span>
-        <span class="breadcrumb-item">{{getTitle()}}</span>
+        <span class="breadcrumb-item cursor upper" (click)="closeWindow()">Users</span>
+        <span class="breadcrumb-item upper">{{getTitle()}}</span>
     </nav>
 
     <!-- Card with Tabs -->
@@ -20,7 +20,11 @@
 
                 <div class="upload" (click)="fileInput.click()">
                     <span>Upload Photo</span>
-                    <mat-icon class="info-icon" svgIcon="info"></mat-icon>
+                    <mat-icon class="info-icon" svgIcon="info"  [ngbTooltip]="tooltipContent"></mat-icon>
+                    <ng-template #tooltipContent>
+                        JPG or PNG <br />
+                        Max. 10 MB
+                      </ng-template>
                 </div>
 
                 <input #fileInput type="file" hidden accept="image/jpeg, image/png" (change)="onFileChange($event)" />
@@ -32,9 +36,9 @@
         
         <div class="divider"></div>
         <!-- Tabs -->
-        <mat-tab-group class="add-user-tab" (selectedTabChange)="onTabChanged($event)">
+        <mat-tab-group class="add-user-tab" (selectedTabChange)="onTabChanged($event)"  [(selectedIndex)]="selectedTabIndex">
             <!-- Tab 1: Scheduling -->
-            <mat-tab label="Scheduling">
+            <mat-tab label="Scheduling">`
                 <ng-template mat-tab-label>
                     <span [class.invalid-emphasis]="coreHoursInvalid">Scheduling</span>
                     <span class="invalid-emphasis" *ngIf="coreHoursInvalid">&nbsp;<sup>**</sup></span>
@@ -99,9 +103,10 @@
                                 [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
                             </app-form-field>
                             <mat-icon svgIcon="blue-info" class="info blue-info"
-                                *ngIf="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
-                                (mouseenter)="displaySchedulingLevelInfo($event)"
-                                (mouseleave)="hideSchedulingLevelInfo()"></mat-icon>
+                             style="cursor: pointer;"
+                             *ngIf="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                             (click)="moveToPage($event)" (mouseenter)="displaySchedulingLevelInfo($event)"
+                             (mouseleave)="hideSchedulingLevelInfo()"></mat-icon>
                         </div>
 
                         <div class="hr"></div>

@@ -75,6 +75,7 @@ export class AddUserComponent implements OnInit{
   errorMessageForImage: string | null = null;
   acceptedFormats = ['image/jpeg', 'image/png'];
   maxFileSizeMB = 10;
+  selectedTabIndex = 1;
 
   constructor(private fb: FormBuilder,private globalsService: GlobalsService,
   private authenticationService: AuthenticationService,
@@ -567,9 +568,35 @@ export class AddUserComponent implements OnInit{
     if (formField.formFieldVariable.formField?.columnName == 'dempoid1' && this.createForm) {
       return true;
     }
-
+    if (formField.formFieldVariable.formField?.columnName == 'empstatus') {
+      let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
+      let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
+     
+      if(formField.value == 1) {
+        if (permStartDateField) {
+          permStartDateField.formFieldVariable.formField.required = true;
+          permStartDateField.invalid = false;
+        }
+        if (tempStartDateField) {
+          tempStartDateField.formFieldVariable.formField.required = false;
+          tempStartDateField.invalid = false;
+        }
+      } else if(formField.value == 2) {
+        if (permStartDateField) {
+          permStartDateField.formFieldVariable.formField.required = false;
+          permStartDateField.invalid = false;
+        }
+        if (tempStartDateField) {
+          tempStartDateField.formFieldVariable.formField.required = true;
+          tempStartDateField.invalid = false;
+        }
+      }   
+  }
+  
     //shoehorn in required temp/perm date checking before anything that could return a true/false
     if (formField.formFieldVariable.formField?.columnName == 'permstartdate' || formField.formFieldVariable.formField?.columnName == 'permstartdate') {
+      let empstatus: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'empstatus');
+       if(empstatus && !empstatus.value) {
       let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
       let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
       if (permStartDateField) {
@@ -600,6 +627,8 @@ export class AddUserComponent implements OnInit{
         }
       }
     }
+    }
+
 
     //employment type
     if (formField.formFieldVariable.formField?.columnName == 'employmenttype' && this.activeFormField.value == true) {
@@ -626,12 +655,13 @@ export class AddUserComponent implements OnInit{
       formField.value = null;
       return true;
     }
-
+    /**
     //face to face
     if (formField.formFieldVariable.formField?.columnName == 'facetofacedate' && !this.validParentChild('facetoface', '1')) {
       formField.value = null;
       return true;
     }
+       */
 
     //welcome email
     if (formField.formFieldVariable.formField?.columnName == 'welcomeemaildate' && !this.validParentChild('welcomeemail', '1')) {
@@ -684,56 +714,6 @@ export class AddUserComponent implements OnInit{
     }
   }
 
-  displaySchedulingLevelInfo(event: any): void {
-    let htmlMessage: string = '';
-
-    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
-    htmlMessage = htmlMessage + "<p><ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul></p>";
-    htmlMessage = htmlMessage + "<br />";
-    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
-    htmlMessage = htmlMessage + "<p><ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul></p>";
-    htmlMessage = htmlMessage + "<br />";
-    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
-    htmlMessage = htmlMessage + "<p><ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "</ul></p>";
-
-    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
-    hoverMessage.innerHTML = htmlMessage;
-
-    this.globalsService.showHoverMessage.next(true);
-
-    hoverMessage.style.top = '0px';
-    hoverMessage.style.left = event.clientX + 'px';
-  }
-
-  hideSchedulingLevelInfo(): void {
-    this.globalsService.showHoverMessage.next(false);
-  }
-  
   openDialog(data: any): void {
     const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
       width: '300px',
@@ -893,6 +873,79 @@ export class AddUserComponent implements OnInit{
       return 'Add New User';
     }
     return `${this.selectedUser?.fname} ${this.selectedUser?.lname}`
+  }
+
+  closeWindow(): void {
+    this.closewindow.emit();
+  }
+
+  displaySchedulingLevelInfo(event: any): void {
+    let htmlMessage: string = '<div class="scheduling-info">';
+
+    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 1</p>';
+    htmlMessage = htmlMessage + "<ul>";
+    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
+    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
+    htmlMessage = htmlMessage + "</ul>";
+    htmlMessage = htmlMessage + "<br />";
+    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 2</p>';
+    htmlMessage = htmlMessage + "<ul>";
+    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
+    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
+    htmlMessage = htmlMessage + "</ul>";
+    htmlMessage = htmlMessage + "<br />";
+    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 3</p>';
+    htmlMessage = htmlMessage + "<ul>";
+    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+    htmlMessage = htmlMessage + "</ul></div>";
+
+    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
+    hoverMessage.innerHTML = htmlMessage;
+
+    this.globalsService.showHoverMessage.next(true);
+
+    hoverMessage.style.top = '0px';
+    hoverMessage.style.left = event.clientX + 'px';
+    hoverMessage.style.zIndex = '1005';
+    hoverMessage.style.maxHeight ='calc(100vh - 10px)';
+    hoverMessage.style.overflow = 'auto';
+    hoverMessage.style.fontSize = '12px';
+  }
+
+  hideSchedulingLevelInfo(): void {
+    this.globalsService.showHoverMessage.next(false);
+  }
+
+  moveToPage(event: MouseEvent): void {
+    event.stopPropagation();
+    const url = "/scheduling-info"; 
+    const width = 350;
+    const height = 1000; 
+    const left = window.screen.width / 2 - width / 2; 
+    const top = window.screen.height / 2 - height / 2; 
+    
+    window.open(
+      url,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
+    );
   }
 
 }

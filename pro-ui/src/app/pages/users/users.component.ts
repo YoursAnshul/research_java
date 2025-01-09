@@ -26,16 +26,17 @@ export class UsersComponent {
   @Input() showSelectedUser = false;
 
   //user status
+  public statuses: IFormFieldVariable | undefined = undefined;
   public activeDv: IDropDownValue = {codeValues: 1, dropDownItem: 'Active', sortOrder: 1};
-  public userStatusDv: IDropDownValue[] = [
-    this.activeDv,
-    {codeValues: 0, dropDownItem: 'Terminated', sortOrder: 2},
-  ];
+  // public userStatusDv: IDropDownValue[] = [
+  //   this.activeDv,
+  //   {codeValues: 0, dropDownItem: 'Terminated', sortOrder: 2},
+  // ];
   public selectedUserStatus: SelectedValue[] = [new SelectedValue(1, this.activeDv)];
 
   //edit schedule status
   public canEditDv: IDropDownValue[] = [
-    {codeValues: 0, dropDownItem: 'Locked', sortOrder: 1},
+    {codeValues: 2, dropDownItem: 'Locked', sortOrder: 1},
     {codeValues: 1, dropDownItem: 'Unlocked', sortOrder: 2},
   ];
   public selectedCanEdit: SelectedValue[] = [];
@@ -51,13 +52,19 @@ export class UsersComponent {
   public roles: IFormFieldVariable | undefined = undefined;
   public selectedRoles: SelectedValue[] = [];
   public createUser: boolean  = false;
+
+  public projectSelected: boolean = false;
+
+  public userStatusAnySelected: boolean = false;
+  public canEditAnySelected: boolean = true;
+  public projectsAnySelected: boolean = true;
   
   //Table definition
   public netIdHeaderItem: TableHeaderItem = new TableHeaderItem('NetID', 'dempoid', false, true, true, false);
   public firstNameHeaderItem: TableHeaderItem = new TableHeaderItem('First Name', 'fname', false, true, true, false);
   public lastNameHeaderItem: TableHeaderItem = new TableHeaderItem('Last Name', 'lname', false, true, true, false);
   public emailHeaderItem: TableHeaderItem = new TableHeaderItem('Email Address', 'emailaddr', false, true, true, false);
-  public userStatusHeaderItem: TableHeaderItem = new TableHeaderItem('User Status', 'status', true, false, true, false, this.userStatusDv, false);
+  public userStatusHeaderItem: TableHeaderItem = new TableHeaderItem('User Status', 'status', true, false, true, false, [], true);
   public roleHeaderItem: TableHeaderItem = new TableHeaderItem('Role', 'role', true, false, true, false, undefined, true);
   public canEditHeaderItem: TableHeaderItem = new TableHeaderItem('Edit Schedule Status', 'canedit', true, false, true, false, this.canEditDv, true);
   public headerItems: TableHeaderItem[] = [
@@ -73,6 +80,8 @@ export class UsersComponent {
     this.canEditHeaderItem,
     new TableHeaderItem(null, null, false, false, false, false),
   ];
+
+  public currentPage: number = 1;
   public pageSize: number = 10;
   public paginatedUsers: User[] = [];
 
@@ -89,7 +98,25 @@ export class UsersComponent {
 
     this.getAllUsers();
 
-    //get scheduling frequency values
+    //get status values
+    this.configurationService.getFormField('Status').subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.statuses = <IFormFieldVariable>response.Subject;
+
+          if (this.statuses.dropDownValues) {
+            let statusHeaderItem: TableHeaderItem | undefined = this.headerItems.find(x => x.name === 'status');
+
+            if (statusHeaderItem) {
+              statusHeaderItem.filterOptions = this.statuses.dropDownValues;
+            }
+          }
+
+        }
+      }
+    );
+
+    //get role values
     this.configurationService.getFormField('Role').subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
@@ -126,7 +153,21 @@ export class UsersComponent {
   //set pagination
   public paginate(): void {
     if (this.filteredUsers) {
-      this.paginatedUsers = this.filteredUsers.slice(0, this.pageSize);
+
+      //if the filtered users are less than the page size, set the current page to 1
+      if (this.filteredUsers.length <= this.pageSize) {
+        this.currentPage = 1;
+      }
+
+      let maxPage: number = Math.floor((this.filteredUsers || []).length / this.pageSize);
+      
+      if (this.currentPage > maxPage) {
+        this.currentPage = maxPage;
+      }
+
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.paginatedUsers = this.filteredUsers.slice(startIndex, endIndex);
     }
   }
 
@@ -141,19 +182,22 @@ export class UsersComponent {
     });
 
     //filter by user status
-    if (this.selectedUserStatus.length > 0) {
-      this.filteredUsers = this.filteredUsers.filter(user => this.selectedUserStatus.map(x => x.value).includes(user.status == '1' ? 1 : 0));
+    if (this.selectedUserStatus.length > 0
+      && (this.selectedUserStatus || [new SelectedValue('')])[0].value !== '0'
+    ) {
+      this.filteredUsers = this.filteredUsers.filter(user => this.selectedUserStatus.map(x => x.value).includes(user.status));
     }
 
     //filter by can edit
-    if (this.selectedCanEdit.length > 0) {
-      this.filteredUsers = this.filteredUsers.filter(user => this.selectedCanEdit.map(x => x.value).includes(user.canedit ? 1 : 0));
+    if (this.selectedCanEdit.length > 0
+      && (this.selectedCanEdit || [new SelectedValue('')])[0].value !== '0') {
+      this.filteredUsers = this.filteredUsers.filter(user => this.selectedCanEdit.map(x => x.value).includes(user.canedit ? 1 : 2));
     }
 
     //filter by trained on/not trained on
-    if (this.selectedProjects.length > 0
-      && (this.selectedProjects || [new SelectedValue('')])[0].value !== '0'
-    ) {
+    if (this.projectSelected
+      && this.selectedProjects.length > 0
+      && (this.selectedProjects || [new SelectedValue('')])[0].value !== '0') {
 
       if (this.trainedOn == 1) {
 
@@ -174,6 +218,11 @@ export class UsersComponent {
         );
 
       }
+    } else if (this.projectSelected
+      && this.selectedProjects.length > 0
+      && this.trainedOn == 1) {
+      this.filteredUsers = this.filteredUsers.filter(user => (user.trainedon || '').length > 0);
+  
     } else if (this.trainedOn == 0) {
       this.filteredUsers = this.filteredUsers.filter(user => !user.trainedon);
     }
@@ -217,19 +266,38 @@ export class UsersComponent {
   }
 
   //detect change on quick filters
-  public quickFilterChange(event: any): void {
+  public quickFilterChange(event: any = undefined): void {
 
     this.userStatusHeaderItem.filterValue = this.selectedUserStatus;
     this.canEditHeaderItem.filterValue = this.selectedCanEdit;
     this.applyFilters();
 
   }
+
+  projectFilterChange(event: any = undefined): void {
+    this.projectSelected = true;
+    this.quickFilterChange(event);
+  }
+
+  //handle change on 
   
   //filter the users on header item change
   public headerItemsChange(headerItems: TableHeaderItem[]): void {
     
     this.selectedUserStatus = this.userStatusHeaderItem.filterValue;
+    if ((this.selectedUserStatus.map((x: any) => x.value) || []).includes('0')) {
+      this.userStatusAnySelected = true;
+    } else {
+      this.userStatusAnySelected = false;
+    }
+
     this.selectedCanEdit = this.canEditHeaderItem.filterValue;
+    
+    if ((this.selectedCanEdit.map((x: any) => x.value) || []).includes('0')) {
+      this.canEditAnySelected = true;
+    } else {
+      this.canEditAnySelected = false;
+    }
     this.selectedRoles = this.roleHeaderItem.filterValue;
     this.applyFilters();
 
@@ -238,10 +306,15 @@ export class UsersComponent {
   //reset all filters
   public resetFilters(): void {
     this.selectedUserStatus = [new SelectedValue(1, this.activeDv)];
-    this.selectedCanEdit = [];
+    this.userStatusAnySelected = false;
+    // this.quickFilterChange(this.selectedUserStatus);
+    this.selectedCanEdit = [new SelectedValue('0')];
+    this.canEditAnySelected = true;
     this.selectedRoles = [];
-    this.selectedProjects = [];
+    this.selectedProjects = [new SelectedValue('0')];
+    this.projectsAnySelected = true;
     this.trainedOn = 1;
+    this.projectSelected = false;
 
     //reset the inline table header search filters
     this.netIdHeaderItem.searchValue = '';
@@ -253,7 +326,7 @@ export class UsersComponent {
     this.userStatusHeaderItem.filterValue = this.selectedUserStatus;
     this.canEditHeaderItem.filterValue = this.selectedCanEdit;
     this.roleHeaderItem.filterValue = this.selectedRoles;
-
+    
     this.applyFilters();
   }
 
@@ -303,6 +376,15 @@ export class UsersComponent {
       this.paginate();
 
     }
+  }
+
+  //get the display value for a status
+  public getStatusDisplay(statusId: string): string {
+    if (this.statuses?.dropDownValues) {
+      let status: IDropDownValue | undefined = this.statuses.dropDownValues.find(option => option.codeValues == (parseInt(statusId) || 0));
+      return status?.dropDownItem ? status.dropDownItem : '';
+    }
+    return '';
   }
 
   //get the display value for a role
@@ -437,6 +519,10 @@ export class UsersComponent {
           return nameA.localeCompare(nameB);
         });
 
+        //COMMENT/UNCOMMENT TO SKIP TO THE VIEW USER COMPONENT
+        // this.showSelectedUser = true;
+        // this.selectedUser = this.filteredUsers.filter(user => user.status == '1')[1];
+
         //initial pagination
         this.paginate();
 
@@ -449,6 +535,11 @@ export class UsersComponent {
       },
     });
 
+  }
+
+  setTrainedOn(trainedOn: number) {
+    this.trainedOn = trainedOn;
+    this.applyFilters();
   }
 
 }

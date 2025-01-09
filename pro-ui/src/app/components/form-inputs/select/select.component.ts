@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { IDropDownValue } from '../../../interfaces/interfaces';
 import { SelectedValue } from '../../../models/presentation/selected-value';
+import { Utils } from '../../../classes/utils';
 
 @Component({
   selector: 'app-select',
@@ -19,15 +20,20 @@ export class SelectComponent {
   @Output() selectedValuesChange = new EventEmitter<any[]>();
   @Input() showDropdown: boolean = false;
   @Output() showDropdownChange = new EventEmitter<boolean>();
+  @Input() disabled: boolean = false;
 
-  public anyValueSelected: boolean = false;
+  @Input() anyValueSelected: boolean = false;
+  @Output() anyValueSelectedChange = new EventEmitter<boolean>();
+
+  public guid: string = '';
 
   constructor() { }
 
   ngOnInit(): void {
-    if ((this.anyLabel || '').length > 0) {
+    if ((this.anyLabel || '').length > 0 && (this.selectedValues.length === 0 || this.selectedValues[0].value === this.anyValue)) {
       this.anyValueSelected = true;
     }
+    this.guid = Utils.generateGUID();
   }
 
   //apply filters to the current calendar view
@@ -37,13 +43,17 @@ export class SelectComponent {
     } else {
       this.selectedValues = this.selectedValues.filter((x: SelectedValue) => x.value !== this.anyValue);
     }
-
+    
     // this.selectedValues = [...this.selectedValues];
     this.selectedValuesChange.emit(this.selectedValues);
   }
 
   //toggle the dropdown menu
   public toggleDropdown(): void {
+    if (this.disabled) {
+      return;
+    }
+
     this.showDropdown = !this.showDropdown;
     this.showDropdownChange.emit(this.showDropdown);
   }
@@ -71,6 +81,7 @@ export class SelectComponent {
     }
 
     this.anyValueSelected = true;
+    this.anyValueSelectedChange.emit(this.anyValueSelected);
     this.applyAnyFilter();
   }
 
@@ -98,6 +109,7 @@ export class SelectComponent {
       } else {
         this.anyValueSelected = false;
       }
+      this.anyValueSelectedChange.emit(this.anyValueSelected);
 
     }
 
@@ -116,15 +128,30 @@ export class SelectComponent {
   }
 
   //close the dropdown menu when clicking outside this component
+  // @HostListener('document:click', ['$event'])
+  // handleClickOutside(event: Event) {
+  //   const target = event.target as HTMLElement;
+  //   if (!target.closest('app-select') && !target.closest('.filter-toggle')) {
+  //     this.showDropdown = false;
+  //     this.showDropdownChange.emit(this.showDropdown);
+  //   }
+  // }
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('app-select') && !target.closest('.filter-toggle')) {
+  const target = event.target as HTMLElement;
+  const clickedComponent = target.closest('.app-select');
+  if (clickedComponent) {
+    const clickedGuid = clickedComponent.getAttribute('data-guid');
+    if (clickedGuid !== this.guid) {
       this.showDropdown = false;
       this.showDropdownChange.emit(this.showDropdown);
     }
+  } else if (!target.closest('.filter-toggle')) {
+    this.showDropdown = false;
+    this.showDropdownChange.emit(this.showDropdown);
   }
-  
+}
+
   //close the dropdown menu when the user presses escapte
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {

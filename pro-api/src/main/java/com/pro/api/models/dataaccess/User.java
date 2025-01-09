@@ -189,6 +189,9 @@ public class User {
 	@Column(name = "manager")
 	private String manager;
 	
+	@Column(name = "hiatuscomments")
+	private String hiatuscomments;
+	
 	public User() {
 
 	}
@@ -663,6 +666,14 @@ public class User {
 	
 	public void setManager(String manager) {
 		this.manager = manager;
+	}
+
+	public String getHiatuscomments() {
+		return hiatuscomments;
+	}
+
+	public void setHiatuscomments(String hiatuscomments) {
+		this.hiatuscomments = hiatuscomments;
 	}
 	
 }

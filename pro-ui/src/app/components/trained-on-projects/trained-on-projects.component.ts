@@ -16,17 +16,24 @@ export class TrainedOnProjectsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+        const trainedProjectIds = new Set(this.trainedOnProjects.map(p => p.projectID));
+        this.notTrainedOnProjects = this.notTrainedOnProjects.filter(project =>
+            !trainedProjectIds.has(project.projectID));
+    }
 
   addTrainedOn(): void {
     if (!this.projectToAdd) {
+      return;
+    }
+    if(this.projectAlreadyExists(this.projectToAdd.projectID)){
       return;
     }
 
     this.projectToAdd.selected = false;
 
     this.trainedOnProjects.push(this.projectToAdd);
+    this.notTrainedOnProjects.splice(this.notTrainedOnProjects.indexOf(this.projectToAdd), 1);
     this.trainedOnChange.emit(this.projectToAdd);
     this.projectToAdd = null;
   }
@@ -39,6 +46,8 @@ export class TrainedOnProjectsComponent implements OnInit {
     this.projectToRemove.selected = false;
 
     this.trainedOnProjects.splice(this.trainedOnProjects.indexOf(this.projectToRemove), 1);
+    this.notTrainedOnProjects.push(this.projectToRemove);
+    this.notTrainedOnProjects.sort((a, b) => a.projectName.localeCompare(b.projectName));
     this.trainedOnChange.emit(this.projectToRemove);
     this.projectToRemove = null;
   }
@@ -79,6 +88,19 @@ export class TrainedOnProjectsComponent implements OnInit {
     }
 
     return false;
+  }
+
+   projectAlreadyExists(id: number) {
+    return this.trainedOnProjects.some(function(el) {
+      return el.projectID === id;
+    });
+  }
+
+  public getSwatchColor(project: IProjectMin) {
+    let color: string = project?.projectColor || '';
+    return {
+      'background-color': color
+    }
   }
 
 }

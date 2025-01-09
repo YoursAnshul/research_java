@@ -13,44 +13,37 @@
             </button>
 
         </div>
-        <div class="flex items-center gap-4 my-4">
+        <div class="flex items-center my-4">
 
             <!--user status list-->
-            <div class="min-w-[225px]">
+            <div class="min-w-[225px] pr-4 py-1 border-r border-r-1 border-r-button-blue">
                 <app-select id="status-filter"
                                 [fieldLabel]="'User Status'"
-                                [dropDownValues]="userStatusDv"
+                                [anyLabel]="'Status'"
+                                [multiSelect]="true"
+                                [dropDownValues]="statuses?.dropDownValues || []"
                                 [(selectedValues)]="selectedUserStatus"
+                                [(anyValueSelected)]="userStatusAnySelected"
                                 (selectedValuesChange)="quickFilterChange($event)">
                 </app-select>
             </div>
 
             <!--edit schedule list-->
-            <div class="min-w-[225px]">
+            <div class="min-w-[225px] px-3 py-1 border-r border-r-1 border-r-button-blue">
                 <app-select id="edit-schedule-status-filter"
                                 [fieldLabel]="'Edit Schedule Status'"
+                                [anyLabel]="'Edit Schedule Status'"
+                                [multiSelect]="true"
                                 [dropDownValues]="canEditDv"
                                 [(selectedValues)]="selectedCanEdit"
+                                [(anyValueSelected)]="canEditAnySelected"
                                 (selectedValuesChange)="quickFilterChange($event)">
                 </app-select>
             </div>
 
-            <div class="flex items-center gap-4">
-                <div class="flex flex-col gap-1 text-xs text-button-blue">
-                    <label class="flex items-center">
-                        <input type="radio" name="trainingStatus" value="1" class="mr-2"
-                            [checked]="trainedOn == 1"
-                            (click)="trainedOn = 1">
-                        Trained On
-                    </label>
-                    <label class="flex items-center">
-                        <input type="radio" name="trainingStatus" value="0" class="mr-2"
-                            [checked]="trainedOn == 0"
-                            (click)="trainedOn = 0; applyFilters();">
-                        Not Trained On
-                    </label>
-                </div>
-                
+            <!-- trained on/not trained on -->
+            <div class="flex items-center gap-4 pl-4 py-1">
+
                 <!--project list-->
                 <div class="min-w-[225px]">
                     <app-select id="projects-filter"
@@ -59,9 +52,29 @@
                                     [multiSelect]="true"
                                     [dropDownValues]="activeProjectsDv"
                                     [(selectedValues)]="selectedProjects"
-                                    (selectedValuesChange)="quickFilterChange($event)">
+                                    [(anyValueSelected)]="projectsAnySelected"
+                                    (selectedValuesChange)="projectFilterChange($event)">
                     </app-select>
                 </div>
+
+                <!-- trained on/not trained on -->
+                <div class="flex flex-col gap-1 text-xs text-button-blue">
+                    <label class="flex items-center">
+                        <input type="radio" name="trainingStatus" value="1" class="mr-2"
+                            [checked]="trainedOn == 1"
+                            [disabled]="!projectSelected"
+                            (click)="setTrainedOn(1)">
+                        Trained On
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="trainingStatus" value="0" class="mr-2"
+                            [checked]="trainedOn == 0"
+                            [disabled]="!projectSelected"
+                            (click)="setTrainedOn(0)">
+                        Not Trained On
+                    </label>
+                </div>
+
             </div>
 
         </div>
@@ -148,8 +161,8 @@
                                 {{ user.emailaddr }}
                             </div>
                             <div class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle">
-
-                                <div class="flex items-center">
+                                {{ getStatusDisplay(user.status) }}
+                                <!-- <div class="flex items-center">
                                     @if (user.status == '1') {
                                         <span class="text-[#008000] mr-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
@@ -165,7 +178,7 @@
                                         </span>
                                         <span>Terminated</span>
                                     }
-                                </div>
+                                </div> -->
 
                             </div>
                             <div class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle">
@@ -219,6 +232,7 @@
     <!-- table paginator -->
     <app-table-paginator
         [sourceData]="filteredUsers"
+        [(currentPage)]="currentPage"
         [(paginatedData)]="paginatedUsers"></app-table-paginator>
 
 </div>
@@ -229,7 +243,7 @@
 
   <app-view-user id="view-user-form"
                  [viewUser]="selectedUser"
-                 (closewindow)="showSelectedUser = false" (userSaved)="onUserAdded($event)">
+                 (closewindow)="showSelectedUser = false; getAllUsers()" (userSaved)="onUserAdded($event)">
   </app-view-user>
 </div>
 

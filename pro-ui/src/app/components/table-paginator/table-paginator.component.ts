@@ -94,7 +94,7 @@ export class TablePaginatorComponent {
     if (!this.canNavLast()) {
       return;
     }
-    this.currentPage = (this.sourceData || []).length / this.pageSize;
+    this.currentPage = Math.floor((this.sourceData || []).length / this.pageSize);
     this.pageNavigation();
   }
 
@@ -108,7 +108,7 @@ export class TablePaginatorComponent {
   }
 
   getPageEnd(): number {
-    return this.currentPage * this.pageSize;
+    return ((this.sourceData || []).length < this.pageSize ? (this.sourceData || []).length : this.currentPage * this.pageSize);
   }
 
 }

@@ -1,3 +1,8 @@
+::ng-deep .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper {
+  background-color: transparent !important;
+  border: none;
+}
+
 .container {
   padding: 0px !important;
   display: flex;
@@ -53,13 +58,16 @@ mat-card {
 }
 
 .trained_on_project_details{
+
   margin-top: 10px;
-  border-radius: 5px;
-  border: 2px solid #6c757d;
-  padding: 20px;
-  min-width: 200px;
-  width:fit-content;
+  background-color: white;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  width: 150px;
   height: 150px;
+  border: 0.5px solid lightgrey;
+  padding: 5px 10px;
+  cursor: default;
+
 }
 
 .view-user-details{
@@ -68,6 +76,7 @@ mat-card {
   transform: translateY(-35px);
   margin-top: -15px;
   align-items: center;
+  gap: 12px;
 }
 
 .edit-user-button{
@@ -119,6 +128,13 @@ mat-card {
 
   height: 1.41px;
   background: #164B8B;
+  width: 500px;
+  margin-bottom: 50px;
+}
+.trained_on_box{
+  height: 90px;
+  overflow-y: auto;
+
 }
 
 .row {
@@ -277,7 +293,7 @@ mat-checkbox {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-left: 80px;
+  padding-left: 20px;
 }
 
 .shift-schedule {
@@ -299,12 +315,10 @@ hr {
 }
 
 .hr {
-
-  margin-bottom: 20px;
-  border-top: 1px solid #0078d4;
-  width: calc(100% + 415px);
+  margin-left: 10px;
+  border: .5px solid #58595B;
+  width: calc(100% - 26px);
 }
-
 
 .user-field {
   display: inline-block;
@@ -320,8 +334,16 @@ hr {
   margin-bottom: 50px;
 }
 
+.edit_trained_on_projects{
+   margin-top: auto;
+}
+
+.trained_on_title{
+  color: #0078d4;
+}
+
 .line{
-  border: 0.01em solid black;
+  border-bottom: 0.5px solid #0078d4;
   margin-bottom: 5px;
 }
 
@@ -545,4 +567,13 @@ app-form-field {
 
 .wd90 {
   width: 90px;
+}
+
+.view-container {
+  display: flex;
+  align-items: center;
+}
+
+.gap12 {
+  gap: 12px;
 }

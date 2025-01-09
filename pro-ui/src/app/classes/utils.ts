@@ -442,4 +442,22 @@ export class Utils {
     return value;
   }
 
+  //generate a random number
+  public static randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  //----------------------------------------------
+  // Strings
+  //----------------------------------------------
+  
+  //generate a random GUID
+  public static generateGUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Utils.randomInt(0, 15);
+      var v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
 }

@@ -1,4 +1,7 @@
-<div class="relative text-xs text-button-blue">
+<div class="app-select relative text-xs text-button-blue"
+    [attr.data-guid]="guid"
+    [class.bg-duke-gray]="disabled"
+    [class.text-duke-gray-dark]="disabled">
     @if (selectedValues.length > 0
         || anyValueSelected) {
         <label class="absolute mt-[-6px] ml-4 px-1 bg-white whitespace-nowrap">{{fieldLabel}}</label>            
@@ -7,6 +10,8 @@
     @if (!hideInput) {
         <div id="any-filter"
             class="border-2 border-button-blue shadow-none py-[0.3rem] px-2 bg-white rounded-md flex cursor-pointer min-h-9"
+            [class.border-duke-gray-dark]="disabled"
+            [class.cursor-block]="disabled"
             (click)="toggleDropdown()">
 
             <div class="w-full">
@@ -23,7 +28,7 @@
         </div>
     }
     
-    @if (showDropdown) {
+    @if (showDropdown && !disabled) {
         <div class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none min-w-[200px]"
             [class.min-w-[225px]]="hideInput"
             [class.ml-[-15px]]="hideInput"

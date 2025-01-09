@@ -25,7 +25,7 @@ html {
     --mdc-protected-button-container-color: #0680CD;
     --mdc-filled-button-container-color: #0680CD;
     --mdc-outlined-text-field-disabled-outline-color: #B5B5B5;
-    
+    --mat-select-trigger-text-size: 12px;   
 }
 .mat-mdc-outlined-button:not(:disabled) {
     --mdc-outlined-button-outline-color: #0680CD;
@@ -351,3 +351,19 @@ html {
 .mdc-text-field--disabled {
     border: none !important;
   }
+
+.mt5 {
+    margin-top: 2px;
+}
+
+.scheduling-info ul li::before {
+    content: '\2022'; /* Add custom bullet */
+    color: #000;      /* Bullet color */
+    font-size: 30px;  /* Increase bullet size */
+    margin-right: 5px;
+    vertical-align: middle; /* Align bullet properly with text */
+}
+
+.ft700 {
+    font-weight: 700;
+}

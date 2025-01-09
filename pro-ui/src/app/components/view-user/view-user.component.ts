@@ -1,12 +1,12 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {GlobalsService} from "../../services/globals/globals.service";
-import {LogsService} from "../../services/logs/logs.service";
-import {RequestsService} from "../../services/requests/requests.service";
-import {ProjectsService} from "../../services/projects/projects.service";
-import {ConfigurationService} from "../../services/configuration/configuration.service";
-import {UsersService} from "../../services/users/users.service";
-import {AuthenticationService} from "../../services/authentication/authentication.service";
+import { GlobalsService } from "../../services/globals/globals.service";
+import { LogsService } from "../../services/logs/logs.service";
+import { RequestsService } from "../../services/requests/requests.service";
+import { ProjectsService } from "../../services/projects/projects.service";
+import { ConfigurationService } from "../../services/configuration/configuration.service";
+import { UsersService } from "../../services/users/users.service";
+import { AuthenticationService } from "../../services/authentication/authentication.service";
 import {
   IAuthenticatedUser,
   ICoreHours, IDropDownValue,
@@ -14,17 +14,22 @@ import {
   IProjectMin,
   IRequest,
 } from "../../interfaces/interfaces";
-import {Utils} from "../../classes/utils";
+import { Utils } from "../../classes/utils";
 import { User } from '../../models/data/user';
 import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-view-user',
   templateUrl: './view-user.component.html',
   styleUrls: ['./view-user.component.css'],
 })
-export class ViewUserComponent implements OnInit{
+export class ViewUserComponent implements OnInit {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
 
     if (this.changed || this.createForm) {
@@ -35,8 +40,7 @@ export class ViewUserComponent implements OnInit{
 
   @Input() createForm: boolean = true;
   @Input() isUserCalendarVisible = true;
-  @Input() isTrainedOnVisible = true;
-  @Input() viewUser: User | undefined ;
+  @Input() viewUser: User | undefined;
   @Output() userSaved = new EventEmitter<User>();
   @Output() closewindow = new EventEmitter<void>();
 
@@ -80,29 +84,32 @@ export class ViewUserComponent implements OnInit{
   maxFileSizeMB = 10;
   isEdit: boolean = true;
 
-  constructor(private fb: FormBuilder,private globalsService: GlobalsService,
-              private authenticationService: AuthenticationService,
-              private usersService: UsersService,
-              private configurationService: ConfigurationService,
-              private projectsService: ProjectsService,
-              private requestsService: RequestsService,
-              private logsService: LogsService, private dialog: MatDialog) {
-    if(this.viewUser){
+  public selectedTab: string = 'scheduling';
+
+  constructor(private fb: FormBuilder, private globalsService: GlobalsService,
+    private authenticationService: AuthenticationService,
+    private usersService: UsersService,
+    private configurationService: ConfigurationService,
+    private projectsService: ProjectsService,
+    private requestsService: RequestsService,
+    private logsService: LogsService, private dialog: MatDialog,
+    private snackBar: MatSnackBar,) {
+    if (this.viewUser) {
       this.selectedUser = this.viewUser;
     }
 
     this.configurationService.getFormField('Role').subscribe(
-        response => {
-          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-            this.roles = <IFormFieldVariable>response.Subject;
-          }
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.roles = <IFormFieldVariable>response.Subject;
         }
+      }
     );
 
-/*    if (!this.createForm) {
-      this.selectedUser = this.blankUser();
-      this.coreHours = {} as ICoreHours;
-    }*/
+    /*    if (!this.createForm) {
+          this.selectedUser = this.blankUser();
+          this.coreHours = {} as ICoreHours;
+        }*/
 
     //get user form fields to build the forms
     this.configurationService.getUserFields().subscribe(
@@ -194,73 +201,73 @@ export class ViewUserComponent implements OnInit{
       //subscribe to the selected user
       this.usersService.selectedUser.subscribe(
         user => {
-          if(this.viewUser)
-          this.selectedUser = this.viewUser;
+          if (this.viewUser)
+            this.selectedUser = this.viewUser;
 
           if (this.selectedUser) {
 
             let selectedDempoId: string = this.selectedUser.dempoid;
 
             //get core hours
-               this.usersService.getUserCoreHoursByNetId(this.selectedUser.dempoid).subscribe(
-                 response => {
-                   if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-                     this.coreHours = <ICoreHours>response.Subject;
+            this.usersService.getUserCoreHoursByNetId(this.selectedUser.dempoid).subscribe(
+              response => {
+                if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                  this.coreHours = <ICoreHours>response.Subject;
 
-                     let rebuildCoreHours: boolean = false;
-                     if (!this.coreHours) {
-                       rebuildCoreHours = true;
-                     } else if (!this.coreHours.month1) {
-                       rebuildCoreHours = true;
-                     }
-
-                     if (rebuildCoreHours) {
-
-                       this.coreHours = {} as ICoreHours;
-
-                       let ch: any = this.coreHours;
-                       let currentDate: Date = new Date();
-                       ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-                       ch.coreHours1 = 0;
-                       ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-                       ch.coreHours2 = 0;
-                       for (var i = 1; i < 13; i++) {
-                         ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
-                         ch['coreHours' + (i + 2)] = 0;
-                       }
-                       ch.dempoid = selectedDempoId;
-                       this.coreHours = ch;
-                     } else {
-                       //set current core hours
-                       this.setCurrentCoreHours();
-                     }
-                   }
-                 }
-               );
-
-                 if (this.selectedUser.dempoid) {
-                    //get requests for selected user
-                    this.requestsService.getRequestsByNetId(this.selectedUser.dempoid).subscribe(
-                      response => {
-                        if (response.Status == 'Success') {
-                          this.requests = <IRequest[]>response.Subject;
-                          this.setNoRequestsResultsMessage();
-                          this.trySetRequestValues();
-                        } else {
-                          this.setNoRequestsResultsMessage('Error loading requests...');
-                          this.errorMessage = response.Message;
-                          this.logsService.logError(this.errorMessage);
-                          console.log(this.errorMessage);
-                        }
-                      },
-                      error => {
-                        this.errorMessage = <string>(error.message);
-                        this.logsService.logError(this.errorMessage);
-                        console.log(this.errorMessage);
-                        this.setNoRequestsResultsMessage('Error loading requests...');
-                      }
-                    );
+                  let rebuildCoreHours: boolean = false;
+                  if (!this.coreHours) {
+                    rebuildCoreHours = true;
+                  } else if (!this.coreHours.month1) {
+                    rebuildCoreHours = true;
                   }
+
+                  if (rebuildCoreHours) {
+
+                    this.coreHours = {} as ICoreHours;
+
+                    let ch: any = this.coreHours;
+                    let currentDate: Date = new Date();
+                    ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+                    ch.coreHours1 = 0;
+                    ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                    ch.coreHours2 = 0;
+                    for (var i = 1; i < 13; i++) {
+                      ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+                      ch['coreHours' + (i + 2)] = 0;
+                    }
+                    ch.dempoid = selectedDempoId;
+                    this.coreHours = ch;
+                  } else {
+                    //set current core hours
+                    this.setCurrentCoreHours();
+                  }
+                }
+              }
+            );
+
+            if (this.selectedUser.dempoid) {
+              //get requests for selected user
+              this.requestsService.getRequestsByNetId(this.selectedUser.dempoid).subscribe(
+                response => {
+                  if (response.Status == 'Success') {
+                    this.requests = <IRequest[]>response.Subject;
+                    this.setNoRequestsResultsMessage();
+                    this.trySetRequestValues();
+                  } else {
+                    this.setNoRequestsResultsMessage('Error loading requests...');
+                    this.errorMessage = response.Message;
+                    this.logsService.logError(this.errorMessage);
+                    console.log(this.errorMessage);
+                  }
+                },
+                error => {
+                  this.errorMessage = <string>(error.message);
+                  this.logsService.logError(this.errorMessage);
+                  console.log(this.errorMessage);
+                  this.setNoRequestsResultsMessage('Error loading requests...');
+                }
+              );
+            }
 
           }
 
@@ -281,7 +288,7 @@ export class ViewUserComponent implements OnInit{
     if (!this.createForm) {
 
 
-      if(this.viewUser){
+      if (this.viewUser) {
         this.selectedUser = this.viewUser;
       }
       this.coreHours = {} as ICoreHours;
@@ -355,7 +362,7 @@ export class ViewUserComponent implements OnInit{
     return this.getProjectDisplay(projectId);
   }
 
-  public getProjectDisplay(projectId: number){
+  public getProjectDisplay(projectId: number) {
     return this.activeProjectsDv.find((project) => project.codeValues === projectId)?.dropDownItem || '';
   }
 
@@ -370,10 +377,7 @@ export class ViewUserComponent implements OnInit{
     this.setNotTrainedOn();
     this.changed = true;
     this.globalsService.currentChanges.next(true);
-  }
-
-  showUser(selectedUser: User){
-
+    this.validateRequiredFields();
   }
 
 
@@ -399,7 +403,7 @@ export class ViewUserComponent implements OnInit{
   }
 
   setNotTrainedOn(): void {
-    // this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
+    //  this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
     this.notTrainedOnProjects = this.activeProjects;
   }
 
@@ -422,28 +426,26 @@ export class ViewUserComponent implements OnInit{
     }
   }
 
-  onTabChanged(event: any) {
-    // The event parameter contains details about the tab change.
+  onTabChanged(tab: string) {
+    this.selectedTab = tab;
     // Based on the new tab, some tasks are performed.
-    // For example, loading different data, updating the UI, etc.
-    console.log('Tab changed: ', event);
+    // console.log('Tab changed: ', event);
     // Implementation...
     this.isUserFormInvalid = this.tab2Invalid;
 
     // Implementation...
-    if (event.index == 0) {
+    if (tab == 'scheduling') {
       this.isUserCalendarVisible = true;
-      this.isTrainedOnVisible = true;
-    } else if (event.index == 1) {
+
+    } else if (tab == 'user-details') {
       this.isUserCalendarVisible = false;
-      this.isTrainedOnVisible = false;
+
       this.isUserFormInvalid = false;
-    } else if (event.index == 2) {
+    } else if (tab == 'personal-contact-info') {
       this.isUserCalendarVisible = false;
-      this.isTrainedOnVisible = false;
+
     } else {
-      this.isUserCalendarVisible = true;
-      this.isTrainedOnVisible = false;
+      this.isUserCalendarVisible = false;
 
     }
   }
@@ -486,12 +488,12 @@ export class ViewUserComponent implements OnInit{
     this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
     //assign to tab arrays
     this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 0);
+    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 0);
     this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
     this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
-    this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 1);
-    this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 2);
-    this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 3);
+    this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 1);
+    this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 2);
+    this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 3);
 
     this.validateRequiredFields();
 
@@ -597,21 +599,21 @@ export class ViewUserComponent implements OnInit{
         this.userFormFields[i].invalid = false;
       }
 
-     }
-      if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
-      if (!this.tab2Invalid) {
-        if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
-      }
+    }
+    if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+    if (!this.tab2Invalid) {
+      if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+    }
     //tab validation
     this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
 
   }
 
-  public editUser(){
+  public editUser() {
 
   }
 
-  public getActiveStatus(selected:User){
+  public getActiveStatus(selected: User) {
     let color: string = selected.active ? 'Green' : 'Gray';
     return {
       'background-color': color
@@ -625,7 +627,7 @@ export class ViewUserComponent implements OnInit{
     }
   }
 
-  public getDefaultProjectColor(projectId:Number){
+  public getDefaultProjectColor(projectId: Number) {
     let color: string = this.activeProjects.find((project) => project.projectID === projectId)?.projectColor || '';
     return {
       'background-color': color
@@ -672,82 +674,89 @@ export class ViewUserComponent implements OnInit{
     });
   }
 
+  cancelEdits(){
+    this.closewindow.next();
+  }
+
   showUnsavedChangesDialog(): void {
     this.openDialog({
       dialogType: 'error'
     })
   }
 
-  confirmDialog(): void {
+  saveUser(): void {
     this.mapUserFieldsBackToUser();
+    //set modified metadata
+    this.selectedUser.modBy = this.authenticatedUser.netID;
+    this.selectedUser.modDt = new Date();
 
-    this.openDialog({
-      dialogType: 'confirmation', // Pass dialog type here
-      netId: this.selectedUser.dempoid,  // You can customize the message based on dialog type
-      saveUser: () => {
-        //set modified metadata
-        this.selectedUser.modBy = this.authenticatedUser.netID;
-        this.selectedUser.modDt = new Date();
+    //set created metadata (if applicable)
+    this.selectedUser.entryBy = this.authenticatedUser.netID;
+    this.selectedUser.entryDt = new Date();
+    this.selectedUser.userImage = this.previewUrl;
 
-        //set created metadata (if applicable)
-        this.selectedUser.entryBy = this.authenticatedUser.netID;
-        this.selectedUser.entryDt = new Date();
-        this.selectedUser.userImage = this.previewUrl;
+    //pass to save user api to save
 
-        //pass to save user api to save
 
-        return new Promise((resolver, reject) => {
-          this.usersService.saveUser(this.selectedUser).subscribe(
-            response => {
-              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+      this.usersService.saveUser(this.selectedUser).subscribe(
+        response => {
+          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
 
-                //make sure the netid is set or core hours won't save
-                this.coreHours.dempoid = this.selectedUser.dempoid;
-                for (var i = 1; i < 15; i++) {
-                  this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
-                }
-                /* this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
-                   response => {
-                     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
-                     } else {
-                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
-                     }
-
-                     //set changed to false to re-disable the save button
-                     this.changed = false;
-                     this.globalsService.currentChanges.next(false);
-
-                     //set ID for "selected" user if user is newly added
-                     if (this.selectedUser.userid < 1) {
-                       let subject: User = <User>response.Subject;
-                       this.selectedUser.userid = subject.userid;
-                     }
-
-                     //sync users trained on
-                     this.usersService.setAllUsersMin();
-
-                     this.usersService.setSelectedUser(this.selectedUser.dempoid);
-
-                     this.userSaved.emit(this.selectedUser);
-
-                   }); */
-                resolver("Saved Succesfully user")
-              } else {
-                this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
-                this.logsService.logError(response.Message);
-              }
-
-            },
-            error => {
-              this.errorMessage = <string>(error.message);
-              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
-              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            //make sure the netid is set or core hours won't save
+            this.coreHours.dempoid = this.selectedUser.dempoid;
+            for (var i = 1; i < 15; i++) {
+              this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
             }
+            this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
+              response => {
+                if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                  this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
+                } else {
+                  this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
+                }
+
+                //set changed to false to re-disable the save button
+                this.changed = false;
+                this.globalsService.currentChanges.next(false);
+
+                //set ID for "selected" user if user is newly added
+                /**   if (this.selectedUser.userid < 1) {
+                    let subject: User = <User>response.Subject;
+                    this.selectedUser.userid = subject.userid;
+                  } */
+
+                //sync users trained on
+                //this.usersService.setAllUsersMin();
+
+                // this.usersService.setSelectedUser(this.selectedUser.dempoid);
+
+                //this.userSaved.emit(this.selectedUser);
+                console.log('Added User Successfully:', response);
+                this.showToastMessage(
+                  'User update successfully!',
+                  'success'
+                );
+                this.userSaved.emit(this.selectedUser);
+              });
+          } else {
+            this.showToastMessage(
+              'Encountered an error while trying to save user',
+              'error'
+            );
+            this.logsService.logError(response.Message);
+          }
+
+        },
+        error => {
+          this.errorMessage = <string>(error.message);
+          this.showToastMessage(
+            'Encountered an error while trying to save user',
+            'error'
           );
-        });
-      }
-    })
+          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+        }
+      );
+
   }
 
   //map field values back to user
@@ -814,36 +823,65 @@ export class ViewUserComponent implements OnInit{
     if (formField.formFieldVariable.formField?.columnName == 'dempoid1' && this.createForm) {
       return true;
     }
-
-    //shoehorn in required temp/perm date checking before anything that could return a true/false
-    if (formField.formFieldVariable.formField?.columnName == 'permstartdate' || formField.formFieldVariable.formField?.columnName == 'permstartdate') {
+    if (formField.formFieldVariable.formField?.columnName == 'empstatus') {
       let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
       let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
-      if (permStartDateField) {
-        permStartDateField.formFieldVariable.formField.required = true;
-        if (permStartDateField.value) {
-          permStartDateField.formFieldVariable.formField.required = false;
-          permStartDateField.invalid = false;
 
+      if (formField.value) {
+        if(formField.value == 1) {
+          if (permStartDateField) {
+            permStartDateField.formFieldVariable.formField.required = true;
+            permStartDateField.invalid = false;
+          }
           if (tempStartDateField) {
             tempStartDateField.formFieldVariable.formField.required = false;
             tempStartDateField.invalid = false;
           }
-          this.validateRequiredFields();
-        }
-      }
-      if (tempStartDateField) {
-        tempStartDateField.formFieldVariable.formField.required = true;
-        if (tempStartDateField.value) {
-
+        } else if(formField.value == 2) {
           if (permStartDateField) {
             permStartDateField.formFieldVariable.formField.required = false;
             permStartDateField.invalid = false;
           }
+          if (tempStartDateField) {
+            tempStartDateField.formFieldVariable.formField.required = true;
+            tempStartDateField.invalid = false;
+          }
+        }
+      }
+    }
 
-          tempStartDateField.formFieldVariable.formField.required = false;
-          tempStartDateField.invalid = false;
-          this.validateRequiredFields();
+    //shoehorn in required temp/perm date checking before anything that could return a true/false
+    if (formField.formFieldVariable.formField?.columnName == 'permstartdate' || formField.formFieldVariable.formField?.columnName == 'permstartdate') {
+      let empstatus: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'empstatus');
+      if (empstatus && !empstatus.value) {
+        let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
+        let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
+        if (permStartDateField) {
+          permStartDateField.formFieldVariable.formField.required = true;
+          if (permStartDateField.value) {
+            permStartDateField.formFieldVariable.formField.required = false;
+            permStartDateField.invalid = false;
+
+            if (tempStartDateField) {
+              tempStartDateField.formFieldVariable.formField.required = false;
+              tempStartDateField.invalid = false;
+            }
+            this.validateRequiredFields();
+          }
+        }
+        if (tempStartDateField) {
+          tempStartDateField.formFieldVariable.formField.required = true;
+          if (tempStartDateField.value) {
+
+            if (permStartDateField) {
+              permStartDateField.formFieldVariable.formField.required = false;
+              permStartDateField.invalid = false;
+            }
+
+            tempStartDateField.formFieldVariable.formField.required = false;
+            tempStartDateField.invalid = false;
+            this.validateRequiredFields();
+          }
         }
       }
     }
@@ -873,12 +911,13 @@ export class ViewUserComponent implements OnInit{
       formField.value = null;
       return true;
     }
-
+   /**
     //face to face
     if (formField.formFieldVariable.formField?.columnName == 'facetofacedate' && !this.validParentChild('facetoface', '1')) {
       formField.value = null;
       return true;
     }
+      */
 
     //welcome email
     if (formField.formFieldVariable.formField?.columnName == 'welcomeemaildate' && !this.validParentChild('welcomeemail', '1')) {
@@ -910,11 +949,36 @@ export class ViewUserComponent implements OnInit{
   }
 
 
-  displaySchedulingLevelInfo(event: any): void {
-    let htmlMessage: string = '';
+  clickOnEdit(): void {
+    this.isEdit = false;
+  }
 
-    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
-    htmlMessage = htmlMessage + "<p><ul>";
+  closeWindow(): void {
+    this.closewindow.emit();
+  }
+
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+    });
+  }
+
+  displaySchedulingLevelInfo(event: any): void {
+    let htmlMessage: string = '<div class="scheduling-info">';
+
+    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 1</p>';
+    htmlMessage = htmlMessage + "<ul>";
     htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
     htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
     htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
@@ -926,10 +990,10 @@ export class ViewUserComponent implements OnInit{
     htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
     htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
     htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul></p>";
+    htmlMessage = htmlMessage + "</ul>";
     htmlMessage = htmlMessage + "<br />";
-    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
-    htmlMessage = htmlMessage + "<p><ul>";
+    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 2</p>';
+    htmlMessage = htmlMessage + "<ul>";
     htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
     htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
     htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
@@ -938,14 +1002,14 @@ export class ViewUserComponent implements OnInit{
     htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
     htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
     htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul></p>";
+    htmlMessage = htmlMessage + "</ul>";
     htmlMessage = htmlMessage + "<br />";
-    htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
-    htmlMessage = htmlMessage + "<p><ul>";
+    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 3</p>';
+    htmlMessage = htmlMessage + "<ul>";
     htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
     htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
     htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "</ul></p>";
+    htmlMessage = htmlMessage + "</ul></div>";
 
     let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
     hoverMessage.innerHTML = htmlMessage;
@@ -954,15 +1018,29 @@ export class ViewUserComponent implements OnInit{
 
     hoverMessage.style.top = '0px';
     hoverMessage.style.left = event.clientX + 'px';
+    hoverMessage.style.zIndex = '1005';
+    hoverMessage.style.maxHeight ='calc(100vh - 10px)';
+    hoverMessage.style.overflow = 'auto';
+    hoverMessage.style.fontSize = '12px';
   }
 
   hideSchedulingLevelInfo(): void {
     this.globalsService.showHoverMessage.next(false);
   }
 
-  clickOnEdit(): void {
-    this.isEdit = false;
-    this.isTrainedOnVisible=false;
+  moveToPage(event: MouseEvent): void {
+    event.stopPropagation();
+    const url = "/scheduling-info";
+    const width = 350;
+    const height = 1000;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    window.open(
+      url,
+      "_blank",
+      `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
+    );
   }
 
 }

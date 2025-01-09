@@ -1,5 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { TableHeaderItem } from '../../models/presentation/table-header-item';
+import { Utils } from '../../classes/utils';
 
 @Component({
   selector: 'app-column-actions',
@@ -14,9 +15,12 @@ export class ColumnActionsComponent {
   public showSearch: boolean = false;
   public showDropdown: boolean = false;
 
+  public guid: string = '';
+
   constructor() { }
 
   ngOnInit(): void {
+    this.guid = Utils.generateGUID();
   }
 
   //open the search bar
@@ -65,12 +69,23 @@ export class ColumnActionsComponent {
   @HostListener('document:click', ['$event'])
   handleClickOutside(event: Event) {
     const target = event.target as HTMLElement;
-    if (!target.closest('app-column-actions') && !target.closest('.search-toggle')) {
+    this.guidClickCheck(target, '.has-guid');
+  }
+
+  public guidClickCheck(target: HTMLElement, selector: string): void {
+    const clickedComponent = target.closest(selector);
+    if (clickedComponent) {
+      const clickedGuid = clickedComponent.getAttribute('data-guid');
+      if (clickedGuid !== this.guid) {
+        this.showSearch = false;
+        this.showDropdown = false;
+      }
+    } else {
       this.showSearch = false;
     }
   }
   
-  //close the search bar when the user presses escapte
+  //close the search bar when the user presses escape
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape'
