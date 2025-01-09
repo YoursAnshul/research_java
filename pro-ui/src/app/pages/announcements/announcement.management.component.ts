@@ -108,6 +108,9 @@ export class ManageAnnouncementsComponent implements OnInit {
         this.searchTerm = this.headerItems[i].searchValue;
         this.pageIndex =0;
         this.getList(this.pageIndex + 1);
+      } else {
+        this.pageIndex =0;
+        this.getList(this.pageIndex+1);
       }
 
       if (this.headerItems[i].sortDirection && this.headerItems[i].name) {

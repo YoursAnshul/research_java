@@ -295,11 +295,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
       bodyText: plainTextContent,
       start: this.announcementForm.value.startDate,
       authorName: selectedAuthorName,
-      displayTo: this.isAnyProjectsSelected,
-      isAuthor: this.announcementForm.value.isAuthor
+      isAuthor: this.announcementForm.value.isAuthor,
+      displayTo: this.isAnyProjectsSelected
         ? 'Any Projects'
         : this.selectedProjects,
-    };
+      
+    }
     this.dialog.open(PreviewComponent, {
       width: '600px',
       data: announcementData,
