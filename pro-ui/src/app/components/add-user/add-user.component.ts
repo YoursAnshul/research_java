@@ -879,60 +879,6 @@ export class AddUserComponent implements OnInit{
     this.closewindow.emit();
   }
 
-  displaySchedulingLevelInfo(event: any): void {
-    let htmlMessage: string = '<div class="scheduling-info">';
-
-    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 1</p>';
-    htmlMessage = htmlMessage + "<ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul>";
-    htmlMessage = htmlMessage + "<br />";
-    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 2</p>';
-    htmlMessage = htmlMessage + "<ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul>";
-    htmlMessage = htmlMessage + "<br />";
-    htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 3</p>';
-    htmlMessage = htmlMessage + "<ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "</ul></div>";
-
-    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
-    hoverMessage.innerHTML = htmlMessage;
-
-    this.globalsService.showHoverMessage.next(true);
-
-    hoverMessage.style.top = '0px';
-    hoverMessage.style.left = event.clientX + 'px';
-    hoverMessage.style.zIndex = '1005';
-    hoverMessage.style.maxHeight ='calc(100vh - 10px)';
-    hoverMessage.style.overflow = 'auto';
-    hoverMessage.style.fontSize = '12px';
-  }
-
-  hideSchedulingLevelInfo(): void {
-    this.globalsService.showHoverMessage.next(false);
-  }
-
   moveToPage(event: MouseEvent): void {
     event.stopPropagation();
     const url = "/scheduling-info"; 

@@ -1,8 +1,9 @@
 <div class="container">
+    
     <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-        <span class="breadcrumb-item cursor upper" (click)="closeWindow()">Users</span>
-        <span class="breadcrumb-item upper">{{getTitle()}}</span>
+    <nav class="m-0 text-sm font-normal text-[#58595B] leading-4 select-none">
+        <span class="cursor-pointer" (click)="closeWindow()">Users</span> /
+        <span class="cursor-default">{{getTitle()}}</span>
     </nav>
 
     <!-- Card with Tabs -->
@@ -105,8 +106,7 @@
                             <mat-icon svgIcon="blue-info" class="info blue-info"
                              style="cursor: pointer;"
                              *ngIf="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
-                             (click)="moveToPage($event)" (mouseenter)="displaySchedulingLevelInfo($event)"
-                             (mouseleave)="hideSchedulingLevelInfo()"></mat-icon>
+                             (click)="moveToPage($event)" ngbTooltip="Click to view scheduling level explanations"></mat-icon>
                         </div>
 
                         <div class="hr"></div>

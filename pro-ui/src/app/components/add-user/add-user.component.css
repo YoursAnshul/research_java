@@ -506,7 +506,7 @@ app-form-field {
   object-fit: cover; /* Ensures the image is cropped to fill the container */
 }
 
-.cursor {
+.highlight {
   cursor: pointer;
   color: #0680cd;
   text-decoration: underline;

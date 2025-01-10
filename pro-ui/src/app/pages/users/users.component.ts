@@ -160,6 +160,11 @@ export class UsersComponent {
       }
 
       let maxPage: number = Math.floor((this.filteredUsers || []).length / this.pageSize);
+      maxPage = (maxPage == 0 ? 1 : maxPage);
+      
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
       
       if (this.currentPage > maxPage) {
         this.currentPage = maxPage;
@@ -344,13 +349,9 @@ export class UsersComponent {
   //sort the users
   public sortUsers(): void {
     if (this.filteredUsers) {
-
       for (var i = 0; i < this.headerItems.length; i++) {
         if (this.headerItems[i].sortDirection) {
-
-
           this.filteredUsers = this.filteredUsers.sort((a, b) => {
-
             let aValue: any = a[this.headerItems[i].name as keyof User];
             let bValue: any = b[this.headerItems[i].name as keyof User];
             if (this.headerItems[i].sortDirection == 'desc') {
@@ -359,9 +360,14 @@ export class UsersComponent {
               bValue = temp;
             }
 
+            if (aValue == null || aValue === '') return (this.headerItems[i].sortDirection == 'desc' ? -1 : 1);
+            if (bValue == null || bValue === '') return (this.headerItems[i].sortDirection == 'desc' ? 1 : -1);
+
             if (aValue && bValue) {
               if (typeof aValue === 'string') {
                 return aValue.localeCompare(bValue);
+              } else if (aValue instanceof Date && bValue instanceof Date) {
+                return aValue.getTime() - bValue.getTime();
               } else {
                 return aValue - bValue;
               }
@@ -369,12 +375,9 @@ export class UsersComponent {
               return 0;
             }
           });
-
         }
       }
-      
       this.paginate();
-
     }
   }
 

@@ -1,9 +1,9 @@
 <div class="p-0 flex flex-col gap-6">
 
   <!-- Breadcrumb -->
-  <nav class="m-0 text-sm font-normal text-[#58595B] leading-4">
-    <span class="cursor" (click)="closeWindow()">Users</span> /
-    <span>{{selectedUser?.fname}} {{selectedUser?.lname}}</span>
+  <nav class="m-0 text-sm font-normal text-[#58595B] leading-4 select-none">
+    <span class="cursor-pointer" (click)="closeWindow()">Users</span> /
+    <span class="cursor-default">{{selectedUser?.fname}} {{selectedUser?.lname}}</span>
   </nav>
 
   <!-- User Container with Tabs -->
@@ -36,7 +36,7 @@
             </div>
 
             <div class="flex gap-1 items-center" (click)="fileInput.click()">
-              <span class="text-xs text-[#005698] text-center underline cursor">Upload Photo</span>
+              <span class="text-xs text-[#005698] text-center underline cursor-pointer">Upload Photo</span>
             </div>
           </div>
 
@@ -100,7 +100,7 @@
     <div class="flex items-center justify-between gap-2 m-3">
       <div class="flex items-center gap-2">
 
-        <div class="cursor flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+        <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
           [class.invalid-emphasis]="coreHoursInvalid"
           [class.text-[#1874CA]]="selectedTab === 'scheduling'"
           [class.border-b]="selectedTab === 'scheduling'"
@@ -108,15 +108,16 @@
           (click)="onTabChanged('scheduling')">
           <div>Scheduling</div><div *ngIf="coreHoursInvalid">**</div>
         </div>
-        <div class="cursor flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+        <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
           [class.invalid-emphasis]="coreHoursInvalid"
           [class.text-[#1874CA]]="selectedTab === 'user-details'"
           [class.border-b]="selectedTab === 'user-details'"
           [class.border-b-[3px]]="selectedTab === 'user-details'"
           (click)="onTabChanged('user-details')">
-          <div>User Details</div><div *ngIf="coreHoursInvalid">**</div>
+          <div><span [ngClass]="{'invalid-tab': isUserFormInvalid}"> User Details </span><span class="required"
+            *ngIf="isUserFormInvalid || (selectedTab === 'user-details' && tab2Invalid)">*</span></div><div *ngIf="coreHoursInvalid">**</div>
         </div>
-        <div class="cursor flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+        <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
           [class.text-[#1874CA]]="selectedTab === 'personal-contact-info'"
           [class.border-b]="selectedTab === 'personal-contact-info'"
           [class.border-b-[3px]]="selectedTab === 'personal-contact-info'"
@@ -124,7 +125,7 @@
           (click)="onTabChanged('personal-contact-info')">
           <div>Personal Contact Info</div><div *ngIf="coreHoursInvalid">**</div>
         </div>
-        <div class="cursor flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+        <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
           [class.text-[#1874CA]]="selectedTab === 'requests'"
           [class.border-b]="selectedTab === 'requests'"
           [class.border-b-[3px]]="selectedTab === 'requests'"
@@ -240,8 +241,7 @@
               <mat-icon svgIcon="blue-info" class="info blue-info"
               style="cursor: pointer;"
               *ngIf="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
-              (click)="moveToPage($event)"  (mouseenter)="displaySchedulingLevelInfo($event)"
-              (mouseleave)="hideSchedulingLevelInfo()"></mat-icon>
+              (click)="moveToPage($event)" ngbTooltip="Click to view scheduling level explanations"></mat-icon>
             </div>
 
             <div class="hr"></div>
@@ -370,7 +370,7 @@
           style="border-color: #c2c2c2 !important;"></div>
 
         <div *ngIf="createForm">
-          <span class="shift-schedule-heading">Shift Schedule</span>
+          <div class="font-medium tracking-wider mb-2">SHIFT SCHEDULE</div>
           <app-calendar [authenticatedUser]="authenticatedUser" [contextUser]="selectedUser"></app-calendar>
         </div>
       </div>

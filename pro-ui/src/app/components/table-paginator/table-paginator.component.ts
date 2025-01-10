@@ -19,12 +19,14 @@ export class TablePaginatorComponent {
 
   constructor() { }
 
+  //change the page size
   public changePageSize(event: any): void {
     this.pageSize = event.target.value;
     this.pageSizeChange.emit(this.pageSize);
     this.paginateData();
   }
 
+  //paginate the data
   public paginateData(): void {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
@@ -32,6 +34,11 @@ export class TablePaginatorComponent {
     this.paginatedDataChange.emit(this.paginatedData);
   }
 
+  //-------------------------------------------
+  // Navigation Availability Checks
+  //-------------------------------------------
+
+  //check if the user can navigate to the first page
   public canNavFirst(): boolean {
 
     if (this.currentPage === 1) {
@@ -42,6 +49,7 @@ export class TablePaginatorComponent {
     
   }
 
+  //check if the user can navigate to the previous page
   public canNavPrevious(): boolean {
     if (this.currentPage === 1) {
       return false;
@@ -50,6 +58,7 @@ export class TablePaginatorComponent {
     }
   }
 
+  //check if the user can navigate to the next page
   public canNavNext(): boolean {
     if (this.currentPage === (this.sourceData || []).length / this.pageSize) {
       return false;
@@ -58,6 +67,7 @@ export class TablePaginatorComponent {
     }
   }
 
+  //check if the user can navigate to the last page
   public canNavLast(): boolean {
     if (this.currentPage === (this.sourceData || []).length / this.pageSize) {
       return false;
@@ -66,6 +76,11 @@ export class TablePaginatorComponent {
     }
   }
 
+  //-------------------------------------------
+  // Navigation
+  //-------------------------------------------
+  
+  //navigate to the first page
   public navFirst(): void {
     if (!this.canNavFirst()) {
       return;
@@ -74,6 +89,7 @@ export class TablePaginatorComponent {
     this.pageNavigation();
   }
 
+  //navigate to the previous page
   public navPrevious(): void {
     if (!this.canNavPrevious()) {
       return;
@@ -82,6 +98,7 @@ export class TablePaginatorComponent {
     this.pageNavigation();
   }
 
+  //navigate to the next page
   public navNext(): void {
     if (!this.canNavNext()) {
       return;
@@ -90,6 +107,7 @@ export class TablePaginatorComponent {
     this.pageNavigation();
   }
 
+  //navigate to the last page
   public navLast(): void {
     if (!this.canNavLast()) {
       return;
@@ -98,15 +116,18 @@ export class TablePaginatorComponent {
     this.pageNavigation();
   }
 
+  //unified navigation actions
   public pageNavigation(): void {
     this.currentPageChange.emit(this.currentPage);
     this.paginateData();
   }
 
+  //get the page start
   getPageStart(): number {
     return (this.currentPage - 1) * this.pageSize + 1;
   }
 
+  //get the page end
   getPageEnd(): number {
     return ((this.sourceData || []).length < this.pageSize ? (this.sourceData || []).length : this.currentPage * this.pageSize);
   }
