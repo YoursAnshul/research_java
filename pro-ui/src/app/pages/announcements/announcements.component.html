@@ -49,6 +49,7 @@
         <div
           [innerHTML]="getSafeHtml(announcement.bodyText)"
           class="announcement-body"
+          [ngClass]="{ 'truncated': !announcement.isFullText }"
         ></div>
         <button
           *ngIf="announcement.bodyText.length > maxLength"
@@ -113,6 +114,16 @@
   color: blue !important; 
   text-decoration: underline !important; 
   cursor: pointer !important;
+}
+.announcement-body {
+  overflow: hidden;
+}
+
+.announcement-body.truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+  white-space: normal;
 }
 
 </style>
