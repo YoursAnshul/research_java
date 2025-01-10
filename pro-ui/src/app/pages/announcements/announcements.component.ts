@@ -40,9 +40,7 @@ export class AnnouncementsComponent implements OnInit {
     this.getAnnouncementList();
     this.getProjectInfo();
   }
-  getSafeHtml(htmlString: string): SafeHtml {
-    console.log("htmlString---------- ", htmlString);
-  
+  getSafeHtml(htmlString: string): SafeHtml {  
     if (!htmlString) return '';
       const updatedHtmlString = htmlString.replace(/<a\s+(.*?)href="(?!https?:\/\/)(.*?)"/g, (match, preAttributes, url) => {
       return `<a ${preAttributes}href="https://${url}"`;
@@ -70,6 +68,8 @@ export class AnnouncementsComponent implements OnInit {
     if (announcement.isFullText) {
       return announcement.bodyText;
     }
+    console.log("announcement.bodyText.length---------- ",announcement.bodyText.length);
+    
     return announcement.bodyText.length > this.maxLength
       ? announcement.bodyText.substring(0, this.maxLength) + '...'
       : announcement.bodyText;
