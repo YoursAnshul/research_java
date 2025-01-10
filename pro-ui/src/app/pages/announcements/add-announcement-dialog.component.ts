@@ -231,6 +231,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
           (project) => project.projectId
         );
       }
+      const adjustToUTCPlus530 = (dateString: string): string => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        date.setHours(date.getHours() + 5, date.getMinutes() + 30);
+        return date.toISOString();
+      };
       const announcementData = {
         announcementId: null,
         icon: this.selectedEmoji,
@@ -238,8 +244,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
         bodyText: this.announcement.content,
         authorId: selectedAuthorId,
         isAuthor: this.announcementForm.value.isAuthor,
-        startDate: this.announcementForm.value.startDate,
-        expireDate: this.announcementForm.value.expireDate || null,
+        startDate: adjustToUTCPlus530(this.announcementForm.value.startDate),
+      expireDate: adjustToUTCPlus530(this.announcementForm.value.expireDate) || null,
         projectIds: selectedProjectsIds,
       };
       if (this.id) {
