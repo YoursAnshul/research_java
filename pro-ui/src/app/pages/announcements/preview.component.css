@@ -90,3 +90,8 @@ button {
   color: red;
   cursor: pointer;
 }
+::ng-deep .announcement-text a {
+  color: blue !important; 
+  text-decoration: underline !important; 
+  cursor: pointer !important;
+}

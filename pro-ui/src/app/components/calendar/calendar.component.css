@@ -77,3 +77,6 @@
     justify-content: center;
 }
 
+::ng-deep .mdc-tab__text-label {
+    font-size: 12px !important;
+  }

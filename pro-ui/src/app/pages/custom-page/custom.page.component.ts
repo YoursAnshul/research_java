@@ -7,6 +7,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 @Component({
   selector: 'app-custom',
   templateUrl: './custom.page.component.html',
+  styleUrls: ['./custom.page.component.css']
 })
 export class CustomPageComponent {
   tollFree1 = 'Toll-Free Phone #';
