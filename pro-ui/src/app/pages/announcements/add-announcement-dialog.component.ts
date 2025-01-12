@@ -363,11 +363,19 @@ export class AddAnnouncementDialogComponent implements OnInit {
       next: (data: any) => {
         console.log(data.Subject);
         this.selectedEmoji = data.Subject.icon;
+        console.log("data.Subject.startDate",data.Subject.startDate);
+        console.log("data.Subject.expireDate",data.Subject.expireDate);
+        const adjustDate = (date: string | null): Date | null => {
+          if (!date) return null;
+          const d = new Date(date);
+          return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+        };
+        
         this.announcementForm.patchValue({
           title: data.Subject.title,
           isAuthor: data.Subject.isAuthor,
-          startDate: data.Subject.startDate,
-          expireDate: data.Subject.expireDate || null,
+          startDate: adjustDate(data.Subject.startDate),
+        expireDate: adjustDate(data.Subject.expireDate),
         });
         if (data.Subject.bodyText) {
           this.quill.root.innerHTML = data.Subject.bodyText;

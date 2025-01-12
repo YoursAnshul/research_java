@@ -159,11 +159,12 @@ export class ManageAnnouncementsComponent implements OnInit {
             if (!date) return '';
             const d = new Date(date);
             return !isNaN(d.getTime())
-              ? d.toLocaleDateString('en-US', {
+              ? new Intl.DateTimeFormat('en-US', {
+                  timeZone: 'UTC', 
                   month: '2-digit',
                   day: '2-digit',
                   year: 'numeric',
-                })
+                }).format(d)
               : '';
           };
           return {
