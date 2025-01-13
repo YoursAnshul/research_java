@@ -57,7 +57,7 @@ export class GlobalsService {
 
     if (contextDate) {
       this.userSchedulesService.selectedDate.next(contextDate);
-      this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(contextDate, true, true, true));
+      this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(contextDate, true, true, true));
     }
 
     this.showScheduler.next(true);

@@ -24,7 +24,7 @@ export class UserSchedulesService {
 
     this.selectedDate.next(new Date());
 
-    this.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(new Date(), true, true, true) || '');
+    this.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(new Date(), true, true, true) || '');
 
     //set time codes
     this.http.get<IGeneralResponse>(`${this.apiRootUrl}/timecodes`).subscribe(
@@ -174,14 +174,14 @@ export class UserSchedulesService {
   //get validation messages for the specified month for any user
   getValidationMessages(inDate: Date): Observable<IGeneralResponse> {
     inDate.setDate(1);
-    let inDateString: string = Utils.formatDateOnlyToString(inDate, true, true, true) || '';
+    let inDateString: string = Utils.formatDateOnlyToStringUTC(inDate, true, true, true) || '';
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/validationMessages/${inDateString}`);
   }
 
   //get validation messages for the specified month and user
   getUserValidationMessages(inDate: Date, netId: string): Observable<IGeneralResponse> {
     inDate.setDate(1);
-    let inDateString: string = Utils.formatDateOnlyToString(inDate, true, true, true) || '';
+    let inDateString: string = Utils.formatDateOnlyToStringUTC(inDate, true, true, true) || '';
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/validationMessages/${inDateString}?netId=${netId}`);
   }
 

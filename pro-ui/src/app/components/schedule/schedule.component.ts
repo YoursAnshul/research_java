@@ -363,7 +363,7 @@ export class ScheduleComponent implements OnInit {
 
         let previousDateIsSame: boolean = false;
 
-        if (Utils.formatDateOnlyToString(this.selectedDate) == Utils.formatDateOnlyToString(this.previousSelectedDate)) {
+        if (Utils.formatDateOnlyToStringUTC(this.selectedDate) == Utils.formatDateOnlyToStringUTC(this.previousSelectedDate)) {
           previousDateIsSame = true;
         }
 
@@ -524,7 +524,7 @@ export class ScheduleComponent implements OnInit {
   closeScheduler(): void {
     let leaveFunction: Function = (): void => {
       this.globalsService.closeSchedulePopup();
-      this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true) || '');
+      this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate, true, true, true) || '');
     }
 
     let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => (x.changed) || (x.markedForDeletion));
@@ -657,7 +657,7 @@ export class ScheduleComponent implements OnInit {
 
               //if we have new schedules, we don't want to juggle connecting their new preschedulekeys auto-incremented from the database, so just refresh data
               if (this.userSchedulesMonth.filter(x => x.preschedulekey == 0).length > 0) {
-                this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true) || '');
+                this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate, true, true, true) || '');
               }
               ////if we don't have new schedules to save, just push out changes and correct the flags
               //else {
@@ -761,7 +761,7 @@ export class ScheduleComponent implements OnInit {
       let schedFirstOf: Date = new Date(sourceSchedules[i].startdatetime || '');
       schedFirstOf.setDate(1);
       let match: IValidationMessage[] = userMonths.filter(x => (x.dempoId == sourceSchedules[i].dempoid
-        && Utils.formatDateOnlyToString(x.inMonth) == Utils.formatDateOnlyToString(schedFirstOf)));
+        && Utils.formatDateOnlyToStringUTC(x.inMonth) == Utils.formatDateOnlyToStringUTC(schedFirstOf)));
 
       if (match.length < 1) {
         let userMonth: IValidationMessage = {
@@ -881,22 +881,22 @@ export class ScheduleComponent implements OnInit {
 
     //start/end time overlap validation
     if (schedule.startdatetime) {
-      let startTimeAsDate = new Date(Utils.formatDateOnlyToString(schedule.startdatetime) + ' ' + schedule.startTime);
-      let endTimeAsDate = new Date(Utils.formatDateOnlyToString(schedule.enddatetime) + ' ' + schedule.endTime);
+      let startTimeAsDate = new Date(Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' ' + schedule.startTime);
+      let endTimeAsDate = new Date(Utils.formatDateOnlyToStringUTC(schedule.enddatetime) + ' ' + schedule.endTime);
 
       if (Utils.isValidDate(startTimeAsDate)
         && Utils.isValidDate(endTimeAsDate)) {
         let startTimeConflicts: ISchedule[] = scheduleCacheTemp.filter(x => (x.dempoid == schedule.dempoid && (x.startdatetime && x.enddatetime))
           && (
             (
-              Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime)
+              Utils.formatDateOnlyToStringUTC(x.startdatetime) == Utils.formatDateOnlyToStringUTC(schedule.startdatetime)
               && ((x.enddatetime.getHours() * 60) + x.enddatetime.getMinutes()) > ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes())
               && ((x.startdatetime.getHours() * 60) + x.startdatetime.getMinutes()) < ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes())
             )
-            || (Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime) && x.startTime == schedule.startTime)
+            || (Utils.formatDateOnlyToStringUTC(x.startdatetime) == Utils.formatDateOnlyToStringUTC(schedule.startdatetime) && x.startTime == schedule.startTime)
             //|| (x.StartTime == schedule.StartTime)
             || (
-              Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime)
+              Utils.formatDateOnlyToStringUTC(x.startdatetime) == Utils.formatDateOnlyToStringUTC(schedule.startdatetime)
               && ((x.startdatetime.getHours() * 60) + x.startdatetime.getMinutes() >= ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes()))
               && (((x.enddatetime.getHours() * 60) + x.enddatetime.getMinutes()) <= ((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes()))
             )
@@ -906,11 +906,11 @@ export class ScheduleComponent implements OnInit {
         let endTimeConflicts: ISchedule[] = scheduleCacheTemp.filter(x => (x.dempoid == schedule.dempoid && (x.startdatetime && x.enddatetime))
           && (
             (
-              Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime)
+              Utils.formatDateOnlyToStringUTC(x.startdatetime) == Utils.formatDateOnlyToStringUTC(schedule.startdatetime)
               && ((x.startdatetime.getHours() * 60) + x.startdatetime.getMinutes()) < ((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes())
               && ((x.enddatetime.getHours() * 60) + x.enddatetime.getMinutes()) > ((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes())
             )
-            || (Utils.formatDateOnlyToString(x.enddatetime) == Utils.formatDateOnlyToString(schedule.enddatetime) && x.startTime == schedule.startTime)
+            || (Utils.formatDateOnlyToStringUTC(x.enddatetime) == Utils.formatDateOnlyToStringUTC(schedule.enddatetime) && x.startTime == schedule.startTime)
             //|| (Utils.formatDateOnlyToString(x.Enddatetime) == Utils.formatDateOnlyToString(schedule.Enddatetime))
           )
         );
@@ -1094,8 +1094,8 @@ export class ScheduleComponent implements OnInit {
       }
       const ult = (this.unlockDate !== null && this.unlockDate !== undefined) ? new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) : null;
       if ( ult ) {
-        let unlockMessage: string = schedule.startdatetime < this.unlockDate ? Utils.formatDateOnlyToString(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToString(this.unlockDate)
-          : Utils.formatDateOnlyToString(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToString(ult);
+        let unlockMessage: string = schedule.startdatetime < this.unlockDate ? Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToStringUTC(this.unlockDate)
+          : Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToStringUTC(ult);
         if (!(schedule.validationMessages || []).includes(unlockMessage)) {
           schedule.validationMessages.push(unlockMessage);
         }
@@ -1103,7 +1103,7 @@ export class ScheduleComponent implements OnInit {
 
 
       //blockout date validations
-    } else if (blockOutDateStrings.includes(Utils.formatDateOnlyToString(schedule.startdatetime) || '')
+    } else if (blockOutDateStrings.includes(Utils.formatDateOnlyToStringUTC(schedule.startdatetime) || '')
       && this.authenticatedUser.interviewer
       && !this.authenticatedUser.resourceGroup
       && !this.authenticatedUser.admin) {
@@ -1119,7 +1119,7 @@ export class ScheduleComponent implements OnInit {
       if (blockOutDate?.allDay) {
         schedule.invalid = true;
         schedule.invalidFields.push('Date');
-        let blockOutMessage: string = Utils.formatDateOnlyToString(schedule.startdatetime) + ' is blocked out and scheduling is not allowed.<br />Please choose another date.';
+        let blockOutMessage: string = Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is blocked out and scheduling is not allowed.<br />Please choose another date.';
         //make sure we don't double-add the same blockout message
         if (!schedule.validationMessages.includes(blockOutMessage))
           schedule.validationMessages.push(blockOutMessage);
@@ -1129,7 +1129,7 @@ export class ScheduleComponent implements OnInit {
         schedule.invalid = true;
         schedule.invalidFields.push('Date');
         const msg_undefined_time = 'Start Date Time or End Date Time is not defined .Please choose time between ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime;
-        const msg_validation = Utils.formatDateOnlyToString(schedule.startdatetime) + ' ' + schedule.startTime + ' - ' + schedule.endTime + ' is blocked out for this time on this date and scheduling is not allowed.<br />The date/time blocked out is ' + Utils.formatDateOnlyToString(blockOutDate.blockOutDay) + ' ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime + '<br />Please choose another date.';
+        const msg_validation = Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' ' + schedule.startTime + ' - ' + schedule.endTime + ' is blocked out for this time on this date and scheduling is not allowed.<br />The date/time blocked out is ' + Utils.formatDateOnlyToStringUTC(blockOutDate.blockOutDay) + ' ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime + '<br />Please choose another date.';
         if (schedule.startdatetime === undefined || schedule.enddatetime === undefined) {
           if (!schedule.validationMessages.includes(msg_undefined_time)) {
             schedule.validationMessages.push(msg_undefined_time);
@@ -1178,8 +1178,8 @@ export class ScheduleComponent implements OnInit {
   //validation based on business rules - that can be done within the scope of a single schedule
   businessRulesValidation(schedule: ISchedule): void {
     //end date must be greater than start date
-    let startTimeAsDate = new Date(Utils.formatDateOnlyToString(new Date()) + ' ' + schedule.startTime);
-    let endTimeAsDate = new Date(Utils.formatDateOnlyToString(new Date()) + ' ' + schedule.endTime);
+    let startTimeAsDate = new Date(Utils.formatDateOnlyToStringUTC(new Date()) + ' ' + schedule.startTime);
+    let endTimeAsDate = new Date(Utils.formatDateOnlyToStringUTC(new Date()) + ' ' + schedule.endTime);
 
     if (Utils.isValidDate(startTimeAsDate)
       && Utils.isValidDate(endTimeAsDate)) {
@@ -1385,8 +1385,8 @@ export class ScheduleComponent implements OnInit {
       return;
     }
 
-    let startDate: string = Utils.formatDateOnlyToString(this.selectedCustomRange.value.start, true, true, true) || '';
-    let endDate: string = Utils.formatDateOnlyToString(this.selectedCustomRange.value.end, true, true, true) || '';
+    let startDate: string = Utils.formatDateOnlyToStringUTC(this.selectedCustomRange.value.start, true, true, true) || '';
+    let endDate: string = Utils.formatDateOnlyToStringUTC(this.selectedCustomRange.value.end, true, true, true) || '';
 
     this.userSchedulesService.getAllUserSchedulesByRange(startDate, endDate).subscribe(
       response => {
@@ -1536,11 +1536,11 @@ export class ScheduleComponent implements OnInit {
     this.setPagedMonthSchedules();
 
     //filter day
-    this.filteredUserSchedulesDay = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(new Date(this.selectedDateFC.value)));
+    this.filteredUserSchedulesDay = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) == Utils.formatDateOnlyToStringUTC(new Date(this.selectedDateFC.value)));
     this.setPagedDaySchedules();
 
     //filter week
-    this.filteredUserSchedulesWeek = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(this.selectedWeekStartAndEnd.weekStart));
+    this.filteredUserSchedulesWeek = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(this.selectedWeekStartAndEnd.weekStart));
     this.setPagedWeekSchedules();
 
     //paged custom schedules
@@ -1818,7 +1818,7 @@ export class ScheduleComponent implements OnInit {
 
     //refresh the grid with the new date
     this.userSchedulesService.selectedDate.next(this.selectedDate);
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate, true, true, true));
   }
 
   //add (or subract with a negative number) a week to the anchor date
@@ -1836,7 +1836,7 @@ export class ScheduleComponent implements OnInit {
     //refresh the grid with the new date
     this.setSelectedWeek();
     this.userSchedulesService.selectedDate.next(this.selectedDate);
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate, true, true, true));
   }
 
   //add (or subract with a negative number) a month to the anchor date
@@ -1849,7 +1849,7 @@ export class ScheduleComponent implements OnInit {
 
     //refresh the grid with the new date
     this.userSchedulesService.selectedDate.next(this.selectedDate);
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate, true, true, true));
   }
 
   setSelectedWeek(): void {
@@ -1867,7 +1867,7 @@ export class ScheduleComponent implements OnInit {
 
     this.userSchedulesService.selectedDate.next(this.selectedDate);
     this.setSelectedWeek();
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate, true, true, true));
   }
 
   //pagination

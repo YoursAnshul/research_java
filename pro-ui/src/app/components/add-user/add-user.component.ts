@@ -520,7 +520,7 @@ export class AddUserComponent implements OnInit{
       return '';
     }
 
-    return Utils.formatDateOnlyToString(dateToFormat) || '';
+    return Utils.formatDateOnlyToStringUTC(dateToFormat) || '';
   }
 
   private validateRequiredFields() {

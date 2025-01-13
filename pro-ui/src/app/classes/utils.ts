@@ -77,19 +77,21 @@ export class Utils {
     return this.zeroPad(dateToFormat.getHours()) + ':' + this.zeroPad(dateToFormat.getMinutes());
   }
 
-  public static formatDateOnlyToString(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
+  public static formatDateOnlyToDateOnlyString(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
 
     if (!dateToFormat) {
       return null;
     }
+
+    dateToFormat = new Date(dateToFormat);
+    const offset = dateToFormat.getTimezoneOffset() / 60;
+    dateToFormat.setHours(dateToFormat.getHours() + offset);
+    
     var separator = '/';
 
     if (dashFormat) {
       separator = '-';
     }
-
-    //make sure we are using a Date type and not Date?
-    dateToFormat = new Date(dateToFormat);
 
     let year: number = dateToFormat.getFullYear();
     let month: number = (dateToFormat.getMonth() + 1);
@@ -112,6 +114,50 @@ export class Utils {
 
   }
 
+  public static formatDateOnlyToStringUTC(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
+
+    if (!dateToFormat) {
+      return null;
+    }
+    var separator = '/';
+
+    if (dashFormat) {
+      separator = '-';
+    }
+
+    //make sure we are using a Date type and not Date?
+
+    let year: number = dateToFormat.getFullYear();
+    let month: number = (dateToFormat.getMonth() + 1);
+    let day: number = dateToFormat.getDate();
+
+    let yearString: string = year.toString();
+    let monthString: string = month.toString();
+    let dayString: string = day.toString();
+
+    if (zeroPad) {
+      monthString = this.zeroPad(month);
+      dayString = this.zeroPad(day);
+    }
+
+    if (internationalFormat) {
+      return moment.utc(dateToFormat).format(`YYYY${separator}MM${separator}DD`);
+    } else {
+      return moment.utc(dateToFormat).format(`MM${separator}DD${separator}YYYY`);
+    }
+
+  }
+
+  static convertToDate(dateToConvert: string): Date {
+    if (dateToConvert === null) {
+        return new Date();
+    }
+    const milliseconds = Date.parse(dateToConvert);
+    if (isNaN(milliseconds)) {
+        return new Date(); // Invalid date string
+    }
+    return new Date(milliseconds);
+  }
 
   public static formatDateAsStringUTC(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
     if (!dateToFormat) {
@@ -183,7 +229,7 @@ export class Utils {
     if (!scheduleDate) {
       return null;
     }
-    let returnDate: Date = new Date(Utils.formatDateOnlyToString(scheduleDate, true) + ' ' + timeValue);
+    let returnDate: Date = new Date(Utils.formatDateOnlyToStringUTC(scheduleDate, true) + ' ' + timeValue);
     return returnDate;
   }
 

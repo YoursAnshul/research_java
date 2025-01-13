@@ -227,7 +227,7 @@ export class CalendarComponent implements OnInit {
     //----------------------------------------------------
     // set user schedules
     //----------------------------------------------------
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate.value, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true));
   }
 
 
@@ -258,13 +258,13 @@ export class CalendarComponent implements OnInit {
     for (var i = 0; i < weekStarts.length; i++) {
       let weekSchedules: IWeekSchedules = {
         weekStart: weekStarts[i],
-        day1Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 1),
-        day2Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 2),
-        day3Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 3),
-        day4Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 4),
-        day5Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 5),
-        day6Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 6),
-        day7Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(weekStarts[i]) && x.dayOfWeek == 7),
+        day1Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 1),
+        day2Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 2),
+        day3Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 3),
+        day4Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 4),
+        day5Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 5),
+        day6Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 6),
+        day7Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 7),
       };
       this.monthSchedules.weekSchedules.push(weekSchedules);
     }
@@ -275,12 +275,12 @@ export class CalendarComponent implements OnInit {
     //get user schedules for the selected day's week
     this.weekSchedules = null;
     for (var i = 0; i < this.monthSchedules.weekSchedules.length; i++) {
-      if (Utils.formatDateOnlyToString(this.monthSchedules.weekSchedules[i].weekStart) === Utils.formatDateOnlyToString(this.selectedWeekStartAndEnd.weekStart)) {
+      if (Utils.formatDateOnlyToStringUTC(this.monthSchedules.weekSchedules[i].weekStart) === Utils.formatDateOnlyToStringUTC(this.selectedWeekStartAndEnd.weekStart)) {
         this.weekSchedules = this.monthSchedules.weekSchedules[i];
       }
     }
 
-    this.filteredUserSchedulesWeek = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(this.selectedWeekStartAndEnd.weekStart));
+    this.filteredUserSchedulesWeek = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(this.selectedWeekStartAndEnd.weekStart));
 
     //-------------------------------
     // day view
@@ -336,7 +336,7 @@ export class CalendarComponent implements OnInit {
     }
 
     //add the last monday
-    if (weekStarts.filter(x => Utils.formatDateOnlyToString(x) == Utils.formatDateOnlyToString(lastMonday)).length < 1)
+    if (weekStarts.filter(x => Utils.formatDateOnlyToStringUTC(x) == Utils.formatDateOnlyToStringUTC(lastMonday)).length < 1)
       weekStarts.push(lastMonday);
 
     //console.log(weekStarts);

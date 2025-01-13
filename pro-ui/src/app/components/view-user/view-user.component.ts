@@ -566,7 +566,7 @@ export class ViewUserComponent implements OnInit {
       return '';
     }
 
-    return Utils.formatDateOnlyToString(dateToFormat) || '';
+    return Utils.formatDateOnlyToDateOnlyString(dateToFormat) || '';
   }
 
   private validateRequiredFields() {

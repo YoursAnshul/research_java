@@ -92,8 +92,8 @@ export class ProjectsService {
   }
 
   getProjectTotalsReport(weekStart: Date, weekEnd: Date): Observable<IGeneralResponse> {
-    let weekStartString: string = Utils.formatDateOnlyToString(weekStart, true,true,true) || '';
-    let weekEndString: string = Utils.formatDateOnlyToString(weekEnd, true,true,true) || '';
+    let weekStartString: string = Utils.formatDateOnlyToStringUTC(weekStart, true,true,true) || '';
+    let weekEndString: string = Utils.formatDateOnlyToStringUTC(weekEnd, true,true,true) || '';
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/projectTotals?weekStart=${weekStartString}&weekEnd=${weekEndString}`);
   }
 

@@ -45,7 +45,7 @@ export class WeekViewComponent implements OnInit {
       return null;
     }
 
-    return Utils.formatDateOnlyToString(dateToFormat);
+    return Utils.formatDateOnlyToStringUTC(dateToFormat);
   }
 
   //open contextual popup for the clicked user

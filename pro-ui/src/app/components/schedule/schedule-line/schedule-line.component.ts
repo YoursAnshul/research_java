@@ -355,7 +355,7 @@ export class ScheduleLineComponent implements OnInit {
       return null;
     }
 
-    return Utils.formatDateOnlyToString(dateToFormat);
+    return Utils.formatDateOnlyToStringUTC(dateToFormat);
   }
 
   //returns the day of the week for the current schedule

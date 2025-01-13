@@ -116,7 +116,7 @@ export class CalendarControlsComponent implements OnInit {
       case 'WEEK': {
         this.startViewText = "month";
         let currentWeek: IWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(currDate);
-        this.todayPickerLabel = 'Current Week: ' + Utils.formatDateOnlyToString(currentWeek.weekStart, false, true) + ' – ' + Utils.formatDateOnlyToString(currentWeek.weekEnd, false, true);
+        this.todayPickerLabel = 'Current Week: ' + Utils.formatDateOnlyToStringUTC(currentWeek.weekStart, false, true) + ' – ' + Utils.formatDateOnlyToStringUTC(currentWeek.weekEnd, false, true);
         break;
       }
 

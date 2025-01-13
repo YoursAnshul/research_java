@@ -401,7 +401,7 @@ export class UsersComponent {
 
   //utility format function
   public formatDateOnlyToString(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
-    return Utils.formatDateOnlyToString(dateToFormat);
+    return Utils.formatDateOnlyToDateOnlyString(dateToFormat);
   }
 
   public makeSelectedUserVisible(user:User){
