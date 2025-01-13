@@ -4,7 +4,26 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { scheduled } from 'rxjs';
 import { Utils } from '../../classes/utils';
-import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings} from '../../interfaces/interfaces';
+import {
+  IActionButton,
+  IAdminOptionsVariable,
+  IAnyFilter,
+  IAuthenticatedUser,
+  IBlockOutDate,
+  IDateRange,
+  IDropDownValue,
+  IFormFieldVariable,
+  IProjectMin,
+  IRequest,
+  ISchedule,
+  IScheduleMin,
+  ITimeCode,
+  IUserSchedule,
+  IUserTrainedOn,
+  IValidationMessage,
+  IWeekStartAndEnd,
+  IWeekStartAndEndStrings,
+} from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { GlobalsService } from '../../services/globals/globals.service';
@@ -18,15 +37,16 @@ import { User } from '../../models/data/user';
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.css']
+  styleUrls: ['./schedule.component.css'],
 })
 export class ScheduleComponent implements OnInit {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
-
-    let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => (x.changed) || (x.markedForDeletion));
+    let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(
+      (x) => x.changed || x.markedForDeletion
+    );
 
     if (changedSchedules.length > 0) {
-      if(e){
+      if (e) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -107,7 +127,6 @@ export class ScheduleComponent implements OnInit {
   pagedUsersCustomLength = 0;
   pagedUserSchedulesCustom: ISchedule[] = [];
 
-
   currentTab: string = 'Add';
 
   //filters
@@ -116,15 +135,16 @@ export class ScheduleComponent implements OnInit {
   anyUserToggle: boolean = true;
   anyProjectToggle: boolean = true;
 
-  constructor(private userSchedulesService: UserSchedulesService,
-              private usersService: UsersService,
-              private projectsService: ProjectsService,
-              private globalsService: GlobalsService,
-              private authenticationService: AuthenticationService,
-              private requestsService: RequestsService,
-              private configurationService: ConfigurationService,
-              private logsService: LogsService) {
-
+  constructor(
+    private userSchedulesService: UserSchedulesService,
+    private usersService: UsersService,
+    private projectsService: ProjectsService,
+    private globalsService: GlobalsService,
+    private authenticationService: AuthenticationService,
+    private requestsService: RequestsService,
+    private configurationService: ConfigurationService,
+    private logsService: LogsService
+  ) {
     //set date and week defaults
     this.selectedDate = new Date();
 
@@ -133,106 +153,104 @@ export class ScheduleComponent implements OnInit {
     this.setSelectedWeek();
 
     //subscribe to context net Id
-    this.globalsService.contextNetId.subscribe(
-      contextNetId => {
-        this.contextNetId = contextNetId || '';
-        this.setInitialScheduleDefaults();
-      }
-    );
+    this.globalsService.contextNetId.subscribe((contextNetId) => {
+      this.contextNetId = contextNetId || '';
+      this.setInitialScheduleDefaults();
+    });
 
     //subscribe to context project name
-    this.globalsService.contextProjectName.subscribe(
-      contextProjectName => {
-        this.contextProjectName = contextProjectName || '';
-        this.setInitialScheduleDefaults();
-      }
-    );
+    this.globalsService.contextProjectName.subscribe((contextProjectName) => {
+      this.contextProjectName = contextProjectName || '';
+      this.setInitialScheduleDefaults();
+    });
 
-    this.globalsService.showPopupMessage.subscribe(
-      showPopupMessage => {
-        this.showPopupMessage = showPopupMessage;
-      }
-    );
+    this.globalsService.showPopupMessage.subscribe((showPopupMessage) => {
+      this.showPopupMessage = showPopupMessage;
+    });
 
-    this.globalsService.showHoverMessage.subscribe(
-      showHoverMessage => {
-        this.showHoverMessage = showHoverMessage;
-      }
-    );
-
-;
+    this.globalsService.showHoverMessage.subscribe((showHoverMessage) => {
+      this.showHoverMessage = showHoverMessage;
+    });
 
     //subscribe to schedule tab index
-    this.globalsService.scheduleTabIndex.subscribe(
-      scheduleTabIndex => {
-        this.scheduleTabIndex = scheduleTabIndex;
+    this.globalsService.scheduleTabIndex.subscribe((scheduleTabIndex) => {
+      this.scheduleTabIndex = scheduleTabIndex;
 
-        //set the current tab, based on the schedule tab index (to make sure calendar controls are loaded)
-        switch (this.scheduleTabIndex) {
-          case 1:
-            this.currentTab = 'Day';
-            break;
-          case 2:
-            this.currentTab = 'Week';
-            break;
-          case 3:
-            this.currentTab = 'Month';
-            break;
-          case 4:
-            this.currentTab = 'Custom';
-            break;
-        }
-
+      //set the current tab, based on the schedule tab index (to make sure calendar controls are loaded)
+      switch (this.scheduleTabIndex) {
+        case 1:
+          this.currentTab = 'Day';
+          break;
+        case 2:
+          this.currentTab = 'Week';
+          break;
+        case 3:
+          this.currentTab = 'Month';
+          break;
+        case 4:
+          this.currentTab = 'Custom';
+          break;
       }
-    );
+    });
 
     //subscribe to show scheduler boolean
-    this.globalsService.showScheduler.subscribe(
-      showScheduler => {
-        if (showScheduler) {
-          let blankSchedule: ISchedule | undefined = this.addedSchedules.find(x => x.addInitial);
+    this.globalsService.showScheduler.subscribe((showScheduler) => {
+      if (showScheduler) {
+        let blankSchedule: ISchedule | undefined = this.addedSchedules.find(
+          (x) => x.addInitial
+        );
 
-          if (this.contextNetId) {
-            this.userFilterFC.setValue([this.contextNetId]);
-            if (blankSchedule) {
-              blankSchedule.dempoid = this.contextNetId;
-            }
-          } else {
-            this.userFilterFC.setValue(['0']);
+        if (this.contextNetId) {
+          this.userFilterFC.setValue([this.contextNetId]);
+          if (blankSchedule) {
+            blankSchedule.dempoid = this.contextNetId;
           }
-
-          if (this.contextProjectName) {
-            this.projectFilterFC.setValue([this.contextProjectName]);
-            if (blankSchedule) {
-              blankSchedule.projectName = this.contextProjectName;
-            }
-          } else {
-            this.projectFilterFC.setValue(['0']);
-          }
-
-          this.applyFilters();
-
+        } else {
+          this.userFilterFC.setValue(['0']);
         }
+
+        if (this.contextProjectName) {
+          this.projectFilterFC.setValue([this.contextProjectName]);
+          if (blankSchedule) {
+            blankSchedule.projectName = this.contextProjectName;
+          }
+        } else {
+          this.projectFilterFC.setValue(['0']);
+        }
+
+        this.applyFilters();
       }
-    );
+    });
 
     //subscribe to the authenticated user
     this.authenticationService.authenticatedUser.subscribe(
-      authenticatedUser => {
-
+      (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
 
         //try to set current user
         if (this.allUsers.length > 0) {
-          this.currentUser = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
+          this.currentUser = this.allUsers.find(
+            (x) => x.dempoid == this.authenticatedUser.netID
+          ) as User;
         }
 
         //restrict schedules shown if user is interviewer-only
         if (this.allUsers) {
-          if (this.authenticatedUser.interviewer && !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)) {
-            this.allUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID);
+          if (
+            this.authenticatedUser.interviewer &&
+            !(
+              this.authenticatedUser.admin ||
+              this.authenticatedUser.resourceGroup
+            )
+          ) {
+            this.allUsers = this.allUsers.filter(
+              (x) => x.dempoid == this.authenticatedUser.netID
+            );
             if (this.userSchedulesMonth.length > 0) {
-              this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID);
+              this.filteredUserSchedulesMonth =
+                this.filteredUserSchedulesMonth.filter(
+                  (x) => x.dempoid == this.authenticatedUser.netID
+                );
             }
           }
         }
@@ -242,27 +260,38 @@ export class ScheduleComponent implements OnInit {
         this.setInitialScheduleDefaults();
 
         //this.getValidationMessages();
-
       }
     );
 
     //subscribe to users
     this.usersService.allUsersMin.subscribe(
-      allUsers => {
-
-        this.allUsers = allUsers.filter(x => x.active);
+      (allUsers) => {
+        this.allUsers = allUsers.filter((x) => x.active);
 
         //try to set current user
         if (this.authenticatedUser) {
-          this.currentUser = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
+          this.currentUser = this.allUsers.find(
+            (x) => x.dempoid == this.authenticatedUser.netID
+          ) as User;
         }
 
         //restrict schedules shown if user is interviewer-only
         if (this.authenticatedUser) {
-          if (this.authenticatedUser.interviewer && !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)) {
-            this.allUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID);
+          if (
+            this.authenticatedUser.interviewer &&
+            !(
+              this.authenticatedUser.admin ||
+              this.authenticatedUser.resourceGroup
+            )
+          ) {
+            this.allUsers = this.allUsers.filter(
+              (x) => x.dempoid == this.authenticatedUser.netID
+            );
             if (this.userSchedulesMonth.length > 0) {
-              this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID);
+              this.filteredUserSchedulesMonth =
+                this.filteredUserSchedulesMonth.filter(
+                  (x) => x.dempoid == this.authenticatedUser.netID
+                );
             }
           }
         }
@@ -274,29 +303,31 @@ export class ScheduleComponent implements OnInit {
 
         this.setInitialScheduleDefaults();
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
     //subscribe to schedule cache
-    this.userSchedulesService.scheduleCache.subscribe(
-      scheduleCache => {
-        this.scheduleCache = scheduleCache;
-      }
-    );
+    this.userSchedulesService.scheduleCache.subscribe((scheduleCache) => {
+      this.scheduleCache = scheduleCache;
+    });
     //subscribe to user schedules subject
     this.userSchedulesService.userSchedules.subscribe(
-      userSchedules => {
+      (userSchedules) => {
         this.userSchedulesMonth = userSchedules;
 
         //initial schedule
-        if (this.userSchedulesMonth.filter(x => x.addInitial).length < 1) {
+        if (this.userSchedulesMonth.filter((x) => x.addInitial).length < 1) {
           this.initialSchedule = {} as ISchedule;
           this.initialSchedule.addInitial = true;
           this.initialSchedule.addTab = true;
-          this.userSchedulesMonth = [this.initialSchedule, ...this.userSchedulesMonth];
+          this.userSchedulesMonth = [
+            this.initialSchedule,
+            ...this.userSchedulesMonth,
+          ];
         }
 
         this.applyFilters();
@@ -314,46 +345,53 @@ export class ScheduleComponent implements OnInit {
 
         this.setInitialScheduleDefaults();
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
     //subscribe to projects
     this.projectsService.allProjectsMin.subscribe(
-      allProjects => {
-        this.allProjects = allProjects.filter(x => x.active);
+      (allProjects) => {
+        this.allProjects = allProjects.filter((x) => x.active);
 
         //validation schedules
         if (this.validationMessages) {
           for (var x = 0; x < this.validationMessages.length; x++) {
-            for (var i = 0; i < (this.validationMessages[x].schedules || []).length; i++) {
-              let projectId: number = (this.validationMessages[x].schedules || [])[i].projectid as number;
-              let scheduleProject: IProjectMin | undefined = this.allProjects.find(x => x.projectID == projectId);
+            for (
+              var i = 0;
+              i < (this.validationMessages[x].schedules || []).length;
+              i++
+            ) {
+              let projectId: number = (this.validationMessages[x].schedules ||
+                [])[i].projectid as number;
+              let scheduleProject: IProjectMin | undefined =
+                this.allProjects.find((x) => x.projectID == projectId);
               if (scheduleProject) {
-                (this.validationMessages[x].schedules || [])[i].projectName = scheduleProject.projectName;
+                (this.validationMessages[x].schedules || [])[i].projectName =
+                  scheduleProject.projectName;
               }
             }
           }
         }
-
 
         //filter available projects
         if (this.userSchedulesMonth.length > 0) {
           this.filterProjects();
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
     //subscribe to the selected date
     this.userSchedulesService.selectedDate.subscribe(
-      selectedDate => {
-
+      (selectedDate) => {
         this.selectedDate = selectedDate;
         this.setInitialScheduleDefaults();
 
@@ -363,7 +401,10 @@ export class ScheduleComponent implements OnInit {
 
         let previousDateIsSame: boolean = false;
 
-        if (Utils.formatDateOnlyToString(this.selectedDate) == Utils.formatDateOnlyToString(this.previousSelectedDate)) {
+        if (
+          Utils.formatDateOnlyToString(this.selectedDate) ==
+          Utils.formatDateOnlyToString(this.previousSelectedDate)
+        ) {
           previousDateIsSame = true;
         }
 
@@ -371,22 +412,30 @@ export class ScheduleComponent implements OnInit {
 
         if (!previousDateIsSame) {
           //call validate schedules
-          this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
-            response => {
-              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-                try {
-                  this.getValidationMessages();
-                  //this.validationMessages = <IValidationMessage[]>(response.Subject).filter(x => x.DempoId == this.authenticatedUser.NetID);
-                } catch (ex) {
-                  console.log(ex);
+          this.userSchedulesService
+            .validateSchedules([
+              {
+                dempoId: this.authenticatedUser.netID,
+                inMonth: new Date(this.selectedDate),
+              } as IValidationMessage,
+            ])
+            .subscribe(
+              (response) => {
+                if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                  try {
+                    this.getValidationMessages();
+                    //this.validationMessages = <IValidationMessage[]>(response.Subject).filter(x => x.DempoId == this.authenticatedUser.NetID);
+                  } catch (ex) {
+                    console.log(ex);
+                  }
                 }
+              },
+              (error) => {
+                this.errorMessage = <string>error.message;
+                this.logsService.logError(this.errorMessage);
+                console.log(this.errorMessage);
               }
-            },
-            error => {
-              this.errorMessage = <string>(error.message);
-              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-            }
-          )
+            );
         }
 
         //set month start and end
@@ -409,41 +458,55 @@ export class ScheduleComponent implements OnInit {
 
         this.applyFilters();
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
     //subscribe to timecodes
     this.userSchedulesService.timeCodes.subscribe(
-      timeCodes => {
-        timeCodes = timeCodes.filter(x => (x.timeCodeValue > 14 && x.timeCodeValue !== 49));
+      (timeCodes) => {
+        timeCodes = timeCodes.filter(
+          (x) => x.timeCodeValue > 14 && x.timeCodeValue !== 49
+        );
         this.timeCodes = timeCodes;
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
     //get lock date
     this.configurationService.getLockDate().subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          let lockDate: IAdminOptionsVariable = <IAdminOptionsVariable>response.Subject;
+          let lockDate: IAdminOptionsVariable = <IAdminOptionsVariable>(
+            response.Subject
+          );
 
           if (lockDate) {
             let lockDateFormFieldVariable: IAdminOptionsVariable = lockDate;
             let today: Date = new Date();
             //getting 0 day of current month returns last day of current month in JavaScript (getMonth() is zero-based, so + 1 is current month)
-            let lastDayOfCurrentMonth: number = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            let lastDayOfCurrentMonth: number = new Date(
+              today.getFullYear(),
+              today.getMonth() + 1,
+              0
+            ).getDate();
             let lockDateNumber: number = parseInt(lockDate.optionValue);
             if (lockDateNumber > lastDayOfCurrentMonth) {
               lockDateNumber = lastDayOfCurrentMonth;
             }
 
-            this.lockDate = new Date(today.getFullYear(), today.getMonth(), lockDateNumber);
+            this.lockDate = new Date(
+              today.getFullYear(),
+              today.getMonth(),
+              lockDateNumber
+            );
 
             //calculate unlock date
             //unlock modifier = 2 indicates that we can't unlock until after next month
@@ -451,45 +514,47 @@ export class ScheduleComponent implements OnInit {
             let unlockModifier = 2;
             if (Utils.formatDateOnly(new Date()) || new Date() <= this.lockDate)
               unlockModifier = 1;
-            this.unlockDate = new Date(this.lockDate.getFullYear(), this.lockDate.getMonth() + unlockModifier, 1);
+            this.unlockDate = new Date(
+              this.lockDate.getFullYear(),
+              this.lockDate.getMonth() + unlockModifier,
+              1
+            );
 
             this.setInitialScheduleDefaults();
           }
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
     //get block-out dates (current day and future)
     this.configurationService.getBlockOutDates().subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.blockOutDates = <IBlockOutDate[]>response.Subject;
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
-
   }
 
   ngOnInit(): void {
-
     //set date and week defaults
-    if (!this.selectedDate)
-      this.selectedDate = new Date();
+    if (!this.selectedDate) this.selectedDate = new Date();
 
     //this.userSchedulesService.selectedDate.next(this.selectedDate);
     if (!this.selectedDateFC)
       this.selectedDateFC = new FormControl(this.selectedDate.toISOString());
 
-    if (!this.selectedWeekStartAndEnd)
-      this.setSelectedWeek();
+    if (!this.selectedWeekStartAndEnd) this.setSelectedWeek();
 
     this.applyFilters();
 
@@ -506,7 +571,6 @@ export class ScheduleComponent implements OnInit {
 
     //dynamic popup resizing
     window.addEventListener('resize', function (event) {
-
       Utils.schedulerPopupDynamicSize();
     });
   }
@@ -524,71 +588,102 @@ export class ScheduleComponent implements OnInit {
   closeScheduler(): void {
     let leaveFunction: Function = (): void => {
       this.globalsService.closeSchedulePopup();
-      this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true) || '');
-    }
+      this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+        Utils.formatDateOnlyToString(this.selectedDate, true, true, true) || ''
+      );
+    };
 
-    let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => (x.changed) || (x.markedForDeletion));
+    let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(
+      (x) => x.changed || x.markedForDeletion
+    );
     if (changedSchedules.length > 0) {
       let leaveButton: IActionButton = {
         label: 'Leave',
-        callbackFunction: leaveFunction
-      }
+        callbackFunction: leaveFunction,
+      };
 
       let stayButton: IActionButton = {
         label: 'Stay',
         callbackFunction: (): void => {
           this.globalsService.displayBlackFilter();
-        }
-      }
+        },
+      };
 
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessageWithCallbacks('Confirm', 'You have unsaved changes to your schedules<br />Are you sure you want to close the schedule window?', [leaveButton, stayButton], true));
-
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessageWithCallbacks(
+          'Confirm',
+          'You have unsaved changes to your schedules<br />Are you sure you want to close the schedule window?',
+          [leaveButton, stayButton],
+          true
+        )
+      );
     } else {
       leaveFunction();
     }
-  };
+  }
 
   saveConfirmation(): void {
     //BEGIN confirm deletion
-    let deleteCustomSchedules: ISchedule[] = this.filteredUserSchedulesCustom.filter(x => x.markedForDeletion);
-    let markedForDeletionSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => x.markedForDeletion);
+    let deleteCustomSchedules: ISchedule[] =
+      this.filteredUserSchedulesCustom.filter((x) => x.markedForDeletion);
+    let markedForDeletionSchedules: ISchedule[] =
+      this.userSchedulesMonth.filter((x) => x.markedForDeletion);
 
     if (deleteCustomSchedules.length > 0) {
-      markedForDeletionSchedules = [...markedForDeletionSchedules, ...deleteCustomSchedules];
+      markedForDeletionSchedules = [
+        ...markedForDeletionSchedules,
+        ...deleteCustomSchedules,
+      ];
     }
 
     if (markedForDeletionSchedules.length > 0) {
       let deleteTitle: string = '';
       let deleteMessage: string = '';
-      let uniqueInterviewers = [...new Set(markedForDeletionSchedules.map(x => x.userid))];
+      let uniqueInterviewers = [
+        ...new Set(markedForDeletionSchedules.map((x) => x.userid)),
+      ];
       if (uniqueInterviewers.length > 1) {
         deleteTitle = 'Confirm Batch Delete';
-        deleteMessage = '<p><b>Warning:</b> schedules for more than one interviewer will be deleted by this action.</p>';
+        deleteMessage =
+          '<p><b>Warning:</b> schedules for more than one interviewer will be deleted by this action.</p>';
       } else {
-        let preferredName: string = `${markedForDeletionSchedules[0].preferredfname || markedForDeletionSchedules[0].fname} ${markedForDeletionSchedules[0].preferredlname || markedForDeletionSchedules[0].lname}`;
+        let preferredName: string = `${
+          markedForDeletionSchedules[0].preferredfname ||
+          markedForDeletionSchedules[0].fname
+        } ${
+          markedForDeletionSchedules[0].preferredlname ||
+          markedForDeletionSchedules[0].lname
+        }`;
         deleteTitle = 'Confirm Delete';
         deleteMessage = `<p>One or more schedules will be deleted for interviewer "${preferredName}".</p>`;
       }
 
       let deleteFunction: Function = (): void => {
         this.saveSchedules();
-      }
+      };
 
       let cancelFunction: Function = (): void => {
         return;
-      }
+      };
 
       let confirmButton: IActionButton = {
         label: 'Delete Schedule(s)',
-        callbackFunction: deleteFunction
-      }
+        callbackFunction: deleteFunction,
+      };
 
       let cancelButton: IActionButton = {
         label: 'Cancel',
-        callbackFunction: cancelFunction
-      }
+        callbackFunction: cancelFunction,
+      };
 
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessageWithCallbacks(deleteTitle, deleteMessage, [confirmButton, cancelButton], true));
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessageWithCallbacks(
+          deleteTitle,
+          deleteMessage,
+          [confirmButton, cancelButton],
+          true
+        )
+      );
     } else {
       this.saveSchedules();
     }
@@ -599,43 +694,82 @@ export class ScheduleComponent implements OnInit {
   saveSchedules(): void {
     //remove any added, but marked for deletion rows first
     let newSchedulesDeleted: boolean = false;
-    if (this.userSchedulesMonth.filter(x => (x.preschedulekey == 0 && x.markedForDeletion && !x.addTab)).length > 0 || this.filteredUserSchedulesCustom.filter(x => (x.preschedulekey == 0 && x.markedForDeletion && !x.addTab)).length > 0) {
+    if (
+      this.userSchedulesMonth.filter(
+        (x) => x.preschedulekey == 0 && x.markedForDeletion && !x.addTab
+      ).length > 0 ||
+      this.filteredUserSchedulesCustom.filter(
+        (x) => x.preschedulekey == 0 && x.markedForDeletion && !x.addTab
+      ).length > 0
+    ) {
       newSchedulesDeleted = true;
-      this.userSchedulesMonth = this.userSchedulesMonth.filter(x => !(x.preschedulekey == 0 && x.markedForDeletion && !x.addTab));
-      this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => !(x.preschedulekey == 0 && x.markedForDeletion && !x.addTab));
+      this.userSchedulesMonth = this.userSchedulesMonth.filter(
+        (x) => !(x.preschedulekey == 0 && x.markedForDeletion && !x.addTab)
+      );
+      this.filteredUserSchedulesCustom =
+        this.filteredUserSchedulesCustom.filter(
+          (x) => !(x.preschedulekey == 0 && x.markedForDeletion && !x.addTab)
+        );
       this.applyFilters();
     }
 
-    let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => (x.changed && !x.invalid) || (x.markedForDeletion));
-    let changedCustomSchedules: ISchedule[] = this.filteredUserSchedulesCustom.filter(x => (x.changed && !x.invalid));
+    let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(
+      (x) => (x.changed && !x.invalid) || x.markedForDeletion
+    );
+    let changedCustomSchedules: ISchedule[] =
+      this.filteredUserSchedulesCustom.filter((x) => x.changed && !x.invalid);
 
     if (changedCustomSchedules.length > 0) {
-      let uniqueChangedCustomSchedules: ISchedule[] = changedCustomSchedules.filter(x => !changedSchedules.map(y => y.projectid).includes(x.projectid));
+      let uniqueChangedCustomSchedules: ISchedule[] =
+        changedCustomSchedules.filter(
+          (x) => !changedSchedules.map((y) => y.projectid).includes(x.projectid)
+        );
       changedSchedules = [...changedSchedules, ...uniqueChangedCustomSchedules];
     }
 
-    let markedForDeletionSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => x.markedForDeletion);
-    let deleteCustomSchedules: ISchedule[] = this.filteredUserSchedulesCustom.filter(x => x.markedForDeletion);
+    let markedForDeletionSchedules: ISchedule[] =
+      this.userSchedulesMonth.filter((x) => x.markedForDeletion);
+    let deleteCustomSchedules: ISchedule[] =
+      this.filteredUserSchedulesCustom.filter((x) => x.markedForDeletion);
 
     if (deleteCustomSchedules.length > 0) {
-      markedForDeletionSchedules = [...markedForDeletionSchedules, ...deleteCustomSchedules];
+      markedForDeletionSchedules = [
+        ...markedForDeletionSchedules,
+        ...deleteCustomSchedules,
+      ];
     }
 
     let toDeleteSchedulesMin: IScheduleMin[] = [];
 
     if (markedForDeletionSchedules.length > 0) {
-      this.userSchedulesMonth = this.userSchedulesMonth.filter(x => !(x.markedForDeletion && (!x.preschedulekey || x.preschedulekey < 1)));
-      markedForDeletionSchedules = markedForDeletionSchedules.filter(x => !(x.markedForDeletion && (!x.preschedulekey || x.preschedulekey < 1)));
+      this.userSchedulesMonth = this.userSchedulesMonth.filter(
+        (x) =>
+          !(x.markedForDeletion && (!x.preschedulekey || x.preschedulekey < 1))
+      );
+      markedForDeletionSchedules = markedForDeletionSchedules.filter(
+        (x) =>
+          !(x.markedForDeletion && (!x.preschedulekey || x.preschedulekey < 1))
+      );
       if (markedForDeletionSchedules.length > 0) {
         toDeleteSchedulesMin = this.getSchedulesMin(markedForDeletionSchedules);
       }
     }
 
     //remove schedules marked for deletion from changed schedules, if any
-    changedSchedules = changedSchedules.filter(x => !(x.markedForDeletion));
+    changedSchedules = changedSchedules.filter((x) => !x.markedForDeletion);
 
-    if (changedSchedules.length < 1 && markedForDeletionSchedules.length < 1 && this.userSchedulesMonth.filter(x => (x.invalid && x.changed)).length < 1 && this.filteredUserSchedulesCustom.filter(x => (x.invalid && x.changed)).length < 1 && !newSchedulesDeleted) {
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Info', 'No changes to save', ['OK']));
+    if (
+      changedSchedules.length < 1 &&
+      markedForDeletionSchedules.length < 1 &&
+      this.userSchedulesMonth.filter((x) => x.invalid && x.changed).length <
+        1 &&
+      this.filteredUserSchedulesCustom.filter((x) => x.invalid && x.changed)
+        .length < 1 &&
+      !newSchedulesDeleted
+    ) {
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessage('Info', 'No changes to save', ['OK'])
+      );
       return;
     }
 
@@ -646,18 +780,28 @@ export class ScheduleComponent implements OnInit {
         Utils.validateStartEndDateTime(changedSchedules[i]);
       }
 
-      let changedSchedulesMin: IScheduleMin[] = this.getSchedulesMin(changedSchedules);
+      let changedSchedulesMin: IScheduleMin[] =
+        this.getSchedulesMin(changedSchedules);
       this.userSchedulesService.saveSchedules(changedSchedulesMin).subscribe(
-        response => {
+        (response) => {
           if ((response.Status || '').toUpperCase() == 'SUCCESS') {
             try {
-
               //execute schedule validations at the server
               this.validateSchedules(changedSchedules);
 
               //if we have new schedules, we don't want to juggle connecting their new preschedulekeys auto-incremented from the database, so just refresh data
-              if (this.userSchedulesMonth.filter(x => x.preschedulekey == 0).length > 0) {
-                this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true) || '');
+              if (
+                this.userSchedulesMonth.filter((x) => x.preschedulekey == 0)
+                  .length > 0
+              ) {
+                this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+                  Utils.formatDateOnlyToString(
+                    this.selectedDate,
+                    true,
+                    true,
+                    true
+                  ) || ''
+                );
               }
               ////if we don't have new schedules to save, just push out changes and correct the flags
               //else {
@@ -667,16 +811,23 @@ export class ScheduleComponent implements OnInit {
               //set saved, changed, and marked for deletion flags
               for (var ii = 0; ii < changedSchedules.length; ii++) {
                 if (changedSchedules[ii].preschedulekey > 0) {
-
-                  let scheduleIndex: number = this.userSchedulesMonth.findIndex(x => x.preschedulekey == changedSchedules[ii].preschedulekey);
+                  let scheduleIndex: number = this.userSchedulesMonth.findIndex(
+                    (x) =>
+                      x.preschedulekey == changedSchedules[ii].preschedulekey
+                  );
                   //if not for the custom tab, all changed schedules should be present in month schedules array, but because of the custom tab, we may have changes outside this range
                   if (scheduleIndex > -1) {
                     this.userSchedulesMonth[scheduleIndex].saved = true;
                     this.userSchedulesMonth[scheduleIndex].changed = false;
-                    this.userSchedulesMonth[scheduleIndex].markedForDeletion = false;
+                    this.userSchedulesMonth[scheduleIndex].markedForDeletion =
+                      false;
                   }
                   //custom syncing
-                  let scheduleIndexCustom: number = this.filteredUserSchedulesCustom.findIndex(x => x.preschedulekey == changedSchedules[ii].preschedulekey);
+                  let scheduleIndexCustom: number =
+                    this.filteredUserSchedulesCustom.findIndex(
+                      (x) =>
+                        x.preschedulekey == changedSchedules[ii].preschedulekey
+                    );
                   if (scheduleIndexCustom > -1) {
                     //sync changes from month to schedule, but only if the month has been changes (month gets precedence over any concurrent changes in custom)
                     //if (scheduleIndex > -1) {
@@ -685,9 +836,15 @@ export class ScheduleComponent implements OnInit {
                     //  }
                     //}
                     //set custom schedule flags
-                    this.filteredUserSchedulesCustom[scheduleIndexCustom].saved = true;
-                    this.filteredUserSchedulesCustom[scheduleIndexCustom].changed = false;
-                    this.filteredUserSchedulesCustom[scheduleIndexCustom].markedForDeletion = false;
+                    this.filteredUserSchedulesCustom[
+                      scheduleIndexCustom
+                    ].saved = true;
+                    this.filteredUserSchedulesCustom[
+                      scheduleIndexCustom
+                    ].changed = false;
+                    this.filteredUserSchedulesCustom[
+                      scheduleIndexCustom
+                    ].markedForDeletion = false;
                   }
                 } else if (changedSchedules[ii].addTab) {
                   changedSchedules[ii].addInitial = false;
@@ -703,19 +860,24 @@ export class ScheduleComponent implements OnInit {
                   //    this.initialSchedule.addTab = true;
                   //    this.userSchedulesMonth.push(this.initialSchedule);
                   //  }
-
                 }
 
                 //}
 
                 //push all changes out to other components
                 this.userSchedulesMonth = [...this.userSchedulesMonth];
-                this.userSchedulesService.userSchedules.next(this.userSchedulesMonth);
-
+                this.userSchedulesService.userSchedules.next(
+                  this.userSchedulesMonth
+                );
               }
-
             } catch (ex) {
-              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Schedules have been saved successfully but there was an issue refreshing the page...You may need to refresh your page manually to reflect changes.', ['OK']));
+              this.globalsService.displayPopupMessage(
+                Utils.generatePopupMessage(
+                  'Success',
+                  'Schedules have been saved successfully but there was an issue refreshing the page...You may need to refresh your page manually to reflect changes.',
+                  ['OK']
+                )
+              );
               console.log(ex);
             }
 
@@ -723,27 +885,63 @@ export class ScheduleComponent implements OnInit {
             if (markedForDeletionSchedules.length > 0) {
               this.deleteSchedules(toDeleteSchedulesMin, true);
             } else {
-              if (this.userSchedulesMonth.filter(x => (x.invalid && x.changed)).length > 0) {
-                this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Save successful!<br /><br />Some schedules failed validation and were not saved. Please review the fields in red.', ['OK']));
+              if (
+                this.userSchedulesMonth.filter((x) => x.invalid && x.changed)
+                  .length > 0
+              ) {
+                this.globalsService.displayPopupMessage(
+                  Utils.generatePopupMessage(
+                    'Success',
+                    'Save successful!<br /><br />Some schedules failed validation and were not saved. Please review the fields in red.',
+                    ['OK']
+                  )
+                );
               } else {
-                this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Save successful', ['OK']));
+                this.globalsService.displayPopupMessage(
+                  Utils.generatePopupMessage('Success', 'Save successful', [
+                    'OK',
+                  ])
+                );
               }
             }
-
           } else {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Unable to save schedules', ['OK']));
+            this.globalsService.displayPopupMessage(
+              Utils.generatePopupMessage('Error', 'Unable to save schedules', [
+                'OK',
+              ])
+            );
           }
         },
-        error => {
-          this.errorMessage = <string>(error.message);
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Unable to save schedules:<br />' + this.errorMessage, ['OK']));
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+        (error) => {
+          this.errorMessage = <string>error.message;
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage(
+              'Error',
+              'Unable to save schedules:<br />' + this.errorMessage,
+              ['OK']
+            )
+          );
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
         }
       );
     } else if (newSchedulesDeleted) {
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Schedule(s) deleted', ['OK']));
-    } else if (this.userSchedulesMonth.filter(x => (x.invalid && x.changed)).length > 0 || this.filteredUserSchedulesCustom.filter(x => (x.invalid && x.changed)).length > 0) {
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'One or more schedules failed validation and cannot be saved. Please review the fields in red.', ['OK']));
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessage('Success', 'Schedule(s) deleted', ['OK'])
+      );
+    } else if (
+      this.userSchedulesMonth.filter((x) => x.invalid && x.changed).length >
+        0 ||
+      this.filteredUserSchedulesCustom.filter((x) => x.invalid && x.changed)
+        .length > 0
+    ) {
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessage(
+          'Partial Success',
+          'One or more schedules failed validation and cannot be saved. Please review the fields in red.',
+          ['OK']
+        )
+      );
     }
 
     //delete schedules marked for deletion and display a success message if there are no other changes to save
@@ -760,8 +958,12 @@ export class ScheduleComponent implements OnInit {
     for (var i = 0; i < sourceSchedules.length; i++) {
       let schedFirstOf: Date = new Date(sourceSchedules[i].startdatetime || '');
       schedFirstOf.setDate(1);
-      let match: IValidationMessage[] = userMonths.filter(x => (x.dempoId == sourceSchedules[i].dempoid
-        && Utils.formatDateOnlyToString(x.inMonth) == Utils.formatDateOnlyToString(schedFirstOf)));
+      let match: IValidationMessage[] = userMonths.filter(
+        (x) =>
+          x.dempoId == sourceSchedules[i].dempoid &&
+          Utils.formatDateOnlyToString(x.inMonth) ==
+            Utils.formatDateOnlyToString(schedFirstOf)
+      );
 
       if (match.length < 1) {
         let userMonth: IValidationMessage = {
@@ -771,16 +973,15 @@ export class ScheduleComponent implements OnInit {
           validationMessagesId: 0,
           scheduleKeys: null,
           messageText: null,
-          details: null
+          details: null,
         };
         userMonths.push(userMonth);
       }
-
     }
 
     //call validate schedules
     this.userSchedulesService.validateSchedules(userMonths).subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           try {
             this.getValidationMessages();
@@ -790,62 +991,107 @@ export class ScheduleComponent implements OnInit {
           }
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
-    )
+    );
   }
 
   //function to handle deleting schedules
-  deleteSchedules(schedulesToDelete: IScheduleMin[], successMessage: boolean = false): void {
+  deleteSchedules(
+    schedulesToDelete: IScheduleMin[],
+    successMessage: boolean = false
+  ): void {
     this.userSchedulesService.deleteSchedules(schedulesToDelete).subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           try {
             //remove deleted schedules from schedules array
-            this.userSchedulesMonth = this.userSchedulesMonth.filter(x => !schedulesToDelete.map(x => x.preschedulekey).includes(x.preschedulekey));
-            this.userSchedulesMonth = this.userSchedulesMonth.filter(x => x.preschedulekey !== 0);
-            this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => !schedulesToDelete.map(x => x.preschedulekey).includes(x.preschedulekey));
+            this.userSchedulesMonth = this.userSchedulesMonth.filter(
+              (x) =>
+                !schedulesToDelete
+                  .map((x) => x.preschedulekey)
+                  .includes(x.preschedulekey)
+            );
+            this.userSchedulesMonth = this.userSchedulesMonth.filter(
+              (x) => x.preschedulekey !== 0
+            );
+            this.filteredUserSchedulesCustom =
+              this.filteredUserSchedulesCustom.filter(
+                (x) =>
+                  !schedulesToDelete
+                    .map((x) => x.preschedulekey)
+                    .includes(x.preschedulekey)
+              );
 
             //push all changes out to other components
-            this.userSchedulesService.userSchedules.next(this.userSchedulesMonth);
+            this.userSchedulesService.userSchedules.next(
+              this.userSchedulesMonth
+            );
 
             if (successMessage) {
-              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Save successful!', ['OK']));
+              this.globalsService.displayPopupMessage(
+                Utils.generatePopupMessage('Success', 'Save successful!', [
+                  'OK',
+                ])
+              );
             }
 
             //check all conflicting schedules, if a conflicting schedule never changes, it won't get unflagged otherwise if it is no longer in conflict due to another ocnflict changing
-            let conflictedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => x.scheduleConflict);
+            let conflictedSchedules: ISchedule[] =
+              this.userSchedulesMonth.filter((x) => x.scheduleConflict);
             if (conflictedSchedules.length > 0) {
               for (var i = 0; i < conflictedSchedules.length; i++) {
                 this.conflictValidation(conflictedSchedules[i]);
               }
             }
-
           } catch (ex) {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Schedules have been deleted successfully but there was an issue refreshing the page... You may need to refresh your page manually to reflect changes.', ['OK']));
+            this.globalsService.displayPopupMessage(
+              Utils.generatePopupMessage(
+                'Success',
+                'Schedules have been deleted successfully but there was an issue refreshing the page... You may need to refresh your page manually to reflect changes.',
+                ['OK']
+              )
+            );
             console.log(ex);
           }
         } else {
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Unable to delete schedules', ['OK']));
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage('Error', 'Unable to delete schedules', [
+              'OK',
+            ])
+          );
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Unable to delete schedules:<br />' + this.errorMessage, ['OK']));
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.globalsService.displayPopupMessage(
+          Utils.generatePopupMessage(
+            'Error',
+            'Unable to delete schedules:<br />' + this.errorMessage,
+            ['OK']
+          )
+        );
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
   }
 
   //handle schedule changes
   changeEvent(schedule: ISchedule): void {
-
     //add changed, not new, schedule to schedule cache for real-time overlap validation
     if (schedule.preschedulekey > 0) {
-      if (this.scheduleCache.filter(x => x.preschedulekey == schedule.preschedulekey).length > 0) {
-        let cacheIndex: number = this.scheduleCache.findIndex(x => x.preschedulekey == schedule.preschedulekey);
+      if (
+        this.scheduleCache.filter(
+          (x) => x.preschedulekey == schedule.preschedulekey
+        ).length > 0
+      ) {
+        let cacheIndex: number = this.scheduleCache.findIndex(
+          (x) => x.preschedulekey == schedule.preschedulekey
+        );
         this.scheduleCache[cacheIndex] = schedule;
       }
     }
@@ -854,7 +1100,9 @@ export class ScheduleComponent implements OnInit {
     this.conflictValidation(schedule);
 
     //check all conflicting schedules, if a conflicting schedule never changes, it won't get unflagged otherwise if it is no longer in conflict due to another ocnflict changing
-    let conflictedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => x.scheduleConflict);
+    let conflictedSchedules: ISchedule[] = this.userSchedulesMonth.filter(
+      (x) => x.scheduleConflict
+    );
     if (conflictedSchedules.length > 0) {
       for (var i = 0; i < conflictedSchedules.length; i++) {
         this.conflictValidation(conflictedSchedules[i]);
@@ -865,80 +1113,133 @@ export class ScheduleComponent implements OnInit {
     this.businessRulesValidation(schedule);
 
     //tab validation
-/*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
+    /*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
     this.dayTabInvalid = this.filteredUserSchedulesDay.filter(x => x.invalid).length > 0;
     this.weekTabInvalid = this.filteredUserSchedulesWeek.filter(x => x.invalid).length > 0;
     this.monthTabInvalid = this.filteredUserSchedulesMonth.filter(x => x.invalid).length > 0;
     this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;*/
-    console.log("invalid :-"+this.addTabInvalid,this.dayTabInvalid,this.weekTabInvalid,this.monthTabInvalid,this.customTabInvalid);
-
+    console.log(
+      'invalid :-' + this.addTabInvalid,
+      this.dayTabInvalid,
+      this.weekTabInvalid,
+      this.monthTabInvalid,
+      this.customTabInvalid
+    );
   }
 
   conflictValidation(schedule: ISchedule): void {
     schedule.hoverMessage = undefined;
 
-    let scheduleCacheTemp: ISchedule[] = [...this.addedSchedules, ...this.scheduleCache, ...this.userSchedulesMonth.filter(x => x.preschedulekey == 0)];
+    let scheduleCacheTemp: ISchedule[] = [
+      ...this.addedSchedules,
+      ...this.scheduleCache,
+      ...this.userSchedulesMonth.filter((x) => x.preschedulekey == 0),
+    ];
 
     //start/end time overlap validation
     if (schedule.startdatetime) {
-      let startTimeAsDate = new Date(Utils.formatDateOnlyToString(schedule.startdatetime) + ' ' + schedule.startTime);
-      let endTimeAsDate = new Date(Utils.formatDateOnlyToString(schedule.enddatetime) + ' ' + schedule.endTime);
+      let startTimeAsDate = new Date(
+        Utils.formatDateOnlyToString(schedule.startdatetime) +
+          ' ' +
+          schedule.startTime
+      );
+      let endTimeAsDate = new Date(
+        Utils.formatDateOnlyToString(schedule.enddatetime) +
+          ' ' +
+          schedule.endTime
+      );
 
-      if (Utils.isValidDate(startTimeAsDate)
-        && Utils.isValidDate(endTimeAsDate)) {
-        let startTimeConflicts: ISchedule[] = scheduleCacheTemp.filter(x => (x.dempoid == schedule.dempoid && (x.startdatetime && x.enddatetime))
-          && (
-            (
-              Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime)
-              && ((x.enddatetime.getHours() * 60) + x.enddatetime.getMinutes()) > ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes())
-              && ((x.startdatetime.getHours() * 60) + x.startdatetime.getMinutes()) < ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes())
-            )
-            || (Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime) && x.startTime == schedule.startTime)
-            //|| (x.StartTime == schedule.StartTime)
-            || (
-              Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime)
-              && ((x.startdatetime.getHours() * 60) + x.startdatetime.getMinutes() >= ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes()))
-              && (((x.enddatetime.getHours() * 60) + x.enddatetime.getMinutes()) <= ((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes()))
-            )
-          )
+      if (
+        Utils.isValidDate(startTimeAsDate) &&
+        Utils.isValidDate(endTimeAsDate)
+      ) {
+        let startTimeConflicts: ISchedule[] = scheduleCacheTemp.filter(
+          (x) =>
+            x.dempoid == schedule.dempoid &&
+            x.startdatetime &&
+            x.enddatetime &&
+            ((Utils.formatDateOnlyToString(x.startdatetime) ==
+              Utils.formatDateOnlyToString(schedule.startdatetime) &&
+              x.enddatetime.getHours() * 60 + x.enddatetime.getMinutes() >
+                startTimeAsDate.getHours() * 60 +
+                  startTimeAsDate.getMinutes() &&
+              x.startdatetime.getHours() * 60 + x.startdatetime.getMinutes() <
+                startTimeAsDate.getHours() * 60 +
+                  startTimeAsDate.getMinutes()) ||
+              (Utils.formatDateOnlyToString(x.startdatetime) ==
+                Utils.formatDateOnlyToString(schedule.startdatetime) &&
+                x.startTime == schedule.startTime) ||
+              //|| (x.StartTime == schedule.StartTime)
+              (Utils.formatDateOnlyToString(x.startdatetime) ==
+                Utils.formatDateOnlyToString(schedule.startdatetime) &&
+                x.startdatetime.getHours() * 60 +
+                  x.startdatetime.getMinutes() >=
+                  startTimeAsDate.getHours() * 60 +
+                    startTimeAsDate.getMinutes() &&
+                x.enddatetime.getHours() * 60 + x.enddatetime.getMinutes() <=
+                  endTimeAsDate.getHours() * 60 + endTimeAsDate.getMinutes()))
         );
 
-        let endTimeConflicts: ISchedule[] = scheduleCacheTemp.filter(x => (x.dempoid == schedule.dempoid && (x.startdatetime && x.enddatetime))
-          && (
-            (
-              Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(schedule.startdatetime)
-              && ((x.startdatetime.getHours() * 60) + x.startdatetime.getMinutes()) < ((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes())
-              && ((x.enddatetime.getHours() * 60) + x.enddatetime.getMinutes()) > ((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes())
-            )
-            || (Utils.formatDateOnlyToString(x.enddatetime) == Utils.formatDateOnlyToString(schedule.enddatetime) && x.startTime == schedule.startTime)
+        let endTimeConflicts: ISchedule[] = scheduleCacheTemp.filter(
+          (x) =>
+            x.dempoid == schedule.dempoid &&
+            x.startdatetime &&
+            x.enddatetime &&
+            ((Utils.formatDateOnlyToString(x.startdatetime) ==
+              Utils.formatDateOnlyToString(schedule.startdatetime) &&
+              x.startdatetime.getHours() * 60 + x.startdatetime.getMinutes() <
+                endTimeAsDate.getHours() * 60 + endTimeAsDate.getMinutes() &&
+              x.enddatetime.getHours() * 60 + x.enddatetime.getMinutes() >
+                endTimeAsDate.getHours() * 60 + endTimeAsDate.getMinutes()) ||
+              (Utils.formatDateOnlyToString(x.enddatetime) ==
+                Utils.formatDateOnlyToString(schedule.enddatetime) &&
+                x.startTime == schedule.startTime))
             //|| (Utils.formatDateOnlyToString(x.Enddatetime) == Utils.formatDateOnlyToString(schedule.Enddatetime))
-          )
         );
 
         //we should always have 1 match of each, because this schedule isn't easily excluded from the check
         //(if we weren't validating new schedules, we could use the schedule key, but the primary use case is new schedules...)
         if (startTimeConflicts.length > 1 || endTimeConflicts.length > 1) {
           const uniqueValue = (value: any, index: any, self: any) => {
-            return self.indexOf(value) === index
-          }
+            return self.indexOf(value) === index;
+          };
 
           let htmlMessage: string = '';
-          let allConflicts: ISchedule[] = [...startTimeConflicts, ...endTimeConflicts];
+          let allConflicts: ISchedule[] = [
+            ...startTimeConflicts,
+            ...endTimeConflicts,
+          ];
           allConflicts = allConflicts.filter(uniqueValue);
 
           if (allConflicts.length > 0) {
-            htmlMessage = htmlMessage + '<p class="hover-message-title">Conflicting schedules found:</p>'
+            htmlMessage =
+              htmlMessage +
+              '<p class="hover-message-title">Conflicting schedules found:</p>';
           }
 
           for (var i = 0; i < allConflicts.length; i++) {
             if (!allConflicts[i].projectName) {
-              const project = this.allProjects.find(x => x.projectID == allConflicts[i].projectid);
+              const project = this.allProjects.find(
+                (x) => x.projectID == allConflicts[i].projectid
+              );
               if (project) {
                 allConflicts[i].projectName = project.projectName;
               }
             }
 
-            htmlMessage = htmlMessage + '<p><span class="bold italic">' + allConflicts[i].projectName + '</span> &nbsp;&nbsp;<span style="color: darkmagenta">' + Utils.formatDateOnlyWithMonthNameToString(allConflicts[i].startdatetime) + ',</span> &nbsp;&nbsp;<span class="italic">' + allConflicts[i].startTime + ' – ' + allConflicts[i].endTime + '</span></p>';
+            htmlMessage =
+              htmlMessage +
+              '<p><span class="bold italic">' +
+              allConflicts[i].projectName +
+              '</span> &nbsp;&nbsp;<span style="color: darkmagenta">' +
+              Utils.formatDateOnlyWithMonthNameToString(
+                allConflicts[i].startdatetime
+              ) +
+              ',</span> &nbsp;&nbsp;<span class="italic">' +
+              allConflicts[i].startTime +
+              ' – ' +
+              allConflicts[i].endTime +
+              '</span></p>';
             //console.log('MFD: ' + Utils.formatDateOnlyToString(allConflicts[i].Startdatetime) + ' / ' + allConflicts[i].StartTime + ' - ' + allConflicts[i].EndTime);
           }
 
@@ -953,16 +1254,32 @@ export class ScheduleComponent implements OnInit {
               this.businessRulesValidation(allConflicts[i]);
               continue;
             } else {
-
-              allConflicts[i] = this.setConflictProperties(allConflicts[i], htmlMessage);
+              allConflicts[i] = this.setConflictProperties(
+                allConflicts[i],
+                htmlMessage
+              );
 
               //set the invalidFields and scheduleConflict on the month schedules if they match the conflict preschedule key
               if (allConflicts[i].preschedulekey > 0) {
-                if (this.userSchedulesMonth.filter(x => x.preschedulekey == allConflicts[i].preschedulekey).length > 0) {
-                  let cacheIndex: number = this.userSchedulesMonth.findIndex(x => x.preschedulekey == allConflicts[i].preschedulekey);
-                  this.userSchedulesMonth[cacheIndex] = this.setConflictProperties(this.userSchedulesMonth[cacheIndex], htmlMessage);
-                  this.validateRequiredFields(this.userSchedulesMonth[cacheIndex]);
-                  this.businessRulesValidation(this.userSchedulesMonth[cacheIndex]);
+                if (
+                  this.userSchedulesMonth.filter(
+                    (x) => x.preschedulekey == allConflicts[i].preschedulekey
+                  ).length > 0
+                ) {
+                  let cacheIndex: number = this.userSchedulesMonth.findIndex(
+                    (x) => x.preschedulekey == allConflicts[i].preschedulekey
+                  );
+                  this.userSchedulesMonth[cacheIndex] =
+                    this.setConflictProperties(
+                      this.userSchedulesMonth[cacheIndex],
+                      htmlMessage
+                    );
+                  this.validateRequiredFields(
+                    this.userSchedulesMonth[cacheIndex]
+                  );
+                  this.businessRulesValidation(
+                    this.userSchedulesMonth[cacheIndex]
+                  );
                 }
               }
 
@@ -971,18 +1288,19 @@ export class ScheduleComponent implements OnInit {
             }
           }
 
-          if (schedule.markedForDeletion || allConflicts.filter(x => !x.markedForDeletion).length < 2) {
+          if (
+            schedule.markedForDeletion ||
+            allConflicts.filter((x) => !x.markedForDeletion).length < 2
+          ) {
             //console.log('MFD Original: ' + Utils.formatDateOnlyToString(schedule.Startdatetime) + ' / ' + schedule.StartTime + ' - ' + schedule.EndTime);
             schedule.hoverMessage = undefined;
             schedule.invalid = false;
             schedule.scheduleConflict = false;
           }
-
         } else {
           schedule.invalid = false;
           schedule.scheduleConflict = false;
         }
-
       }
     }
 
@@ -992,15 +1310,13 @@ export class ScheduleComponent implements OnInit {
 
   //set conflict properties on a schedule - helper function for code reuse
   setConflictProperties(schedule: ISchedule, hoverMessage: string): ISchedule {
-
     if (hoverMessage.length > 0) {
       schedule.hoverMessage = hoverMessage;
     }
 
     schedule.invalid = true;
 
-    if (!schedule.invalidFields)
-      schedule.invalidFields = [];
+    if (!schedule.invalidFields) schedule.invalidFields = [];
 
     if (!schedule.invalidFields.includes('StartTime')) {
       schedule.invalidFields.push('StartTime');
@@ -1015,13 +1331,16 @@ export class ScheduleComponent implements OnInit {
 
   //validation of required fields
   validateRequiredFields(schedule: ISchedule): void {
-
-
     // Define a function that abstracts the complex date comparison.
-    function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any ): boolean {
-
+    function isDateValid(
+      date: Date,
+      unlockDate: Date,
+      lockDate: Date,
+      authenticatedUser: any,
+      currentUser: any
+    ): boolean {
       //admin role , resourceGroup role and canEdit flag should be able to edit any schedule at any time
-/*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
+      /*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
         return true;
       }
 
@@ -1045,9 +1364,11 @@ export class ScheduleComponent implements OnInit {
       }
 
       return false;*/
-      return date instanceof Date && !(authenticatedUser === null || authenticatedUser === undefined);
+      return (
+        date instanceof Date &&
+        !(authenticatedUser === null || authenticatedUser === undefined)
+      );
     }
-
 
     if (!schedule.invalidFields) {
       schedule.invalidFields = [];
@@ -1057,26 +1378,38 @@ export class ScheduleComponent implements OnInit {
     if (!schedule.dempoid) {
       schedule.invalid = true;
       schedule.invalidFields.push('User');
-    } else if (schedule.dempoid.replace(/\s/g, '') == '' || schedule.dempoid == '0') {
+    } else if (
+      schedule.dempoid.replace(/\s/g, '') == '' ||
+      schedule.dempoid == '0'
+    ) {
       schedule.invalid = true;
       schedule.invalidFields.push('User');
     } else {
-      schedule.invalidFields = schedule.invalidFields.filter(x => x !== 'User');
+      schedule.invalidFields = schedule.invalidFields.filter(
+        (x) => x !== 'User'
+      );
     }
 
     //project
     if (!schedule.projectName) {
       schedule.invalid = true;
       schedule.invalidFields.push('Project');
-    } else if (schedule.projectName.replace(/\s/g, '') == '' || schedule.projectName == '0') {
+    } else if (
+      schedule.projectName.replace(/\s/g, '') == '' ||
+      schedule.projectName == '0'
+    ) {
       schedule.invalid = true;
       schedule.invalidFields.push('Project');
     } else {
-      schedule.invalidFields = schedule.invalidFields.filter(x => x !== 'Project');
+      schedule.invalidFields = schedule.invalidFields.filter(
+        (x) => x !== 'Project'
+      );
     }
 
     //date
-    let blockOutDateStrings: string[] = this.blockOutDates.map(x => Utils.formatDateAsStringUTC(x.blockOutDay)) as string[];
+    let blockOutDateStrings: string[] = this.blockOutDates.map((x) =>
+      Utils.formatDateAsStringUTC(x.blockOutDay)
+    ) as string[];
 
     if (!schedule.startdatetime) {
       schedule.invalid = true;
@@ -1086,51 +1419,109 @@ export class ScheduleComponent implements OnInit {
       schedule.invalidFields.push('Date');
 
       //lock date validation against current date and schedule date
-    } else if (!isDateValid(schedule.startdatetime, this.unlockDate, this.lockDate, this.authenticatedUser, this.currentUser)) {
+    } else if (
+      !isDateValid(
+        schedule.startdatetime,
+        this.unlockDate,
+        this.lockDate,
+        this.authenticatedUser,
+        this.currentUser
+      )
+    ) {
       schedule.invalid = true;
       schedule.invalidFields.push('Date');
       if (!schedule.validationMessages) {
         schedule.validationMessages = [];
       }
-      const ult = (this.unlockDate !== null && this.unlockDate !== undefined) ? new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) : null;
-      if ( ult ) {
-        let unlockMessage: string = schedule.startdatetime < this.unlockDate ? Utils.formatDateOnlyToString(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToString(this.unlockDate)
-          : Utils.formatDateOnlyToString(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToString(ult);
+      const ult =
+        this.unlockDate !== null && this.unlockDate !== undefined
+          ? new Date(
+              this.unlockDate.getFullYear(),
+              this.unlockDate.getMonth() + 1,
+              this.unlockDate.getDate()
+            )
+          : null;
+      if (ult) {
+        let unlockMessage: string =
+          schedule.startdatetime < this.unlockDate
+            ? Utils.formatDateOnlyToString(schedule.startdatetime) +
+              ' is before the end of the current lock period.<br />Please choose a date on or after ' +
+              Utils.formatDateOnlyToString(this.unlockDate)
+            : Utils.formatDateOnlyToString(schedule.startdatetime) +
+              ' is before the end of the current lock period.<br />Please choose a date on or after ' +
+              Utils.formatDateOnlyToString(ult);
         if (!(schedule.validationMessages || []).includes(unlockMessage)) {
           schedule.validationMessages.push(unlockMessage);
         }
       }
 
-
       //blockout date validations
-    } else if (blockOutDateStrings.includes(Utils.formatDateOnlyToString(schedule.startdatetime) || '')
-      && this.authenticatedUser.interviewer
-      && !this.authenticatedUser.resourceGroup
-      && !this.authenticatedUser.admin) {
-
+    } else if (
+      blockOutDateStrings.includes(
+        Utils.formatDateOnlyToString(schedule.startdatetime) || ''
+      ) &&
+      this.authenticatedUser.interviewer &&
+      !this.authenticatedUser.resourceGroup &&
+      !this.authenticatedUser.admin
+    ) {
       if (!schedule.validationMessages) {
         schedule.validationMessages = [];
       }
 
-      let blockOutDate: IBlockOutDate = this.blockOutDates.find(x => Utils.formatDateAsStringUTC(x.blockOutDay) == Utils.formatDateAsStringUTC(schedule.startdatetime)) as IBlockOutDate;
-      let blockOutStart: Date = Utils.buildDateTime(blockOutDate.blockOutDay, blockOutDate.startTime) || new Date();
-      let blockOutEnd: Date = Utils.buildDateTime(blockOutDate.blockOutDay, blockOutDate.endTime) || new Date();
+      let blockOutDate: IBlockOutDate = this.blockOutDates.find(
+        (x) =>
+          Utils.formatDateAsStringUTC(x.blockOutDay) ==
+          Utils.formatDateAsStringUTC(schedule.startdatetime)
+      ) as IBlockOutDate;
+      let blockOutStart: Date =
+        Utils.buildDateTime(blockOutDate.blockOutDay, blockOutDate.startTime) ||
+        new Date();
+      let blockOutEnd: Date =
+        Utils.buildDateTime(blockOutDate.blockOutDay, blockOutDate.endTime) ||
+        new Date();
 
       if (blockOutDate?.allDay) {
         schedule.invalid = true;
         schedule.invalidFields.push('Date');
-        let blockOutMessage: string = Utils.formatDateOnlyToString(schedule.startdatetime) + ' is blocked out and scheduling is not allowed.<br />Please choose another date.';
+        let blockOutMessage: string =
+          Utils.formatDateOnlyToString(schedule.startdatetime) +
+          ' is blocked out and scheduling is not allowed.<br />Please choose another date.';
         //make sure we don't double-add the same blockout message
         if (!schedule.validationMessages.includes(blockOutMessage))
           schedule.validationMessages.push(blockOutMessage);
-      } else if (!blockOutDate?.allDay
-        && ((schedule.enddatetime !== null && schedule.startdatetime !== null && schedule.enddatetime !== undefined && schedule.startdatetime !== undefined)
-          && ((schedule.startdatetime >= blockOutStart) || (schedule.enddatetime > blockOutStart )))) {
+      } else if (
+        !blockOutDate?.allDay &&
+        schedule.enddatetime !== null &&
+        schedule.startdatetime !== null &&
+        schedule.enddatetime !== undefined &&
+        schedule.startdatetime !== undefined &&
+        (schedule.startdatetime >= blockOutStart ||
+          schedule.enddatetime > blockOutStart)
+      ) {
         schedule.invalid = true;
         schedule.invalidFields.push('Date');
-        const msg_undefined_time = 'Start Date Time or End Date Time is not defined .Please choose time between ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime;
-        const msg_validation = Utils.formatDateOnlyToString(schedule.startdatetime) + ' ' + schedule.startTime + ' - ' + schedule.endTime + ' is blocked out for this time on this date and scheduling is not allowed.<br />The date/time blocked out is ' + Utils.formatDateOnlyToString(blockOutDate.blockOutDay) + ' ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime + '<br />Please choose another date.';
-        if (schedule.startdatetime === undefined || schedule.enddatetime === undefined) {
+        const msg_undefined_time =
+          'Start Date Time or End Date Time is not defined .Please choose time between ' +
+          blockOutDate.startTime +
+          ' - ' +
+          blockOutDate.endTime;
+        const msg_validation =
+          Utils.formatDateOnlyToString(schedule.startdatetime) +
+          ' ' +
+          schedule.startTime +
+          ' - ' +
+          schedule.endTime +
+          ' is blocked out for this time on this date and scheduling is not allowed.<br />The date/time blocked out is ' +
+          Utils.formatDateOnlyToString(blockOutDate.blockOutDay) +
+          ' ' +
+          blockOutDate.startTime +
+          ' - ' +
+          blockOutDate.endTime +
+          '<br />Please choose another date.';
+        if (
+          schedule.startdatetime === undefined ||
+          schedule.enddatetime === undefined
+        ) {
           if (!schedule.validationMessages.includes(msg_undefined_time)) {
             schedule.validationMessages.push(msg_undefined_time);
           }
@@ -1140,50 +1531,73 @@ export class ScheduleComponent implements OnInit {
           }
         }
       } else {
-        schedule.invalidFields = schedule.invalidFields.filter(x => x !== 'Date');
+        schedule.invalidFields = schedule.invalidFields.filter(
+          (x) => x !== 'Date'
+        );
       }
-
     } else {
-      schedule.invalidFields = schedule.invalidFields.filter(x => x !== 'Date');
+      schedule.invalidFields = schedule.invalidFields.filter(
+        (x) => x !== 'Date'
+      );
     }
 
     //start time
     if (!schedule.startTime) {
       schedule.invalid = true;
       schedule.invalidFields.push('StartTime');
-    } else if (schedule.startTime.replace(/\s/g, '') == '' || schedule.startTime == '0') {
+    } else if (
+      schedule.startTime.replace(/\s/g, '') == '' ||
+      schedule.startTime == '0'
+    ) {
       schedule.invalid = true;
       schedule.invalidFields.push('StartTime');
     } else if (!schedule.scheduleConflict) {
-      schedule.invalidFields = schedule.invalidFields.filter(x => x !== 'StartTime');
+      schedule.invalidFields = schedule.invalidFields.filter(
+        (x) => x !== 'StartTime'
+      );
     }
 
     //end time
     if (!schedule.endTime) {
       schedule.invalid = true;
       schedule.invalidFields.push('EndTime');
-    } else if (schedule.endTime.replace(/\s/g, '') == '' || schedule.endTime == '0') {
+    } else if (
+      schedule.endTime.replace(/\s/g, '') == '' ||
+      schedule.endTime == '0'
+    ) {
       schedule.invalid = true;
       schedule.invalidFields.push('EndTime');
     } else if (!schedule.scheduleConflict) {
-      schedule.invalidFields = schedule.invalidFields.filter(x => x !== 'EndTime');
+      schedule.invalidFields = schedule.invalidFields.filter(
+        (x) => x !== 'EndTime'
+      );
     }
 
     if (schedule.invalidFields.length < 1) {
       schedule.invalid = false;
     }
-
   }
 
   //validation based on business rules - that can be done within the scope of a single schedule
   businessRulesValidation(schedule: ISchedule): void {
     //end date must be greater than start date
-    let startTimeAsDate = new Date(Utils.formatDateOnlyToString(new Date()) + ' ' + schedule.startTime);
-    let endTimeAsDate = new Date(Utils.formatDateOnlyToString(new Date()) + ' ' + schedule.endTime);
+    let startTimeAsDate = new Date(
+      Utils.formatDateOnlyToString(new Date()) + ' ' + schedule.startTime
+    );
+    let endTimeAsDate = new Date(
+      Utils.formatDateOnlyToString(new Date()) + ' ' + schedule.endTime
+    );
 
-    if (Utils.isValidDate(startTimeAsDate)
-      && Utils.isValidDate(endTimeAsDate)) {
-      if (((endTimeAsDate.getHours() * 60) + endTimeAsDate.getMinutes()) - ((startTimeAsDate.getHours() * 60) + startTimeAsDate.getMinutes()) < 1) {
+    if (
+      Utils.isValidDate(startTimeAsDate) &&
+      Utils.isValidDate(endTimeAsDate)
+    ) {
+      if (
+        endTimeAsDate.getHours() * 60 +
+          endTimeAsDate.getMinutes() -
+          (startTimeAsDate.getHours() * 60 + startTimeAsDate.getMinutes()) <
+        1
+      ) {
         schedule.invalid = true;
         if (!schedule.invalidFields) {
           schedule.invalidFields = [];
@@ -1192,7 +1606,6 @@ export class ScheduleComponent implements OnInit {
         schedule.invalidFields.push('EndTime');
       }
     }
-
   }
   //create list of schedule min from schedules
   getSchedulesMin(schedules: ISchedule[]): IScheduleMin[] {
@@ -1222,16 +1635,31 @@ export class ScheduleComponent implements OnInit {
   }
 
   //add a new schedule line
-  addSchedule(sourceSchedule: ISchedule, addTab: boolean = false, netId: string | null = null, addInitial: boolean = false): void {
-    let scheduleIndex: number = this.userSchedulesMonth.findIndex(x => x.preschedulekey == sourceSchedule.preschedulekey) + 1;
-    let scheduleIndexCustom: number = this.filteredUserSchedulesCustom.findIndex(x => x.preschedulekey == sourceSchedule.preschedulekey) + 1;
+  addSchedule(
+    sourceSchedule: ISchedule,
+    addTab: boolean = false,
+    netId: string | null = null,
+    addInitial: boolean = false
+  ): void {
+    let scheduleIndex: number =
+      this.userSchedulesMonth.findIndex(
+        (x) => x.preschedulekey == sourceSchedule.preschedulekey
+      ) + 1;
+    let scheduleIndexCustom: number =
+      this.filteredUserSchedulesCustom.findIndex(
+        (x) => x.preschedulekey == sourceSchedule.preschedulekey
+      ) + 1;
     let customTab: boolean = false;
     if (this.currentTab == 'Custom') {
       customTab = true;
     }
 
     let newSchedule: ISchedule = JSON.parse(JSON.stringify(sourceSchedule));
-    newSchedule.dempoid = (netId ? (this.contextNetId ? this.contextNetId : netId) : sourceSchedule.dempoid);
+    newSchedule.dempoid = netId
+      ? this.contextNetId
+        ? this.contextNetId
+        : netId
+      : sourceSchedule.dempoid;
     newSchedule.preschedulekey = 0;
     newSchedule.comments = '';
     //newSchedule.Startdatetime = Utils.formatDateOnly((addTab ? new Date() : newSchedule.Startdatetime));
@@ -1260,7 +1688,9 @@ export class ScheduleComponent implements OnInit {
 
     if (netId) {
       //update the display name and user id
-      let user: User | undefined = this.availableUsers.find(x => x.dempoid == netId);
+      let user: User | undefined = this.availableUsers.find(
+        (x) => x.dempoid == netId
+      );
       if (user) {
         newSchedule.fname = user.fname;
         newSchedule.lname = user.lname;
@@ -1279,7 +1709,11 @@ export class ScheduleComponent implements OnInit {
     if (scheduleIndexCustom > -1 && customTab) {
       newSchedule.changed = true;
       newSchedule.invalid = true;
-      this.filteredUserSchedulesCustom.splice(scheduleIndexCustom, 0, newSchedule);
+      this.filteredUserSchedulesCustom.splice(
+        scheduleIndexCustom,
+        0,
+        newSchedule
+      );
       this.filteredUserSchedulesCustom = [...this.filteredUserSchedulesCustom];
     } else if (scheduleIndex > -1) {
       this.userSchedulesMonth.splice(scheduleIndex, 0, newSchedule);
@@ -1321,32 +1755,49 @@ export class ScheduleComponent implements OnInit {
       //execute schedule validations at the server
       this.validateSchedules([schedule]);
 
-      let scheduleIndex: number = this.userSchedulesMonth.findIndex(x => x.preschedulekey == schedule.preschedulekey);
+      let scheduleIndex: number = this.userSchedulesMonth.findIndex(
+        (x) => x.preschedulekey == schedule.preschedulekey
+      );
 
       if (scheduleIndex > -1) {
         this.userSchedulesMonth[scheduleIndex] = schedule;
       }
 
       //custom syncing
-      let scheduleIndexCustom: number = this.filteredUserSchedulesCustom.findIndex(x => x.preschedulekey == schedule.preschedulekey);
+      let scheduleIndexCustom: number =
+        this.filteredUserSchedulesCustom.findIndex(
+          (x) => x.preschedulekey == schedule.preschedulekey
+        );
       if (scheduleIndexCustom > -1) {
         //sync changes from month to schedule, but only if the month has been changes (month gets precedence over any concurrent changes in custom)
         if (scheduleIndex > -1) {
-          if (this.userSchedulesMonth[scheduleIndex].changed && !this.userSchedulesMonth[scheduleIndex].addTab) {
-            this.filteredUserSchedulesCustom[scheduleIndexCustom] = this.userSchedulesMonth[scheduleIndex];
+          if (
+            this.userSchedulesMonth[scheduleIndex].changed &&
+            !this.userSchedulesMonth[scheduleIndex].addTab
+          ) {
+            this.filteredUserSchedulesCustom[scheduleIndexCustom] =
+              this.userSchedulesMonth[scheduleIndex];
           }
         }
         //set custom schedule flags
         this.filteredUserSchedulesCustom[scheduleIndexCustom].saved = true;
         this.filteredUserSchedulesCustom[scheduleIndexCustom].changed = false;
-        this.filteredUserSchedulesCustom[scheduleIndexCustom].markedForDeletion = false;
+        this.filteredUserSchedulesCustom[
+          scheduleIndexCustom
+        ].markedForDeletion = false;
       }
 
       this.userSchedulesMonth = [...this.userSchedulesMonth];
       this.userSchedulesService.userSchedules.next(this.userSchedulesMonth);
       this.applyFilters();
     } catch (ex) {
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Error updating calendar screen... Please refresh page to see your changes in the calendar', ['OK']));
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessage(
+          'Error',
+          'Error updating calendar screen... Please refresh page to see your changes in the calendar',
+          ['OK']
+        )
+      );
       console.log(ex);
     }
   }
@@ -1357,24 +1808,45 @@ export class ScheduleComponent implements OnInit {
       if (schedule.preschedulekey == 0) {
         schedule.saved = true;
 
-        this.userSchedulesMonth = this.userSchedulesMonth.filter(x => !(x.preschedulekey == 0 && x.saved && x.markedForDeletion) || x.addTab);
-        this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => !(x.preschedulekey == 0 && x.saved && x.markedForDeletion) || x.addTab);
+        this.userSchedulesMonth = this.userSchedulesMonth.filter(
+          (x) =>
+            !(x.preschedulekey == 0 && x.saved && x.markedForDeletion) ||
+            x.addTab
+        );
+        this.filteredUserSchedulesCustom =
+          this.filteredUserSchedulesCustom.filter(
+            (x) =>
+              !(x.preschedulekey == 0 && x.saved && x.markedForDeletion) ||
+              x.addTab
+          );
         this.applyFilters();
       }
-      this.userSchedulesMonth = this.userSchedulesMonth.filter(x => x.preschedulekey !== schedule.preschedulekey);
-      this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => x.preschedulekey !== schedule.preschedulekey);
+      this.userSchedulesMonth = this.userSchedulesMonth.filter(
+        (x) => x.preschedulekey !== schedule.preschedulekey
+      );
+      this.filteredUserSchedulesCustom =
+        this.filteredUserSchedulesCustom.filter(
+          (x) => x.preschedulekey !== schedule.preschedulekey
+        );
       this.userSchedulesService.userSchedules.next(this.userSchedulesMonth);
 
       //check all conflicting schedules, if a conflicting schedule never changes, it won't get unflagged otherwise if it is no longer in conflict due to another ocnflict changing
-      let conflictedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => x.scheduleConflict);
+      let conflictedSchedules: ISchedule[] = this.userSchedulesMonth.filter(
+        (x) => x.scheduleConflict
+      );
       if (conflictedSchedules.length > 0) {
         for (var i = 0; i < conflictedSchedules.length; i++) {
           this.conflictValidation(conflictedSchedules[i]);
         }
       }
-
     } catch (ex) {
-      this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Error updating calendar screen... Please refresh page to see your changes in the calendar', ['OK']));
+      this.globalsService.displayPopupMessage(
+        Utils.generatePopupMessage(
+          'Error',
+          'Error updating calendar screen... Please refresh page to see your changes in the calendar',
+          ['OK']
+        )
+      );
       console.log(ex);
     }
   }
@@ -1385,33 +1857,59 @@ export class ScheduleComponent implements OnInit {
       return;
     }
 
-    let startDate: string = Utils.formatDateOnlyToString(this.selectedCustomRange.value.start, true, true, true) || '';
-    let endDate: string = Utils.formatDateOnlyToString(this.selectedCustomRange.value.end, true, true, true) || '';
+    let startDate: string =
+      Utils.formatDateOnlyToString(
+        this.selectedCustomRange.value.start,
+        true,
+        true,
+        true
+      ) || '';
+    let endDate: string =
+      Utils.formatDateOnlyToString(
+        this.selectedCustomRange.value.end,
+        true,
+        true,
+        true
+      ) || '';
 
-    this.userSchedulesService.getAllUserSchedulesByRange(startDate, endDate).subscribe(
-      response => {
-        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.filteredUserSchedulesCustom = <ISchedule[]>response.Subject;
+    this.userSchedulesService
+      .getAllUserSchedulesByRange(startDate, endDate)
+      .subscribe(
+        (response) => {
+          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+            this.filteredUserSchedulesCustom = <ISchedule[]>response.Subject;
 
-          //paged custom schedules
-          this.setPagedCustomSchedules();
+            //paged custom schedules
+            this.setPagedCustomSchedules();
 
-          //use new Date() on each schedule to convert from the stored UTC time to the local browser time
-          //also, set the string formatted start/end times for display purposes (this avoids having to format the time everywhere it's displayed)
-          for (var i = 0; i < this.filteredUserSchedulesCustom.length; i++) {
-            this.filteredUserSchedulesCustom[i].startdatetime = new Date(this.filteredUserSchedulesCustom[i].startdatetime || '');
-            this.filteredUserSchedulesCustom[i].enddatetime = new Date(this.filteredUserSchedulesCustom[i].enddatetime || '');
-            this.filteredUserSchedulesCustom[i].startTime = Utils.formatDateToTimeString(this.filteredUserSchedulesCustom[i].startdatetime, true) || '';
-            this.filteredUserSchedulesCustom[i].endTime = Utils.formatDateToTimeString(this.filteredUserSchedulesCustom[i].enddatetime, true) || '';
+            //use new Date() on each schedule to convert from the stored UTC time to the local browser time
+            //also, set the string formatted start/end times for display purposes (this avoids having to format the time everywhere it's displayed)
+            for (var i = 0; i < this.filteredUserSchedulesCustom.length; i++) {
+              this.filteredUserSchedulesCustom[i].startdatetime = new Date(
+                this.filteredUserSchedulesCustom[i].startdatetime || ''
+              );
+              this.filteredUserSchedulesCustom[i].enddatetime = new Date(
+                this.filteredUserSchedulesCustom[i].enddatetime || ''
+              );
+              this.filteredUserSchedulesCustom[i].startTime =
+                Utils.formatDateToTimeString(
+                  this.filteredUserSchedulesCustom[i].startdatetime,
+                  true
+                ) || '';
+              this.filteredUserSchedulesCustom[i].endTime =
+                Utils.formatDateToTimeString(
+                  this.filteredUserSchedulesCustom[i].enddatetime,
+                  true
+                ) || '';
+            }
           }
+        },
+        (error) => {
+          this.errorMessage = <string>error.message;
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
         }
-
-      },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-      }
-    );
+      );
   }
 
   //-----------------------
@@ -1422,12 +1920,18 @@ export class ScheduleComponent implements OnInit {
   public applyFilters(filterChanged: string | null = null): void {
     //unset defaults if other options are selected
     //users
-    let anyUserFilter: IAnyFilter = this.anyFilter(this.userFilterFC, this.anyUserToggle);
+    let anyUserFilter: IAnyFilter = this.anyFilter(
+      this.userFilterFC,
+      this.anyUserToggle
+    );
     this.userFilterFC.setValue(anyUserFilter.filterControl.value);
     this.anyUserToggle = anyUserFilter.anyToggle;
 
     //projects
-    let anyProjectFilter: IAnyFilter = this.anyFilter(this.projectFilterFC, this.anyProjectToggle);
+    let anyProjectFilter: IAnyFilter = this.anyFilter(
+      this.projectFilterFC,
+      this.anyProjectToggle
+    );
     this.projectFilterFC.setValue(anyProjectFilter.filterControl.value);
     this.anyProjectToggle = anyProjectFilter.anyToggle;
 
@@ -1441,33 +1945,55 @@ export class ScheduleComponent implements OnInit {
     this.filterProjects();
 
     if (filterChanged == 'user') {
-      let trainedOn: string = this.filteredUsers.filter(x => this.userFilterFC.value.includes(x.dempoid)).map(x => x.trainedon).join('|');
+      let trainedOn: string = this.filteredUsers
+        .filter((x) => this.userFilterFC.value.includes(x.dempoid))
+        .map((x) => x.trainedon)
+        .join('|');
 
-      this.filteredProjects = this.filteredProjects.filter(x => (x.projectType == 'Administrative' || Utils.pipeStringToArray(trainedOn).includes(x.projectID.toString())));
+      this.filteredProjects = this.filteredProjects.filter(
+        (x) =>
+          x.projectType == 'Administrative' ||
+          Utils.pipeStringToArray(trainedOn).includes(x.projectID.toString())
+      );
     }
 
     if (filterChanged == 'project') {
-      let selectedProjects: string[] = this.filteredProjects.filter(x => this.projectFilterFC.value.includes(x.projectName)).map(y => y.projectID.toString());
-      this.filteredUsers = this.filteredUsers.filter(x => selectedProjects.some((val) => x.trainedOnArray.indexOf(val) !== -1));
+      let selectedProjects: string[] = this.filteredProjects
+        .filter((x) => this.projectFilterFC.value.includes(x.projectName))
+        .map((y) => y.projectID.toString());
+      this.filteredUsers = this.filteredUsers.filter((x) =>
+        selectedProjects.some((val) => x.trainedOnArray.indexOf(val) !== -1)
+      );
     }
 
     //perform selected filters
     //filter by user
     if (!this.userFilterFC.value.includes('0')) {
-      this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => this.userFilterFC.value.includes(x.dempoid));
-      this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => this.userFilterFC.value.includes(x.dempoid));
+      this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(
+        (x) => this.userFilterFC.value.includes(x.dempoid)
+      );
+      this.filteredUserSchedulesCustom =
+        this.filteredUserSchedulesCustom.filter((x) =>
+          this.userFilterFC.value.includes(x.dempoid)
+        );
     }
 
     //filter by project
     if (!this.projectFilterFC.value.includes('0')) {
-      this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => this.projectFilterFC.value.includes(x.projectName));
-      this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => this.projectFilterFC.value.includes(x.projectName));
+      this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(
+        (x) => this.projectFilterFC.value.includes(x.projectName)
+      );
+      this.filteredUserSchedulesCustom =
+        this.filteredUserSchedulesCustom.filter((x) =>
+          this.projectFilterFC.value.includes(x.projectName)
+        );
     }
 
-    this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => !x.addTab);
+    this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(
+      (x) => !x.addTab
+    );
 
     this.syncData();
-
   }
 
   //set default filters
@@ -1481,11 +2007,15 @@ export class ScheduleComponent implements OnInit {
   }
 
   //handle select, deselect and auto-select of the "any" values in multi-selects
-  public anyFilter(filter: FormControl, anyToggle: boolean, anyValue: string = '0'): IAnyFilter {
+  public anyFilter(
+    filter: FormControl,
+    anyToggle: boolean,
+    anyValue: string = '0'
+  ): IAnyFilter {
     //if we have any values selected
     if (filter.value.length > 0) {
       //check if the any toggle is set and we have the any value (default of "0") selected. If so, set the toggle to false and filter to only (default of "0") selected
-      if (anyToggle && (filter.value.includes(anyValue))) {
+      if (anyToggle && filter.value.includes(anyValue)) {
         anyToggle = false;
         filter.setValue(filter.value.filter((x: string) => x == anyValue));
         //otherwise check if the any toggle is false and set the toggle to true and filter to where all selctions but the any value (default of "0") is selected
@@ -1506,7 +2036,7 @@ export class ScheduleComponent implements OnInit {
     //return an interface with both the form control and the any toggle
     return <IAnyFilter>{
       filterControl: filter,
-      anyToggle: anyToggle
+      anyToggle: anyToggle,
     };
   }
 
@@ -1514,43 +2044,64 @@ export class ScheduleComponent implements OnInit {
   //passive filters
   //-----------------------
   syncData(): void {
-
     //restrict schedules shown if user is interviewer-only
     if (this.authenticatedUser) {
-      if (this.authenticatedUser.interviewer && !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)) {
-        this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID);
-        this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => x.dempoid == this.authenticatedUser.netID);
-        this.allUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID);
+      if (
+        this.authenticatedUser.interviewer &&
+        !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)
+      ) {
+        this.filteredUserSchedulesMonth =
+          this.filteredUserSchedulesMonth.filter(
+            (x) => x.dempoid == this.authenticatedUser.netID
+          );
+        this.filteredUserSchedulesCustom =
+          this.filteredUserSchedulesCustom.filter(
+            (x) => x.dempoid == this.authenticatedUser.netID
+          );
+        this.allUsers = this.allUsers.filter(
+          (x) => x.dempoid == this.authenticatedUser.netID
+        );
       }
     }
 
     //added schedules
-    this.addedSchedules = this.filteredUserSchedulesMonth.filter(x => x.addTab);
+    this.addedSchedules = this.filteredUserSchedulesMonth.filter(
+      (x) => x.addTab
+    );
     if (this.addedSchedules.length < 1)
       this.addedSchedules = [this.initialSchedule];
 
     this.setPagedAddedSchedules();
 
     //filter added schedules out of month before filtering day and week
-    this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => !x.addTab);
+    this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(
+      (x) => !x.addTab
+    );
     this.setPagedMonthSchedules();
 
     //filter day
-    this.filteredUserSchedulesDay = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.startdatetime) == Utils.formatDateOnlyToString(new Date(this.selectedDateFC.value)));
+    this.filteredUserSchedulesDay = this.filteredUserSchedulesMonth.filter(
+      (x) =>
+        Utils.formatDateOnlyToString(x.startdatetime) ==
+        Utils.formatDateOnlyToString(new Date(this.selectedDateFC.value))
+    );
     this.setPagedDaySchedules();
 
     //filter week
-    this.filteredUserSchedulesWeek = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToString(x.weekStart) === Utils.formatDateOnlyToString(this.selectedWeekStartAndEnd.weekStart));
+    this.filteredUserSchedulesWeek = this.filteredUserSchedulesMonth.filter(
+      (x) =>
+        Utils.formatDateOnlyToString(x.weekStart) ===
+        Utils.formatDateOnlyToString(this.selectedWeekStartAndEnd.weekStart)
+    );
     this.setPagedWeekSchedules();
 
     //paged custom schedules
     this.setPagedCustomSchedules();
 
     //make sure we didn't filter out the initial "add" schedule
-    if (this.filteredUserSchedulesMonth.filter(x => x.addTab).length < 1) {
+    if (this.filteredUserSchedulesMonth.filter((x) => x.addTab).length < 1) {
       this.filteredUserSchedulesMonth.push(this.initialSchedule);
     }
-
   }
 
   //filter users
@@ -1561,38 +2112,49 @@ export class ScheduleComponent implements OnInit {
     }
 
     //only display current user if interviewer-only
-    if (this.authenticatedUser.interviewer
-      && !this.authenticatedUser.resourceGroup
-      && !this.authenticatedUser.admin) {
-      this.filteredUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID.toLowerCase());
-      this.availableUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID.toLowerCase());
-      this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID.toLowerCase());
+    if (
+      this.authenticatedUser.interviewer &&
+      !this.authenticatedUser.resourceGroup &&
+      !this.authenticatedUser.admin
+    ) {
+      this.filteredUsers = this.allUsers.filter(
+        (x) => x.dempoid == this.authenticatedUser.netID.toLowerCase()
+      );
+      this.availableUsers = this.allUsers.filter(
+        (x) => x.dempoid == this.authenticatedUser.netID.toLowerCase()
+      );
+      this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(
+        (x) => x.dempoid == this.authenticatedUser.netID.toLowerCase()
+      );
     }
     //if not interviewer-only, then ony display users in the current user schedules for the selected month
     else {
       const uniqueValue = (value: any, index: any, self: any) => {
-        return self.indexOf(value) === index
-      }
+        return self.indexOf(value) === index;
+      };
       //get unique users from user schedules
-      var availableUserDempoIds = this.userSchedulesMonth.map(x => x.dempoid).filter(uniqueValue);
+      var availableUserDempoIds = this.userSchedulesMonth
+        .map((x) => x.dempoid)
+        .filter(uniqueValue);
       availableUserDempoIds = availableUserDempoIds.sort((a, b) => {
         return <any>new Date(a || '') - <any>new Date(b || '');
       });
 
       //filter available users
-      this.filteredUsers = this.allUsers.filter(x => availableUserDempoIds.includes(x.dempoid));
+      this.filteredUsers = this.allUsers.filter((x) =>
+        availableUserDempoIds.includes(x.dempoid)
+      );
       this.availableUsers = this.allUsers;
     }
 
     //unset context project name as selection in project filter form control if it isn't in the filtered list
-    if (!this.filteredUsers.map(x => x.dempoid).includes(this.contextNetId)) {
+    if (!this.filteredUsers.map((x) => x.dempoid).includes(this.contextNetId)) {
       if (this.userFilterFC.value.length == 1) {
         if (this.userFilterFC.value.includes(this.contextNetId)) {
           this.setDefaultFilters(true);
         }
       }
     }
-
   }
 
   //filter projects
@@ -1607,36 +2169,55 @@ export class ScheduleComponent implements OnInit {
 
     //only display current user if interviewer-only
     if (this.authenticatedUser) {
-      if (this.authenticatedUser.interviewer
-        && !this.authenticatedUser.resourceGroup
-        && !this.authenticatedUser.admin) {
-        let user: User = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
-        this.availableProjects = this.availableProjects.filter(x => (x.projectType == 'Administrative' || Utils.pipeStringToArray(user.trainedon).includes(x.projectID.toString())));
+      if (
+        this.authenticatedUser.interviewer &&
+        !this.authenticatedUser.resourceGroup &&
+        !this.authenticatedUser.admin
+      ) {
+        let user: User = this.allUsers.find(
+          (x) => x.dempoid == this.authenticatedUser.netID
+        ) as User;
+        this.availableProjects = this.availableProjects.filter(
+          (x) =>
+            x.projectType == 'Administrative' ||
+            Utils.pipeStringToArray(user.trainedon).includes(
+              x.projectID.toString()
+            )
+        );
       }
     }
 
     //filter to only available  projects, in addition to trained on or regardless of interviewer role
     const uniqueValue = (value: any, index: any, self: any) => {
-      return self.indexOf(value) === index
-    }
+      return self.indexOf(value) === index;
+    };
     //get unique projects from user schedules
-    var availableProjectNames = this.userSchedulesMonth.map(x => x.projectName).filter(uniqueValue);
+    var availableProjectNames = this.userSchedulesMonth
+      .map((x) => x.projectName)
+      .filter(uniqueValue);
     availableProjectNames = availableProjectNames.sort((a, b) => {
       return <any>new Date(a || '') - <any>new Date(b || '');
     });
 
     //filter available projects
-    this.filteredProjects = this.allProjects.filter(x => (x.projectType == 'Administrative' || availableProjectNames.includes(x.projectName)));
+    this.filteredProjects = this.allProjects.filter(
+      (x) =>
+        x.projectType == 'Administrative' ||
+        availableProjectNames.includes(x.projectName)
+    );
 
     //unset context project name as selection in project filter form control if it isn't in the filtered list
-    if (!this.filteredProjects.map(x => x.projectName).includes(this.contextProjectName)) {
+    if (
+      !this.filteredProjects
+        .map((x) => x.projectName)
+        .includes(this.contextProjectName)
+    ) {
       if (this.projectFilterFC.value.length == 1) {
         if (this.projectFilterFC.value.includes(this.contextProjectName)) {
           this.setDefaultFilters(true);
         }
       }
     }
-
   }
 
   //-----------------------
@@ -1648,13 +2229,16 @@ export class ScheduleComponent implements OnInit {
 
     //dynamic popup resizing
     Utils.schedulerPopupDynamicSize(this.validationMessagesExpanded);
-
   }
 
-  setInitialScheduleDefaults(netId: string | null = null, projectName: string | null = null, scheduleDate: Date | null = null): void {
-    if (!(this.authenticatedUser
-      && this.selectedDate
-      && this.allUsers.length > 0)) {
+  setInitialScheduleDefaults(
+    netId: string | null = null,
+    projectName: string | null = null,
+    scheduleDate: Date | null = null
+  ): void {
+    if (
+      !(this.authenticatedUser && this.selectedDate && this.allUsers.length > 0)
+    ) {
       return;
     }
 
@@ -1667,31 +2251,41 @@ export class ScheduleComponent implements OnInit {
       netId = this.contextNetId;
     }
 
-    let user: User = this.allUsers.find(x => x.dempoid == netId) as User;
+    let user: User = this.allUsers.find((x) => x.dempoid == netId) as User;
     let project: IProjectMin | null = null;
     if (projectName) {
-      project = this.allProjects.find(x => x.projectName.toUpperCase() == projectName.toUpperCase()) as IProjectMin;
+      project = this.allProjects.find(
+        (x) => x.projectName.toUpperCase() == projectName.toUpperCase()
+      ) as IProjectMin;
     }
 
     //context can override other options
     if (this.contextProjectName) {
-      project = this.allProjects.find(x => x.projectName.toUpperCase() == this.contextProjectName.toUpperCase()) as IProjectMin;
+      project = this.allProjects.find(
+        (x) =>
+          x.projectName.toUpperCase() == this.contextProjectName.toUpperCase()
+      ) as IProjectMin;
     }
 
     let startDate: Date = new Date();
-    startDate?.setHours(0, 0, 0, 0 );
+    startDate?.setHours(0, 0, 0, 0);
 
     if (scheduleDate) {
       startDate = scheduleDate;
     }
 
-    if (this.unlockDate
-      && this.authenticatedUser?.interviewer
-      && !this.authenticatedUser?.resourceGroup
-      && !this.authenticatedUser?.admin) {
-
-      const unlockDateTwo = new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) ;
-      unlockDateTwo?.setHours(0, 0, 0, 0 );
+    if (
+      this.unlockDate &&
+      this.authenticatedUser?.interviewer &&
+      !this.authenticatedUser?.resourceGroup &&
+      !this.authenticatedUser?.admin
+    ) {
+      const unlockDateTwo = new Date(
+        this.unlockDate.getFullYear(),
+        this.unlockDate.getMonth() + 1,
+        this.unlockDate.getDate()
+      );
+      unlockDateTwo?.setHours(0, 0, 0, 0);
 
       if (startDate <= this.lockDate) {
         startDate = this.unlockDate;
@@ -1700,27 +2294,46 @@ export class ScheduleComponent implements OnInit {
       }
     }
 
-    this.initialSchedule.dempoid = (user ? user.dempoid : this.initialSchedule.dempoid);
-    this.initialSchedule.fname = (user ? user.fname : this.initialSchedule.fname);
-    this.initialSchedule.lname = (user ? user.lname : this.initialSchedule.lname);
-    this.initialSchedule.displayName = (user ? user.displayName : this.initialSchedule.displayName);
-    this.initialSchedule.preferredfname = (user ? user.fname : this.initialSchedule.preferredfname);
-    this.initialSchedule.preferredlname = (user ? user.lname : this.initialSchedule.preferredlname);
-    this.initialSchedule.userName = (user ? user.fname + ' ' + user.lname : this.initialSchedule.userName);
-    this.initialSchedule.projectid = (project ? project.projectID : this.initialSchedule.projectid);
-    this.initialSchedule.projectName = (project ? project.projectName : this.initialSchedule.projectName);
+    this.initialSchedule.dempoid = user
+      ? user.dempoid
+      : this.initialSchedule.dempoid;
+    this.initialSchedule.fname = user ? user.fname : this.initialSchedule.fname;
+    this.initialSchedule.lname = user ? user.lname : this.initialSchedule.lname;
+    this.initialSchedule.displayName = user
+      ? user.displayName
+      : this.initialSchedule.displayName;
+    this.initialSchedule.preferredfname = user
+      ? user.fname
+      : this.initialSchedule.preferredfname;
+    this.initialSchedule.preferredlname = user
+      ? user.lname
+      : this.initialSchedule.preferredlname;
+    this.initialSchedule.userName = user
+      ? user.fname + ' ' + user.lname
+      : this.initialSchedule.userName;
+    this.initialSchedule.projectid = project
+      ? project.projectID
+      : this.initialSchedule.projectid;
+    this.initialSchedule.projectName = project
+      ? project.projectName
+      : this.initialSchedule.projectName;
     this.initialSchedule.scheduledate = startDate;
     this.initialSchedule.startdatetime = startDate;
-    this.initialSchedule.entryBy = (user ? user.dempoid : this.initialSchedule.entryBy);
-    this.initialSchedule.entryDt = new Date(),
-
+    this.initialSchedule.entryBy = user
+      ? user.dempoid
+      : this.initialSchedule.entryBy;
+    (this.initialSchedule.entryDt = new Date()),
       //Utils.validateStartEndDateTime(this.initialSchedule);
 
       this.changeEvent(this.initialSchedule);
   }
 
   //create a blank ISchedule
-  getBlankSchedule(netId: string | null = null, projectName: string | null = null, scheduleDate: Date | null = null): ISchedule {
+  getBlankSchedule(
+    netId: string | null = null,
+    projectName: string | null = null,
+    scheduleDate: Date | null = null
+  ): ISchedule {
     if (!netId) {
       netId = this.authenticatedUser.netID;
     }
@@ -1730,32 +2343,37 @@ export class ScheduleComponent implements OnInit {
       netId = this.contextNetId;
     }
 
-    let user: User = this.allUsers.find(x => x.dempoid == netId) as User;
+    let user: User = this.allUsers.find((x) => x.dempoid == netId) as User;
     let project: IProjectMin | null = null;
     if (projectName) {
-      project = this.allProjects.find(x => x.projectName.toUpperCase() == projectName.toUpperCase()) as IProjectMin;
+      project = this.allProjects.find(
+        (x) => x.projectName.toUpperCase() == projectName.toUpperCase()
+      ) as IProjectMin;
     }
 
     //context can override other options
     if (this.contextProjectName) {
-      project = this.allProjects.find(x => x.projectName.toUpperCase() == this.contextProjectName.toUpperCase()) as IProjectMin;
+      project = this.allProjects.find(
+        (x) =>
+          x.projectName.toUpperCase() == this.contextProjectName.toUpperCase()
+      ) as IProjectMin;
     }
 
     return {
       preschedulekey: 0,
-      dempoid: (user ? user.dempoid : null),
-      fname: (user ? user.fname : null),
-      lname: (user ? user.lname : null),
-      displayName: (user ? user.displayName : null),
-      preferredfname: (user ? user.fname : null),
-      preferredlname: (user ? user.lname : null),
-      userName: (user ? user.fname + ' ' + user.lname : null),
-      projectid: (project ? project.projectID : null),
-      projectName: (project ? project.projectName : null),
+      dempoid: user ? user.dempoid : null,
+      fname: user ? user.fname : null,
+      lname: user ? user.lname : null,
+      displayName: user ? user.displayName : null,
+      preferredfname: user ? user.fname : null,
+      preferredlname: user ? user.lname : null,
+      userName: user ? user.fname + ' ' + user.lname : null,
+      projectid: project ? project.projectID : null,
+      projectName: project ? project.projectName : null,
       projectColor: '',
-      scheduledate: (scheduleDate ? scheduleDate : this.selectedDate),
+      scheduledate: scheduleDate ? scheduleDate : this.selectedDate,
       comments: null,
-      startdatetime: (scheduleDate ? scheduleDate : this.selectedDate),
+      startdatetime: scheduleDate ? scheduleDate : this.selectedDate,
       enddatetime: null,
       startTime: '',
       endTime: '',
@@ -1782,7 +2400,7 @@ export class ScheduleComponent implements OnInit {
       addTab: true,
       addInitial: true,
       invalid: true,
-      entryBy: (user ? user.dempoid : null),
+      entryBy: user ? user.dempoid : null,
       entryDt: new Date(),
     };
   }
@@ -1818,7 +2436,9 @@ export class ScheduleComponent implements OnInit {
 
     //refresh the grid with the new date
     this.userSchedulesService.selectedDate.next(this.selectedDate);
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+      Utils.formatDateOnlyToString(this.selectedDate, true, true, true)
+    );
   }
 
   //add (or subract with a negative number) a week to the anchor date
@@ -1828,7 +2448,8 @@ export class ScheduleComponent implements OnInit {
     selectedDt.setDate(selectedDt.getDate() + weeks);
     this.selectedDate = selectedDt;
     //set the week start so we can set the anchor date to it
-    let selectedWeekStartAndEnd: IWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(this.selectedDate);
+    let selectedWeekStartAndEnd: IWeekStartAndEnd =
+      Utils.setSelectedWeekStartAndEnd(this.selectedDate);
     //set the anchor date to the week start
     this.selectedDate = selectedWeekStartAndEnd.weekStart;
     this.selectedDateFC = new FormControl(this.selectedDate.toISOString());
@@ -1836,7 +2457,9 @@ export class ScheduleComponent implements OnInit {
     //refresh the grid with the new date
     this.setSelectedWeek();
     this.userSchedulesService.selectedDate.next(this.selectedDate);
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+      Utils.formatDateOnlyToString(this.selectedDate, true, true, true)
+    );
   }
 
   //add (or subract with a negative number) a month to the anchor date
@@ -1849,17 +2472,20 @@ export class ScheduleComponent implements OnInit {
 
     //refresh the grid with the new date
     this.userSchedulesService.selectedDate.next(this.selectedDate);
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+      Utils.formatDateOnlyToString(this.selectedDate, true, true, true)
+    );
   }
 
   setSelectedWeek(): void {
-    this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(this.selectedDate);
+    this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
+      this.selectedDate
+    );
 
     this.selectedDateRange = new FormGroup({
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
     });
-
   }
 
   fetchNewSchedules(selectedDate: FormControl): void {
@@ -1867,7 +2493,9 @@ export class ScheduleComponent implements OnInit {
 
     this.userSchedulesService.selectedDate.next(this.selectedDate);
     this.setSelectedWeek();
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(Utils.formatDateOnlyToString(this.selectedDate, true, true, true));
+    this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+      Utils.formatDateOnlyToString(this.selectedDate, true, true, true)
+    );
   }
 
   //pagination
@@ -1878,11 +2506,89 @@ export class ScheduleComponent implements OnInit {
     this.setPagedDaySchedules();
   }
 
+  // setPagedDaySchedules(): void {
+  //   this.pagedUsersDayLength = this.filteredUserSchedulesDay.length;
+  //   const start = this.pageIndexDay * this.pageSizeDay;
+  //   const end = (this.pageIndexDay + 1) * this.pageSizeDay;
+  //   this.pagedUserSchedulesDay = this.filteredUserSchedulesDay.slice(start, end);
+  // }
   setPagedDaySchedules(): void {
     this.pagedUsersDayLength = this.filteredUserSchedulesDay.length;
     const start = this.pageIndexDay * this.pageSizeDay;
     const end = (this.pageIndexDay + 1) * this.pageSizeDay;
-    this.pagedUserSchedulesDay = this.filteredUserSchedulesDay.slice(start, end);
+    this.pagedUserSchedulesDay = this.filteredUserSchedulesDay.slice(
+      start,
+      end
+    );
+
+    // Base date for 1 week
+    const baseDate = new Date('2025-01-13'); // Starting date (January 13, 2025)
+    const schedules = [];
+
+    for (let i = 0; i < 7; i++) {
+      const scheduledDate = new Date(baseDate);
+      scheduledDate.setDate(baseDate.getDate() + i); // Increment the date by i days
+
+      const startTime = new Date(scheduledDate);
+      startTime.setHours(9 + i, 0, 0, 0); // Start time increments by 1 hour each day
+
+      const endTime = new Date(startTime);
+      endTime.setHours(startTime.getHours() + 1); // 1 hour duration for each meeting
+
+      schedules.push({
+        preschedulekey: i + 1,
+        dempoid: `D00${i + 1}`,
+        fname: i % 2 === 0 ? 'John' : 'Jane',
+        lname: i % 2 === 0 ? 'Doe' : 'Smith',
+        preferredfname: i % 2 === 0 ? 'John' : 'Jane',
+        preferredlname: i % 2 === 0 ? 'Doe' : 'Smith',
+        displayName: `${i % 2 === 0 ? 'John' : 'Jane'} ${
+          i % 2 === 0 ? 'Doe' : 'Smith'
+        }`,
+        userName: i % 2 === 0 ? 'johndoe' : 'janesmith',
+        projectid: 101 + (i % 2),
+        projectName: i % 2 === 0 ? 'Project A' : 'Project B',
+        projectColor: i % 2 === 0 ? 'blue' : 'green',
+        scheduledate: scheduledDate,
+        comments: i % 2 === 0 ? 'Initial meeting' : 'Follow-up meeting',
+        startdatetime: startTime,
+        enddatetime: endTime,
+        startTime: startTime.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        endTime: endTime.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+        dayNumber: i + 1,
+        weekNumber: 2,
+        weekStart: new Date('2025-01-12'),
+        weekEnd: new Date('2025-01-18'),
+        dayOfWeek: (i % 7) + 1,
+        month: 'January',
+        scheduleyear: 2025,
+        scheduledHours: 1,
+        expr1: 'None',
+        requestId: 1001 + i,
+        requestDetails: i % 2 === 0 ? 'Urgent meeting' : 'Follow-up task',
+        requestCodeId: 2001 + i,
+        requestCode: `R00${i + 1}`,
+        userid: 100 + i,
+        trainedon: startTime.toISOString(), // Convert the Date to a string in ISO format
+        language: 'English',
+        entryBy: 'admin',
+        entryDt: new Date('2025-01-01'),
+        validationMessages: [],
+        hoverMessage: i % 2 === 0 ? 'Scheduled meeting' : 'Follow-up scheduled',
+        scheduleConflict: false,
+        justAdded: false,
+        initialProjectid: 101 + (i % 2),
+      });
+    }
+
+    // Slice the array according to pagination
+    this.pagedUserSchedulesDay = schedules.slice(start, end);
   }
 
   //week
@@ -1896,7 +2602,10 @@ export class ScheduleComponent implements OnInit {
     this.pagedUsersWeekLength = this.filteredUserSchedulesWeek.length;
     const start = this.pageIndexWeek * this.pageSizeWeek;
     const end = (this.pageIndexWeek + 1) * this.pageSizeWeek;
-    this.pagedUserSchedulesWeek = this.filteredUserSchedulesWeek.slice(start, end);
+    this.pagedUserSchedulesWeek = this.filteredUserSchedulesWeek.slice(
+      start,
+      end
+    );
   }
 
   //month
@@ -1910,7 +2619,10 @@ export class ScheduleComponent implements OnInit {
     this.pagedUsersMonthLength = this.filteredUserSchedulesMonth.length;
     const start = this.pageIndexMonth * this.pageSizeMonth;
     const end = (this.pageIndexMonth + 1) * this.pageSizeMonth;
-    this.pagedUserSchedulesMonth = this.filteredUserSchedulesMonth.slice(start, end);
+    this.pagedUserSchedulesMonth = this.filteredUserSchedulesMonth.slice(
+      start,
+      end
+    );
   }
 
   //custom
@@ -1924,7 +2636,10 @@ export class ScheduleComponent implements OnInit {
     this.pagedUsersCustomLength = this.filteredUserSchedulesCustom.length;
     const start = this.pageIndexCustom * this.pageSizeCustom;
     const end = (this.pageIndexCustom + 1) * this.pageSizeCustom;
-    this.pagedUserSchedulesCustom = this.filteredUserSchedulesCustom.slice(start, end);
+    this.pagedUserSchedulesCustom = this.filteredUserSchedulesCustom.slice(
+      start,
+      end
+    );
   }
 
   //added
@@ -1943,65 +2658,103 @@ export class ScheduleComponent implements OnInit {
   }
 
   getValidationMessages(): void {
-    if (!this.selectedDate || !this.authenticatedUser)
-      return;
+    if (!this.selectedDate || !this.authenticatedUser) return;
 
     //get validation messages
     this.validationMessagesChecked = false;
-    this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
-      response => {
-        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.validationMessages = <IValidationMessage[]>response.Subject;
+    this.userSchedulesService
+      .getUserValidationMessages(
+        new Date(this.selectedDate),
+        this.authenticatedUser.netID
+      )
+      .subscribe(
+        (response) => {
+          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+            this.validationMessages = <IValidationMessage[]>response.Subject;
 
-          for (var x = 0; x < this.validationMessages.length; x++) {
+            for (var x = 0; x < this.validationMessages.length; x++) {
+              if (this.validationMessages[x].schedules) {
+                for (
+                  var i = 0;
+                  i < (this.validationMessages[x].schedules || []).length;
+                  i++
+                ) {
+                  this.validationMessages[x].validationMessagesId = 0;
+                  (this.validationMessages[x].schedules || [])[
+                    i
+                  ].startdatetime = new Date(
+                    (this.validationMessages[x].schedules || [])[i]
+                      .startdatetime || ''
+                  );
+                  (this.validationMessages[x].schedules || [])[i].enddatetime =
+                    new Date(
+                      (this.validationMessages[x].schedules || [])[i]
+                        .enddatetime || ''
+                    );
+                  (this.validationMessages[x].schedules || [])[i].startTime =
+                    Utils.formatDateToTimeString(
+                      (this.validationMessages[x].schedules || [])[i]
+                        .startdatetime,
+                      true
+                    ) || '';
+                  (this.validationMessages[x].schedules || [])[i].endTime =
+                    Utils.formatDateToTimeString(
+                      (this.validationMessages[x].schedules || [])[i]
+                        .enddatetime,
+                      true
+                    ) || '';
 
-            if (this.validationMessages[x].schedules) {
-              for (var i = 0; i < (this.validationMessages[x].schedules || []).length; i++) {
+                  let schedule: ISchedule = (this.validationMessages[x]
+                    .schedules || [])[i];
 
-                this.validationMessages[x].validationMessagesId = 0;
-                (this.validationMessages[x].schedules || [])[i].startdatetime = new Date((this.validationMessages[x].schedules || [])[i].startdatetime || '');
-                (this.validationMessages[x].schedules || [])[i].enddatetime = new Date((this.validationMessages[x].schedules || [])[i].enddatetime || '');
-                (this.validationMessages[x].schedules || [])[i].startTime = Utils.formatDateToTimeString((this.validationMessages[x].schedules || [])[i].startdatetime, true) || '';
-                (this.validationMessages[x].schedules || [])[i].endTime = Utils.formatDateToTimeString((this.validationMessages[x].schedules || [])[i].enddatetime, true) || '';
+                  let startHours: number =
+                    ((schedule.startdatetime || new Date()).getHours() * 60 +
+                      (schedule.startdatetime || new Date()).getMinutes()) /
+                    60;
+                  let endHours: number =
+                    ((schedule.enddatetime || new Date()).getHours() * 60 +
+                      (schedule.enddatetime || new Date()).getMinutes()) /
+                    60;
+                  (this.validationMessages[x].schedules || [])[
+                    i
+                  ].scheduledHours = endHours - startHours;
 
-                let schedule: ISchedule = (this.validationMessages[x].schedules || [])[i];
-
-                let startHours: number = ((((schedule.startdatetime || new Date()).getHours() * 60) + (schedule.startdatetime || new Date()).getMinutes()) / 60);
-                let endHours: number = ((((schedule.enddatetime || new Date()).getHours() * 60) + (schedule.enddatetime || new Date()).getMinutes()) / 60);
-                (this.validationMessages[x].schedules || [])[i].scheduledHours = endHours - startHours;
-
-                if (this.allProjects) {
-                  let projectId: number = (this.validationMessages[x].schedules || [])[i].projectid as number;
-                  let scheduleProject: IProjectMin | undefined = this.allProjects.find(x => x.projectID == projectId);
-                  if (scheduleProject) {
-                    (this.validationMessages[x].schedules || [])[i].projectName = scheduleProject.projectName;
+                  if (this.allProjects) {
+                    let projectId: number = (this.validationMessages[x]
+                      .schedules || [])[i].projectid as number;
+                    let scheduleProject: IProjectMin | undefined =
+                      this.allProjects.find((x) => x.projectID == projectId);
+                    if (scheduleProject) {
+                      (this.validationMessages[x].schedules || [])[
+                        i
+                      ].projectName = scheduleProject.projectName;
+                    }
                   }
                 }
 
+                const uniqueValue = (value: any, index: any, self: any) => {
+                  return self.indexOf(value) === index;
+                };
+
+                this.validationMessages =
+                  this.validationMessages.filter(uniqueValue);
               }
-
-              const uniqueValue = (value: any, index: any, self: any) => {
-                return self.indexOf(value) === index
-              }
-
-              this.validationMessages = this.validationMessages.filter(uniqueValue);
-
             }
 
+            this.validationMessagesChecked = true;
           }
-
-          this.validationMessagesChecked = true;
+        },
+        (error) => {
+          this.errorMessage = <string>error.message;
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
         }
-      },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-      }
-    );
-
+      );
   }
 
-  formatDateOnlyWithMonthNameToString(dateToFormat: Date | null): string | null {
+  formatDateOnlyWithMonthNameToString(
+    dateToFormat: Date | null
+  ): string | null {
     return Utils.formatDateOnlyWithMonthNameToString(dateToFormat);
   }
 
@@ -2026,8 +2779,12 @@ export class ScheduleComponent implements OnInit {
 
       //only whitelisted projects can result in automated requests
       //checking the project id against the initial project id allows us to skip schedules that did not have a change in the project so that we don't create duplicate requests
-      if (!(automatableProjects.includes(schedules[i].projectid as number)
-        && schedules[i].projectid !== schedules[i].initialProjectid)) {
+      if (
+        !(
+          automatableProjects.includes(schedules[i].projectid as number) &&
+          schedules[i].projectid !== schedules[i].initialProjectid
+        )
+      ) {
         continue;
       }
 
@@ -2060,19 +2817,28 @@ export class ScheduleComponent implements OnInit {
 
       let request: IRequest = {
         invalidFields: [],
-        decisionId: 1,//schedule updated
+        decisionId: 1, //schedule updated
         requestCodeId: requestCodeId,
         interviewerEmpId: schedules[i].dempoid,
         resourceTeamMemberId: this.authenticatedUser.netID,
         resourceTeamMemberName: this.authenticatedUser.displayName,
         requestId: 0,
         requestDate: new Date(),
-        requestDetails: requestType + ': ' + Utils.formatDateOnlyWithMonthNameToString(schedules[i].startdatetime) + ' ' + schedules[i].startTime + ' - ' + schedules[i].endTime,
+        requestDetails:
+          requestType +
+          ': ' +
+          Utils.formatDateOnlyWithMonthNameToString(
+            schedules[i].startdatetime
+          ) +
+          ' ' +
+          schedules[i].startTime +
+          ' - ' +
+          schedules[i].endTime,
         notes: schedules[i].comments,
         modBy: this.authenticatedUser.netID,
         modDt: new Date(),
         entryBy: this.authenticatedUser.netID,
-        entryDt: new Date()
+        entryDt: new Date(),
       };
 
       requests.push(request);
@@ -2080,32 +2846,47 @@ export class ScheduleComponent implements OnInit {
 
     if (requests.length > 0) {
       this.requestsService.saveRequests(requests).subscribe(
-        response => {
+        (response) => {
           if (response.Status == 'Success') {
             //this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request(s) saved successfully', ['OK']));
             let savedRequests: IRequest[] = <IRequest[]>response.Subject;
             this.requestsService.setAllRequests();
           } else {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save automated request(s)', ['OK']));
+            this.globalsService.displayPopupMessage(
+              Utils.generatePopupMessage(
+                'Error',
+                'Encountered an error while trying to save automated request(s)',
+                ['OK']
+              )
+            );
             this.errorMessage = response.Message;
             this.logsService.logError(this.errorMessage);
-            this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            this.logsService.logError(this.errorMessage);
+            console.log(this.errorMessage);
           }
         },
-        error => {
-          this.errorMessage = <string>(error.message);
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save automated request(s):<br />' + this.errorMessage, ['OK']));
+        (error) => {
+          this.errorMessage = <string>error.message;
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage(
+              'Error',
+              'Encountered an error while trying to save automated request(s):<br />' +
+                this.errorMessage,
+              ['OK']
+            )
+          );
         }
       );
     }
-
   }
 
   displayHoverMessage(event: any, schedule: ISchedule): void {
-
-    if (schedule.hoverMessage
-      || (schedule.validationMessages || []).length > 0) {
+    if (
+      schedule.hoverMessage ||
+      (schedule.validationMessages || []).length > 0
+    ) {
       let htmlMessage: string = '';
 
       if (schedule.hoverMessage) {
@@ -2115,23 +2896,28 @@ export class ScheduleComponent implements OnInit {
       //validaiton messages
       if (schedule.validationMessages) {
         if (schedule.validationMessages.length > 0) {
-          htmlMessage = htmlMessage + '<p class="bold">Validation Messages:</p>';
+          htmlMessage =
+            htmlMessage + '<p class="bold">Validation Messages:</p>';
           for (var i = 0; i < schedule.validationMessages.length; i++) {
-            htmlMessage = htmlMessage + '<p style="margin-left: 5px;">' + schedule.validationMessages[i] + '</p>';
-
+            htmlMessage =
+              htmlMessage +
+              '<p style="margin-left: 5px;">' +
+              schedule.validationMessages[i] +
+              '</p>';
           }
         }
       }
 
-      let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
+      let hoverMessage: HTMLElement = <HTMLElement>(
+        document.getElementById('hover-message')
+      );
       hoverMessage.innerHTML = htmlMessage;
 
       this.globalsService.showHoverMessage.next(true);
 
-      hoverMessage.style.top = (event.screenY) + 'px';
-      hoverMessage.style.left = (event.screenX) + 'px';
+      hoverMessage.style.top = event.screenY + 'px';
+      hoverMessage.style.left = event.screenX + 'px';
     }
-
   }
 
   hideHoverMessage(): void {
@@ -2148,50 +2934,96 @@ export class ScheduleComponent implements OnInit {
 
     if (this.currentUser.schedulinglevel == 1) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
-      htmlMessage = htmlMessage + "<p><ul>";
-      htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-      htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-      htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-      htmlMessage = htmlMessage + "</ul></p>";
+      htmlMessage = htmlMessage + '<p><ul>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule should be at least 4 hours in length.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule should be no more than 7 hours in length.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule for Saturday should begin at or after 9 AM.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule for Sunday should begin at or after 12 noon.</li>';
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+      htmlMessage =
+        htmlMessage +
+        '<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>';
+      htmlMessage = htmlMessage + '</ul></p>';
     }
 
     if (this.currentUser.schedulinglevel == 2) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
-      htmlMessage = htmlMessage + "<p><ul>";
-      htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-      htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-      htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-      htmlMessage = htmlMessage + "</ul></p>";
+      htmlMessage = htmlMessage + '<p><ul>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule should be at least 4 hours in length.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule cannot be exactly 8 hours in length.</li>';
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+      htmlMessage =
+        htmlMessage +
+        '<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>';
+      htmlMessage = htmlMessage + '</ul></p>';
     }
 
     if (this.currentUser.schedulinglevel == 3) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
-      htmlMessage = htmlMessage + "<p><ul>";
-      htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-      htmlMessage = htmlMessage + "</ul></p>";
+      htmlMessage = htmlMessage + '<p><ul>';
+      htmlMessage =
+        htmlMessage +
+        '<li>A shift schedule cannot be exactly 8 hours in length.</li>';
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+      htmlMessage =
+        htmlMessage +
+        "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+      htmlMessage = htmlMessage + '</ul></p>';
     }
 
-    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
+    let hoverMessage: HTMLElement = <HTMLElement>(
+      document.getElementById('hover-message')
+    );
     hoverMessage.innerHTML = htmlMessage;
 
     this.globalsService.showHoverMessage.next(true);
 
-    hoverMessage.style.top = (event.screenY) + 'px';
+    hoverMessage.style.top = event.screenY + 'px';
     hoverMessage.style.left = event.clientX + 'px';
   }
 
@@ -2206,11 +3038,14 @@ export class ScheduleComponent implements OnInit {
     }
 
     //before unlock date
-    if ((Utils.formatDateOnly(schedule.startdatetime) || new Date()) < this.unlockDate
-      && this.authenticatedUser.interviewer
-      && !this.authenticatedUser.resourceGroup
-      && !this.authenticatedUser.admin
-      && !this.currentUser.canEdit) {
+    if (
+      (Utils.formatDateOnly(schedule.startdatetime) || new Date()) <
+        this.unlockDate &&
+      this.authenticatedUser.interviewer &&
+      !this.authenticatedUser.resourceGroup &&
+      !this.authenticatedUser.admin &&
+      !this.currentUser.canEdit
+    ) {
       return true;
     }
 
@@ -2221,12 +3056,17 @@ export class ScheduleComponent implements OnInit {
     var body = document.body,
       html = document.documentElement;
 
-    var height = Math.max(body.scrollHeight, body.offsetHeight,
-      html.clientHeight, html.scrollHeight, html.offsetHeight);
+    var height = Math.max(
+      body.scrollHeight,
+      body.offsetHeight,
+      html.clientHeight,
+      html.scrollHeight,
+      html.offsetHeight
+    );
 
     return {
-      'height': height + 'px',
-    }
+      height: height + 'px',
+    };
   }
 
   closeModalPopup(): void {
@@ -2240,5 +3080,4 @@ export class ScheduleComponent implements OnInit {
 
     return stringToSplit.split('|');
   }
-
 }
