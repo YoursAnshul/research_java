@@ -520,6 +520,59 @@ public class UserSchedulesController {
         return response;
     }
 
+    @GetMapping("/validationMessages/{inDate}")
+	public GeneralResponse getValidationMessages(@PathVariable LocalDate inDate, @RequestParam String netId) {
+		GeneralResponse response = new GeneralResponse();
+		try {
+			List<ValidationMessagePlus> validationMessages = new ArrayList<ValidationMessagePlus>();
+			if (!isNullOrWhiteSpace(netId)) {
+				validationMessages = validationMessageRepository.findValidationMessagesByNetIdAndMonth(netId, inDate);
+			} else {
+				validationMessages = validationMessageRepository.findValidationMessagesByInDate(inDate);
+			}
+			List<Integer> valMessageIds = validationMessages.stream()
+					.map(ValidationMessagePlus::getValidationMessagesId).collect(Collectors.toList());
+			List<ValidationMessage> vmTemp = validationMessageRepository.findValidationMessagesByIds(valMessageIds);
+			List<Integer> uniqueMessageIds = new ArrayList<Integer>();
+			List<ValidationMessagePlus> uniqueValidationMessages = new ArrayList<ValidationMessagePlus>();
+			// add relevant schedules and delete duplicates
+			for (ValidationMessagePlus vmp : validationMessages) {
+				// add relevant schedules
+				if (!isNullOrWhiteSpace(vmp.getScheduleKeys())) {
+					List<String> scheduleKeys = Arrays.asList(vmp.getScheduleKeys().split("\\|"));
+					List<Schedule> schedules = scheduleRepository.findSchedulesByScheduleKeys(scheduleKeys);
+					vmp.setSchedules(schedules);
+				}
+				// delete duplicates
+				if (uniqueMessageIds.contains(vmp.getMessageId())) {
+					// delete duplicate
+					ValidationMessage vMessage = vmTemp.stream().filter(vm -> vm.getMessageId() == vmp.getMessageId())
+							.findFirst().orElse(null);
+					if (vMessage != null) {
+						validationMessageRepository.delete(vMessage);
+					}
+				} else {
+					// add to resulting validation messages to return
+					uniqueValidationMessages.add(vmp);
+					uniqueMessageIds.add(vmp.getMessageId());
+				}
+			}
+			response.Status = "Success";
+			response.Message = "Successfully retrieved validation messages";
+			response.Subject = uniqueValidationMessages;
+		} catch (Exception ex) {
+			response.Status = "Failure";
+			response.Message = ex.getMessage();
+		}
+
+		return response;
+	}
+
+    public static boolean isNullOrWhiteSpace(String str) {
+		return str == null || str.trim().isEmpty();
+	}
+
+
     public boolean everyOtherWeekStart(List<LocalDateTime> weekStartsToCheck) {
         boolean twoConsecutive = false;
         if (weekStartsToCheck.size() == 2) {
