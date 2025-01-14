@@ -1951,8 +1951,49 @@ export class ScheduleComponent implements OnInit {
     this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.validationMessages = <IValidationMessage[]>response.Subject;
-
+          // this.validationMessages = <IValidationMessage[]>response.Subject;
+          this.validationMessages = <IValidationMessage[]>[
+            {
+              validationMessagesId: 61888,
+              dempoId: "jmr110",
+              messageId: 10,
+              messageText: "An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.",
+              inMonth: new Date("2025-01-14"),  // Proper Date format
+              scheduleKeys: null,
+              details: null,
+              schedules: [] 
+            },
+            {
+              validationMessagesId: 61889,
+              dempoId: "jmr110",
+              messageId: 11,
+              messageText: "An Interviewer's schedule should include 1 weekend shift every other week.|- A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.| - A Saturday and/or Sunday shift schedule should be 6 hours minimum.",
+              inMonth: new Date("2025-01-14"),  // Proper Date format
+              scheduleKeys: null,
+              details: null,
+              schedules: []
+            },
+            {
+              validationMessagesId: 61888,
+              dempoId: "jmr110",
+              messageId: 10,
+              messageText: "An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.",
+              inMonth: new Date("2025-01-14"),  // Proper Date format
+              scheduleKeys: null,
+              details: null,
+              schedules: [] 
+            },
+            {
+              validationMessagesId: 61889,
+              dempoId: "jmr110",
+              messageId: 11,
+              messageText: "An Interviewer's schedule should include 1 weekend shift every other week.|- A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.|- A Saturday and/or Sunday shift schedule should be 6 hours minimum.",
+              inMonth: new Date("2025-01-14"),  // Proper Date format
+              scheduleKeys: null,
+              details: null,
+              schedules: []
+            }
+          ];
           for (var x = 0; x < this.validationMessages.length; x++) {
 
             if (this.validationMessages[x].schedules) {
@@ -2141,12 +2182,12 @@ export class ScheduleComponent implements OnInit {
   displaySchedulingLevelInfo(event: any): void {
     let htmlMessage: string = '';
 
-    if (!this.currentUser) {
-      this.currentUser = {} as User;
-      htmlMessage = 'No scheduling level assigned.';
-    }
+    // if (!this.currentUser) {
+    //   this.currentUser = {} as User;
+    //   htmlMessage = 'No scheduling level assigned.';
+    // }
 
-    if (this.currentUser.schedulinglevel == 1) {
+    // if (this.currentUser.schedulinglevel == 1) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
       htmlMessage = htmlMessage + "<p><ul>";
       htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
@@ -2161,9 +2202,9 @@ export class ScheduleComponent implements OnInit {
       htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
       htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
       htmlMessage = htmlMessage + "</ul></p>";
-    }
+    // }
 
-    if (this.currentUser.schedulinglevel == 2) {
+    // if (this.currentUser.schedulinglevel == 2) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
       htmlMessage = htmlMessage + "<p><ul>";
       htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
@@ -2175,16 +2216,16 @@ export class ScheduleComponent implements OnInit {
       htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
       htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
       htmlMessage = htmlMessage + "</ul></p>";
-    }
+    // }
 
-    if (this.currentUser.schedulinglevel == 3) {
+    // if (this.currentUser.schedulinglevel == 3) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
       htmlMessage = htmlMessage + "<p><ul>";
       htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
       htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
       htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
       htmlMessage = htmlMessage + "</ul></p>";
-    }
+    // }
 
     let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
     hoverMessage.innerHTML = htmlMessage;

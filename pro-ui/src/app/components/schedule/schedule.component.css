@@ -118,10 +118,11 @@ mat-form-field {
 
 }
 
+
 #validation-messages {
   margin: auto;
   max-width: 700px;
-  max-height: 105px;
+  max-height: 175px;
   border: 2px solid rgb(253 99 99);
   border-top: 5px solid rgb(253 99 99);
   background-color: white;
@@ -131,6 +132,7 @@ mat-form-field {
   margin-bottom: 10px;
   font-weight: 500;
   box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  padding-left: 20px;
 }
 
 #validation-details {
@@ -169,4 +171,9 @@ mat-form-field {
 
 #scheduling-level-info {
   cursor: help;
+}
+svg {
+  vertical-align: middle !important;
+  display: inline !important;
+  overflow: hidden !important;
 }
