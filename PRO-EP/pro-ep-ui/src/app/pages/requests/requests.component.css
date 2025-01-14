@@ -1,0 +1,149 @@
+#requests {
+  padding: 25px;
+  padding-top: 0px;
+}
+
+#requests-no-results {
+  width: 100%;
+  margin-top: 45px;
+  margin-bottom: 25px;
+}
+
+#requests-no-filtered-results {
+  width: 100%;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  font-size: 1.2em;
+}
+
+#requests-table {
+  width: 100%;
+  margin-right: 25px;
+  margin-bottom: 25px;
+}
+
+#requests-table td,
+#requests-table th {
+  padding: 10px;
+  border: 0.5px solid rgb(0,0,0,0.15);
+  width: 250px;
+}
+
+#requests-table td.actions,
+#requests-table th.actions {
+    width: 90px;
+}
+
+#requests-table th {
+  font-weight: 500;
+  color: #1b6ec2;
+  font-size: 1.1em;
+}
+
+#new-request-form {
+  margin-left: 25px;
+}
+
+#new-request-form .row {
+  display: flex;
+  align-items: center;
+}
+
+#new-request-form .select-field,
+#new-request-form .long-text-field,
+#new-request-form .date-field,
+#resource-team-member {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#requests .mat-form-field {
+  width: 200px;
+}
+
+#requests .long-text-field .mat-form-field {
+  width: 415px;
+  height: 75px;
+}
+
+#requests .long-text-field .mat-form-field textarea {
+  width: 415px;
+  height: 75px;
+}
+
+#requests-table .long-text-field .mat-form-field {
+  width: 200px;
+  height: 75px;
+}
+
+#requests-table .long-text-field .mat-form-field textarea {
+  width: 200px;
+  height: 75px;
+}
+
+#requests .long-text-field {
+  margin-bottom: 55px;
+}
+
+#request-save-button {
+  height: 35px;
+  font-size: 1em;
+  margin-bottom: 45px;
+  margin-left: 40px;
+}
+
+#save-changes-button {
+  height: 35px;
+  font-size: 1em;
+  float: right;
+}
+
+#table-controls {
+  width: 100%;
+  height: 35px;
+  margin-bottom: 25px;
+}
+
+#requests-table-outer {
+  border-top: 0.5px solid rgb(0,0,0,0.25);
+  padding-top: 40px;
+}
+
+#request-filters {
+  display: inline-block;
+}
+
+#request-filters app-any-select {
+  margin-right: 15px;
+}
+
+#reset-filters-button {
+  height: 35px;
+  font-size: 1em;
+  margin-bottom: 8px;
+}
+
+.edit-request-row,
+.delete-request-row {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.edit-request-row {
+  margin-right: 10px;
+}
+
+.undo-delete {
+  display: inline-block;
+  padding-bottom: 7px;
+  cursor: pointer;
+}
+
+#requests-pdf-button {
+  font-size: 1em;
+  margin-bottom: 25px;
+}
+
+#date-select {
+    margin-right: 15px;
+}

@@ -1,0 +1,62 @@
+
+{{allUsers?.length}}
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+  <div *cdkVirtualFor="let u of allUsers" class="example-item">{{u.Fname || 'Loading...'}}</div>
+</cdk-virtual-scroll-viewport>
+<cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+  <div *cdkVirtualFor="let u of allUsers" class="example-item">{{u.UserID}}|{{u.Fname}} {{u.Lname}}</div>
+</cdk-virtual-scroll-viewport>
+<!--<cdk-virtual-scroll-viewport itemSize="100">
+
+  <li *cdkVirtualFor="let u of allUsers">
+    {{u.UserID}}|{{u.Fname}} {{u.Lname}}
+  </li>
+
+</cdk-virtual-scroll-viewport>-->
+
+
+
+<div class="inner-container">
+  <h2>Tabs:</h2>
+  <mat-tab-group animationDuration="10ms">
+    <mat-tab label="First"> Content 1 </mat-tab>
+    <mat-tab label="Second"> Content 2 </mat-tab>
+    <mat-tab label="Third"> Content 3 </mat-tab>
+  </mat-tab-group>
+
+  <br />
+  <br />
+  <h2>Multi-Select Dropdown:</h2>
+
+  <mat-form-field>
+    <mat-label>Select me</mat-label>
+    <mat-select multiple>
+      <mat-option value="option">Option1</mat-option>
+      <mat-option value="option">Option2</mat-option>
+      <mat-option value="option">Option3</mat-option>
+      <mat-option value="option">Option4</mat-option>
+    </mat-select>
+    <mat-hint align="start">Choose as many options as you like</mat-hint>
+  </mat-form-field>
+
+  <div>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <!--<input type="text" matInput [formControl]="emailFormControl"
+      -->
+      <input type="text" matInput
+             placeholder="Ex. pat@example.com">
+      <mat-hint>Hint goes here</mat-hint>
+    </mat-form-field>
+  </div>
+</div>
+
+<div *ngFor="let x of testStringArray">
+  {{x}}
+</div>
+
+
+<button mat-raised-button class="btn btn-primary" color="primary"
+        (click)="testStringArrayInsert()">
+  Insert
+</button>

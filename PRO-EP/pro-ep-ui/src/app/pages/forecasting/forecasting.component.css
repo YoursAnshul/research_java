@@ -1,0 +1,33 @@
+#forecast-table,
+#core-hours-table {
+  margin-right: 65px;
+  margin-top: 15px;
+  margin-bottom: 50px;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  width: 100%;
+}
+
+#forecast-table td,
+#core-hours-table td {
+  text-align: center;
+  padding: 5px;
+  border: 0.5px solid grey;
+}
+
+#forecast-header,
+#core-hours-header {
+  background-color: #89cff0;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+}
+
+  #forecast-header td,
+  #core-hours-header td {
+    border: 0.5px solid #3f51b5;
+  }
+
+#forecast-save-button,
+#core-hours-save-button {
+  float: right;
+  font-size: 0.9em;
+  margin: 15px 5px;
+}

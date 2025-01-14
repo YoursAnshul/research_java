@@ -1,0 +1,140 @@
+.inner-container {
+  margin: 0px;
+  margin-left: 25px;
+  display: flex;
+}
+
+#user-list {
+  font-size: 0.8em;
+  box-shadow: 0 3px 5px 1px rgb(0 0 0 / 20%), 0 25px 25px 0 rgb(0 0 0 / 14%), 0 1px 0px 0 rgb(0 0 0 / 12%);
+  border-top: 0.5px solid rgb(0 0 0 / 10%);
+  border: 0.5px solid rgb(0, 0, 0, 0.25);
+  display: inline-block;
+  margin-right: 25px;
+  height: 819px;
+}
+
+#user-list-header {
+  padding: 10px;
+  padding-bottom: 0px;
+  width: 200px;
+}
+
+#user-list-item-container {
+  height: 550px;
+  overflow: auto;
+  border-top: 0.5px solid lightgray;
+}
+
+.user-list-item {
+  padding: 10px;
+  padding-left: 0px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  background-color: lightgoldenrodyellow;
+  border-top: 0.5px solid gray;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.user-list-header-row {
+  padding-bottom: 10px;
+}
+
+#user-list-first-row {
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+#user-list-second-row {
+  padding: 8px 0px 0px 0px;
+  margin-bottom: 5px;
+  border-top: 0.5px solid #0078d4;
+  border-bottom: 0.5px solid #0078d4;
+}
+
+#user-list-third-row {
+  display: flex;
+  align-items: center;
+}
+
+#employment-type-filter {
+  margin-left: 30px;
+}
+
+#projects-filter {
+  margin-top: 10px;
+  margin-left: 26px;
+}
+
+#add-user {
+  cursor: pointer;
+  display: inline-block;
+  /*margin-left: 10px;*/
+  margin-right: 5px;
+}
+
+.selected-user {
+  font-weight: 500;
+}
+
+.user-select-checkbox {
+  /*margin-left: 10px;*/
+}
+
+#select-all {
+  margin-left: -10px;
+  /*margin-right: 10px;*/
+}
+
+#schedule-lock-icon {
+  display: inline-block;
+  /*margin-left: 10px;*/
+}
+
+#trained-on-radio {
+  display: block;
+  margin: 0px 10px;
+  margin-left: 26px;
+}
+
+#user-profile {
+  display: inline-block;
+  /*width: 100%;*/
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  border: 0.5px solid rgb(0, 0, 0, 0.25);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  /*min-width: 850px;*/
+  width: 100%;
+}
+
+.mat-form-field {
+  width: 115px;
+  margin: 5px;
+  margin-bottom: 0px;
+}
+
+#modal-popup {
+  width: 1200px;
+}
+
+.buddy-icon {
+  margin-left: 3px;
+}
+
+.checkbox-container {
+
+}
+
+.user-container {
+  /*margin-left: 10px;*/
+}
+
+.flex {
+  display: flex;
+}

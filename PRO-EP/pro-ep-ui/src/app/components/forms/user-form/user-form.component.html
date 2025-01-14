@@ -1,0 +1,260 @@
+<!--user profile-->
+<div id="user-profile-header">
+  <div id="user-pic-name">
+    <div id="user-profile-picture-crop"
+         *ngIf="selectedUser?.userImage">
+      <img src="data:image/gif;base64,{{selectedUser?.userImage}}"
+           id="user-profile-picture"
+           *ngIf="selectedUser?.userImage"
+           (click)="uploadPicture()"
+           [class.clickable]="authenticatedUser?.resourceGroup || authenticatedUser?.admin" />
+    </div>
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="75" fill="currentColor" class="bi bi-person-square" viewBox="0 0 16 16"
+         id="user-profile-picture-default"
+         *ngIf="!selectedUser?.userImage"
+         (click)="uploadPicture()"
+         [class.clickable]="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+      <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z" />
+    </svg>
+
+    <input type="file" id="picture-upload" accept=".png,.jpg,.jpeg" name="picture-upload" style="display: none;"
+           (change)="validatePictureFile()" />
+
+    <div id="user-profile-header-name">
+      <span class="bold">
+        {{selectedUser?.fname}} {{selectedUser?.lname}}
+        <span *ngIf="selectedUser?.preferredfname || selectedUser?.preferredlname">({{selectedUser?.preferredfname || selectedUser?.fname}} {{selectedUser?.preferredlname || selectedUser?.lname}})</span>
+      </span>
+      <!--<div id="id-user-profile-dcri-name" class="italic">
+        <span class="bold">DCRI System Name:</span> {{authenticatedUser?.displayName}}
+      </div>-->
+    </div>
+  </div>
+
+  <!--buttons-->
+  <div id="user-profile-buttons-outer">
+    <div id="user-profile-buttons">
+      <!--save profile-->
+      <button id="profile-save-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="saveUserProfile()"
+              [disabled]="!changed || invalid"
+              [class.invalid-button]="invalid"
+              [class.disabled]="!changed || invalid">
+        Save
+      </button>
+
+      <!--open user schedule-->
+      <button id="profile-schedule-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="openUserSchedule()"
+              [disabled]="!selectedUser?.active"
+              [class.disabled]="!selectedUser?.active"
+              *ngIf="!createForm">
+        Schedule
+      </button>
+    </div>
+  </div>
+</div>
+
+<!--user tabs-->
+<mat-tab-group id="user-tabs"
+               animationDuration="10ms">
+
+  <!--main-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab1Invalid">Main</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab1Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+
+    <div class="user-fields-container">
+
+      <div
+           *ngIf="!tab1UserFields">
+        Loading profile...
+      </div>
+
+      <div *ngFor="let ff of tab1UserFields;"
+           class="user-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="readOnly || disableRules(ff)"
+                        [contextUser]="selectedUser"
+                        [allProjectsMin]="activeProjects"
+                        [class.disabled]="disableRules(ff)"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+
+        <svg id="scheduling-level-info" width="16px" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16"
+             *ngIf="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+             (mouseenter)="displaySchedulingLevelInfo($event)"
+             (mouseleave)="hideSchedulingLevelInfo()">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z" />
+        </svg>
+
+      </div>
+    </div>
+  </mat-tab>
+
+  <!--hiring-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab2Invalid">Hiring</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab2Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="user-fields-container">
+      <div *ngFor="let ff of tab2UserFields;"
+           class="user-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="readOnly || disableRules(ff)"
+                        [contextUser]="selectedUser"
+                        [allProjectsMin]="activeProjects"
+                        [class.disabled]="disableRules(ff)"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!--employee contact info-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab3Invalid">Employee Contact Info</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab3Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="user-fields-container">
+      <div *ngFor="let ff of tab3UserFields;"
+           class="user-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="readOnly || disableRules(ff)"
+                        [contextUser]="selectedUser"
+                        [allProjectsMin]="activeProjects"
+                        [class.disabled]="disableRules(ff)"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+      </div>
+      <div id="start-date-note"
+           *ngIf="startDatesEmpty()">**Only one start date is required. Selecting one removes the required asterisks from the other.</div>
+    </div>
+  </mat-tab>
+
+  <!--personal contact info-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab4Invalid">Personal Contact Info</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab4Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="user-fields-container">
+      <div *ngFor="let ff of tab4UserFields;"
+           class="user-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="false"
+                        [contextUser]="selectedUser"
+                        [allProjectsMin]="activeProjects"
+                        [class.disabled]="disableRules(ff)"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!--core hours monthly-->
+  <mat-tab label="Core Hours Monthly">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="coreHoursInvalid">Core Hours Monthly</span>
+      <span class="invalid-emphasis"
+            *ngIf="coreHoursInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="user-fields-container">
+
+      <table id="core-hours-table">
+        <thead>
+          <tr id="core-hours-header" class="bold">
+            <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
+            <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
+          </tr>
+        </thead>
+        <tr>
+          <td *ngFor="let ch of numSequence(14); let i = index">
+            <mat-form-field>
+              <input type="text" matInput
+                     [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                     (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
+                     (keypress)="numberRestrict($event)"
+                     name="core-hours-{{i}}"
+                     autocomplete="off"
+                     maxlength="4">
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </mat-tab>
+
+    <!--requests-->
+  <mat-tab label="Requests"
+           *ngIf="!createForm">
+    <ng-template mat-tab-label>
+      <span>Requests</span>
+    </ng-template>
+
+    <!--requests table-->
+    <table id="user-requests-table" mat-table [dataSource]="requests" class="mat-elevation-z8"
+           *ngIf="requests.length > 0">
+
+      <ng-container matColumnDef="RequestType"><th mat-header-cell *matHeaderCellDef>Request Type</th><td mat-cell *matCellDef="let req"> {{req?.requestType}} </td></ng-container>
+      <ng-container matColumnDef="InterviewerEmpName"><th mat-header-cell *matHeaderCellDef>Interviewer</th><td mat-cell *matCellDef="let req"> {{req?.interviewerEmpName}} </td></ng-container>
+      <ng-container matColumnDef="ResourceTeamMemberName"><th mat-header-cell *matHeaderCellDef>Resource Team Member</th><td mat-cell *matCellDef="let req"> {{req?.resourceTeamMemberName}} </td></ng-container>
+      <ng-container matColumnDef="RequestDate"><th mat-header-cell *matHeaderCellDef>Request Date</th><td mat-cell *matCellDef="let req"> {{formatDateOnlyToString(req?.requestDate)}} </td></ng-container>
+      <ng-container matColumnDef="RequestDetails"><th mat-header-cell *matHeaderCellDef>Request Details</th><td mat-cell *matCellDef="let req"> {{req?.requestDetails}} </td></ng-container>
+      <ng-container matColumnDef="Decision"><th mat-header-cell *matHeaderCellDef>Decision</th><td mat-cell *matCellDef="let req"> {{req?.decision}} </td></ng-container>
+      <ng-container matColumnDef="Notes"><th mat-header-cell *matHeaderCellDef>Notes</th><td mat-cell *matCellDef="let req"> {{req?.notes}} </td></ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="requestTableColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: requestTableColumns;"></tr>
+
+    </table>
+
+    <div id="user-requests-no-results" class="bold"
+         *ngIf="requests.length < 1">
+      {{noRequestsResultsMessage}}
+    </div>
+  </mat-tab>
+
+</mat-tab-group>
+
+<app-trained-on-projects [trainedOnProjects]="trainedOnProjects"
+                         [notTrainedOnProjects]="notTrainedOnProjects"
+                         [listingOnly]="readOnly"
+                         (trainedOnChange)="trainedOnChange($event)"
+                         *ngIf="!createForm"></app-trained-on-projects>
+
+<div id="user-calendar"
+     *ngIf="!createForm">
+  <app-calendar [authenticatedUser]="authenticatedUser"
+                [contextUser]="selectedUser"></app-calendar>
+</div>
+

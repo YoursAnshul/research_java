@@ -1,0 +1,455 @@
+<div id="requests"
+     *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+  <h2 class="bold">Requests</h2>
+
+  <!--new request form-->
+  <div id="new-request-form"
+       *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+
+    <div class="row">
+      <!--request type-->
+      <div class="select-field">
+        <mat-form-field>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestCodeId')">Request Type</mat-label>
+          <mat-select [(ngModel)]="newRequest.requestCodeId"
+                      [compareWith]="compareSelectValues"
+                      (selectionChange)="validateRequirement(newRequest)"
+                      [required]="true"
+                      [class.invalid]="newRequest.invalidFields?.includes('RequestCodeId')"
+                      name="new-request-type">
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let dv of requestCodeDropDown" value="{{dv.codeValues}}">
+              {{dv.dropDownItem}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!--interviewer-->
+      <div class="select-field">
+        <mat-form-field>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('InterviewerEmpId')">Interviewer</mat-label>
+          <mat-select [(ngModel)]="newRequest.interviewerEmpId"
+                      [compareWith]="compareSelectValues"
+                      (selectionChange)="validateRequirement(newRequest)"
+                      [required]="true"
+                      [class.invalid]="newRequest.invalidFields?.includes('InterviewerEmpId')"
+                      name="new-interviewer">
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let u of activeUsers" value="{{u.dempoid}}">
+              {{u.displayName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!--resource team member-->
+      <mat-form-field id="resource-team-member">
+        <mat-label>Resource Team Member</mat-label>
+        <input type="text" matInput
+               [(ngModel)]="authenticatedUser.displayName"
+               placeholder="Resource Team Member"
+               [disabled]="true"
+               [class.read-only]="true">
+      </mat-form-field>
+
+      <!--request date-->
+      <div class="date-field">
+        <mat-form-field appearance="fill" class="date-picker-form-field">
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestDate')">Request Date</mat-label>
+          <input matInput [matDatepicker]="datePicker"
+                 [class.invalid]="newRequest.invalidFields?.includes('RequestDate')"
+                 [(ngModel)]="newRequest.requestDate"
+                 (dateChange)="validateRequirement(newRequest)"
+                 autocomplete="off" />
+          <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker
+                          startView="month"></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!--Decision-->
+      <div class="select-field">
+        <mat-form-field>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('DecisionId')">Decision</mat-label>
+          <mat-select [(ngModel)]="newRequest.decisionId"
+                      [compareWith]="compareSelectValues"
+                      (selectionChange)="validateRequirement(newRequest)"
+                      [required]="true"
+                      [class.invalid]="newRequest.invalidFields?.includes('DecisionId')"
+                      name="new-decision">
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let dv of decisionIdDropDown" value="{{dv.codeValues}}">
+              {{dv.dropDownItem}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <!--request details-->
+      <div class="long-text-field">
+        <mat-form-field>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestDetails')">Request Details</mat-label>
+          <textarea matInput
+                    [(ngModel)]="newRequest.requestDetails"
+                    (keyup)="validateRequirement(newRequest)"
+                    [required]="true"
+                    [class.invalid]="newRequest.invalidFields?.includes('RequestDetails')"
+                    name="new-request-details">
+          </textarea>
+        </mat-form-field>
+      </div>
+
+      <!--notes-->
+      <div class="long-text-field">
+        <mat-form-field>
+          <mat-label>Notes</mat-label>
+          <textarea matInput
+                    [(ngModel)]="newRequest.notes"
+                    name="new-notes">
+          </textarea>
+        </mat-form-field>
+      </div>
+
+      <!--save new request-->
+      <div id="request-save-button">
+        <button mat-raised-button class="btn btn-primary" color="primary"
+                (click)="saveNewRequest()"
+                [disabled]="(newRequest.invalidFields || []).length > 0 || !newRequest.changed"
+                [class.invalid-button]="(newRequest.invalidFields || []).length > 0"
+                [class.disabled]="(newRequest.invalidFields || []).length > 0 || !newRequest.changed">
+          Add Request
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="requests-table-outer"
+       *ngIf="allRequests.length > 0">
+
+    <!--generate pdf-->
+    <button id="requests-pdf-button" mat-raised-button class="btn btn-primary" color="primary"
+            (click)="generatePdf()">
+      Create PDF
+    </button>
+
+    <div id="table-controls">
+
+      <div id="request-filters">
+        <!--request type filter-->
+        <app-any-select id="request-type-filter"
+                        [fieldLabel]="'Request Type'"
+                        [anyLabel]="'Request Type'"
+                        [dropDownValues]="requestCodeDropDown"
+                        [selectFilter]="requestTypeFilter"
+                        (filterChange)="requestsFilterChange($event)">
+        </app-any-select>
+
+        <!--interviewer filter-->
+        <app-any-select id="interviewer-filter"
+                        [fieldLabel]="'Interviewer'"
+                        [anyLabel]="'Interviewer'"
+                        [dropDownValues]="filteredUsersDv"
+                        [selectFilter]="interviewerFilter"
+                        (filterChange)="requestsFilterChange($event)">
+        </app-any-select>
+
+        <!--decision filter-->
+        <app-any-select id="decision-filter"
+                        [fieldLabel]="'Decision'"
+                        [anyLabel]="'Decision'"
+                        [dropDownValues]="decisionIdDropDown"
+                        [selectFilter]="decisionFilter"
+                        (filterChange)="requestsFilterChange($event)">
+        </app-any-select>
+
+        <!--date range filter-->
+        <app-range-datepicker id="date-select"
+                              [selectedDate]="selectedDate"
+                              [(selectedDateRange)]="selectedDateRange"
+                              (selectedDateChange)="selectedDateChange()">
+        </app-range-datepicker>
+
+        <!--reset filters-->
+        <button id="reset-filters-button"
+                mat-raised-button class="btn btn-primary" color="primary"
+                (click)="resetDefaultFilters()">
+          Reset
+        </button>
+
+      </div>
+
+      <!--save request changes-->
+      <div id="save-changes-button">
+        <button mat-raised-button class="btn btn-primary" color="primary"
+                (click)="saveRequestChanges()"
+                [disabled]="requestsInvalid || !requestsChanged"
+                [class.invalid-button]="requestsInvalid"
+                [class.disabled]="requestsInvalid || !requestsChanged"
+                *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+          Save Changes
+        </button>
+      </div>
+
+    </div>
+
+    <!--requests table-->
+    <table id="requests-table" mat-table [dataSource]="pagedRequests" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="RequestType">
+        <th mat-header-cell *matHeaderCellDef>Request Type</th>
+        <td mat-cell *matCellDef="let req">
+          <!--request type-->
+          <div class="select-field"
+               *ngIf="req?.Edit">
+            <mat-form-field>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('RequestCodeId')">Request Type</mat-label>
+              <mat-select [(ngModel)]="req.requestCodeId"
+                          [compareWith]="compareSelectValues"
+                          (selectionChange)="validateRequirement(req)"
+                          [required]="true"
+                          [class.invalid]="req.InvalidFields?.includes('RequestCodeId')"
+                          name="new-request-type">
+                <mat-option value=""></mat-option>
+                <mat-option *ngFor="let dv of requestCodeDropDown" value="{{dv.codeValues}}">
+                  {{dv.dropDownItem}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{req?.requestType}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="InterviewerEmpName">
+        <th mat-header-cell *matHeaderCellDef>Interviewer</th>
+        <td mat-cell *matCellDef="let req">
+          <!--interviewer-->
+          <div class="select-field"
+               *ngIf="req?.Edit">
+            <mat-form-field>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('InterviewerEmpId')">Interviewer</mat-label>
+              <mat-select [(ngModel)]="req.interviewerEmpId"
+                          [compareWith]="compareSelectValues"
+                          (selectionChange)="validateRequirement(req)"
+                          [required]="true"
+                          [class.invalid]="req.InvalidFields?.includes('InterviewerEmpId')"
+                          name="new-interviewer">
+                <mat-option value=""></mat-option>
+                <mat-option *ngFor="let u of allUsers" value="{{u.dempoid}}">
+                  {{u.displayName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{req?.interviewerEmpName}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ResourceTeamMemberName">
+        <th mat-header-cell *matHeaderCellDef>Resource Team Member</th>
+        <td mat-cell *matCellDef="let req">
+          <!--resource team member-->
+          <div class="select-field"
+               *ngIf="req?.Edit">
+            <mat-form-field>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('ResourceTeamMemberId')">Resource Team Member</mat-label>
+              <mat-select [(ngModel)]="req.resourceTeamMemberId"
+                          [compareWith]="compareSelectValues"
+                          (selectionChange)="validateRequirement(req)"
+                          [required]="true"
+                          [class.invalid]="req.InvalidFields?.includes('ResourceTeamMemberId')"
+                          name="new-resource-team-member">
+                <mat-option value=""></mat-option>
+                <mat-option *ngFor="let u of allUsers" value="{{u.dempoid}}">
+                  {{u.displayName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{req?.resourceTeamMemberName}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="RequestDate">
+        <th mat-header-cell *matHeaderCellDef>Request Date</th>
+        <td mat-cell *matCellDef="let req">
+          <!--request date-->
+          <div class="date-field"
+               *ngIf="req?.Edit">
+            <mat-form-field appearance="fill" class="date-picker-form-field">
+              <mat-label [class.invalid]="req.InvalidFields?.includes('RequestDate')">Request Date</mat-label>
+              <input matInput [matDatepicker]="datePicker"
+                     [class.invalid]="req.InvalidFields?.includes('RequestDate')"
+                     [(ngModel)]="req.requestDate"
+                     (dateChange)="validateRequirement(req)"
+                     autocomplete="off" />
+              <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+              <mat-datepicker #datePicker
+                              startView="month"></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{formatDateOnlyToString(req?.requestDate)}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="RequestDetails">
+        <th mat-header-cell *matHeaderCellDef>Request Details</th>
+        <td mat-cell *matCellDef="let req">
+          <!--request details-->
+          <div class="long-text-field"
+               *ngIf="req?.Edit">
+            <mat-form-field>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('RequestDetails')">Request Details</mat-label>
+              <textarea matInput
+                        [(ngModel)]="req.requestDetails"
+                        (keyup)="validateRequirement(req)"
+                        [required]="true"
+                        [class.invalid]="req.InvalidFields?.includes('RequestDetails')"
+                        name="new-request-details">
+          </textarea>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{req?.requestDetails}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Decision">
+        <th mat-header-cell *matHeaderCellDef>Decision</th>
+        <td mat-cell *matCellDef="let req">
+          <!--Decision-->
+          <div class="select-field"
+               *ngIf="req?.Edit">
+            <mat-form-field>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('DecisionId')">Decision</mat-label>
+              <mat-select [(ngModel)]="req.decisionId"
+                          [compareWith]="compareSelectValues"
+                          (selectionChange)="validateRequirement(req)"
+                          [required]="true"
+                          [class.invalid]="req.InvalidFields?.includes('DecisionId')"
+                          name="new-decision">
+                <mat-option value=""></mat-option>
+                <mat-option *ngFor="let dv of decisionIdDropDown" value="{{dv.codeValues}}">
+                  {{dv.dropDownItem}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{req?.decision}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Notes">
+        <th mat-header-cell *matHeaderCellDef>Notes</th>
+        <td mat-cell *matCellDef="let req">
+          <!--notes-->
+          <div class="long-text-field"
+               *ngIf="req?.Edit">
+            <mat-form-field>
+              <mat-label>Notes</mat-label>
+              <textarea matInput
+                        [(ngModel)]="req.notes"
+                        (keyup)="validateRequirement(req)"
+                        name="notes">
+          </textarea>
+            </mat-form-field>
+          </div>
+
+          <!--read-only-->
+          <div [class.line-through]="req?.markedForDeletion"
+               *ngIf="!req?.Edit">
+            {{req?.notes}}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef class="actions"></th>
+        <td mat-cell *matCellDef="let req" class="actions">
+
+          <!--toggle editing-->
+          <div class="edit-request-row"
+               (click)="req.Edit = true; req.marketForDeletion = false; setChanged(req);"
+               *ngIf="!req.Edit">
+            <svg width="22px" xmlns="http://www.w3.org/2000/svg" fill="#1b6ec2" class="bi bi-pencil-square" viewBox="0 0 16 16">
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+            </svg>
+          </div>
+
+          <!--mark for deletion-->
+          <div class="delete-request-row"
+               (click)="req.markedForDeletion = true; req.Edit = false; setChanged(req);"
+               *ngIf="!req.markedForDeletion">
+            <svg width="20px" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+            </svg>
+          </div>
+
+          <!--undo mark for deletion-->
+          <div class="undo-delete"
+               (click)="req.markedForDeletion = false; setChanged(req);"
+               *ngIf="req.markedForDeletion">
+            undo
+          </div>
+
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="((authenticatedUser?.resourceGroup || authenticatedUser?.admin) ? requestTableColumns : interViewerRequestTableColumns); sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: ((authenticatedUser?.resourceGroup || authenticatedUser?.admin) ? requestTableColumns : interViewerRequestTableColumns);"></tr>
+
+    </table>
+
+    <mat-paginator #paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="filteredRequests.length"
+                   [pageIndex]="pageIndex" (page)="handlePage($event)"
+                   *ngIf="filteredRequests.length > 0">
+    </mat-paginator>
+
+  </div>
+
+  <div id="requests-no-filtered-results" class="bold"
+       *ngIf="filteredRequests.length < 1 && allRequests.length > 0">
+    No requests match the selected criteria...
+  </div>
+
+  <div id="requests-no-results" class="bold"
+       *ngIf="allRequests.length < 1">
+    {{noResultsMessage}}
+  </div>
+</div>
+
+<div class="inner-container"
+     *ngIf="authenticatedUser?.netID && !(authenticatedUser?.resourceGroup || authenticatedUser?.admin)">
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>Please contact someone in the resource team if you believe this was a mistake.</p>
+</div>

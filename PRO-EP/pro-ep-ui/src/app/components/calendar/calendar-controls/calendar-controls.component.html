@@ -1,0 +1,141 @@
+<!--refresh-->
+<div id="refresh-calendar-container">
+  <svg id="refresh-calendar"
+       (click)="emitSelectedDate()"
+       [class.spin]="scheduleFetchStatus"
+       xmlns="http://www.w3.org/2000/svg" width="25" fill="green" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
+  </svg>
+
+  <span id="refresh-calendar-message"
+        class="italic">{{scheduleFetchMessage}}</span>
+
+</div>
+<!--navigation-->
+<div id="calendar-date-picker" [class.week-date-picker]="_calendarType.toUpperCase() == 'WEEK'">
+  <!--<div class="arrow-nav" (click)="addDaysToSelectedDate(-1)">-->
+  <div class="arrow-nav"
+       (click)="addDateUnitsToSelectedDate(-1)">
+    <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"></path>
+    </svg>
+  </div>
+
+  <div id="date-picker-input">
+    <app-day-datepicker *ngIf="_calendarType.toUpperCase() == 'DAY'"
+                        [selectedDate]="_selectedDate"
+                        (selectedDateChange)="emitSelectedDate()">
+    </app-day-datepicker>
+
+    <app-week-datepicker *ngIf="_calendarType.toUpperCase() == 'WEEK'"
+                         [selectedDate]="_selectedDate"
+                         [(selectedDateRange)]="selectedDateRange"
+                         (selectedDateChange)="emitSelectedDate()">
+    </app-week-datepicker>
+
+    <app-month-datepicker *ngIf="_calendarType.toUpperCase() == 'MONTH'"
+                          [selectedDate]="_selectedDate"
+                          (selectedDateChange)="emitSelectedDate()">
+    </app-month-datepicker>
+  </div>
+
+  <!--<div class="arrow-nav" (click)="addDaysToSelectedDate(1)">-->
+  <div class="arrow-nav"
+       (click)="addDateUnitsToSelectedDate(1)">
+    <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path>
+    </svg>
+  </div>
+</div>
+
+<!--today-->
+<div id="today-picker"
+     (click)="backToToday()">
+  {{todayPickerLabel}}
+</div>
+
+<!--filters-->
+<div id="calendar-filters-outer">
+  <div id="calendar-filters" [class.interviewer]="!authenticatedUser?.resourceGroup && !authenticatedUser?.admin && authenticatedUser?.interviewer">
+    <div id="user-language-filters">
+      <mat-form-field *ngIf="_calendarType=='DAY' && authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+        <mat-label>Users</mat-label>
+        <mat-select [formControl]="_userFilter"
+                    (selectionChange)="this.filterChange.emit()">
+          <mat-option value="1">All Active Users</mat-option>
+          <mat-option value="2">Scheduled Users</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+        <mat-label>{{_languageFieldInfo?.fieldLabel}}</mat-label>
+        <mat-select multiple id="languages-filter"
+                    [formControl]="_languageFilter"
+                    (selectionChange)="this.filterChange.emit()">
+          <mat-option value="0">Any Language</mat-option>
+          <mat-option *ngFor="let l of _languages" value="{{l.codeValues}}">{{l.dropDownItem}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+      <mat-label>Projects</mat-label>
+      <mat-select multiple
+                  [formControl]="_projectFilter"
+                  (selectionChange)="this.filterChange.emit()">
+        <mat-option value="0">Any Project</mat-option>
+        <mat-optgroup *ngFor="let group of projectGroups"
+                      [label]="group.name">
+          <mat-option *ngFor="let p of group.projects" value="{{p.projectID}}">{{p.projectName}}</mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+
+    <div id="conditional-operator-filter-outer" *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+      <font style="margin-right: 5px;">&mdash;</font>
+      <mat-form-field id="conditional-operator-filter">
+        <mat-select [formControl]="_conditionalOperatorFilter"
+                    (selectionChange)="this.filterChange.emit()">
+          <mat-option value="1" style="font-style: italic;">and</mat-option>
+          <mat-option value="2" style="font-style: italic;">or</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <font style="margin-left: 5px; margin-right: 25px;">&mdash;</font>
+    </div>
+
+    <div id="trained-on-section" [class.interviewer]="!authenticatedUser?.resourceGroup && !authenticatedUser?.admin && authenticatedUser?.interviewer">
+      <mat-form-field style="display: block;">
+        <mat-label>Trained On</mat-label>
+        <mat-select multiple
+                    [formControl]="_trainedOnFilter"
+                    (selectionChange)="this.filterChange.emit()">
+          <mat-option value="0">Any Project</mat-option>
+          <mat-optgroup *ngFor="let group of projectGroups"
+                        [label]="group.name">
+            <mat-option *ngFor="let p of group.projects" value="{{p.projectID}}">{{p.projectName}}</mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field style="display: block;">
+        <mat-label>Not Trained On</mat-label>
+        <mat-select multiple
+                    [formControl]="_notTrainedOnFilter"
+                    (selectionChange)="this.filterChange.emit()">
+          <mat-option value="0">Any Project</mat-option>
+          <mat-optgroup *ngFor="let group of projectGroups"
+                        [label]="group.name">
+            <mat-option *ngFor="let p of group.projects" value="{{p.projectID}}">{{p.projectName}}</mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <button id="reset-button"
+            mat-raised-button class="btn btn-primary" color="primary"
+            (click)="resetDefaultFilters.emit()">
+      Reset
+    </button>
+  </div>
+</div>

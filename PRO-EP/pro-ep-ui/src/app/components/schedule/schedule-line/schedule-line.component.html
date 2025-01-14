@@ -1,0 +1,170 @@
+
+<div class="edit-section" [ngStyle]="editSectionStyle()">
+  <!--user-->
+  <mat-form-field>
+    <mat-label [class.invalid]="schedule.invalidFields?.includes('User')">User</mat-label>
+    <mat-select [(ngModel)]="schedule.dempoid"
+                [required]="true"
+                [disabled]="readOnly && !schedule.addTab"
+                [class.read-only]="readOnly && !schedule.addTab"
+                (selectionChange)="setChanged()">
+      <mat-option value="0" selected="selected"></mat-option>
+      <mat-option *ngFor="let u of allUsers" value="{{u.dempoid}}">{{u.displayName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!--Project-->
+  <mat-form-field>
+    <mat-label [class.invalid]="schedule.invalidFields?.includes('Project')">Project</mat-label>
+    <mat-select [(ngModel)]="schedule.projectName"
+                [required]="true"
+                [class.invalid]="schedule.invalidFields?.includes('Project')"
+                [disabled]="readOnly && !schedule.addTab"
+                [class.read-only]="readOnly && !schedule.addTab"
+                (selectionChange)="setChanged()">
+      <mat-option value="0" selected="selected"></mat-option>
+      <mat-optgroup *ngFor="let group of trainedOnProjectGroups"
+                    [label]="group.name">
+        <mat-option *ngFor="let p of group.projects" value="{{p.projectName}}">{{p.projectName}}</mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+
+  <!--day of the week-->
+  <div class="day-of-week">
+    {{dayOfTheWeek(schedule)}}
+  </div>
+
+  <!--schedule date-->
+  <mat-form-field appearance="fill" class="date-picker-form-field">
+    <mat-label [class.invalid]="schedule.invalidFields?.includes('Date')">{{(schedule.startdatetime ? dayOfTheWeek(schedule) : 'Date')}}</mat-label>
+    <input matInput
+           [(ngModel)]="schedule.startdatetime"
+           [matDatepicker]="datePicker"
+           [required]="true"
+           [class.invalid]="schedule.invalidFields?.includes('Date')"
+           [disabled]="readOnly && !schedule.addTab"
+           [class.read-only]="readOnly && !schedule.addTab"
+           (dateChange)="setChanged()"
+           autocomplete="off" />
+    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+    <mat-datepicker #datePicker
+                    startView="month"></mat-datepicker>
+  </mat-form-field>
+
+  <!--start time-->
+  <mat-form-field class="time-select">
+    <mat-label [class.invalid]="schedule.invalidFields?.includes('StartTime')">Start Time</mat-label>
+    <mat-select [(ngModel)]="schedule.startTime"
+                [required]="true"
+                [class.invalid]="schedule.invalidFields?.includes('StartTime')"
+                [disabled]="readOnly && !schedule.addTab"
+                [class.read-only]="readOnly && !schedule.addTab"
+                (selectionChange)="setChanged()"
+                autocomplete="off">
+      <mat-option value="0" selected="selected"></mat-option>
+      <mat-option *ngFor="let tc of timeCodes"
+                  [disabled]="isWeekdayMorning(tc.timeCodeValue)"
+                  [attr.title]="isWeekdayMorning(tc.timeCodeValue) ? 'Start time for weekdays must be at or after 1:00 PM' : null"
+                  value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!--end time-->
+  <mat-form-field class="time-select">
+    <mat-label [class.invalid]="schedule.invalidFields?.includes('EndTime')">End Time</mat-label>
+    <mat-select [(ngModel)]="schedule.endTime"
+                [required]="true"
+                [class.invalid]="schedule.invalidFields?.includes('EndTime')"
+                [disabled]="readOnly && !schedule.addTab"
+                [class.read-only]="readOnly && !schedule.addTab"
+                (selectionChange)="setChanged()">
+      <mat-option value="0" selected="selected"></mat-option>
+      <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!--comments-->
+  <mat-form-field>
+    <mat-label>Comments</mat-label>
+    <input type="text" matInput
+           [(ngModel)]="schedule.comments"
+           placeholder="comments"
+           [disabled]="readOnly && !schedule.addTab"
+           [class.read-only]="readOnly && !schedule.addTab"
+           (keyup)="setChanged()"
+           autocomplete="off">
+  </mat-form-field>
+</div>
+
+<div class="read-only-section" [ngStyle]="readOnlySectionStyle()">
+  <!--user-->
+  <div class="read-only-value">
+    {{schedule.displayName}}
+  </div>
+
+  <!--project-->
+  <div class="read-only-value">
+    {{schedule.projectName}}
+  </div>
+
+  <!--schedule date-->
+  <div class="read-only-value date-picker-form-field">
+    {{formatDate(schedule.startdatetime || undefined)}}
+  </div>
+
+  <!--start time-->
+  <div class="read-only-value time-select">
+    {{schedule.startTime}}
+  </div>
+
+  <!--end time-->
+  <div class="read-only-value time-select">
+    {{schedule.endTime}}
+  </div>
+
+  <!--comments-->
+  <div class="read-only-value read-only-comments">
+    {{schedule.comments}}
+  </div>
+</div>
+
+<!--add a new schedule row-->
+<div class="schedule-actions"
+     *ngIf="!readOnly">
+  <div class="add-schedule-row" (click)="addSchedule(schedule)">
+    <svg width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+    </svg>
+  </div>
+  <!--<div class="saved-saved-placeholder" [ngStyle]="noSaveOrCheckmarkStyle()">
+
+  </div>-->
+  <!--save schedule-->
+  <svg class="save-schedule"
+       [ngStyle]="saveScheduleStyle()"
+       (click)="saveSchedule()" width="20px" fill="#0062cc" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 481.882 481.882" xml:space="preserve">
+<g><g><path d="M96.397,279.562v202.321h289.088V279.562H96.397z M361.228,442.418H120.647V427.36h240.581V442.418z M361.228,401.29H120.647v-15.059h240.581V401.29z M361.228,360.161H120.647v-15.059h240.581V360.161z M361.228,319.026H120.647v-15.059h240.581V319.026z"></path></g></g><g><g><path d="M114.941,0v147.117c0,4.232,3.441,7.673,7.669,7.673h236.654c4.235,0,7.677-3.442,7.677-7.673V0H114.941zM336.163,126.856H298.12V42.992h38.044V126.856z"></path></g></g><g><g><path d="M473.941,72.867L409.014,7.93C403.97,2.889,396.985,0,389.86,0H382v147.117c0,12.533-10.198,22.732-22.736,22.732H122.61c-12.53,0-22.728-10.199-22.728-22.732V0H27.088C12.154,0,0,12.154,0,27.092V454.79c0,14.938,12.154,27.092,27.088,27.092h54.25v-209.85c0-4.158,3.368-7.529,7.529-7.529h304.147c4.162,0,7.529,3.372,7.529,7.529v209.85h54.243c14.941,0,27.096-12.155,27.096-27.092V92.021C481.882,84.89,478.985,77.911,473.941,72.867z"></path></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+</svg>
+
+  <!--schedule saved checkmark-->
+  <svg class="schedule-saved"
+       [ngStyle]="savedCheckmarkStyle()" width="30px" viewBox="0 0 16 16" class="bi bi-check inline-check" fill="green" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"></path>
+  </svg>
+  <!--mark for deletion-->
+  <div class="delete-schedule-row"
+       [ngStyle]="deleteButtonStyle()"
+       (click)="setMarkedForDeletion()"
+       *ngIf="!schedule.addInitial">
+    <svg width="20px" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+    </svg>
+  </div>
+  <!--undo mark for deletion-->
+  <div class="undo-delete"
+       [ngStyle]="readOnlySectionStyle()"
+       (click)="undoMarkForDeletion()">
+    undo
+  </div>
+</div>

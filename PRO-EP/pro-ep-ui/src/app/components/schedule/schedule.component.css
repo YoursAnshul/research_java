@@ -1,0 +1,135 @@
+#schedule-tabs {
+  min-height: 150px;
+}
+
+#popup-header {
+    min-height: 100px;
+}
+
+#popup-header-title {
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  color: #3f51b5;
+  position: absolute;
+}
+
+#close-scheduler {
+  display: inline-block;
+  cursor: pointer;
+  position: absolute;
+  right: 25px
+}
+
+#schedule-filters {
+  display: table;
+  margin: auto;
+  margin-bottom: 15px;
+}
+
+.schedule-tab {
+  height: 250px;
+  width: 100%;
+}
+
+.schedule-row {
+  height: 50px;
+  display: block;
+}
+
+mat-form-field {
+  width: 150px;
+  margin: 5px;
+  font-size: 0.8em;
+}
+
+#reset-filters-button {
+  font-size: 0.8em;
+  margin-bottom: 5px;
+}
+
+#schedule-save-all-button {
+  position: absolute;
+  top: 20px;
+  right: 100px;
+  font-size: 0.9em;
+}
+
+#calendar-date-picker {
+  display: table;
+  margin: auto;
+  /*margin-bottom: 15px;*/
+  padding-bottom: 15px;
+  font-size: 0.9em;
+}
+
+#date-picker-input {
+  display: inline-block;
+  margin: 0px 25px;
+}
+
+.arrow-nav {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.paginated-schedules {
+  height: 100%;
+  display: inline-block;
+  overflow: auto;
+  width: 100%;
+  margin-right: 25px;
+}
+
+#validation-messages {
+  margin: auto;
+  max-width: 700px;
+  max-height: 175px;
+  border: 2px solid rgb(253 99 99);
+  border-top: 5px solid rgb(253 99 99);
+  background-color: white;
+  color: #0078d4;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+}
+
+#validation-details {
+  color: black;
+  max-height: 129px;
+  overflow: auto;
+  margin-top: 10px;
+}
+
+.validation-schedules {
+  color: darkmagenta;
+  font-weight: normal;
+}
+
+.expand-icon {
+  cursor: pointer;
+  margin-left: 5px;
+  margin-right: 10px;
+  margin-top: 2.5px;
+  float: right;
+}
+
+#no-validation-issues {
+  margin: auto;
+  display: table;
+  color: green;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.valid-icon {
+  margin-left: 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+#scheduling-level-info {
+    cursor: help;
+}

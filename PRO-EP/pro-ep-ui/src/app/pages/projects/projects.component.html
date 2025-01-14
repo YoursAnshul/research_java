@@ -1,0 +1,63 @@
+<div class="inner-container">
+
+  <!--project list-->
+  <div id="project-list">
+    <div id="project-list-header">
+      <!--first row-->
+      <div id="project-list-first-row" class="bold"
+         *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+        <!--add project-->
+        New Project
+        <svg id="add-project" (click)="showModalPopup = true" width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+        </svg>
+      </div>
+
+      <!--second row-->
+      <div id="project-list-second-row" class="bold">
+        <!--project filter-->
+        <mat-form-field>
+          <mat-label>Filter Projects</mat-label>
+          <mat-select [formControl]="projectListFilter"
+                      (selectionChange)="filterProjectList()">
+            <mat-option value="1">All Projects</mat-option>
+            <mat-option value="2">Active Projects</mat-option>
+            <mat-option value="3">Inactive Projects</mat-option>
+            <mat-option value="4">Admin Projects</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+    </div>
+    <div id="project-list-item-container">
+      <div id="project-{{p.projectID}}"
+           class="project-list-item bold"
+           *ngFor="let p of filteredProjects"
+           [class.selected-project]="selectedProject?.projectID == p.projectID"
+           (click)="confirmIfChanges(p.projectID)">
+
+        <app-project-swatch [customStyle]="projectSwatchStyle(p.projectColor)"></app-project-swatch>
+
+        {{p.projectName}}
+
+      </div>
+    </div>
+  </div>
+
+  <div id="project-profile">
+    <app-project-form id="edit-project-form"
+                    (projectSaved)="projectSaved($event)">
+    </app-project-form>
+  </div>
+</div>
+
+<app-modal-popup id="modal-popup"
+                 class="modal-popup"
+                 [title]="'Add a New Project'"
+                 (closeEvent)="closeModalPopup()"
+                 *ngIf="showModalPopup">
+  <app-project-form id="create-project-form"
+                    [createForm]="true"
+                    (projectSaved)="projectCreated($event)">
+  </app-project-form>
+</app-modal-popup>

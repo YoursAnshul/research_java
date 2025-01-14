@@ -1,0 +1,158 @@
+<script src="html2pdf.js"></script>
+<div class="inner-container">
+  <div class="select-field"
+       *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+    <mat-form-field id="report-selection">
+      <mat-label>Report Selection</mat-label>
+      <mat-select [(ngModel)]="selectedReport"
+                  name="report-selection"
+                  (selectionChange)="reportChange($event)">
+        <mat-option value="Project Totals"
+                    *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">Project Totals</mat-option>
+        <mat-option value="User Schedules">User Schedules</mat-option>
+        <mat-option value="Schedules Report">Schedules Report</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!--user schedules report-->
+  <div id="user-schedules-report"
+       *ngIf="selectedReport == 'User Schedules' || (!authenticatedUser?.resourceGroup && !authenticatedUser?.admin && authenticatedUser?.interviewer)">
+
+    <h2>User Schedules</h2>
+
+    <div id="user-schedules-inputs">
+      <!--user selection-->
+      <mat-form-field id="user-schedules-user-select"
+                      *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+        <mat-label>User Selection</mat-label>
+        <mat-select [(ngModel)]="selectedUser"
+                    name="user-schedule-user-selection">
+          <mat-option *ngFor="let u of activeUsers" value="{{u.dempoid}}">{{u.displayName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div id="user-schedules-user"
+           class="bold"
+           *ngIf="!authenticatedUser?.resourceGroup && !authenticatedUser?.admin">
+        {{authenticatedUser?.netID}}
+      </div>
+
+      <!--date selection-->
+      <app-range-datepicker id="user-schedules-date-select"
+                            [(selectedDateRange)]="selectedDateRange">
+      </app-range-datepicker>
+
+      <!--run report-->
+      <button id="run-report-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="generateUserSchedulesReport()"
+              [disabled]="(selectedUser || '').length < 0"
+              [class.disabled]="(selectedUser || '').length < 0">
+        Run Report
+      </button>
+
+      <!--generate pdf-->
+      <button id="report-pdf-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="generateUserSchedulesPdf()"
+              *ngIf="showReportResults">
+        Create PDF
+      </button>
+
+    </div>
+
+    <!--report table-->
+    <table id="user-schedules-report-table" mat-table [dataSource]="userSchedulesReport" class="mat-elevation-z8" *ngIf="showReportResults">
+
+      <ng-container matColumnDef="DisplayName"><th mat-header-cell *matHeaderCellDef>Name</th><td mat-cell *matCellDef="let usr"> {{usr?.displayName}} </td></ng-container>
+      <ng-container matColumnDef="Project"><th mat-header-cell *matHeaderCellDef>Project</th><td mat-cell *matCellDef="let usr"> {{usr?.projectName}} </td></ng-container>
+      <ng-container matColumnDef="Day"><th mat-header-cell *matHeaderCellDef>Day</th><td mat-cell *matCellDef="let usr"> {{usr?.dayOfWeekText}} </td></ng-container>
+      <ng-container matColumnDef="Date"><th mat-header-cell *matHeaderCellDef>Date</th><td mat-cell *matCellDef="let usr"> {{formatDateOnlyToString(usr?.startdatetime)}} </td></ng-container>
+      <ng-container matColumnDef="StartTime"><th mat-header-cell *matHeaderCellDef>Start Time</th><td mat-cell *matCellDef="let usr"> {{usr?.startTime}} </td></ng-container>
+      <ng-container matColumnDef="EndTime"><th mat-header-cell *matHeaderCellDef>End Time</th><td mat-cell *matCellDef="let usr"> {{usr?.endTime}} </td></ng-container>
+      <ng-container matColumnDef="Hours"><th mat-header-cell *matHeaderCellDef>Hours</th><td mat-cell *matCellDef="let usr"> {{usr?.scheduledHours}} </td></ng-container>
+      <ng-container matColumnDef="Comments"><th mat-header-cell *matHeaderCellDef>Comments</th><td mat-cell *matCellDef="let usr"> {{usr?.comments}} </td></ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+
+  </div>
+
+  <!--schedules report-->
+  <div id="daily-schedules-report"
+       *ngIf="selectedReport == 'Schedules Report'">
+
+    <h2>Schedules Report</h2>
+
+    <div id="daily-schedules-inputs">
+      <!--generate pdf-->
+      <button id="report-pdf-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="generateDailySchedulesPdf()">
+        Create PDF
+      </button>
+    </div>
+
+    <app-calendar id="daily-schedules" [authenticatedUser]="authenticatedUser"></app-calendar>
+  </div>
+
+  <!--project totals report-->
+  <div id="project-totals-report"
+       *ngIf="selectedReport == 'Project Totals'">
+
+    <h2>Project Totals</h2>
+
+    <div id="project-totals-inputs">
+
+      <!--date selection-->
+
+      <div class="arrow-nav"
+           (click)="addWeeksToProjectTotals(-1)">
+        <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"></path>
+        </svg>
+      </div>
+
+      <app-week-datepicker id="project-totals-date-select"
+                           [selectedDate]="projectTotalsDate"
+                           [(selectedDateRange)]="projectTotalsDateRange"
+                           (selectedDateChange)="projectTotalsDateChange()">
+      </app-week-datepicker>
+
+      <div class="arrow-nav"
+           (click)="addWeeksToProjectTotals(1)">
+        <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path>
+        </svg>
+      </div>
+
+      <!--generate pdf-->
+      <button id="report-pdf-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="generateProjectTotalsPdf()">
+        Create PDF
+      </button>
+
+    </div>
+
+    <!--report table-->
+    <table id="project-totals-report-table" mat-table [dataSource]="projectTotalsReportFlat" class="mat-elevation-z8"
+           *ngIf="projectTotalsDaysOfWeek.length == 7">
+
+      <ng-container matColumnDef="ProjectColumn"><th mat-header-cell *matHeaderCellDef>Project</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.projectColumn}} </td></ng-container>
+      <ng-container matColumnDef="Column1"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[0])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column1}} </td></ng-container>
+      <ng-container matColumnDef="Column2"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[1])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column2}} </td></ng-container>
+      <ng-container matColumnDef="Column3"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[2])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column3}} </td></ng-container>
+      <ng-container matColumnDef="Column4"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[3])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column4}} </td></ng-container>
+      <ng-container matColumnDef="Column5"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[4])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column5}} </td></ng-container>
+      <ng-container matColumnDef="Column6"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[5])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column6}} </td></ng-container>
+      <ng-container matColumnDef="Column7"><th mat-header-cell *matHeaderCellDef>{{formatDateOnlyToString(projectTotalsDaysOfWeek[6])}}</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.Column7}} </td></ng-container>
+      <ng-container matColumnDef="TotalColumn"><th mat-header-cell *matHeaderCellDef>TOTAL</th><td mat-cell *matCellDef="let pt" [class.bold]="pt?.projectColumn == 'TOTAL'"> {{pt?.totalColumn}} </td></ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="ptDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: ptDisplayedColumns;"></tr>
+
+    </table>
+
+  </div>
+
+</div>

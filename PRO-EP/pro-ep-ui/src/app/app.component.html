@@ -1,0 +1,43 @@
+<body>
+  <ng-template [ngIf]="!isAuthenticated">
+    <app-login></app-login>
+  </ng-template>
+  <ng-template [ngIf]="isAuthenticated">
+    <app-header></app-header>
+    <div id="nav-content"
+        *ngIf="userActive">
+      <app-nav-menu></app-nav-menu>
+      <div class="custom-container">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+    <div id="inactive-user-message"
+        *ngIf="!userActive">
+      <h2>User Account Inactive</h2>
+      <p>You're Net ID has been given access to this application but your user profile is not active.</p>
+      <p>Please contact someone in the resource team if you believe this was a mistake.</p>
+    </div>
+
+    <app-schedule id="schedule-modal"
+                  *ngIf="showSchedule"></app-schedule>
+
+    <!--<app-schedule id="schedule-modal"
+                  [ngStyle]="getScheduleStyle()"></app-schedule>-->
+
+    <app-modal-popup id="modal-popup-message"
+                    class="modal-popup"
+                    (closeEvent)="closeModalPopup()"
+                    *ngIf="showPopupMessage">
+    </app-modal-popup>
+
+    <div id="hover-message" [class.hidden]="!showHoverMessage">
+    </div>
+
+    <div id="black-filter"
+        [ngStyle]="blackFilterStyle()"
+        *ngIf="showBlackFilter"></div>
+    <div id="schedule-black-filter"
+        [ngStyle]="blackFilterStyle()"
+        *ngIf="showScheduleBlackFilter"></div>
+  </ng-template>      
+</body>

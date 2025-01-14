@@ -1,0 +1,235 @@
+<!--project profile-->
+<div id="project-profile-header">
+
+  <div id="project-profile-header-name"
+       *ngIf="!createForm">
+    <div id="project-name"
+         class="bold">
+      {{selectedProject?.projectName}}
+    </div>
+    <div class="italic">
+      Project ID: {{selectedProject?.projectID}}
+    </div>
+    <div class="italic">
+      EPM Code: {{selectedProject?.projectEpmcode}}
+    </div>
+  </div>
+
+  <!--buttons-->
+  <div id="project-profile-buttons-outer">
+    <div id="project-profile-buttons">
+      <!--save profile-->
+      <button id="profile-save-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="saveProjectProfile()"
+              [disabled]="!changed || invalid"
+              [class.invalid-button]="invalid"
+              [class.disabled]="!changed || invalid"
+              *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+        Save
+      </button>
+
+      <!--open project schedule-->
+      <button id="profile-schedule-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="openProjectSchedule()"
+              [disabled]="!selectedProject?.active"
+              [class.disabled]="!selectedProject?.active"
+              *ngIf="!createForm">
+        Schedule
+      </button>
+    </div>
+  </div>
+</div>
+
+<!--project tabs-->
+<mat-tab-group id="project-tabs"
+               animationDuration="10ms">
+
+  <!--main-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab1Invalid">Main</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab1Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="project-fields-container">
+
+      <div *ngIf="!tab1ProjectFields">
+        Loading profile...
+      </div>
+
+      <div *ngFor="let ff of tab1ProjectFields;"
+           class="project-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="readOnly || ff.formFieldVariable.formField?.columnName == 'ProjectID'"
+                        [contextProject]="selectedProject"
+                        [allUsersMin]="activeUsers"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!--info-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab2Invalid">Info</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab2Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="project-fields-container">
+      <div *ngFor="let ff of tab2ProjectFields;"
+           class="project-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="readOnly"
+                        [contextProject]="selectedProject"
+                        [allUsersMin]="activeUsers"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!--enrollment-->
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="tab3Invalid">Enrollment</span>
+      <span class="invalid-emphasis"
+            *ngIf="tab3Invalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="project-fields-container">
+      <div *ngFor="let ff of tab3ProjectFields;"
+           class="project-field"
+           [class.long-text-field]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+        <app-form-field [formField]="ff"
+                        [readOnly]="readOnly"
+                        [contextProject]="selectedProject"
+                        [allUsersMin]="activeUsers"
+                        (formFieldChanged)="setChanged()">
+        </app-form-field>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!--forecasting-->
+  <mat-tab label="Forecasting"
+              *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="forecastingInvalid">Forecasting</span>
+      <span class="invalid-emphasis"
+            *ngIf="forecastingInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+    <div class="project-fields-container">
+
+      <table id="forecast-table">
+        <thead>
+          <tr id="forecast-header" class="bold">
+            <td [class.selected]="selectedForecastingMonth == 0" (click)="selectedForecastingMonth=0">{{forecastMonths[0]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 1" (click)="selectedForecastingMonth=1">{{forecastMonths[1]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 2" (click)="selectedForecastingMonth=2">{{forecastMonths[2]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 3" (click)="selectedForecastingMonth=3">{{forecastMonths[3]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 4" (click)="selectedForecastingMonth=4">{{forecastMonths[4]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 5" (click)="selectedForecastingMonth=5">{{forecastMonths[5]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 6" (click)="selectedForecastingMonth=6">{{forecastMonths[6]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 7" (click)="selectedForecastingMonth=7">{{forecastMonths[7]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 8" (click)="selectedForecastingMonth=8">{{forecastMonths[8]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 9" (click)="selectedForecastingMonth=9">{{forecastMonths[9]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 10" (click)="selectedForecastingMonth=10">{{forecastMonths[10]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 11" (click)="selectedForecastingMonth=11">{{forecastMonths[11]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 12" (click)="selectedForecastingMonth=12">{{forecastMonths[12]}}</td>
+            <td [class.selected]="selectedForecastingMonth == 13" (click)="selectedForecastingMonth=13">{{forecastMonths[13]}}</td>
+          </tr>
+        </thead>
+        <tr>
+          <td *ngFor="let f of numSequence(14); let i = index">
+            <mat-form-field>
+              <input type="text" matInput
+                     [(ngModel)]="forecastHours['forecastHours' + (i + 1)]"
+                     (keyup)="setChanged(); nvlHours(forecastHours, (i+1))"
+                     (keypress)="numberRestrict($event)"
+                     name="forecast-hours-{{i}}"
+                     autocomplete="off"
+                     maxlength="4">
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <div id="month-details"
+           *ngFor="let f of numSequence(14); let i = index">
+
+        <div *ngIf="selectedForecastingMonth == i">
+
+          <div class="month-details-date">
+            {{forecastMonths[i]}}
+          </div>
+
+          <!--scheduling frequency-->
+          <div>
+            <mat-form-field class="scheduling-frequency">
+              <mat-label>Scheduling Frequency</mat-label>
+              <mat-select [(ngModel)]="forecastHours['freq' + (i + 1)]"
+                          [compareWith]="compareSelectValues"
+                          (selectionChange)="setChanged()"
+                          name="scheduling-frequency-{{i}}">
+                <mat-option *ngFor="let dv of schedulingFrequency?.dropDownValues" value="{{dv.codeValues}}">
+                  {{dv.dropDownItem}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!--Week/Weekend Scheduling-->
+          <div class="week-weekend-scheduling">
+            <span class="week-weekend-scheduling-label bold">Scheduling </span>
+            <!--week-->
+            <mat-checkbox labelPosition="after"
+                          color="primary"
+                          class="forecast-checkbox"
+                          [(ngModel)]="forecastHours['weekchk' + (i + 1)]"
+                          (change)="setChanged()"
+                          name="week-scheduling-{{i}}">Week</mat-checkbox>
+
+            <!-- weekend -->
+            <mat-checkbox labelPosition="after"
+                          color="primary"
+                          class="forecast-checkbox"
+                          [(ngModel)]="forecastHours['weekendChk' + (i + 1)]"
+                          (change)="setChanged()"
+                          name="week-scheduling-{{i}}">Weekend</mat-checkbox>
+          </div>
+
+          <!--notes/comments-->
+          <div class="notes-comments-outer">
+            <mat-form-field class="notes-comments">
+              <mat-label>Notes/Comments</mat-label>
+              <textarea matInput
+                        [(ngModel)]="forecastHours['comment' + (i + 1)]"
+                        placeholder="Notes/Comments"
+                        (keyup)="setChanged()"
+                        name="notes-comments-{{i}}">
+          </textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </mat-tab>
+
+</mat-tab-group>
+
+<app-trained-on-users [trainedOnUsers]="trainedOnUsers"
+                      [notTrainedOnUsers]="notTrainedOnUsers"
+                      [listingOnly]="readOnly"
+                      (trainedOnChange)="trainedOnChange($event)"
+                      *ngIf="!createForm"></app-trained-on-users>
+
+<div id="project-calendar"
+     *ngIf="!createForm">
+  <app-calendar [authenticatedUser]="authenticatedUser"
+    [contextProject]="selectedProject"></app-calendar>
+</div>
+

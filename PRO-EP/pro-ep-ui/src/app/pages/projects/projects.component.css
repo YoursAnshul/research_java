@@ -1,0 +1,102 @@
+#project-profile-header-name {
+  width: 15%;
+}
+
+.inner-container {
+  margin: 0px;
+  margin-left: 25px;
+  display: flex;
+}
+
+#project-list {
+  font-size: 0.8em;
+  box-shadow: 0 3px 5px 1px rgb(0 0 0 / 20%), 0 25px 25px 0 rgb(0 0 0 / 14%), 0 1px 0px 0 rgb(0 0 0 / 12%);
+  border-top: 0.5px solid rgb(0 0 0 / 10%);
+  border: 0.5px solid rgb(0, 0, 0, 0.25);
+  display: inline-block;
+  margin-right: 25px;
+  height: 664px;
+  min-width: 200px;
+  border-bottom: 1px solid black;
+}
+
+#project-list-header {
+  padding: 10px;
+  padding-bottom: 0px;
+}
+
+#project-list-item-container {
+  height: 550px;
+  overflow: auto;
+  border-top: 0.5px solid lightgray;
+}
+
+.project-list-item {
+  padding: 10px;
+  padding-left: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  background-color: lightgoldenrodyellow;
+  border-top: 0.5px solid gray;
+  display: flex;
+  align-items: center;
+}
+
+#project-list-first-row {
+  margin-bottom: 15px;
+}
+
+#project-list-second-row {
+  display: flex;
+  align-items: center;
+}
+
+#projects-filter {
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+#add-project {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.selected-project {
+  font-weight: 500;
+}
+
+.project-select-checkbox {
+  margin-left: 10px;
+}
+
+#schedule-lock-icon {
+  display: inline-block;
+}
+
+#trained-on-radio {
+  display: inline-block;
+  margin: 0px 10px;
+}
+
+#project-profile {
+  display: inline-block;
+  /*width: 100%;*/
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  border: 0.5px solid rgb(0, 0, 0, 0.25);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  /*min-width: 850px;*/
+  width: 100%;
+}
+
+.mat-form-field {
+  width: 150px;
+  margin: 5px;
+}
+
+#modal-popup {
+  width: 1200px;
+}

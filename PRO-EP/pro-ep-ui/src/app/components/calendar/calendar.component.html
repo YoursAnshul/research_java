@@ -1,0 +1,71 @@
+<mat-tab-group id="calendar-tabs" animationDuration="10ms">
+  <mat-tab label="Day">
+
+    <app-calendar-controls id="day-calendar-controls"
+                           [_selectedDate]="selectedDate"
+                           [_languageFieldInfo]="languageFieldInfo"
+                           [_languages]="languages"
+                           [_projects]="projects"
+                           [_userFilter]="userFilter"
+                           [_languageFilter]="languageFilter"
+                           [_projectFilter]="projectFilter"
+                           [_conditionalOperatorFilter]="conditionalOperatorFilter"
+                           [_trainedOnFilter]="trainedOnFilter"
+                           [_notTrainedOnFilter]="notTrainedOnFilter"
+                           [_calendarType]="'DAY'"
+                           [authenticatedUser]="authenticatedUser"
+                           (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+                           (filterChange)="applyFilters()"
+                           (resetDefaultFilters)="setDefaultFilters(true)"></app-calendar-controls>
+
+    <app-day-view [userSchedules]="filteredUserSchedulesDay"
+                  [selectedDate]="selectedDate"></app-day-view>
+
+  </mat-tab>
+  <mat-tab label="Week">
+
+    <app-calendar-controls id="week-calendar-controls"
+                           [_selectedDate]="selectedDate"
+                           [_languageFieldInfo]="languageFieldInfo"
+                           [_languages]="languages"
+                           [_projects]="projects"
+                           [_userFilter]="userFilter"
+                           [_languageFilter]="languageFilter"
+                           [_projectFilter]="projectFilter"
+                           [_conditionalOperatorFilter]="conditionalOperatorFilter"
+                           [_trainedOnFilter]="trainedOnFilter"
+                           [_notTrainedOnFilter]="notTrainedOnFilter"
+                           [selectedDateRange]="selectedDateRange"
+                           [_calendarType]="'WEEK'"
+                           [authenticatedUser]="authenticatedUser"
+                           (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+                           (filterChange)="applyFilters()"
+                           (resetDefaultFilters)="setDefaultFilters(true)"></app-calendar-controls>
+
+    <app-week-view [weekSchedules]="weekSchedules"></app-week-view>
+
+  </mat-tab>
+  <mat-tab label="Month">
+
+    <app-calendar-controls id="month-calendar-controls"
+                           [_selectedDate]="selectedDate"
+                           [_languageFieldInfo]="languageFieldInfo"
+                           [_languages]="languages"
+                           [_projects]="projects"
+                           [_userFilter]="userFilter"
+                           [_languageFilter]="languageFilter"
+                           [_projectFilter]="projectFilter"
+                           [_conditionalOperatorFilter]="conditionalOperatorFilter"
+                           [_trainedOnFilter]="trainedOnFilter"
+                           [_notTrainedOnFilter]="notTrainedOnFilter"
+                           [_calendarType]="'MONTH'"
+                           [authenticatedUser]="authenticatedUser"
+                           (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+                           (filterChange)="applyFilters()"
+                           (resetDefaultFilters)="setDefaultFilters(true)"></app-calendar-controls>
+
+    <app-month-view [monthSchedules]="monthSchedules"></app-month-view>
+
+  </mat-tab>
+</mat-tab-group>
+

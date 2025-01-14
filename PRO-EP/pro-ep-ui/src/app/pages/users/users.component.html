@@ -1,0 +1,155 @@
+<div class="inner-container">
+
+  <!--user list-->
+  <div id="user-list"
+       *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+    <div id="user-list-header">
+      <!--first row-->
+      <div class="user-list-header-row"
+           id="user-list-first-row">
+
+        <div class="flex">
+          <!--add user-->
+          <svg id="add-user" (click)="showModalPopup = true" width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+          </svg>          
+          <!--user filter-->
+          <mat-form-field>
+            <mat-label>Filter Users</mat-label>
+            <mat-select [formControl]="userListFilter"
+                        (selectionChange)="filterUserList()">
+              <mat-option value="1">All Users</mat-option>
+              <mat-option value="2">All Active Users</mat-option>
+              <mat-option value="3">All Inactive Users</mat-option>
+            </mat-select>
+            </mat-form-field>
+        </div>
+        <!--employment type filter-->
+        <mat-form-field id="employment-type-filter"
+                        *ngIf="userListFilter.value == '3'">
+          <mat-label>{{employmentType?.formField?.fieldLabel}}</mat-label>
+          <mat-select [formControl]="employmentTypeFilter"
+                      (selectionChange)="filterUserList()">
+            <mat-option value="0">All {{employmentType?.formField?.fieldLabel}}</mat-option>
+            <mat-option *ngFor="let et of employmentType?.dropDownValues" value="{{et.codeValues}}">{{et.dropDownItem}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <!--next row-->
+      <div class="user-list-header-row"
+           id="user-list-second-row">
+        <!--project list-->
+        <app-any-select id="projects-filter"
+                        [fieldLabel]="'Projects'"
+                        [anyLabel]="'Project'"
+                        [dropDownValues]="activeProjectsDv"
+                        (filterChange)="projectsFilterChange($event)">
+        </app-any-select>
+
+        <!--trained-on/not trained-on-->
+        <mat-radio-group aria-label="Select an option" color="primary"
+                         id="trained-on-radio"
+                         [(ngModel)]="trainedOnRadio"
+                         (change)="trainedOnRadioToggle()"
+                         [disabled]="trainedOnRadioDisabled">
+          <div>
+            <mat-radio-button [value]="1">Trained On</mat-radio-button>
+          </div>
+          <div>
+            <mat-radio-button [value]="2">Not Trained On</mat-radio-button>
+          </div>
+        </mat-radio-group>
+      </div>
+      <!--next row-->
+      <div class="user-list-header-row"
+           id="user-list-third-row">
+          <div class="check_box_select_all">
+            <!--select all-->
+            <mat-checkbox  id="select-all"
+                           class="user-select-checkbox"
+                           color="primary"
+                           [(ngModel)]="selectAll"
+                           (change)="toggleSelectAllUsers()"></mat-checkbox>
+          </div>
+
+          <div class="action_drop_down_class" id="action_drop_down" [class.disabled]="noUsersSelected">
+            <!--actions-->
+            <mat-form-field [class.disabled]="noUsersSelected">
+              <mat-label>Actions</mat-label>
+              <mat-select [formControl]="actionsControl"
+                          (selectionChange)="executeAction()"
+                          [disabled]="noUsersSelected">
+                <mat-option value="1">Unlock Schedule</mat-option>
+                <mat-option value="2">Lock Schedule</mat-option>
+                <mat-option value="3">Deactivate User(s)</mat-option>
+                <mat-option value="4">Activate User(s)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+    </div>
+    <div id="user-list-item-container">
+      <div id="user-{{u.dempoid}}"
+           class="user-list-item"
+           *ngFor="let u of filteredUsers"
+           [class.selected-user]="selectedUser?.userid == u.userid"
+           (click)="confirmIfChanges(u.dempoid)">
+
+        <div class="checkbox-container">
+          <mat-checkbox class="user-select-checkbox"
+                        color="primary"
+                        [(ngModel)]="u.checked"
+                        (change)="userCheckAction()">
+          </mat-checkbox>
+        </div>
+
+        <div class="user-container">
+          <div id="schedule-lock-icon">
+            <!--lock-->
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="#0078d4" class="bi bi-lock-fill" viewBox="0 0 16 16"
+                 style="vertical-align: unset;"
+                 *ngIf="!u.canEdit">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+            </svg>
+
+            <!--unlock-->
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="#0078d4" class="bi bi-unlock-fill" viewBox="0 0 16 16"
+                 style="vertical-align: unset;"
+                 *ngIf="u.canEdit">
+              <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z" />
+            </svg>
+          </div>
+
+          {{u?.preferredfname || u?.fname}} {{u?.preferredlname || u?.lname}}
+          <svg class="buddy-icon" xmlns="http://www.w3.org/2000/svg" width="16" fill="rgb(0, 120, 212, 0.8)" class="bi bi-people-fill" viewBox="0 0 16 16"
+               *ngIf="u?.buddy">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+          </svg>
+          <app-language-icon *ngFor="let language of u.language?.split('|')" [language]="language"></app-language-icon>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="user-profile">
+    <app-user-form id="edit-user-form"
+                   (userSaved)="userSaved($event)">
+    </app-user-form>
+  </div>
+</div>
+
+<app-modal-popup id="modal-popup"
+                 class="modal-popup"
+                 [title]="'Add a New User'"
+                 (closeEvent)="closeModalPopup()"
+                 *ngIf="showModalPopup">
+  <app-user-form id="create-user-form"
+                 [createForm]="true"
+                 (userSaved)="userCreated($event)">
+  </app-user-form>
+</app-modal-popup>

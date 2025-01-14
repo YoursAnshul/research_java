@@ -1,0 +1,273 @@
+#comm-hub {
+  padding: 25px;
+  padding-top: 0px;
+}
+
+#comm-hub-no-results {
+  width: 100%;
+  margin-left: 15px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+#comm-hub-no-filtered-results {
+  width: 100%;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  font-size: 1.2em;
+}
+
+#comm-hub-table {
+  width: 95%;
+  margin-right: 25px;
+  margin-bottom: 25px;
+}
+
+  #comm-hub-table td,
+  #comm-hub-table th {
+    padding: 10px;
+    border: 0.5px solid rgb(0,0,0,0.15);
+    width: 250px;
+  }
+
+    #comm-hub-table td.actions,
+    #comm-hub-table th.actions {
+      width: 90px;
+    }
+
+  #comm-hub-table th {
+    font-weight: 500;
+    color: #1b6ec2;
+    font-size: 1.1em;
+    vertical-align: top;
+  }
+
+#new-comm-hub-form,
+#edit-comm-hub-form,
+#view-comm-hub-form {
+  margin-left: 25px;
+}
+
+#new-comm-hub-form .row,
+#edit-comm-hub-form .row {
+  display: flex;
+  align-items: center;
+}
+
+#new-comm-hub-form .select-field,
+#new-comm-hub-form .long-text-field,
+#new-comm-hub-form .date-field,
+#edit-comm-hub-form .select-field, .select-field,
+#edit-comm-hub-form .long-text-field, .long-text-field,
+#edit-comm-hub-form .date-field, .date-field,
+#resource-team-member {
+  display: inline-block;
+  margin-right: 50px;
+}
+
+#comm-hub .mat-form-field,
+#new-comm-hub-form .mat-form-field,
+#edit-comm-hub-form .mat-form-field {
+  width: 200px;
+}
+
+#comm-hub #export.mat-form-field,
+#new-comm-hub-form #export.mat-form-field,
+#edit-comm-hub-form #export.mat-form-field {
+  width: 100px;
+}
+
+#comm-hub .long-text-field .mat-form-field,
+#new-comm-hub-form .long-text-field .mat-form-field,
+#edit-comm-hub-form .long-text-field .mat-form-field {
+  width: 415px;
+  height: 75px;
+}
+
+#comm-hub .long-text-field .mat-form-field textarea,
+#new-comm-hub-form .long-text-field .mat-form-field textarea,
+#edit-comm-hub-form .long-text-field .mat-form-field textarea {
+  width: 415px;
+  height: 75px;
+}
+
+#comm-hub .long-text-field,
+#new-comm-hub-form .long-text-field,
+#edit-comm-hub-form .long-text-field {
+  margin-bottom: 55px;
+}
+
+#new-comm-hub-form .comm-hub-form-field-container,
+#edit-comm-hub-form .comm-hub-form-field-container {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#comm-hub-table .long-text-field .mat-form-field {
+  width: 200px;
+  height: 75px;
+}
+
+  #comm-hub-table .long-text-field .mat-form-field textarea {
+    width: 200px;
+    height: 75px;
+  }
+
+#comm-hub-save-button {
+  height: 35px;
+  font-size: 1em;
+  margin-bottom: 45px;
+  margin-left: 40px;
+}
+
+#save-changes-button {
+  height: 35px;
+  font-size: 1em;
+  margin-right: 25px;
+  display: inline-block;
+}
+
+#table-controls {
+  width: 100%;
+  height: 35px;
+  margin-bottom: 25px;
+}
+
+#comm-hub-table-outer {
+  border-top: 0.5px solid rgb(0,0,0,0.25);
+  padding-top: 40px;
+}
+
+#comm-hub-table th {
+  border-color: #0062cc;
+  background-color: rgb(0,120,212, 0.25);
+  white-space: nowrap;
+}
+
+#comm-hub-filters1 {
+  display: inline-block;
+}
+
+#comm-hub-filters app-any-select {
+  margin-right: 15px;
+}
+
+#reset-filters-button {
+  height: 35px;
+  font-size: 1em;
+  margin-bottom: -3px;
+}
+
+.actions-container {
+  display: flex;
+}
+
+.edit-comm-hub-row,
+.view-comm-hub-row,
+.delete-comm-hub-row {
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.undo-delete {
+  display: inline-block;
+  padding-bottom: 7px;
+  cursor: pointer;
+}
+
+#comm-hub-add-button {
+  font-size: 1em;
+  margin-bottom: -3px;
+}
+
+#date-select {
+  margin-right: 15px;
+}
+
+.first-column, .second-column {
+  display: inline-block;
+}
+
+.first-column-view, .second-column-view {
+  display: inline-table;
+}
+
+.first-column-view {
+  margin-right: 10px;
+}
+
+.th-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-label {
+  float: left;
+}
+
+.sort-container {
+  float: right;
+}
+
+.sort-down {
+  margin-left: 15px;
+}
+
+.sort-up {
+  margin-left: -8px;
+}
+
+.sort-up, .sort-down {
+  color: rgb(128, 128, 128, 0.6);
+  cursor: pointer;
+}
+
+.sort-active {
+  color: #00539b;
+}
+
+.comm-hub-form-container {
+  height: 525px;
+  overflow-x: clip;
+  overflow-y: auto;
+}
+
+.read-only-label {
+  color: #0078d4;
+  font-size: 0.9em;
+  width: 170px;
+}
+
+.read-only-value {
+  width: 170px;
+  min-height: 50px;
+  margin-bottom: 10px;
+}
+
+.read-only-label.long-text-read-only {
+  width: 340px;
+}
+
+.read-only-value.long-text-read-only {
+  width: 340px;
+}
+
+#comm-hub-no-results {
+  width: 95%;
+  margin-left: 15px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.comm-hub-table-wrapper {
+  width: 100%;
+}
+
+.comm-hub-table-content {
+  overflow-x: auto;
+}
+
+.filter-container {
+  display: table-cell;
+}

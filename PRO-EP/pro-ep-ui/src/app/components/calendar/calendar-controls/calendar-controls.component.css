@@ -1,0 +1,237 @@
+#refresh-calendar-container {
+  float: left;
+  margin-left: 25px;
+  position: absolute;
+}
+
+#refresh-calendar {
+    cursor: pointer;
+}
+
+#refresh-calendar-message {
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 1500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#calendar-filters {
+  margin: auto;
+  display: flex;
+  align-items: center;
+}
+
+#calendar-filters-outer {
+  display: flex;
+}
+
+/*@media only screen and (max-width: 1900px) {
+  #calendar-filters {
+    width: 86%;
+  }
+}
+
+@media only screen and (max-width: 1550px) {
+  #calendar-filters {
+    width: 95%;
+  }
+}*/
+
+#trained-on-section {
+  display: inline-block;
+}
+
+#trained-on-section mat-form-field {
+  display: block;
+}
+
+/*@media only screen and (max-width: 1400px) {
+  #calendar-filters {
+    display: block;
+    width: 62%;
+  }
+
+  #conditional-operator-filter-outer {
+      width: 140px;
+      display: inline-block;
+      margin: auto;
+  }
+
+  #trained-on-section {
+    display: inline-flex;
+    width: 390px;
+  }
+
+}*/
+
+#user-language-filters {
+    display: inline-block;
+}
+
+#user-language-filters mat-form-field {
+  display: block;
+}
+
+#calendar-filters mat-form-field {
+  width: 152px;
+  margin-right: 25px;
+}
+
+#calendar-filters #conditional-operator-filter {
+  width: 80px;
+  margin-right: 0px;
+}
+
+.arrow-nav {
+  display: inline-block;
+  cursor: pointer;
+}
+
+#date-picker-input {
+  display: inline-block;
+  margin: 0px 25px;
+}
+
+#calendar-date-picker {
+  display: table;
+  margin: auto;
+  /*margin-bottom: 5px;*/
+}
+
+.mat-form-field {
+    font-size: 0.9em;
+}
+
+#reset-button {
+  font-size: 0.9em;
+}
+
+#trained-on-section.interviewer {
+  display: flex;
+  margin-bottom: 0px;
+}
+
+#calendar-filters.interviewer {
+  width: 31%;
+  margin-bottom: 10px;
+}
+
+#today-picker {
+  cursor: pointer;
+  display: inline-block;
+  margin: auto;
+  display: table;
+  margin: auto;
+  margin-bottom: 10px;
+  color: #0062cc;
+  font-size: 0.85em;
+  border-bottom: 0.5px solid #0062cc;
+  font-style: italic;
+}
+
+/*
+#calendar-date-picker.week-date-picker {
+  width: 24%;
+}
+
+@media only screen and (max-width: 1900px) {
+  #calendar-date-picker {
+    width: 21%;
+  }
+
+  #calendar-date-picker.week-date-picker {
+    width: 31%;
+  }
+}
+
+@media only screen and (max-width: 1550px) {
+  #calendar-date-picker {
+    width: 30%;
+  }
+
+  #calendar-date-picker.week-date-picker {
+    width: 44%;
+  }
+}
+
+@media only screen and (max-width: 1150px) {
+  #calendar-date-picker {
+    width: 35%;
+  }
+
+  #calendar-date-picker.week-date-picker {
+    width: 51%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #calendar-date-picker {
+    width: 40%;
+  }
+
+  #calendar-date-picker.week-date-picker {
+    width: 57%;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  #calendar-date-picker {
+    width: 44%;
+  }
+
+  #calendar-date-picker.week-date-picker {
+    width: 80%;
+  }
+}*/
+
+/*@media only screen and (max-width: 1900px) {
+  #calendar-filters.interviewer {
+    width: 37%;
+  }
+}
+
+@media only screen and (max-width: 1550px) {
+  #calendar-filters.interviewer {
+    width: 51%;
+  }
+}
+
+@media only screen and (max-width: 1425px) {
+  #trained-on-section.interviewer {
+    display: inline-flex;
+  }
+}
+
+@media only screen and (max-width: 1250px) {
+  #calendar-filters.interviewer {
+    width: 68%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #calendar-filters.interviewer {
+    width: 78%;
+  }
+}
+
+@media only screen and (max-width: 825px) {
+  #calendar-filters.interviewer {
+    width: 95%;
+  }
+}
+*/

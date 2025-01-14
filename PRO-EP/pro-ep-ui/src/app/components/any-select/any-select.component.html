@@ -1,0 +1,9 @@
+<mat-form-field>
+  <mat-label>{{fieldLabel}}</mat-label>
+  <mat-select multiple id="any-filter"
+              [formControl]="selectFilter"
+              (selectionChange)="selectionChange()">
+    <mat-option value="0">Any {{anyLabel}}</mat-option>
+    <mat-option *ngFor="let dv of dropDownValues" value="{{dv?.codeValues}}">{{dv?.dropDownItem}}</mat-option>
+  </mat-select>
+</mat-form-field>

@@ -1,0 +1,889 @@
+<div id="configuration-page" class="inner-container"
+     *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+  <h2 class="page-title">Configuration</h2>
+  <mat-tab-group animationDuration="10ms">
+
+    <!--general-->
+    <mat-tab label="General"
+             *ngIf="authenticatedUser?.admin">
+      <div class="tab-inner">
+        <div id="general-config-container">
+
+          <!-- admin options -->
+          <div id="admin-options-container">
+            <font class="config-tab-title">Admin Configuration</font>
+            <div *ngFor="let config of allConfiguration?.adminOptionsVariables">
+              <mat-form-field>
+                <!--label-->
+                <mat-label>{{config.fieldLabel}}</mat-label>
+
+                <!--text input-->
+                <input type="text" matInput
+                       [(ngModel)]="config.optionValue"
+                       placeholder="{{config.fieldLabel}}"
+                       [required]="true"
+                       (keyup)="adminOptionsChange()"
+                       name="{{config.fieldLabel}}"
+                       autocomplete="off"
+                       *ngIf="config.fieldType=='text'" />
+
+                <!--text area-->
+                <textarea matInput
+                          [(ngModel)]="config.optionValue"
+                          placeholder="{{config.fieldLabel}}"
+                          [required]="true"
+                          (keyup)="adminOptionsChange()"
+                          name="{{config.fieldLabel}}"
+                          autocomplete="off"
+                          *ngIf="config.fieldType=='textarea'"></textarea>
+
+                <!--single select-->
+                <mat-select [(ngModel)]="config.optionValue"
+                            [compareWith]="compareSelectValues"
+                            [required]="true"
+                            (selectionChange)="adminOptionsChange()"
+                            name="{{config.optionValue}}"
+                            autocomplete="off"
+                            *ngIf="config.fieldType=='selectbox'">
+                  <mat-option *ngFor="let dv of config.dropDownValues" value="{{dv.codeValues}}">{{dv.dropDownItem}}</mat-option>
+                </mat-select>
+
+                <!--multi select-->
+                <mat-select [(ngModel)]="config.optionValueMulti" multiple
+                            (selectionChange)="adminOptionsChange()"
+                            *ngIf="config.fieldType=='combobox'">
+                  <mat-option *ngFor="let dv of config.dropDownValues" value="{{dv.codeValues}}">{{dv.dropDownItem}}</mat-option>
+                </mat-select>
+
+                <!--date-->
+                <input matInput [matDatepicker]="datePicker"
+                       [(ngModel)]="config.optionValue"
+                       (dateChange)="adminOptionsChange()"
+                       autocomplete="off"
+                       *ngIf="config.fieldType=='dateonly'" />
+                <mat-datepicker-toggle matSuffix [for]="datePicker"
+                                       *ngIf="config.fieldType=='dateonly'"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker
+                                startView="month"
+                                *ngIf="config.fieldType=='dateonly'"></mat-datepicker>
+              </mat-form-field>
+
+              <p class="schedule-lock-example" *ngIf="config?.fieldLabel == 'Schedule Lock'">On or before <span class="bold">{{lockDate(toNumber(config.optionValue))}}</span>, interviewers will be able to add/modify schedules for <span class="bold">{{unlockDate(true)}}</span> and later.</p>
+              <p class="schedule-lock-example" *ngIf="config?.fieldLabel == 'Schedule Lock'">After <span class="bold">{{lockDate(toNumber(config.optionValue))}}</span>, interviewers will only be able to add/modify schedules for <span class="bold">{{unlockDate(false)}}</span> and later.</p>
+
+            </div>
+
+
+
+            <div class="config-save-header">
+              <button id="configuration-save-button" mat-raised-button class="inner-save-button-left btn btn-primary" color="primary" (click)="saveConfiguration()">
+                Save
+              </button>
+            </div>
+
+          </div>
+
+          <!--block-out dates-->
+          <div id="block-out-dates-container">
+            <div id="new-block-out-dates-container">
+
+              <font class="config-tab-title">Block-out Dates</font>
+
+              <!--block-out date-->
+              <mat-form-field id="new-block-out-date">
+                <mat-label [class.invalid]="!newBlockOutDate.blockOutDay">Block-Out Date</mat-label>
+                <input matInput [matDatepicker]="datePicker"
+                       [(ngModel)]="newBlockOutDate.blockOutDay"
+                       [required]="true"
+                       [class.invalid]="!newBlockOutDate.blockOutDay"
+                       autocomplete="off"
+                       (dateChange)="blockOutDateValidation('date')" />
+                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker
+                                startView="month"></mat-datepicker>
+              </mat-form-field>
+
+              <!--all day-->
+              <div class="checkbox-field bold">
+                <mat-checkbox labelPosition="after"
+                              color="primary"
+                              class="all-day-checkbox"
+                              name="all-day-checkbox"
+                              [(ngModel)]="newBlockOutDate.allDay"
+                              [checked]="true"
+                              (change)="blockOutDateValidation('checkbox')">All Day</mat-checkbox>
+              </div>
+
+              <button id="block-out-date-add-button" mat-raised-button class="btn btn-primary" color="primary"
+                      [disabled]="!newBlockOutDate.blockOutDay || (startEndTimeRequired && (!newBlockOutDate.startTime || !newBlockOutDate.endTime))"
+                      (click)="addBlockOutDate()">
+                Add
+              </button>
+
+              <div>
+                <!--start time-->
+                <mat-form-field class="time-select">
+                  <mat-label [class.invalid]="startEndTimeRequired && !newBlockOutDate.startTime">Start Time</mat-label>
+                  <mat-select autocomplete="off"
+                              [(ngModel)]="newBlockOutDate.startTime"
+                              (selectionChange)="blockOutDateValidation('start')"
+                              [required]="startEndTimeRequired"
+                              [class.invalid]="startEndTimeRequired && !newBlockOutDate.startTime">
+                    <mat-option value="0" selected="selected"></mat-option>
+                    <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!--end time-->
+                <mat-form-field class="time-select">
+                  <mat-label [class.invalid]="startEndTimeRequired && !newBlockOutDate.endTime">End Time</mat-label>
+                  <mat-select autocomplete="off"
+                              [(ngModel)]="newBlockOutDate.endTime"
+                              (selectionChange)="blockOutDateValidation('end')"
+                              [required]="startEndTimeRequired"
+                              [class.invalid]="startEndTimeRequired && !newBlockOutDate.endTime">
+                    <mat-option value="0" selected="selected"></mat-option>
+                    <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+            </div>
+
+            <!--list block-out dates-->
+            <div id="block-out-date-list">
+
+              <div class="block-out-date-list-item"
+                   *ngFor="let b of blockOutDates">
+                <font class="bold">{{formatDateOnlyWithMonthNameToString(b.blockOutDay || undefined)}}</font> <font class="italic start-end-time"
+                                                                                                                    *ngIf="!b.allDay">{{b.startTime}} – {{b.endTime}}</font>
+
+                <div class="delete-block-out-date"
+                     (click)="deleteBlockOutDate(b)">
+                  <svg width="18px" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="italic"
+                   *ngIf="(blockOutDates || []).length < 1">
+                No future block-out dates found...
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </mat-tab>
+
+    <!--form fields-->
+    <mat-tab label="Form Fields">
+      <div class="tab-inner">
+        <div class="config-save-header">
+          <font class="config-tab-title">Form Fields</font>
+          <button id="field-names-save-button" mat-raised-button class="inner-save-button-right btn btn-primary" color="primary"
+                  (click)="saveFieldNames()"
+                  [disabled]="changedFormFields.length < 1 || formFieldsInvalid"
+                  [class.disabled]="changedFormFields.length < 1 || formFieldsInvalid"
+                  [class.invalid-button]="formFieldsInvalid">
+            Save
+          </button>
+        </div>
+
+        <mat-tab-group id="field-names-tabs" animationDuration="10ms">
+          <div class="config-segment">
+
+            <!-- comm hub tab -->
+            <mat-tab label="Communications Hub"
+                     *ngIf="formFieldsByTable.length > 0 && (authenticatedUser?.resourceGroup || authenticatedUser?.admin)">
+
+              <div style="margin-left: 9px; display: table;">
+                <mat-form-field>
+                  <!--label-->
+                  <mat-label>Select a Project</mat-label>
+                  <!--single select-->
+                  <mat-select [(ngModel)]="selectedCommHubProject"
+                              [compareWith]="compareSelectValues"
+                              (selectionChange)="commHubProjectSelect()"
+                              autocomplete="off">
+                    <mat-option value="{{chp.projectID}}"
+                                *ngFor="let chp of commHubProjects">
+                      {{chp.projectName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+
+
+              <div class="config-field"
+                   [class.expanded]="true"
+                   *ngIf="selectedCommHubProject">
+
+
+                <div style="margin-bottom: 20px; float: right; margin-right: 15px;">
+                  <!--add field-->
+                  <span class="new-value-text">New field</span> <div class="add-codelist" (click)="showNewFieldPopup = true">
+                    <svg width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <!--comm hub config table-->
+                <table id="comm-hub-table" mat-table matSort [dataSource]="filteredCommHubFormFields" class="mat-elevation-z8">
+
+                  <ng-container matColumnDef="Sort">
+                    <th mat-header-cell *matHeaderCellDef class="actions" mat-sort-header style="text-align: center;">Order</th>
+                    <td mat-cell *matCellDef="let commHub" class="actions" style="text-align: center;">
+
+                      <div style="color: #0078d4; cursor: pointer;" (click)="sortCommHubField(-1, commHub)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                          <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                        </svg>
+                      </div>
+                      <div style="color: #0078d4; cursor: pointer;" (click)="sortCommHubField(1, commHub)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                          <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                        </svg>
+                      </div>
+                      <!--toggle editing-->
+                      <!--<div class="edit-request-row"
+                           (click)="showEditPopup = true">
+                        <svg width="22px" xmlns="http://www.w3.org/2000/svg" fill="#1b6ec2" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                      </div>-->
+
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="FieldName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Field</th>
+                    <td mat-cell *matCellDef="let commHub">
+                      {{commHub.formField?.columnName}}
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="FieldLabel">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Display Name</th>
+                    <td mat-cell *matCellDef="let commHub">
+                      <mat-form-field>
+                        <mat-label></mat-label>
+                        <input type="text" matInput
+                               [required]="true"
+                               (keyup)="setChanged(commHub, commHub.FormField?.FieldLabel)"
+                               [(ngModel)]="commHub.formField.fieldLabel">
+                      </mat-form-field>
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="FieldType">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Field Type</th>
+                    <td mat-cell *matCellDef="let commHub">
+                      {{convertFieldType(commHub.formField.fieldType)}}
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="Required">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Required</th>
+                    <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+                      <mat-checkbox labelPosition="after"
+                                    color="primary"
+                                    class="user-select-checkbox"
+                                    [required]="true"
+                                    (click)="setChanged(commHub, commHub.formField?.required)"
+                                    [(ngModel)]="commHub.formField.required"></mat-checkbox>
+
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="DisplayInTable">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Display in Table</th>
+                    <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+                      <mat-checkbox labelPosition="after"
+                                    color="primary"
+                                    class="user-select-checkbox"
+                                    [required]="true"
+                                    (click)="setChanged(commHub, commHub.formField?.displayInTable)"
+                                    [(ngModel)]="commHub.formField.displayInTable"></mat-checkbox>
+
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Hidden">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Hidden</th>
+                    <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+                      <mat-checkbox labelPosition="after"
+                                    color="primary"
+                                    class="user-select-checkbox"
+                                    [required]="true"
+                                    (click)="setChanged(commHub, commHub.formField?.hidden)"
+                                    [(ngModel)]="commHub.formField.hidden"></mat-checkbox>
+
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="RequireConfirmation">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Require Confirmation</th>
+                    <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+                      <mat-checkbox labelPosition="after"
+                                    color="primary"
+                                    class="user-select-checkbox"
+                                    [required]="true"
+                                    (click)="setChanged(commHub, commHub.formField?.requireConfirmation)"
+                                    [(ngModel)]="commHub.formField.requireConfirmation"></mat-checkbox>
+
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Actions">
+                    <th mat-header-cell *matHeaderCellDef class="actions" mat-sort-header style="text-align: center;">Edit Choices</th>
+                    <td mat-cell *matCellDef="let commHub" class="actions" style="text-align: center;">
+
+                      <!--toggle editing-->
+                      <div class="edit-comm-hub-row"
+                           (click)="showEditChoices(commHub)"
+                           *ngIf="commHub.formField.fieldType == 'selectbox' || commHub.formField.fieldType == 'combobox'">
+                        <svg width="22px" xmlns="http://www.w3.org/2000/svg" fill="#1b6ec2" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                      </div>
+
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="commHubTableColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: commHubTableColumns;"></tr>
+
+                </table>
+
+                <div id="comm-hub-config-no-results" class="bold"
+                     *ngIf="filteredCommHubFormFields.length < 1">
+                  {{commHubNoResultsMessage}}
+                </div>
+
+              </div>
+
+            </mat-tab>
+
+            <!-- other tabs -->
+            <div *ngIf="authenticatedUser?.admin">
+              <mat-tab label="{{fft.tableName}}"
+                       *ngFor="let fft of formFieldsByTable">
+
+                <div class="config-field"
+                     [class.expanded]="ff?.expanded"
+                     *ngFor="let ff of fft?.formFields">
+                  <mat-form-field>
+                    <mat-label>{{ff.formField.defaultLabel}}</mat-label>
+                    <input type="text" matInput
+                           [(ngModel)]="ff.formField.fieldLabel"
+                           (keyup)="formFieldChanged(ff)">
+                  </mat-form-field>
+
+                  <!--expand placeholder-->
+                  <div class="expand-placeholder"
+                       *ngIf="(ff?.dropDownValues || []).length < 1"></div>
+                  <div class="expand-icon-container"
+                       *ngIf="(ff?.dropDownValues || []).length > 0"
+                       [class.invalid]="ff?.invalid">
+                    <!--expand button-->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentcolor" class="expand-icon bi bi-chevron-double-down" viewBox="0 0 16 16"
+                         *ngIf="!ff?.expanded && (ff?.dropDownValues || []).length > 0"
+                         (click)="ff.expanded = true">
+                      <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                      <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                    </svg>
+
+                    <!--collapse button-->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentcolor" class="expand-icon bi bi-chevron-double-up" viewBox="0 0 16 16"
+                         *ngIf="ff?.expanded && (ff?.dropDownValues || []).length > 0"
+                         (click)="ff.expanded = false">
+                      <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
+                      <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                    </svg>
+                  </div>
+
+                  <div class="codelist-details"
+                       *ngIf="ff?.expanded && (ff?.dropDownValues || []).length > 0">
+                    <div *ngFor="let dv of ff?.dropDownValues">
+
+                      <!--sort order-->
+                      <mat-form-field class="sort-order">
+                        <mat-label [class.invalid]="dv.invalid">sort</mat-label>
+                        <input type="text" matInput [(ngModel)]="dv.sortOrder"
+                               [class.invalid]="dv.invalid"
+                               [required]="true"
+                               (keypress)="numberRestrict($event)"
+                               (keyup)="formFieldChanged(ff, dv)">
+                      </mat-form-field>
+
+                      <!--code value-->
+                      <mat-form-field class="code-value">
+                        <mat-label [class.invalid]="dv.invalid">code</mat-label>
+                        <input type="text" matInput [(ngModel)]="dv.codeValues"
+                               [required]="true"
+                               [class.invalid]="dv.invalid"
+                               [disabled]="codeListLock.includes(ff.formField.columnName)"
+                               [class.disabled]="codeListLock.includes(ff.formField.columnName)"
+                               (keypress)="numberRestrict($event)"
+                               (keyup)="formFieldChanged(ff, dv)">
+                      </mat-form-field>
+
+                      <!--value-->
+                      <mat-form-field class="dropdown-item">
+                        <mat-label [class.invalid]="dv.invalid">{{ff.formField.fieldLabel}} value</mat-label>
+                        <input type="text" matInput
+                               [class.invalid]="dv.invalid"
+                               [required]="true"
+                               [(ngModel)]="dv.dropDownItem"
+                               (keyup)="formFieldChanged(ff, dv)">
+                      </mat-form-field>
+
+                      <!--abbreviation-->
+                      <mat-form-field class="dropdown-abbr"
+                                      *ngIf="ff?.formField?.columnName == 'language'">
+                        <mat-label>Abbr</mat-label>
+                        <input type="text" matInput
+                               [(ngModel)]="dv.abbr"
+                               (keyup)="formFieldChanged(ff, dv)"
+                               maxlength="5">
+                      </mat-form-field>
+
+                      <!--color-->
+                      <div class="dropdown-color"
+                           *ngIf="ff?.formField?.columnName == 'language'">
+                        <input type="color"
+                               [(ngModel)]="dv.colorCode"
+                               (keyup)="formFieldChanged(ff, dv)"
+                               name="{{ff.formField.fieldLabel}}-color"
+                               autocomplete="off" />
+                      </div>
+
+                      <!--delete code list-->
+                      <div class="delete-codelist"
+                           (click)="dv.confirmDelete = true"
+                           *ngIf="!dv.confirmDelete">
+                        <svg width="20px" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+                        </svg>
+                      </div>
+
+                      <!--confirm delete-->
+                      <div class="confirm-delete"
+                           *ngIf="dv.confirmDelete">
+                        Are you sure you want to delete this?: <span class="clickable" (click)="deleteCodeList(ff, dv)">Yes</span> / <span class="clickable" (click)="dv.confirmDelete = false">No</span>
+                      </div>
+
+
+                    </div>
+
+                    <!--add codelist-->
+                    <span class="new-value-text">New value</span> <div class="add-codelist"
+                                                                       (click)="addCodeList(ff)">
+                      <svg width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+                      </svg>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </mat-tab>
+            </div>
+
+          </div>
+
+        </mat-tab-group>
+
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+
+<app-modal-popup id="modal-popup-message"
+                 class="modal-popup"
+                 style="width: 1500px; max-height: 700px;"
+                 [title]="'Add a New Field'"
+                 (closeEvent)="closeNewFieldPopup()"
+                 *ngIf="showNewFieldPopup">
+
+
+  <div class="new-comm-hub-field-container">
+    <!--comm hub config table-->
+    <table id="new-comm-hub-config-table" mat-table matSort [dataSource]="[newCommHubField]" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="FieldName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Field</th>
+        <td mat-cell *matCellDef="let commHub">
+          <mat-form-field>
+            <mat-label></mat-label>
+            <input type="text" matInput
+                   [required]="true"
+                   (keyup)="setChanged(commHub, commHub.formField?.columnName)"
+                   [(ngModel)]="commHub.formField.columnName">
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="FieldLabel">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Display Name</th>
+        <td mat-cell *matCellDef="let commHub">
+          <mat-form-field>
+            <mat-label></mat-label>
+            <input type="text" matInput
+                   [required]="true"
+                   (keyup)="setChanged(commHub, commHub.formField?.fieldLabel)"
+                   [(ngModel)]="commHub.formField.fieldLabel">
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="FieldType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Field Type</th>
+        <td mat-cell *matCellDef="let commHub">
+          <mat-form-field style="margin-right: 70px; width: 140px;">
+            <mat-label></mat-label>
+            <!--single select-->
+            <mat-select [(ngModel)]="commHub.formField.fieldType" [required]="true" autocomplete="off" name="Field Type"
+                        (selectionChange)="setChanged(commHub, 'commhub-fieldtype')">
+              <mat-option value="textbox">Text</mat-option>
+              <mat-option value="longtextbox">Comment</mat-option>
+              <mat-option value="selectbox">Single Select</mat-option>
+              <mat-option value="combobox">Multi Select</mat-option>
+              <mat-option value="dateonly">Date Only</mat-option>
+              <!--<mat-option value="timeonly">Time Only</mat-option>-->
+              <mat-option value="datetime">Date/Time</mat-option>
+              <mat-option value="checkbox">Checkbox</mat-option>
+              <mat-option value="email">Email</mat-option>
+              <mat-option value="phone">Phone</mat-option>
+              <mat-option value="trainedonusers">Interviewer</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="Required">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Required</th>
+        <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+          <mat-checkbox labelPosition="after"
+                        color="primary"
+                        class="user-select-checkbox"
+                        [required]="true"
+                        (click)="setChanged(commHub, commHub.formField.required)"
+                        [(ngModel)]="commHub.formField.required"></mat-checkbox>
+
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="DisplayInTable">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Display in Table</th>
+        <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+          <mat-checkbox labelPosition="after"
+                        color="primary"
+                        class="user-select-checkbox"
+                        [required]="true"
+                        (click)="setChanged(commHub, commHub.formField.displayInTable)"
+                        [(ngModel)]="commHub.formField.displayInTable"></mat-checkbox>
+
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Hidden">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Hidden</th>
+        <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+          <mat-checkbox labelPosition="after"
+                        color="primary"
+                        class="user-select-checkbox"
+                        [required]="true"
+                        (click)="setChanged(commHub, commHub.formField.hidden)"
+                        [(ngModel)]="commHub.formField.hidden"></mat-checkbox>
+
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="RequireConfirmation">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Require Confirmation</th>
+        <td mat-cell *matCellDef="let commHub" style="text-align: center;">
+
+          <mat-checkbox labelPosition="after"
+                        color="primary"
+                        class="user-select-checkbox"
+                        [required]="true"
+                        (click)="setChanged(commHub, commHub.formField?.requireConfirmation)"
+                        [(ngModel)]="commHub.formField.requireConfirmation"></mat-checkbox>
+
+        </td>
+      </ng-container>
+
+      <!--<ng-container matColumnDef="Actions">
+      <th mat-header-cell *matHeaderCellDef class="actions" mat-sort-header style="text-align: center;">Edit Choices</th>
+      <td mat-cell *matCellDef="let commHub" class="actions" style="text-align: center;">-->
+      <!--toggle editing-->
+      <!--<div class="edit-comm-hub-row"
+               (click)="showEditPopup = true"
+               *ngIf="commHub.FormField.FieldType == 'selectbox' || commHub.FormField.FieldType == 'combobox'">
+            <svg width="22px" xmlns="http://www.w3.org/2000/svg" fill="#1b6ec2" class="bi bi-pencil-square" viewBox="0 0 16 16">
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+            </svg>
+          </div>
+
+        </td>
+      </ng-container>-->
+
+      <tr mat-header-row *matHeaderRowDef="newCommHubTableColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: newCommHubTableColumns;"></tr>
+
+    </table>
+
+    <div style="margin-top: 35px;"
+         *ngIf="newCommHubField.formField?.fieldType == 'selectbox' || newCommHubField.formField?.fieldType == 'combobox'">
+
+      <h2 style="color: #3f51b5;">Add Choices</h2>
+
+      <!--comm hub drop down table-->
+      <table id="new-comm-hub-choice-table" mat-table matSort [dataSource]="newCommHubChoices" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="Sort">
+          <th mat-header-cell *matHeaderCellDef class="actions" mat-sort-header style="text-align: center;">Order</th>
+          <td mat-cell *matCellDef="let dropdown" class="actions" style="text-align: center;">
+
+            <div style="color: #0078d4; cursor: pointer;" (click)="sortCommHubDropDown(-1, dropdown, true)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+              </svg>
+            </div>
+            <div style="color: #0078d4; cursor: pointer;" (click)="sortCommHubDropDown(1, dropdown, true)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+              </svg>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="CodeValues">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Code</th>
+          <td mat-cell *matCellDef="let dropdown" style="text-align: center;">
+            <mat-form-field class="code-value">
+              <mat-label [class.invalid]="dropdown.Invalid"></mat-label>
+              <input type="text" matInput
+                     [required]="true"
+                     (keyup)="setChangedChoice(dropdown, 'codeValues')"
+                     (keypress)="numberRestrict($event)"
+                     [(ngModel)]="dropdown.codeValues"
+                     [class.invalid]="dropdown.Invalid">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="DropDownItem">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Value</th>
+          <td mat-cell *matCellDef="let dropdown" style="text-align: center;">
+            <mat-form-field>
+              <mat-label [class.invalid]="dropdown.Invalid"></mat-label>
+              <input type="text" matInput
+                     [required]="true"
+                     (keyup)="setChangedChoice(dropdown, 'dropDownItem')"
+                     [(ngModel)]="dropdown.dropDownItem"
+                     [class.invalid]="dropdown.Invalid">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Hidden">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Hidden</th>
+          <td mat-cell *matCellDef="let dropdown" style="text-align: center;">
+
+            <mat-checkbox labelPosition="after"
+                          color="primary"
+                          class="user-select-checkbox"
+                          (click)="setChangedChoice(dropdown, 'Hidden')"
+                          [(ngModel)]="dropdown.Hidden"></mat-checkbox>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="dropDownTableColumns;"></tr>
+        <tr mat-row *matRowDef="let row; columns: dropDownTableColumns;"></tr>
+
+      </table>
+
+      <div class="validation-message"
+           *ngIf="choicesSaveInvalid">**Code and Value are required and code must be unique</div>
+
+      <div style="margin-bottom: 50px; float: left; margin-right: 15px;">
+        <!--add field-->
+        <span class="new-value-text">New choice</span> <div class="add-codelist" (click)="addNewBlankChoice(true)">
+          <svg width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <div style="margin-top: 50px; float: right;">
+      <!--save-->
+      <button id="comm-hub-save-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="saveNewCommHubField()"
+              [disabled]="!newCommHubField?.changed || newCommHubField?.invalid"
+              [class.invalid-button]="newCommHubField?.invalid || choicesSaveInvalid"
+              [class.disabled]="!newCommHubField?.changed || newCommHubField?.invalid || choicesSaveInvalid">
+        Save
+      </button>
+
+      <!--cancel-->
+      <button id="comm-hub-cancel-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="showNewFieldPopup = false">
+        Cancel
+      </button>
+    </div>
+
+</app-modal-popup>
+
+
+<app-modal-popup id="modal-popup-message"
+                 class="modal-popup"
+                 style="width: 525px; height: 700px;"
+                 [title]="'Edit Choices'"
+                 (closeEvent)="closeEditChoicesPopup()"
+                 *ngIf="showEditChoicesPopup">
+
+  <div style="display: table-caption;">
+
+    <div class="edit-choices-container">
+      <!--comm hub drop down table-->
+      <table id="new-comm-hub-choice-table" mat-table matSort [dataSource]="(selectedCommHubFormField.dropDownValues || [])" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="Sort">
+          <th mat-header-cell *matHeaderCellDef class="actions" mat-sort-header style="text-align: center;">Order</th>
+          <td mat-cell *matCellDef="let dropdown" class="actions" style="text-align: center;">
+
+            <div style="color: #0078d4; cursor: pointer;" (click)="sortCommHubDropDown(-1, dropdown)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+              </svg>
+            </div>
+            <div style="color: #0078d4; cursor: pointer;" (click)="sortCommHubDropDown(1, dropdown)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+              </svg>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="CodeValues">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Code</th>
+          <td mat-cell *matCellDef="let dropdown" style="text-align: center;">
+            <mat-form-field class="code-value">
+              <mat-label [class.invalid]="dropdown.Invalid"></mat-label>
+              <input type="text" matInput
+                     [required]="true"
+                     (keyup)="setChangedChoice(dropdown, 'codeValues')"
+                     (keypress)="numberRestrict($event)"
+                     [(ngModel)]="dropdown.codeValues"
+                     [class.invalid]="dropdown.Invalid">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="DropDownItem">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Value</th>
+          <td mat-cell *matCellDef="let dropdown" style="text-align: center;">
+            <mat-form-field>
+              <mat-label [class.invalid]="dropdown.Invalid"></mat-label>
+              <input type="text" matInput
+                     [required]="true"
+                     (keyup)="setChangedChoice(dropdown, 'dropDownItem')"
+                     [(ngModel)]="dropdown.dropDownItem"
+                     [class.invalid]="dropdown.Invalid">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Hidden">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;">Hidden</th>
+          <td mat-cell *matCellDef="let dropdown" style="text-align: center;">
+
+            <mat-checkbox labelPosition="after"
+                          color="primary"
+                          class="user-select-checkbox"
+                          (click)="setChangedChoice(dropdown, 'Hidden')"
+                          [(ngModel)]="dropdown.Hidden"></mat-checkbox>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="dropDownTableColumns;"></tr>
+        <tr mat-row *matRowDef="let row; columns: dropDownTableColumns;"></tr>
+
+      </table>
+
+      <div class="validation-message"
+           *ngIf="choicesSaveInvalid">**Code and Value are required and code must be unique</div>
+
+      <div style="margin-bottom: 50px; float: left; margin-right: 15px;">
+        <!--add field-->
+        <span class="new-value-text">New choice</span> <div class="add-codelist" (click)="addNewBlankChoice()">
+          <svg width="20px" viewBox="0 0 16 16" class="bi bi-plus-square-fill" fill="green" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 50px; float: right;">
+      <!--save-->
+      <button id="comm-hub-save-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="saveCommHubChoices(selectedCommHubFormField.dropDownValues || [])"
+              [disabled]="choicesSaveDisabled"
+              [class.invalid-button]="choicesSaveInvalid"
+              [class.disabled]="choicesSaveDisabled">
+        Save
+      </button>
+
+      <!--cancel-->
+      <button id="comm-hub-cancel-button" mat-raised-button class="btn btn-primary" color="primary"
+              (click)="showEditChoicesPopup = false">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+
+</app-modal-popup>
+
+<div class="inner-container"
+     *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)">
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>Please contact someone in the resource team if you believe this was a mistake.</p>
+</div>

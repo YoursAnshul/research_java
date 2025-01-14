@@ -1,0 +1,435 @@
+<div id="comm-hub"
+     *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin || trainedOnCommHubProject">
+  <h2 class="bold">Communications Hub</h2>
+
+  <div style="margin-left: 9px; display: table;">
+    <mat-form-field>
+      <!--label-->
+      <mat-label>Select a Project</mat-label>
+      <!--single select-->
+      <mat-select [(ngModel)]="selectedCommHubProjectId"
+                  [compareWith]="compareSelectValues"
+                  (selectionChange)="commHubProjectSelect()"
+                  autocomplete="off">
+        <mat-option value="{{chp.projectID}}"
+                    *ngFor="let chp of commHubProjects">
+          {{chp.projectName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="selectedCommHubProjectId > 0">
+
+    <div id="comm-hub-table-outer">
+
+
+      <div id="table-controls">
+
+        <!--global search-->
+        <div id="global-search">
+          <mat-form-field class="example-full-width" style="width: 255px; top: -3px;">
+            <span matPrefix> </span>
+            <input type="tel" matInput placeholder="Search" name="search"
+                   [(ngModel)]="globalSearch"
+                   (keyup)="applyFilters()" />
+            <button matSuffix mat-button style="border: none; background: none;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+              </svg>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div id="comm-hub-filters1">
+
+          <!--phone number search-->
+          <mat-form-field style="margin-right: 25px; width: 150px; top: 9px;">
+            <!--<mat-label>Phone Number</mat-label>-->
+            <input type="text" matInput
+                   placeholder="Phone"
+                   autocomplete="off"
+                   [(ngModel)]="phoneSearch"
+                   (keyup)="applyFilters()" />
+            <button matSuffix mat-button style="border: none; background: none;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+              </svg>
+            </button>
+          </mat-form-field>
+          <button id="reset-filters-button"
+                  mat-raised-button class="btn btn-primary" color="primary"
+                  (click)="resetDefaultFilters()">
+            Reset
+          </button>
+
+          <div style="display: inline-block;">
+            <mat-form-field id="export"
+                            style="vertical-align: middle; margin-left: 149px;">
+              <!--label-->
+              <mat-label>Export</mat-label>
+              <!--single select-->
+              <mat-select autocomplete="off"
+                          (selectionChange)="exportCsv()"
+                          [(ngModel)]="exportSelection">
+                <mat-option value="1">CSV (all fields)</mat-option>
+                <mat-option value="2">CSV (displayed fields)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <button id="comm-hub-add-button" mat-raised-button class="btn btn-primary" color="primary" style="margin-left: 25px;"
+                  (click)="showModalPopup = true">
+            Add New Entry
+          </button>
+
+        </div>
+
+
+      </div>
+
+      <div class="comm-hub-table-wrapper">
+        <div class="comm-hub-table-content">
+          <!--comm hub table-->
+          <table id="comm-hub-table" mat-table [dataSource]="pagedcommHubEntries" class="mat-elevation-z8"
+                 *ngIf="filteredCommHubFormFields.length > 0">
+
+            <ng-container matColumnDef="Actions">
+              <th mat-header-cell *matHeaderCellDef class="actions">
+                <span class="header-label">Actions</span>
+              </th>
+              <td mat-cell *matCellDef="let commHub" class="actions">
+
+                <div class="actions-container">
+                  <!--toggle editing-->
+                  <div class="edit-comm-hub-row"
+                       (click)="openEditPopup(commHub)"
+                       *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin || (commHub?.entryBy == authenticatedUser?.netID)">
+                    <svg width="22px" xmlns="http://www.w3.org/2000/svg" fill="#1b6ec2" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                      <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                      <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                    </svg>
+                  </div>
+
+                  <!--toggle view-->
+                  <div class="view-comm-hub-row"
+                       (click)="openViewPopup(commHub)">
+                    <svg width="22" xmlns="http://www.w3.org/2000/svg" fill="#1b6ec2" class="bi bi-eye" viewBox="0 0 16 16">
+                      <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                    </svg>
+                  </div>
+
+                  <!--delete entry-->
+                  <div class="delete-comm-hub-row"
+                       (click)="openDeletePopup(commHub)"
+                       *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+                    <svg width="20px" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+                    </svg>
+                  </div>
+                </div>
+
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="{{configField?.formField?.columnName}}"
+                          *ngFor="let configField of filteredCommHubFormFields">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="th-content">
+                  <span class="header-label">{{configField?.formField?.fieldLabel}}</span>
+                  <div class="sort-container">
+                    <span class="sort-down"
+                        [class.sort-active]="this.sortFormFieldId == configField?.formField?.formFieldId && this.sortDescending"
+                        (click)="setActiveSort(configField?.formField?.formFieldId || 0, true)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z" />
+                      </svg>
+                    </span>
+                    <span class="sort-up"
+                        [class.sort-active]="this.sortFormFieldId == configField?.formField?.formFieldId && !this.sortDescending"
+                        (click)="setActiveSort(configField?.formField?.formFieldId || 0, false)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="filter-container">
+                  <!--text input filters-->
+                  <mat-form-field *ngIf="!['selectbox', 'combobox'].includes(configField?.formField?.fieldType || '')"
+                                  style="width: 160px; margin-top: 10px;">
+                    <input type="text" matInput
+                           [(ngModel)]="configField.filterValue"
+                           placeholder="{{configField?.formField?.fieldLabel}}"
+                           (keyup)="applyFilters()"
+                           name="{{configField?.formField?.fieldLabel}}-filter"
+                           autocomplete="off">
+                  </mat-form-field>
+
+                  <!--multi select filters-->
+                  <mat-form-field *ngIf="['selectbox', 'combobox'].includes(configField?.formField?.fieldType || '')"
+                                  style="width: 160px; margin-top: 10px;">
+                    <mat-select multiple
+                                [(ngModel)]="configField.filterValue"
+                                placeholder="{{configField?.formField?.fieldLabel}}"
+                                (selectionChange)="applyFilters()"
+                                name="{{configField?.formField?.fieldLabel}}-filter"
+                                autocomplete="off">
+                      <mat-option *ngFor="let dv of configField.dropDownValues" value="{{dv.codeValues}}">{{dv.dropDownItem}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let commHub">
+                {{getFieldValue(commHub, configField?.formField?.formFieldId || 0)}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="EntryDate">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="th-content">
+                  <span class="header-label">Entry Date</span>
+                  <div class="sort-container">
+                    <span class="sort-down"
+                          [class.sort-active]="this.sortFormFieldId == 0 && this.sortDescending"
+                          (click)="setActiveSort(0, true)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z" />
+                      </svg>
+                    </span>
+                    <span class="sort-up"
+                          [class.sort-active]="this.sortFormFieldId == 0 && !this.sortDescending"
+                          (click)="setActiveSort(0, false)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="25" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="filter-container">
+                  <!--text input filters-->
+                  <mat-form-field style="width: 160px; margin-top: 10px;">
+                    <input type="text" matInput
+                           [(ngModel)]="entryDtFilter"
+                           placeholder="Entry Date"
+                           (keyup)="applyFilters()"
+                           name="entry-date-filter"
+                           autocomplete="off">
+                  </mat-form-field>
+                </div>
+
+              </th>
+              <td mat-cell *matCellDef="let commHub">
+                {{getEntryDate(commHub)}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="commHubTableColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: commHubTableColumns;"></tr>
+
+          </table>
+
+          <div id="comm-hub-no-results" class="bold"
+               *ngIf="filteredCommHubEntries.length < 1">
+            {{commHubNoResultsMessage}}
+          </div>
+
+          <mat-paginator #paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="filteredCommHubEntries.length"
+                         [pageIndex]="pageIndex" (page)="handlePage($event)"
+                         *ngIf="filteredCommHubEntries.length > 0">
+          </mat-paginator>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="inner-container"
+     *ngIf="(authenticatedUser?.netID && !(authenticatedUser?.resourceGroup || authenticatedUser?.admin)) && !trainedOnCommHubProject">
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>Please contact someone in the resource team if you believe this was a mistake.</p>
+</div>
+
+<app-modal-popup id="modal-popup-message"
+                 class="modal-popup"
+                 style="width: 500px; height: 700px;"
+                 title="{{commHubProjectTitle}}"
+                 (closeEvent)="closeNewPopup()"
+                 *ngIf="showModalPopup">
+
+
+  <!--new comm hub form-->
+  <div id="new-comm-hub-form"
+       style="margin-top: 30px;">
+
+    <!-- newCommHubEntry -->
+    <div class="comm-hub-form-container">
+
+      <div *ngFor="let newCommHubFormField of newCommHubFormFieldInstances; let i = index"
+           class="comm-hub-form-field-container">
+
+        <app-form-field [formField]="newCommHubFormField"
+                        [contextProject]="selectedCommHubProject"
+                        [allUsersMin]="allUsers"
+                        (formFieldChanged)="setChanged(newCommHubEntry, newCommHubFormField, newCommHubFormFieldInstances)">
+        </app-form-field>
+      </div>
+
+    </div>
+
+    <div class="row" style="text-align: center; display: block; margin-right: 30px; margin-top: 25px;">
+
+
+
+      <div style="display: flow-root;">
+        <div style="float: right; margin-bottom: 20px;">
+          <!--save new comm hub entry-->
+          <div id="comm-hub-save-button" style="margin: 0px; margin-left: 0px; display: inline-block;">
+            <button mat-raised-button class="btn btn-primary" color="primary"
+                    (click)="saveNewCommHubEntry()"
+                    [disabled]="(newCommHubEntry.invalidFields || []).length > 0 || !newCommHubEntry.changed"
+                    [class.invalid-button]="(newCommHubEntry.invalidFields || []).length > 0"
+                    [class.disabled]="(newCommHubEntry.invalidFields || []).length > 0 || !newCommHubEntry.changed">
+              Save Entry
+            </button>
+          </div>
+
+          <!--cancel new comm hub entry-->
+          <div id="comm-hub-save-button" style="margin: 0px; margin-left: 15px; display: inline-block;">
+            <button mat-raised-button class="btn btn-primary" color="secondary"
+                    style="background-color: white; color: darkblue;"
+                    (click)="closeNewPopup()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+</app-modal-popup>
+
+
+<app-modal-popup id="modal-popup-message"
+                 class="modal-popup"
+                 style="width: 500px; height: 700px;"
+                 title="{{commHubProjectTitleEdit}}"
+                 (closeEvent)="showEditPopup = false"
+                 *ngIf="showEditPopup">
+
+  <!--comm hub form-->
+  <div id="edit-comm-hub-form"
+       style="margin-top: 30px;">
+
+    <!-- CommHubEntry -->
+    <div class="comm-hub-form-container">
+
+      <div *ngFor="let selectedCommHubFormField of selectedCommHubFormFieldInstances; let i = index"
+           [class.first-column]="i % 2 == 0"
+           [class.second-column]="i % 2 != 0">
+
+        <app-form-field [formField]="selectedCommHubFormField"
+                        [contextProject]="selectedCommHubProject"
+                        [allUsersMin]="allUsers"
+                        (formFieldChanged)="setChanged(selectedCommHubEntry, selectedCommHubFormField, selectedCommHubFormFieldInstances)">
+        </app-form-field>
+      </div>
+
+    </div>
+
+    <div class="row" style="text-align: center; display: block; margin-right: 30px; margin-top: 25px;">
+
+
+
+      <div style="display: flow-root;">
+        <div style="float: right; margin-bottom: 20px;">
+          <!--save selected comm hub entry-->
+          <div id="comm-hub-save-button" style="margin: 0px; margin-left: 0px; display: inline-block;">
+            <button mat-raised-button class="btn btn-primary" color="primary"
+                    (click)="saveSelectedCommHubEntry()"
+                    [disabled]="(selectedCommHubEntry.invalidFields || []).length > 0 || !selectedCommHubEntry.changed"
+                    [class.invalid-button]="(selectedCommHubEntry.invalidFields || []).length > 0"
+                    [class.disabled]="(selectedCommHubEntry.invalidFields || []).length > 0 || !selectedCommHubEntry.changed">
+              Save Entry
+            </button>
+          </div>
+
+          <!--cancel selected comm hub entry-->
+          <div id="comm-hub-save-button" style="margin: 0px; margin-left: 15px; display: inline-block;">
+            <button mat-raised-button class="btn btn-primary" color="secondary"
+                    style="background-color: white; color: darkblue;"
+                    (click)="closeEditPopup()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+</app-modal-popup>
+
+<app-modal-popup id="modal-popup-message"
+                 class="modal-popup"
+                 style="width: 500px; height: 700px;"
+                 title="{{commHubProjectTitleView}}"
+                 (closeEvent)="showViewPopup = false"
+                 *ngIf="showViewPopup">
+
+  <!--comm hub form-->
+  <div id="view-comm-hub-form"
+       style="margin-top: 30px;">
+
+    <!-- CommHubEntry -->
+    <div class="comm-hub-form-container">
+
+      <div *ngFor="let selectedCommHubFormField of selectedCommHubFormFieldInstances; let i = index"
+           [class.first-column-view]="i % 2 == 0"
+           [class.second-column-view]="i % 2 != 0">
+        <div class="read-only-label"
+             [class.long-text-read-only]="(selectedCommHubFormField?.formFieldVariable?.formField?.fieldType || '').toUpperCase() == 'LONGTEXTBOX'">
+          {{selectedCommHubFormField?.formFieldVariable?.formField?.fieldLabel}}
+        </div>
+        <div class="read-only-value"
+             [class.long-text-read-only]="(selectedCommHubFormField?.formFieldVariable?.formField?.fieldType || '').toUpperCase() == 'LONGTEXTBOX'">
+          {{getFieldInstanceValue(selectedCommHubFormField, '--')}}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row" style="text-align: center; display: block; margin-right: 30px; margin-top: 25px;">
+
+
+
+      <div style="display: flow-root;">
+        <div style="float: right; margin-bottom: 20px;">
+          <!--ok button-->
+          <div id="comm-hub-save-button" style="margin: 0px; margin-left: 15px; display: inline-block;">
+            <button mat-raised-button class="btn btn-primary" color="primary"
+                    (click)="showViewPopup = false">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+</app-modal-popup>

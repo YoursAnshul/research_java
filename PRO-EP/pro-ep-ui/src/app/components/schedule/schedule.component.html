@@ -1,0 +1,364 @@
+<!--header-->
+<div id="popup-header">
+
+  <div id="popup-header-title">
+    Add a Schedule
+  </div>
+  <div id="close-scheduler"
+       (click)="closeScheduler()">
+    <svg width="1.2em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="#e35d6a" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
+    </svg>
+  </div>
+
+  <!--schedule validation issues-->
+  <div id="validation-messages"
+       *ngIf="validationMessages.length > 0">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="red" class="valid-icon bi bi-calendar-x-fill" viewBox="0 0 16 16">
+      <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zM6.854 8.146 8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 1 1 .708-.708z" />
+    </svg>
+    You have one or more scheduling validation issues for the month of {{formatDateMonthNameToString(selectedDate)}}:
+
+    <svg id="scheduling-level-info" width="16px" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16"
+         *ngIf="validationMessagesChecked"
+         (mouseenter)="displaySchedulingLevelInfo($event)"
+         (mouseleave)="hideSchedulingLevelInfo()">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+      <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z" />
+    </svg>
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="red" class="expand-icon bi bi-chevron-double-down" viewBox="0 0 16 16"
+         *ngIf="!validationMessagesExpanded"
+         (click)="expandValidationMessages(true)">
+      <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+      <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="red" class="expand-icon bi bi-chevron-double-up" viewBox="0 0 16 16"
+         *ngIf="validationMessagesExpanded"
+         (click)="expandValidationMessages(false)">
+      <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
+      <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+    </svg>
+    <div id="validation-details"
+         *ngIf="validationMessagesExpanded">
+      <ul>
+        <li *ngFor="let vm of validationMessages;let i=index;">
+          <!--{{vm.MessageText}}-->
+          <div *ngFor="let line of (vm.messageText || '').split('|');let i=index;">{{line}}</div>
+
+
+          <ul *ngIf="(vm.schedules || '').length > 0">
+            <li *ngFor="let s of vm.schedules" class="validation-schedules"><span class="bold italic">{{s.projectName}} |</span>&nbsp;&nbsp;{{formatDateOnlyWithMonthNameToString(s.startdatetime || null)}}, &nbsp;&nbsp;<span class="italic">{{s.startTime}} – {{s.endTime}} : {{s.scheduledHours}} hours</span></li>
+          </ul>
+
+          <ul *ngIf="(vm.details || '').length > 0">
+            <li *ngFor="let detail of splitByPipe((vm.details || ''))" class="validation-schedules"><span class="bold italic">{{detail}}</span></li>
+          </ul>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!--no schedule validation issues-->
+  <div id="no-validation-issues"
+       *ngIf="validationMessages.length < 1 && validationMessagesChecked && (currentUser?.schedulinglevel || 0) > 0">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="green" class="valid-icon bi bi-calendar-check-fill" viewBox="0 0 16 16">
+      <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708z" />
+    </svg>
+
+    {{formatDateMonthNameToString(selectedDate)}} schedule is valid
+  </div>
+
+  <!--date navigation-->
+  <div id="calendar-date-picker"
+       [class.week-date-picker]="currentTab == 'Week'"
+       *ngIf="currentTab !== 'Add'">
+    <!--<div class="arrow-nav" (click)="addDaysToSelectedDate(-1)">-->
+    <div class="arrow-nav"
+         (click)="addDateUnitsToSelectedDate(-1)"
+         *ngIf="currentTab !== 'Custom'">
+      <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"></path>
+      </svg>
+    </div>
+
+    <div id="date-picker-input">
+
+      <app-day-datepicker *ngIf="currentTab == 'Day'"
+                          [selectedDate]="selectedDateFC"
+                          (selectedDateChange)="fetchNewSchedules($event)">
+      </app-day-datepicker>
+
+      <app-week-datepicker *ngIf="currentTab == 'Week'"
+                           [selectedDate]="selectedDateFC"
+                           [(selectedDateRange)]="selectedDateRange"
+                           (selectedDateChange)="fetchNewSchedules($event)">
+      </app-week-datepicker>
+
+      <app-month-datepicker *ngIf="currentTab == 'Month'"
+                            [selectedDate]="selectedDateFC"
+                            (selectedDateChange)="fetchNewSchedules($event)">
+      </app-month-datepicker>
+
+      <app-range-datepicker *ngIf="currentTab == 'Custom'"
+                            [(selectedDateRange)]="selectedCustomRange"
+                            (selectedDateRangeChange)="getCustomSchedules()">
+      </app-range-datepicker>
+
+    </div>
+
+    <!--<div class="arrow-nav" (click)="addDaysToSelectedDate(1)">-->
+    <div class="arrow-nav"
+         (click)="addDateUnitsToSelectedDate(1)"
+         *ngIf="currentTab !== 'Custom'">
+      <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path>
+      </svg>
+    </div>
+  </div>
+
+
+  <!--filters-->
+  <div id="schedule-filters"
+       *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+
+    <mat-form-field>
+      <mat-label>User</mat-label>
+      <mat-select multiple
+                  [formControl]="userFilterFC"
+                  (selectionChange)="applyFilters('user')">
+        <mat-option value="0">Any User</mat-option>
+        <mat-option *ngFor="let u of filteredUsers" value="{{u.dempoid}}">{{u.displayName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Project</mat-label>
+      <mat-select multiple
+                  [formControl]="projectFilterFC"
+                  (selectionChange)="applyFilters('project')">
+        <mat-option value="0">Any Project</mat-option>
+        <mat-option *ngFor="let p of filteredProjects" value="{{p.projectName}}">{{p.projectName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button id="reset-filters-button" mat-raised-button class="btn btn-primary" color="primary"
+            (click)="setDefaultFilters(true)">
+      Reset
+    </button>
+  </div>
+  <button id="schedule-save-all-button" mat-raised-button class="btn btn-primary" color="primary"
+          (click)="saveConfirmation()">
+    Save All
+  </button>
+</div>
+
+<!--tabs-->
+<mat-tab-group id="schedule-tabs"
+               animationDuration="10ms"
+               [(selectedIndex)]="scheduleTabIndex"
+               (selectedTabChange)="setTab($event)">
+  <mat-tab label="Add">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="addTabInvalid">Add</span>
+      <span class="invalid-emphasis"
+            *ngIf="addTabInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+
+    <div class="paginated-schedules">
+      <app-schedule-line class="schedule-row"
+                         *ngFor="let s of pagedUserSchedulesAdded"
+                         [schedule]="s"
+                         [allUsers]="allUsers"
+                         [allProjects]="allProjects"
+                         [timeCodes]="timeCodes"
+                         [authenticatedUser]="authenticatedUser"
+                         [readOnly]="checkReadOnly(s)"
+                         [unlockDate]="unlockDate"
+                         [blockOutDates]="blockOutDates"
+                         [schedulingLevel]="currentUser?.schedulinglevel || 0"
+                         (saveEvent)="scheduleSaved($event)"
+                         (deleteEvent)="scheduleDeleted($event)"
+                         (addEvent)="addSchedule($event, true)"
+                         (changeEvent)="changeEvent($event)"
+                         (mouseover)="displayHoverMessage($event, s)"
+                         (mouseout)="hideHoverMessage()">
+      </app-schedule-line>
+    </div>
+
+    <mat-paginator #paginator [pageSize]="pageSizeAdded" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="pagedUsersAddedLength"
+                   [pageIndex]="pageIndexAdded" (page)="handleAddedPage($event)">
+    </mat-paginator>
+
+  </mat-tab>
+  <mat-tab label="Day">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="dayTabInvalid">Day</span>
+      <span class="invalid-emphasis"
+            *ngIf="dayTabInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+
+    <!--<cdk-virtual-scroll-viewport class="schedule-viewport" itemSize="60" class="schedule-tab">-->
+    <!--</cdk-virtual-scroll-viewport>-->
+    <div class="paginated-schedules">
+      <div class="no-results bold italic"
+           *ngIf="(pagedUserSchedulesDay || []).length < 1">
+        No matching schedules found for this day...
+      </div>
+      <app-schedule-line class="schedule-row"
+                         *ngFor="let s of pagedUserSchedulesDay"
+                         [schedule]="s"
+                         [allUsers]="allUsers"
+                         [allProjects]="allProjects"
+                         [timeCodes]="timeCodes"
+                         [authenticatedUser]="authenticatedUser"
+                         [readOnly]="checkReadOnly(s)"
+                         [unlockDate]="unlockDate"
+                         [blockOutDates]="blockOutDates"
+                         [schedulingLevel]="currentUser?.schedulinglevel || 0"
+                         (saveEvent)="scheduleSaved($event)"
+                         (deleteEvent)="scheduleDeleted($event)"
+                         (addEvent)="addSchedule($event)"
+                         (changeEvent)="changeEvent($event)"
+                         (mouseenter)="displayHoverMessage($event, s)"
+                         (mouseleave)="hideHoverMessage()">
+      </app-schedule-line>
+    </div>
+
+    <mat-paginator #paginator [pageSize]="pageSizeDay" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="pagedUsersDayLength"
+                   [pageIndex]="pageIndexDay" (page)="handleDayPage($event)">
+    </mat-paginator>
+
+  </mat-tab>
+  <mat-tab label="Week">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="weekTabInvalid">Week</span>
+      <span class="invalid-emphasis"
+            *ngIf="weekTabInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+
+    <!--<cdk-virtual-scroll-viewport class="schedule-viewport" itemSize="60" class="schedule-tab">
+      <div class="no-results bold italic"
+           *ngIf="filteredUserSchedulesWeek?.length < 1">
+        No schedules found for this date range...
+      </div>
+      <app-schedule-line class="schedule-row"
+                         *cdkVirtualFor="let s of filteredUserSchedulesWeek"
+                         [schedule]="s"
+                         [allUsers]="allUsers"
+                         [allProjects]="allProjects"
+                         [timeCodes]="timeCodes"
+                         [authenticatedUser]="authenticatedUser"
+                         (saveEvent)="scheduleSaved($event)"
+                         (deleteEvent)="scheduleDeleted($event)"
+                         (addEvent)="addSchedule($event)">
+      </app-schedule-line>
+
+    </cdk-virtual-scroll-viewport>-->
+
+    <div class="paginated-schedules">
+      <div class="no-results bold italic"
+           *ngIf="(pagedUserSchedulesWeek || []).length < 1">
+        No matching schedules found for this date range...
+      </div>
+      <app-schedule-line class="schedule-row"
+                         *ngFor="let s of pagedUserSchedulesWeek"
+                         [schedule]="s"
+                         [allUsers]="allUsers"
+                         [allProjects]="allProjects"
+                         [timeCodes]="timeCodes"
+                         [authenticatedUser]="authenticatedUser"
+                         [readOnly]="checkReadOnly(s)"
+                         [unlockDate]="unlockDate"
+                         [blockOutDates]="blockOutDates"
+                         [schedulingLevel]="currentUser?.schedulinglevel || 0"
+                         (saveEvent)="scheduleSaved($event)"
+                         (deleteEvent)="scheduleDeleted($event)"
+                         (addEvent)="addSchedule($event)"
+                         (changeEvent)="changeEvent($event)"
+                         (mouseenter)="displayHoverMessage($event, s)"
+                         (mouseleave)="hideHoverMessage()">
+      </app-schedule-line>
+    </div>
+
+    <mat-paginator #paginator [pageSize]="pageSizeWeek" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="pagedUsersWeekLength"
+                   [pageIndex]="pageIndexWeek" (page)="handleWeekPage($event)">
+    </mat-paginator>
+
+  </mat-tab>
+  <mat-tab label="Month">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="monthTabInvalid">Month</span>
+      <span class="invalid-emphasis"
+            *ngIf="monthTabInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+
+    <div class="paginated-schedules">
+      <div class="no-results bold italic"
+           *ngIf="(pagedUserSchedulesMonth || []).length < 1">
+        No matching schedules found for this date range...
+      </div>
+      <app-schedule-line class="schedule-row"
+                         *ngFor="let s of pagedUserSchedulesMonth"
+                         [schedule]="s"
+                         [allUsers]="allUsers"
+                         [allProjects]="allProjects"
+                         [timeCodes]="timeCodes"
+                         [authenticatedUser]="authenticatedUser"
+                         [readOnly]="checkReadOnly(s)"
+                         [unlockDate]="unlockDate"
+                         [blockOutDates]="blockOutDates"
+                         [schedulingLevel]="currentUser?.schedulinglevel || 0"
+                         (saveEvent)="scheduleSaved($event)"
+                         (deleteEvent)="scheduleDeleted($event)"
+                         (addEvent)="addSchedule($event)"
+                         (changeEvent)="changeEvent($event)"
+                         (mouseenter)="displayHoverMessage($event, s)"
+                         (mouseleave)="hideHoverMessage()">
+      </app-schedule-line>
+    </div>
+
+    <mat-paginator #paginator [pageSize]="pageSizeMonth" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="pagedUsersMonthLength"
+                   [pageIndex]="pageIndexMonth" (page)="handleMonthPage($event)">
+    </mat-paginator>
+
+  </mat-tab>
+  <mat-tab label="Custom">
+    <ng-template mat-tab-label>
+      <span [class.invalid-emphasis]="customTabInvalid">Custom</span>
+      <span class="invalid-emphasis"
+            *ngIf="customTabInvalid">&nbsp;<sup>**</sup></span>
+    </ng-template>
+
+    <div class="paginated-schedules">
+      <div class="no-results bold italic"
+           *ngIf="(pagedUserSchedulesCustom || []).length < 1">
+        No matching schedules found for this date range...
+      </div>
+      <app-schedule-line class="schedule-row"
+                         *ngFor="let s of pagedUserSchedulesCustom"
+                         [schedule]="s"
+                         [allUsers]="allUsers"
+                         [allProjects]="allProjects"
+                         [timeCodes]="timeCodes"
+                         [authenticatedUser]="authenticatedUser"
+                         [readOnly]="checkReadOnly(s)"
+                         [unlockDate]="unlockDate"
+                         [blockOutDates]="blockOutDates"
+                         [schedulingLevel]="currentUser?.schedulinglevel || 0"
+                         (saveEvent)="scheduleSaved($event)"
+                         (deleteEvent)="scheduleDeleted($event)"
+                         (addEvent)="addSchedule($event)"
+                         (changeEvent)="changeEvent($event)"
+                         (mouseenter)="displayHoverMessage($event, s)"
+                         (mouseleave)="hideHoverMessage()">
+      </app-schedule-line>
+    </div>
+
+    <mat-paginator #paginator [pageSize]="pageSizeCustom" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" [length]="pagedUsersCustomLength"
+                   [pageIndex]="pageIndexCustom" (page)="handleCustomPage($event)">
+    </mat-paginator>
+
+  </mat-tab>
+</mat-tab-group>

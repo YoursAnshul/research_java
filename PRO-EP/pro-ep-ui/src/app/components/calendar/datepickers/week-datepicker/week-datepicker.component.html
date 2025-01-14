@@ -1,0 +1,18 @@
+<mat-form-field appearance="fill" class="date-picker-form-field">
+  <mat-label>Select a week</mat-label>
+  <mat-date-range-input [formGroup]="selectedDateRange"
+                        [rangePicker]="datePicker"
+                        [comparisonStart]="selectedDateRange?.value.start"
+                        [comparisonEnd]="selectedDateRange?.value.end">
+    <input matStartDate placeholder="Start date"
+           (dateChange)="emitSelectedDate()"
+            formControlName="start"
+            autocomplete="off">
+    <input matEndDate placeholder="End date"
+           (dateChange)="emitSelectedDate()"
+           formControlName="end"
+           autocomplete="off">
+  </mat-date-range-input>
+  <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+  <mat-date-range-picker #datePicker></mat-date-range-picker>
+</mat-form-field>

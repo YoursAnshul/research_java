@@ -1,0 +1,16 @@
+.project-swatch {
+  background-color: rgb(137, 41, 255);
+  height: 6px;
+  width: 100%;
+  margin-bottom: 2px;
+  border: 0.5px solid rgb(0, 120, 212, 0.25);
+}
+
+/*.project-swatch {
+  width: 30px;
+  min-height: 33px;
+  display: inline-block;
+  margin-right: 10px;
+  border: 1px solid lightskyblue;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 25px 25px 0 rgb(0 0 0 / 14%), 0 1px 0px 0 rgb(0 0 0 / 12%);
+}*/

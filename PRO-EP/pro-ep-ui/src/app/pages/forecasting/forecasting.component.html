@@ -1,0 +1,126 @@
+<div id="forecasting-page" class="inner-container"
+     *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+      <mat-tab-group animationDuration="10ms">
+
+        <!--forecasting-->
+        <mat-tab label="Forecasting">
+          <div class="tab-inner">
+
+            <!--save forecasting-->
+            <button id="forecast-save-button" mat-raised-button class="btn btn-primary" color="primary"
+                    (click)="saveForecasting()"
+                    [disabled]="!changed"
+                    [class.disabled]="!changed">
+              Save
+            </button>
+
+            <table id="forecast-table">
+              <thead>
+                <tr id="forecast-header" class="bold">
+                  <td>Project (hours per week)</td>
+                  <td>{{forecastMonths[0]}}</td>
+                  <td>{{forecastMonths[1]}}</td>
+                  <td>{{forecastMonths[2]}}</td>
+                  <td>{{forecastMonths[3]}}</td>
+                  <td>{{forecastMonths[4]}}</td>
+                  <td>{{forecastMonths[5]}}</td>
+                  <td>{{forecastMonths[6]}}</td>
+                  <td>{{forecastMonths[7]}}</td>
+                  <td>{{forecastMonths[8]}}</td>
+                  <td>{{forecastMonths[9]}}</td>
+                  <td>{{forecastMonths[10]}}</td>
+                  <td>{{forecastMonths[11]}}</td>
+                  <td>{{forecastMonths[12]}}</td>
+                  <td>{{forecastMonths[13]}}</td>
+                </tr>
+              </thead>
+              <tr *ngFor="let fh of projectForecastHours">
+                <td class="bold">{{fh?.project?.projectName}}</td>
+                <td *ngFor="let f of numSequence(14); let i = index">
+                  <mat-form-field>
+                    <input type="text" matInput
+                           [(ngModel)]="fh?.forecastHours['forecastHours' + (i + 1)]"
+                           (keyup)="setChanged(); nvlHours(fh.forecastHours, (i+1))"
+                           (keypress)="numberRestrict($event)"
+                           name="forecast-hours-{{i}}"
+                           autocomplete="off"
+                           maxlength="4">
+                  </mat-form-field>
+                </td>
+              </tr>
+              <tr class="bold">
+                <td>TOTAL</td>
+                <td *ngFor="let f of numSequence(14); let i = index">
+                  {{forecastHourTotals[i]}}
+              </tr>
+            </table>
+          </div>
+        </mat-tab>
+
+        <!--core hours-->
+        <mat-tab label="Core Hours">
+          <div class="tab-inner">
+
+
+            <!--save core hours-->
+            <button id="core-hours-save-button" mat-raised-button class="btn btn-primary" color="primary"
+                    (click)="saveCoreHours()"
+                    [disabled]="!coreHoursChanged"
+                    [class.disabled]="!coreHoursChanged">
+              Save
+            </button>
+
+            <table id="core-hours-table">
+              <thead>
+                <tr id="core-hours-header" class="bold">
+                  <td>User (hours per week)</td>
+                  <td>{{coreHoursMonths[0]}}</td>
+                  <td>{{coreHoursMonths[1]}}</td>
+                  <td>{{coreHoursMonths[2]}}</td>
+                  <td>{{coreHoursMonths[3]}}</td>
+                  <td>{{coreHoursMonths[4]}}</td>
+                  <td>{{coreHoursMonths[5]}}</td>
+                  <td>{{coreHoursMonths[6]}}</td>
+                  <td>{{coreHoursMonths[7]}}</td>
+                  <td>{{coreHoursMonths[8]}}</td>
+                  <td>{{coreHoursMonths[9]}}</td>
+                  <td>{{coreHoursMonths[10]}}</td>
+                  <td>{{coreHoursMonths[11]}}</td>
+                  <td>{{coreHoursMonths[12]}}</td>
+                  <td>{{coreHoursMonths[13]}}</td>
+                </tr>
+              </thead>
+              <tr *ngFor="let ch of userCoreHours">
+                <td class="bold">{{ch?.user?.displayName}}</td>
+                <td *ngFor="let f of numSequence(14); let i = index">
+                  <mat-form-field>
+                    <input type="text" matInput
+                           [(ngModel)]="ch?.coreHours['coreHours' + (i + 1)]"
+                           (keyup)="setChangedCoreHours(); nvlHours(ch.coreHours, (i+1))"
+                           (keypress)="numberRestrict($event)"
+                           name="core-hours-{{i}}"
+                           autocomplete="off"
+                           maxlength="4">
+                  </mat-form-field>
+                </td>
+              </tr>
+              <tr class="bold">
+                <td>TOTAL</td>
+                <td *ngFor="let f of numSequence(14); let i = index">
+                  {{coreHourTotals[i]}}
+              </tr>
+            </table>
+
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+
+</div>
+
+<div class="inner-container"
+     *ngIf="authenticatedUser?.netID && !(authenticatedUser?.resourceGroup || authenticatedUser?.admin)">
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>Please contact someone in the resource team if you believe this was a mistake.</p>
+</div>
