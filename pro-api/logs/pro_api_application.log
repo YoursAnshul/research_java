@@ -83,3 +83,33 @@ Identify and stop the process that's listening on port 8080 or configure this ap
 2025-01-14 12:15:27 [http-nio-8083-exec-3] INFO  : Initializing Servlet 'dispatcherServlet'
 2025-01-14 12:15:27 [http-nio-8083-exec-3] INFO  : Completed initialization in 1 ms
 2025-01-14 20:04:08 [HikariPool-1 housekeeper] WARN  : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=42m29s833ms800ns).
+2025-01-14 21:15:32 [main] INFO  : Starting ProApiApplication using Java 17.0.10 with PID 56212 (D:\Java Project\research_java\pro-api\target\classes started by hp in D:\Java Project\research_java\pro-api)
+2025-01-14 21:15:32 [main] INFO  : The following 1 profile is active: "local"
+2025-01-14 21:15:32 [main] INFO  : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-01-14 21:15:33 [main] INFO  : Finished Spring Data repository scanning in 103 ms. Found 18 JPA repository interfaces.
+2025-01-14 21:15:33 [main] INFO  : Tomcat initialized with port 8080 (http)
+2025-01-14 21:15:33 [main] INFO  : Initializing ProtocolHandler ["http-nio-8080"]
+2025-01-14 21:15:33 [main] INFO  : Starting service [Tomcat]
+2025-01-14 21:15:33 [main] INFO  : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2025-01-14 21:15:33 [main] INFO  : Initializing Spring embedded WebApplicationContext
+2025-01-14 21:15:33 [main] INFO  : Root WebApplicationContext: initialization completed in 1375 ms
+2025-01-14 21:15:33 [main] INFO  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-01-14 21:15:33 [main] INFO  : HHH000412: Hibernate ORM core version 6.5.2.Final
+2025-01-14 21:15:33 [main] INFO  : HHH000026: Second-level cache disabled
+2025-01-14 21:15:34 [main] INFO  : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-01-14 21:15:34 [main] INFO  : HikariPool-1 - Starting...
+2025-01-14 21:15:34 [main] INFO  : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@661db63e
+2025-01-14 21:15:34 [main] INFO  : HikariPool-1 - Start completed.
+2025-01-14 21:15:34 [main] WARN  : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-01-14 21:15:35 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViPartLookupId
+2025-01-14 21:15:35 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViPartLookupId
+2025-01-14 21:15:35 [main] WARN  : HHH000038: Composite-id class does not override equals(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2025-01-14 21:15:35 [main] WARN  : HHH000039: Composite-id class does not override hashCode(): com.pro.api.models.dataaccess.ViProjectTotalsSummedId
+2025-01-14 21:15:36 [main] INFO  : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-01-14 21:15:36 [main] INFO  : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-01-14 21:15:36 [main] INFO  : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-01-14 21:15:37 [main] WARN  : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-01-14 21:15:38 [main] INFO  : Starting ProtocolHandler ["http-nio-8080"]
+2025-01-14 21:15:38 [main] INFO  : Tomcat started on port 8080 (http) with context path '/'
+2025-01-14 21:15:38 [main] INFO  : Started ProApiApplication in 6.602 seconds (process running for 9.258)
+2025-01-14 21:15:38 [main] INFO  : Hello PRO!
