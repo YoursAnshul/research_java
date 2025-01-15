@@ -10,7 +10,6 @@
   gap: 24px;
 }
 
-
 .breadcrumb {
   margin: 0px;
 }
@@ -18,12 +17,12 @@
 .breadcrumb-item {
   font-size: 13px;
   font-weight: 400;
-  color: #58595B;
+  color: #58595b;
   line-height: 15.23px;
 }
 
 mat-card {
-  border: 2px solid #0680CD;
+  border: 2px solid #0680cd;
   padding-top: 12px;
   border-radius: 10px;
   display: flex;
@@ -36,41 +35,39 @@ mat-card {
   display: flex;
   gap: 10px;
 }
-.coreHoursInput{
+.coreHoursInput {
   width: 50px;
   text-align: center;
 }
 
-.shift-schedule-heading{
+.shift-schedule-heading {
   font-weight: 500;
   display: block;
-  margin-bottom: 10px
+  margin-bottom: 10px;
 }
 
 .view-user-title {
-
   padding: 10px 0px;
-  color: #00569B;
+  color: #00569b;
   font-weight: 500;
   font-size: 20px;
   line-height: 20px;
   letter-spacing: 0.1px;
 }
 
-.trained_on_project_details{
-
+.trained_on_project_details {
   margin-top: 10px;
   background-color: white;
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
   width: 150px;
   height: 150px;
   border: 0.5px solid lightgrey;
   padding: 5px 10px;
   cursor: default;
-
 }
 
-.view-user-details{
+.view-user-details {
   display: flex;
   margin-left: 112px;
   transform: translateY(-35px);
@@ -79,12 +76,12 @@ mat-card {
   gap: 12px;
 }
 
-.edit-user-button{
+.edit-user-button {
   float: right;
   transform: translateY(-95px);
 }
 
-.trained_on_projects{
+.trained_on_projects {
   padding-top: 10px;
   margin-left: 90px;
   height: 100px;
@@ -106,7 +103,7 @@ mat-card {
   text-decoration-style: solid;
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
-  color: #00569B;
+  color: #00569b;
 }
 .upload {
   display: flex;
@@ -121,20 +118,17 @@ mat-card {
 .divider {
   width: 100%;
   height: 7.41px;
-  background: #164B8B;
-
+  background: #164b8b;
 }
-.divider_trained_on{
-
+.divider_trained_on {
   height: 1.41px;
-  background: #164B8B;
+  background: #164b8b;
   width: 500px;
   margin-bottom: 50px;
 }
-.trained_on_box{
+.trained_on_box {
   height: 90px;
   overflow-y: auto;
-
 }
 
 .row {
@@ -146,12 +140,10 @@ mat-card {
   align-items: flex-start;
 }
 
-
 mat-form-field {
   width: 250px;
   padding: 0px;
 }
-
 
 .actions {
   padding-left: 5px;
@@ -161,14 +153,13 @@ mat-form-field {
 }
 
 .required {
-  color: #DC4A38;
+  color: #dc4a38;
   margin-left: 3px;
   font-size: 18px;
   margin-bottom: 8px;
 }
 
 .user-form {
-
   margin-top: 8px;
 }
 
@@ -177,20 +168,19 @@ mat-form-field {
   height: 35px; /* Desired height */
   display: flex; /* Align content properly */
   align-items: center; /* Center inner content vertically */
-
 }
 
 .red {
-  color: #DC4A38;
+  color: #dc4a38;
 }
 .mdc-floating-label--required {
-  color: #DC4A38 !important;
+  color: #dc4a38 !important;
 }
 
 .mat-mdc-form-field.ctm-select {
-  border-top: 1px solid #B5B5B5;
-  border-left: 1px solid #B5B5B5;
-  border-right: 1px solid #B5B5B5;
+  border-top: 1px solid #b5b5b5;
+  border-left: 1px solid #b5b5b5;
+  border-right: 1px solid #b5b5b5;
   border-radius: 4px !important;
   height: 35px;
 }
@@ -210,13 +200,11 @@ mat-checkbox {
   color: red;
 }
 .schedule {
-
   display: flex;
   width: 273.5px;
   align-items: center;
   padding: 0px;
   justify-content: space-between;
-
 }
 
 .info {
@@ -265,7 +253,8 @@ mat-checkbox {
 }
 
 #user-profile-picture-default {
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
   border-radius: 10px;
 }
 
@@ -282,7 +271,7 @@ mat-checkbox {
   margin-top: 10px;
   width: 100%;
 }
-.username-text{
+.username-text {
   font-family: Arial;
   font-weight: normal;
   color: #797980;
@@ -316,7 +305,7 @@ hr {
 
 .hr {
   margin-left: 10px;
-  border: .5px solid #58595B;
+  border: 0.5px solid #58595b;
   width: calc(100% - 26px);
 }
 
@@ -334,19 +323,18 @@ hr {
   margin-bottom: 50px;
 }
 
-.edit_trained_on_projects{
-   margin-top: auto;
+.edit_trained_on_projects {
+  margin-top: auto;
 }
 
-.trained_on_title{
+.trained_on_title {
   color: #0078d4;
 }
 
-.line{
+.line {
   border-bottom: 0.5px solid #0078d4;
   margin-bottom: 5px;
 }
-
 
 .user-fields-container {
   padding-top: 90px;
@@ -379,7 +367,8 @@ hr {
   margin-right: 65px;
   margin-top: 15px;
   margin-bottom: 30px;
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
   width: 100%;
 }
 
@@ -390,8 +379,9 @@ hr {
 }
 
 #core-hours-header {
-  background-color: #89cff0;
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  background-color: #e5e5e580;
+  height: 40px;
+  /* box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%); */
 }
 
 #core-hours-header td {
@@ -412,7 +402,7 @@ hr {
 #user-requests-table td,
 #user-requests-table th {
   padding: 10px;
-  border: 0.5px solid rgb(0,0,0,0.15);
+  border: 0.5px solid rgb(0, 0, 0, 0.15);
   width: 250px;
 }
 
@@ -439,7 +429,6 @@ app-form-field {
   display: inline-block;
 }
 
-
 app-form-field {
   display: inline-block;
 }
@@ -455,9 +444,9 @@ app-form-field {
 
 .blue-info {
   position: absolute;
-    right: -10px;
-    bottom: 10px;
-    z-index: 1001;
+  right: -10px;
+  bottom: 10px;
+  z-index: 1001;
 }
 
 .wd516 {
@@ -466,7 +455,7 @@ app-form-field {
 
 .hr {
   margin-left: 10px;
-  border: .5px solid #58595B;
+  border: 0.5px solid #58595b;
   width: calc(100% - 26px);
 }
 
@@ -484,7 +473,6 @@ app-form-field {
   margin-bottom: 8px;
 }
 
-
 .invalid-tab {
   font-family: Roboto;
   font-size: 14px;
@@ -494,8 +482,7 @@ app-form-field {
   text-align: left;
   text-underline-position: from-font;
   text-decoration-skip-ink: none;
-  color: #DC4A38;
-
+  color: #dc4a38;
 }
 
 .add-user-tab {
@@ -517,9 +504,9 @@ app-form-field {
   padding: 0px 20px;
   font-size: 11px;
   font-weight: 500;
-  color: #DC4A38;
+  color: #dc4a38;
   /* Primary blue color */
-  border: 2px solid #DC4A38;
+  border: 2px solid #dc4a38;
   /* Border color matches text */
   background-color: transparent;
   /* Transparent background */
@@ -543,7 +530,7 @@ app-form-field {
 }
 
 .error-message {
-  color: #DC4A38;;
+  color: #dc4a38;
   font-size: 14px;
 }
 
@@ -582,4 +569,9 @@ app-form-field {
   cursor: pointer;
   color: #0680cd;
   text-decoration: underline;
+}
+
+::ng-deep .mdc-text-field--filled.mdc-text-field--disabled{
+  background-color: white !important;
+  border: 1px solid !important;
 }
