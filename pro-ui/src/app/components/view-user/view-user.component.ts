@@ -23,6 +23,7 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-view-user',
@@ -192,6 +193,17 @@ export class ViewUserComponent implements OnInit {
       }
     );
 
+  }
+
+  isCurrentMonth(month: Date | null): boolean {
+    if (!month) {
+      return false;
+    }
+  
+    const currentMonth = moment.utc().startOf('month');
+    const monthToCheck = moment.utc(month).startOf('month');
+    
+    return currentMonth.isSame(monthToCheck);
   }
 
   ngOnInit(): void {

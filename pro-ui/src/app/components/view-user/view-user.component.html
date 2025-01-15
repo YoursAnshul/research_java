@@ -194,31 +194,33 @@
           <table id="core-hours-table">
             <thead>
               <tr id="core-hours-header" class="bold">
-                <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
-                <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month1)">{{ formatDateToShortMonthYear(coreHours?.month1 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month2)">{{ formatDateToShortMonthYear(coreHours?.month2 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month3)">{{ formatDateToShortMonthYear(coreHours?.month3 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month4)">{{ formatDateToShortMonthYear(coreHours?.month4 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month5)">{{ formatDateToShortMonthYear(coreHours?.month5 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month6)">{{ formatDateToShortMonthYear(coreHours?.month6 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month7)">{{ formatDateToShortMonthYear(coreHours?.month7 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month8)">{{ formatDateToShortMonthYear(coreHours?.month8 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month9)">{{ formatDateToShortMonthYear(coreHours?.month9 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month10)">{{ formatDateToShortMonthYear(coreHours?.month10 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month11)">{{ formatDateToShortMonthYear(coreHours?.month11 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month12)">{{ formatDateToShortMonthYear(coreHours?.month12 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month13)">{{ formatDateToShortMonthYear(coreHours?.month13 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month14)">{{ formatDateToShortMonthYear(coreHours?.month14 || null) }}</td>
               </tr>
             </thead>
-            <tr>
-              <td *ngFor="let ch of numSequence(14); let i = index">
-                <mat-form-field class="coreHoursInput">
-                  <input type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
-                    (keyup)="setChanged(); nvlHours(coreHours, (i+1))" (keypress)="numberRestrict($event)"
-                    name="core-hours-{{i}}" autocomplete="off" maxlength="4" [disabled]="isEdit || readOnly">
-                </mat-form-field>
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td *ngFor="let ch of numSequence(14); let i = index" [class.current-month-highlight]="isCurrentMonth(coreHours['month' + (i + 1)])">
+                  <mat-form-field class="coreHoursInput" style="height: 35px;">
+                    <input type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                      (keyup)="setChanged(); nvlHours(coreHours, (i + 1))" (keypress)="numberRestrict($event)"
+                      name="core-hours-{{i}}" autocomplete="off" maxlength="4" [disabled]="isEdit || readOnly">
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
 
@@ -385,3 +387,21 @@
   </div>
 
 </div>
+
+
+<style>
+  ::ng-deep .mat-mdc-form-field-infix{
+    margin-top: -10px;
+  margin-left: 3px;
+  }
+  .current-month-highlight {
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  padding: 4px;
+  background-color: rgba(0, 123, 255, 0.1); 
+}
+
+.current-month-highlight mat-form-field {
+  border-radius: 4px;
+}
+</style>
