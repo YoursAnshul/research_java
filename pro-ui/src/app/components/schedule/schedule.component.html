@@ -44,7 +44,11 @@
       <ul>
         <li *ngFor="let vm of validationMessages;let i=index;">
           <!--{{vm.MessageText}}-->
-          <div *ngFor="let line of (vm.messageText || '').split('|');let i=index;">{{line}}</div>
+          <ul>
+            <li *ngFor="let line of (vm.messageText || '').split('|'); let j = index;">
+              {{line}}
+            </li>
+          </ul>
           <ul *ngIf="(vm.schedules || '').length > 0">
             <li *ngFor="let s of vm.schedules" class="validation-schedules"><span class="bold italic">{{s.projectName}} |</span>&nbsp;&nbsp;{{formatDateOnlyWithMonthNameToString(s.startdatetime || null)}}, &nbsp;&nbsp;<span class="italic">{{s.startTime}} – {{s.endTime}} : {{s.scheduledHours}} hours</span></li>
           </ul>
