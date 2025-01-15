@@ -380,12 +380,12 @@ hr {
 
 #core-hours-header {
   background-color: #e5e5e580;
-  height: 40px;
+  height: 35px;
   /* box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%); */
 }
 
 #core-hours-header td {
-  border: 0.5px solid #3f51b5;
+  /* border: 0.5px solid #3f51b5; */
 }
 
 #user-requests-no-results {
@@ -574,4 +574,9 @@ app-form-field {
 ::ng-deep .mdc-text-field--filled.mdc-text-field--disabled{
   background-color: white !important;
   border: 1px solid !important;
+  border-radius: 4px;
+}
+
+::ng-deep .mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input{
+  color: initial !important;
 }
