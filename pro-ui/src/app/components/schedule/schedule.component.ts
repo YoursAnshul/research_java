@@ -1943,14 +1943,16 @@ export class ScheduleComponent implements OnInit {
   }
 
   getValidationMessages(): void {
-    if (!this.selectedDate || !this.authenticatedUser)
-      return;
+    console.log("Insisis");
+    
+    // if (!this.selectedDate || !this.authenticatedUser)
+    //   return;
 
     //get validation messages
     this.validationMessagesChecked = false;
-    this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
-      response => {
-        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+    // this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
+    //   response => {
+    //     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           // this.validationMessages = <IValidationMessage[]>response.Subject;
           this.validationMessages = <IValidationMessage[]>[
             {
@@ -1995,6 +1997,7 @@ export class ScheduleComponent implements OnInit {
             }
           ];
           for (var x = 0; x < this.validationMessages.length; x++) {
+console.log("this.validationMessages.length---------- ",this.validationMessages.length);
 
             if (this.validationMessages[x].schedules) {
               for (var i = 0; i < (this.validationMessages[x].schedules || []).length; i++) {
@@ -2032,13 +2035,13 @@ export class ScheduleComponent implements OnInit {
           }
 
           this.validationMessagesChecked = true;
-        }
-      },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-      }
-    );
+        // }
+    //   },
+    //   error => {
+    //     this.errorMessage = <string>(error.message);
+    //     this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+    //   }
+    // );
 
   }
 
@@ -2155,6 +2158,8 @@ export class ScheduleComponent implements OnInit {
 
       //validaiton messages
       if (schedule.validationMessages) {
+        console.log("schedule.validationMessages.length---------- ",schedule.validationMessages.length);
+        
         if (schedule.validationMessages.length > 0) {
           htmlMessage = htmlMessage + '<p class="bold">Validation Messages:</p>';
           for (var i = 0; i < schedule.validationMessages.length; i++) {
@@ -2181,6 +2186,8 @@ export class ScheduleComponent implements OnInit {
 
   displaySchedulingLevelInfo(event: any): void {
     let htmlMessage: string = '';
+    console.log("ghgfufbfgugffgufgh");
+    
 
     // if (!this.currentUser) {
     //   this.currentUser = {} as User;
@@ -2229,8 +2236,12 @@ export class ScheduleComponent implements OnInit {
 
     let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
     hoverMessage.innerHTML = htmlMessage;
+    console.log("hoverMessage.innerHTML---------- ",hoverMessage.innerHTML);
+    
 
     this.globalsService.showHoverMessage.next(true);
+    console.log("this.globalsService.showHoverMessage----------",this.globalsService.showHoverMessage);
+    
 
     hoverMessage.style.top = (event.screenY) + 'px';
     hoverMessage.style.left = event.clientX + 'px';
