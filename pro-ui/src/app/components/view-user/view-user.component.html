@@ -198,7 +198,7 @@
                 <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month2)">{{ formatDateToShortMonthYear(coreHours?.month2 || null) }}</td>
                 <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month3)">{{ formatDateToShortMonthYear(coreHours?.month3 || null) }}</td>
                 <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month4)">{{ formatDateToShortMonthYear(coreHours?.month4 || null) }}</td>
-                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month5)">{{ formatDateToShortMonthYear(coreHours?.month5 || null) }}</td>
+                <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month5)" >{{ formatDateToShortMonthYear(coreHours?.month5 || null) }}</td>
                 <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month6)">{{ formatDateToShortMonthYear(coreHours?.month6 || null) }}</td>
                 <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month7)">{{ formatDateToShortMonthYear(coreHours?.month7 || null) }}</td>
                 <td [class.current-month-highlight]="isCurrentMonth(coreHours?.month8)">{{ formatDateToShortMonthYear(coreHours?.month8 || null) }}</td>
@@ -212,7 +212,7 @@
             </thead>
             <tbody>
               <tr>
-                <td *ngFor="let ch of numSequence(14); let i = index" [class.current-month-highlight]="isCurrentMonth(coreHours['month' + (i + 1)])">
+                <td *ngFor="let ch of numSequence(14); let i = index" [class.current-month-highlight1]="isCurrentMonth(coreHours['month' + (i + 1)])">
                   <mat-form-field class="coreHoursInput" style="height: 35px;">
                     <input type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
                       (keyup)="setChanged(); nvlHours(coreHours, (i + 1))" (keypress)="numberRestrict($event)"
@@ -398,10 +398,27 @@
   border: 3px solid #007bff !important;
   border-radius: 4px;
   padding: 4px;
+  background-color: rgba(0, 123, 255, 0.1); 
+
   /* background-color: rgba(0, 123, 255, 0.1);  */
 }
 
 .current-month-highlight mat-form-field {
   border-radius: 4px;
+    background-color: rgba(0, 123, 255, 0.1); 
+
+}
+
+.current-month-highlight1 {
+  border: 3px solid #007bff !important;
+  border-radius: 4px;
+  padding: 4px;
+  /* background-color: rgba(0, 123, 255, 0.1);  */
+}
+
+.current-month-highlight1 mat-form-field {
+  border-radius: 4px;
+    background-color: rgba(0, 123, 255, 0.1); 
+
 }
 </style>
