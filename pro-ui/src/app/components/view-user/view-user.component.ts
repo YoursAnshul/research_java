@@ -43,7 +43,7 @@ export class ViewUserComponent implements OnInit {
   @Input() viewUser: User | undefined;
   @Output() userSaved = new EventEmitter<User>();
   @Output() closewindow = new EventEmitter<void>();
-
+  @Input() showBreadcrum: boolean =  true;
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];

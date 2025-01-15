@@ -7,6 +7,7 @@ import { GlobalsService } from '../../services/globals/globals.service';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -60,7 +61,8 @@ export class HeaderComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private http: HttpClient,
     private dialog: MatDialog,
-    private globalsService: GlobalsService
+    private globalsService: GlobalsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -255,5 +257,9 @@ export class HeaderComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  openUserProfile(): void  {
+    this.router.navigate(['user-profile']);
   }
 }

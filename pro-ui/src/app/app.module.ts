@@ -83,6 +83,7 @@ import { FormFieldComponent } from './components/form-field/form-field.component
 import { UnsavedChangesDialogComponent } from './components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { SelectComponent } from './components/form-inputs/select/select.component';
 import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -140,7 +141,8 @@ import { SchedulingInfoComponent } from './components/scheduling-info/scheduling
     FormFieldComponent,
     UnsavedChangesDialogComponent,
     SelectComponent,
-    SchedulingInfoComponent
+    SchedulingInfoComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,
