@@ -218,9 +218,9 @@ mat-checkbox {
   width: 100%;
 }
 
-::ng-deep .mat-mdc-tab.mdc-tab {
+/* ::ng-deep .mat-mdc-tab.mdc-tab {
   min-width: 200px;
-}
+} */
 .mat-form-field {
   width: 150px;
   margin: 5px;
