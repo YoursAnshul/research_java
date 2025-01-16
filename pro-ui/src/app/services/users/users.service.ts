@@ -138,7 +138,7 @@ export class UsersService {
   }
 
   getUserCoreHoursByNetId(netId: string): Observable<IGeneralResponse> {
-    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/coreHours/${netId}`);
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/coreHours-V2/${netId}`);
   }
 
   getAllUserCoreHours(): Observable<IGeneralResponse> {
