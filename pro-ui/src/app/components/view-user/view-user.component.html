@@ -213,8 +213,8 @@
             <tbody>
               <tr>
                 <td *ngFor="let ch of numSequence(14); let i = index" [class.current-month-highlight1]="isCurrentMonth(coreHours['month' + (i + 1)])">
-                  <mat-form-field class="coreHoursInput" style="height: 35px;">
-                    <input type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                  <mat-form-field class="coreHoursInput" style="height: 35px; ">
+                    <input style="margin-left: 5px !important; " type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
                       (keyup)="setChanged(); nvlHours(coreHours, (i + 1))" (keypress)="numberRestrict($event)"
                       name="core-hours-{{i}}" autocomplete="off" maxlength="4" [disabled]="isEdit || readOnly">
                   </mat-form-field>

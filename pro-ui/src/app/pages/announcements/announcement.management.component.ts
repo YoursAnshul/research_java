@@ -197,7 +197,11 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   openAddAnnouncementDialog(): void {
     const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      this.pageIndex = 0;
+      this.getList(this.pageIndex + 1);
+    });
+   
   }
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
