@@ -2,90 +2,140 @@
     
     <!-- Breadcrumb -->
     <nav class="m-0 text-sm font-normal text-[#58595B] leading-4 select-none">
-        <span class="cursor-pointer" (click)="closeWindow()">Users</span> /
+        <span class="cursor-pointer underline text-[#005698]" (click)="closeWindow()">Users</span> /
         <span class="cursor-default">{{getTitle()}}</span>
     </nav>
 
-    <!-- Card with Tabs -->
-    <mat-card>
-        <div class="add-user-container">
-            <div>
-                <div class="profile-image-container" (click)="fileInput.click()">
-                    <ng-container *ngIf="previewUrl; else defaultIcon">
-                        <img [src]="previewUrl" alt="Uploaded Image" class="" />
-                    </ng-container>
-                    <ng-template #defaultIcon>
-                        <mat-icon class="user-icon" svgIcon="user-square"></mat-icon>
-                    </ng-template>
+  <!-- User Container with Tabs -->
+  <div class="border border-[#c2c2c2] border-3 rounded-lg"
+    style="border-color: #c2c2c2 !important;">
+
+        <div class="flex items-start p-4">
+    
+            <!-- photo -->
+            <div class="flex gap-1 items-end ml-[-15px]">
+    
+              <!-- help icon -->
+              <mat-icon style="width: 16px; height: 16px;"
+                svgIcon="info" [ngbTooltip]="tooltipContent"></mat-icon>
+              <ng-template #tooltipContent>
+                  JPG or PNG <br />
+                  Max. 10 MB
+              </ng-template>
+    
+              <!-- photo -->
+              <div class="w-fit">
+                <div class="text-center"
+                  (click)="fileInput.click()">
+                  <ng-container *ngIf="previewUrl; else defaultIcon">
+                    <img [src]="previewUrl" alt="Uploaded Image" class="" />
+                  </ng-container>
+                  <ng-template #defaultIcon>
+                    <mat-icon style="width: 60px; height: 60px;" svgIcon="user-square"></mat-icon>
+                  </ng-template>
                 </div>
-
-                <div class="upload" (click)="fileInput.click()">
-                    <span>Upload Photo</span>
-                    <mat-icon class="info-icon" svgIcon="info"  [ngbTooltip]="tooltipContent"></mat-icon>
-                    <ng-template #tooltipContent>
-                        JPG or PNG <br />
-                        Max. 10 MB
-                      </ng-template>
+    
+                <div class="flex gap-1 items-center" (click)="fileInput.click()">
+                  <span class="text-xs text-[#005698] text-center underline cursor">Upload Photo</span>
                 </div>
-
-                <input #fileInput type="file" hidden accept="image/jpeg, image/png" (change)="onFileChange($event)" />
-
-                <div *ngIf="errorMessageForImage" class="error-message">{{ errorMessageForImage }}</div>
-            </div>
-            <div class="add-user-title">{{getTitle()}}</div>
-        </div>
-        
-        <div class="divider"></div>
-        <!-- Tabs -->
-        <mat-tab-group class="add-user-tab" (selectedTabChange)="onTabChanged($event)"  [(selectedIndex)]="selectedTabIndex">
-            <!-- Tab 1: Scheduling -->
-            <mat-tab label="Scheduling">`
-                <ng-template mat-tab-label>
-                    <span [class.invalid-emphasis]="coreHoursInvalid">Scheduling</span>
-                    <span class="invalid-emphasis" *ngIf="coreHoursInvalid">&nbsp;<sup>**</sup></span>
-
-            </ng-template>
-
-              <div class="user-fields-container">
-                <span class="bold">Core Hours Monthly</span>
-                <table id="core-hours-table">
-                  <thead>
-                  <tr id="core-hours-header" class="bold">
-                    <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
-                    <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
-                  </tr>
-                  </thead>
-                  <tr>
-                    <td *ngFor="let ch of numSequence(14); let i = index">
-                      <mat-form-field class="coreHoursInput">
-                        <input type="text"  matInput
-                               [(ngModel)]="coreHours['coreHours' + (i + 1)]"
-                               (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
-                               (keypress)="numberRestrict($event)"
-                               name="core-hours-{{i}}"
-                               autocomplete="off"
-                               maxlength="4">
-                      </mat-form-field>
-                    </td>
-                  </tr>
-                </table>
               </div>
+    
+              <!-- hidden input and error message -->
+              <input #fileInput type="file" hidden accept="image/jpeg, image/png" (change)="onFileChange($event)" />
+              <div *ngIf="errorMessageForImage" class="error-message">{{ errorMessageForImage }}</div>
+    
+            </div>
+    
+            <div class="text-xl text-button-blue w-fit ml-1">
+                {{getTitle()}}
+            </div>
+    
+        </div>
+    
+        <div class="divider"></div>
 
-            </mat-tab>
-            <!-- Tab 1: User Details -->
-            <mat-tab>
+        <!-- Tabs -->
+        <div class="flex items-center justify-between gap-2 m-3">
+            <div class="flex items-center gap-2">
+    
+                <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+                    [class.invalid-emphasis]="coreHoursInvalid"
+                    [class.text-[#1874CA]]="selectedTab === 'scheduling'"
+                    [class.border-b]="selectedTab === 'scheduling'"
+                    [class.border-b-[3px]]="selectedTab === 'scheduling'"
+                    (click)="onTabChanged('scheduling')">
+                    <div>Scheduling</div><div *ngIf="coreHoursInvalid">**</div>
+                </div>
+                <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+                    [class.invalid-emphasis]="coreHoursInvalid"
+                    [class.text-[#1874CA]]="selectedTab === 'user-details'"
+                    [class.border-b]="selectedTab === 'user-details'"
+                    [class.border-b-[3px]]="selectedTab === 'user-details'"
+                    (click)="onTabChanged('user-details')">
+                    <div><span [ngClass]="{'invalid-tab': isUserFormInvalid}"> User Details </span><span class="required"
+                    *ngIf="isUserFormInvalid || (selectedTab === 'user-details' && tab2Invalid)">*</span></div><div *ngIf="coreHoursInvalid">**</div>
+                </div>
+                <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
+                    [class.text-[#1874CA]]="selectedTab === 'personal-contact-info'"
+                    [class.border-b]="selectedTab === 'personal-contact-info'"
+                    [class.border-b-[3px]]="selectedTab === 'personal-contact-info'"
+                    [class.invalid-emphasis]="coreHoursInvalid"
+                    (click)="onTabChanged('personal-contact-info')">
+                    <div>Personal Contact Info</div><div *ngIf="coreHoursInvalid">**</div>
+                </div>
+    
+            </div>
+    
+            <!-- Buttons -->
+            <div class="flex items-center gap-2">
+                <button class="btn-outline" (click)="showUnsavedChangesDialog()">Cancel</button>
+                <button mat-raised-button color="primary submit" [disabled]="tab2Invalid" (click)="confirmDialog()">Save</button>
+            </div>
+        </div>
+  
+        <!-- Tab 1: Scheduling -->
+        @if (selectedTab === 'scheduling') {
+            <div class="m-3 mt-4">
+                    <span class="bold">Core Hours Monthly</span>
+                    <table id="core-hours-table">
+                    <thead>
+                    <tr id="core-hours-header" class="bold">
+                        <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td *ngFor="let ch of numSequence(14); let i = index">
+                        <mat-form-field class="coreHoursInput">
+                            <input type="text"  matInput
+                                [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                                (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
+                                (keypress)="numberRestrict($event)"
+                                name="core-hours-{{i}}"
+                                autocomplete="off"
+                                maxlength="4">
+                        </mat-form-field>
+                        </td>
+                    </tr>
+                    </table>
+            </div>
+        }
+            
+        <!-- Tab 2: User Details -->
+        @if (selectedTab === 'user-details') {
+            <div class="m-3">
                 <ng-template mat-tab-label>
                     <span [ngClass]="{'invalid-tab': isUserFormInvalid}"> User Details </span><span class="required"
                         *ngIf="tab2Invalid">*</span>
@@ -149,11 +199,13 @@
                         </div>
                     </div>
                 </div>
-            </mat-tab>
+            </div>
+        }
 
 
-            <!-- Tab 3: Hiring Info -->
-            <mat-tab label="Personal Contact Info">
+        <!-- Tab 3: personal contact Info -->
+        @if (selectedTab === 'personal-contact-info') {
+            <div class="m-3">
                 <div *ngIf="!tab3UserFields">
                     Loading profile...
                 </div>
@@ -171,54 +223,9 @@
                         </div>
                     </div>
                 </div>
-            </mat-tab>
-            <!--requests-->
-              <mat-tab label="Requests"
-                   *ngIf="!createForm">
-            <ng-template mat-tab-label>
-              <span>Requests</span>
-            </ng-template>
-
-            &lt;!&ndash;requests table&ndash;&gt;
-            <table id="user-requests-table" mat-table [dataSource]="requests" class="mat-elevation-z8"
-                   *ngIf="requests.length > 0">
-
-              <ng-container matColumnDef="RequestType"><th mat-header-cell *matHeaderCellDef>Request Type</th><td mat-cell *matCellDef="let req"> {{req?.requestType}} </td></ng-container>
-              <ng-container matColumnDef="InterviewerEmpName"><th mat-header-cell *matHeaderCellDef>Interviewer</th><td mat-cell *matCellDef="let req"> {{req?.interviewerEmpName}} </td></ng-container>
-              <ng-container matColumnDef="ResourceTeamMemberName"><th mat-header-cell *matHeaderCellDef>Resource Team Member</th><td mat-cell *matCellDef="let req"> {{req?.resourceTeamMemberName}} </td></ng-container>
-              <ng-container matColumnDef="RequestDate"><th mat-header-cell *matHeaderCellDef>Request Date</th><td mat-cell *matCellDef="let req"> {{formatDateOnlyToString(req?.requestDate)}} </td></ng-container>
-              <ng-container matColumnDef="RequestDetails"><th mat-header-cell *matHeaderCellDef>Request Details</th><td mat-cell *matCellDef="let req"> {{req?.requestDetails}} </td></ng-container>
-              <ng-container matColumnDef="Decision"><th mat-header-cell *matHeaderCellDef>Decision</th><td mat-cell *matCellDef="let req"> {{req?.decision}} </td></ng-container>
-              <ng-container matColumnDef="Notes"><th mat-header-cell *matHeaderCellDef>Notes</th><td mat-cell *matCellDef="let req"> {{req?.notes}} </td></ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="requestTableColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: requestTableColumns;"></tr>
-
-            </table>
-
-            <div id="user-requests-no-results" class="user-requests-results"
-                 *ngIf="requests.length < 1">
-              {{noRequestsResultsMessage}}
             </div>
-          </mat-tab>
-
-        </mat-tab-group>
-        <div *ngIf="isUserCalendarVisible && !createForm">
-            <div id="user-calendar"
-                 *ngIf="createForm">
-              <span class="shift-schedule-heading">Shift Schedule</span>
-              <app-calendar [authenticatedUser]="authenticatedUser"
-                            [contextUser]="selectedUser"></app-calendar>
-            </div>
-          </div>
-
-
-        <!-- Buttons -->
-        <div class="actions">
-            <button class="btn-outline" (click)="showUnsavedChangesDialog()">Cancel</button>
-            <button mat-raised-button color="primary submit" [disabled]="tab2Invalid"
-                (click)="confirmDialog()">Save</button>
-        </div>
-    </mat-card>
+        }
+    
+  </div>
 
 </div>

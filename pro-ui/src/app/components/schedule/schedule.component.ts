@@ -371,22 +371,22 @@ export class ScheduleComponent implements OnInit {
 
         if (!previousDateIsSame) {
           //call validate schedules
-          this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
-            response => {
-              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          // this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
+          //   response => {
+          //     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                 try {
                   this.getValidationMessages();
                   //this.validationMessages = <IValidationMessage[]>(response.Subject).filter(x => x.DempoId == this.authenticatedUser.NetID);
                 } catch (ex) {
                   console.log(ex);
                 }
-              }
-            },
-            error => {
-              this.errorMessage = <string>(error.message);
-              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-            }
-          )
+          //     }
+          //   },
+          //   error => {
+          //     this.errorMessage = <string>(error.message);
+          //     this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+          //   }
+          // )
         }
 
         //set month start and end

@@ -182,7 +182,7 @@ export class CalendarComponent implements OnInit {
     // console.log('tabChangeEvent => ', tabChangeEvent);
     // console.log('index => ', tabChangeEvent.index);
     this.tabIndex = tabChangeEvent.index;
-    console.log("tabIndex" + this.tabIndex);
+    // console.log("tabIndex" + this.tabIndex);
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -286,7 +286,9 @@ export class CalendarComponent implements OnInit {
     // day view
     //-------------------------------
     var tempUserSchedulesDay: IUserSchedule[] = [];
-    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDate((x.startdatetime || '').toLocaleString()) === Utils.formatDate(this.selectedDate.value));
+
+    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
+
     //get user schedules for the selected day
     this.allUsers.forEach(function (user) {
       let userSchedule = <IUserSchedule>{
@@ -398,18 +400,24 @@ export class CalendarComponent implements OnInit {
     let keepUser: boolean = false;
 
     //user filter
-    if (this.userFilter.value == '1' && user.user.active) {
+    if (this.userFilter.value == '1' && user.user.status == '1') {
       keepUser = true;
-    } else if (this.userFilter.value == '2' && user.user.active && user.schedules.length > 0) {
+    } else if (this.userFilter.value == '2' && user.user.status == '1' && user.schedules.length > 0) {
       keepUser = true;
     }
 
     //from here on out, we don't continue unless still true
 
     //language filter
-    if (!(
-      (this.languageFilter.value.includes('0') || Utils.arrayIncludesAny(this.pipeStringToArray(user.user.language), this.languageFilter.value))
-      && keepUser)) {
+    if (
+      !(
+        (
+          this.languageFilter.value.includes('0')
+          || Utils.arrayIncludesAny(this.pipeStringToArray(user.user.language), this.languageFilter.value)
+        )
+          && keepUser
+      )
+    ) {
       keepUser = false;
     }
 

@@ -1,13 +1,24 @@
 <div class="dialog-container" *ngIf="dialogType === 'error'">
     <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
     <span class="heading">You have unsaved changes</span>
-    <span class="dialog-content">
+    <span class="dialog-content"  *ngIf="!isUserProfile">
         Are you sure you want to close the Add a New User window? Changes will be lost.
     </span>
-
-    <div class="dialog-actions">
+     <div class="disgard-contant-container" *ngIf="isUserProfile">
+        <span class="dialog-content">
+            Are you sure you want to stop editing? 
+        </span>
+        <span class="dialog-content">
+            All changes will be lost.
+        </span>
+     </div>
+    <div class="dialog-actions" *ngIf="!isUserProfile">
         <button mat-flat-button color="primary" (click)="closeWindon()">Close Window</button>
         <button mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
+    </div>
+    <div class="dialog-actions" *ngIf="isUserProfile">
+        <button mat-flat-button color="primary" (click)="discardChanges()">Yes, discard changes</button>
+        <button mat-stroked-button color="primary" (click)="cancel()">No, go back</button>
     </div>
 </div>
 

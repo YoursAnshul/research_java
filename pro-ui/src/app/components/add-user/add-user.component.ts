@@ -77,6 +77,8 @@ export class AddUserComponent implements OnInit{
   maxFileSizeMB = 10;
   selectedTabIndex = 1;
 
+  public selectedTab: string = 'scheduling';
+
   constructor(private fb: FormBuilder,private globalsService: GlobalsService,
   private authenticationService: AuthenticationService,
   private usersService: UsersService,
@@ -377,25 +379,32 @@ export class AddUserComponent implements OnInit{
     }
   }
 
-  onTabChanged(event: any) {
-    // The event parameter contains details about the tab change.
+  onTabChanged(tab: string) {
+    this.selectedTab = tab;
     // Based on the new tab, some tasks are performed.
-    // For example, loading different data, updating the UI, etc.
-    console.log('Tab changed: ', event);
-    this.isUserFormInvalid = this.tab2Invalid;
-   
+    // console.log('Tab changed: ', event);
     // Implementation...
-    if (event.index == 0) {
+    this.isUserFormInvalid = this.tab2Invalid;
+
+    // Implementation...
+    if (tab == 'scheduling') {
+
       this.isUserCalendarVisible = true;
       this.isTrainedOnVisible = true;
-    } else if (event.index == 1) {
+
+    } else if (tab == 'user-details') {
+      
       this.isUserCalendarVisible = false;
       this.isTrainedOnVisible = false;
       this.isUserFormInvalid = false;
-    } else if (event.index == 2) {
+
+    } else if (tab == 'personal-contact-info') {
+
       this.isUserCalendarVisible = false;
       this.isTrainedOnVisible = false;
+
     } else {
+
       this.isUserCalendarVisible = true;
       this.isTrainedOnVisible = false;
 

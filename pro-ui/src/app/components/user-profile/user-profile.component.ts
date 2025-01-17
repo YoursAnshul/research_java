@@ -15,7 +15,7 @@ export class UserProfileComponent {
     private usersService: UsersService) {
     this.authenticationService.authenticatedUser.subscribe(
       authenticatedUser => {
-        usersService.getUserByNetId(authenticatedUser.netID).subscribe(
+        this.usersService.getUserByNetId(authenticatedUser.netID).subscribe(
           response => {
             if ((response.Status || '').toUpperCase() == 'SUCCESS') {
               this.selectedUser = (<User>response.Subject);

@@ -2,7 +2,7 @@
 
   <!-- Breadcrumb -->
   <nav class="m-0 text-sm font-normal text-[#58595B] leading-4 select-none" *ngIf="showBreadcrum">
-    <span class="cursor-pointer" (click)="closeWindow()">Users</span> /
+    <span class="cursor-pointer underline text-[#005698]" (click)="closeWindow()">Users</span>> /
     <span class="cursor-default">{{selectedUser?.fname}} {{selectedUser?.lname}}</span>
   </nav>
 
@@ -296,7 +296,7 @@
     }
 
 
-    <!-- Tab 3: Hiring Info -->
+    <!-- Tab 3: personal contact  Info -->
     @if (selectedTab === 'personal-contact-info') {
       <div class="m-3">
         <div *ngIf="!tab3UserFields">

@@ -86,7 +86,7 @@ export class Utils {
     dateToFormat = new Date(dateToFormat);
     const offset = dateToFormat.getTimezoneOffset() / 60;
     dateToFormat.setHours(dateToFormat.getHours() + offset);
-    
+
     var separator = '/';
 
     if (dashFormat) {
@@ -127,18 +127,18 @@ export class Utils {
 
     //make sure we are using a Date type and not Date?
 
-    let year: number = dateToFormat.getFullYear();
-    let month: number = (dateToFormat.getMonth() + 1);
-    let day: number = dateToFormat.getDate();
+    // let year: number = dateToFormat.getFullYear();
+    // let month: number = (dateToFormat.getMonth() + 1);
+    // let day: number = dateToFormat.getDate();
 
-    let yearString: string = year.toString();
-    let monthString: string = month.toString();
-    let dayString: string = day.toString();
+    // let yearString: string = year.toString();
+    // let monthString: string = month.toString();
+    // let dayString: string = day.toString();
 
-    if (zeroPad) {
-      monthString = this.zeroPad(month);
-      dayString = this.zeroPad(day);
-    }
+    // if (zeroPad) {
+    //   monthString = this.zeroPad(month);
+    //   dayString = this.zeroPad(day);
+    // }
 
     if (internationalFormat) {
       return moment.utc(dateToFormat).format(`YYYY${separator}MM${separator}DD`);
@@ -164,6 +164,41 @@ export class Utils {
       return null;
     }
     return moment.utc(dateToFormat).format('MM/DD/YYYY');
+  }
+
+
+  public static formatDateOnlyToString(dateToFormat: Date | null | undefined, dashFormat: boolean = false, zeroPad: boolean = true, internationalFormat: boolean = false): string | null {
+    if (!dateToFormat) {
+      return null;
+    }
+    var separator = '/';
+
+    if (dashFormat) {
+      separator = '-';
+    }
+
+    //make sure we are using a Date type and not Date?
+    dateToFormat = new Date(dateToFormat);
+
+    let year: number = dateToFormat.getFullYear();
+    let month: number = (dateToFormat.getMonth() + 1);
+    let day: number = dateToFormat.getDate();
+
+    let yearString: string = year.toString();
+    let monthString: string = month.toString();
+    let dayString: string = day.toString();
+
+    if (zeroPad) {
+      monthString = this.zeroPad(month);
+      dayString = this.zeroPad(day);
+    }
+
+    if (internationalFormat) {
+      return `${yearString}${separator}${monthString}${separator}${dayString}`;
+    } else {
+      return `${monthString}${separator}${dayString}${separator}${yearString}`;
+    }
+
   }
 
 
@@ -478,7 +513,7 @@ export class Utils {
   //----------------------------------------------
   // Numbers
   //----------------------------------------------
-  
+
   //check if a value is a number and return it as a number if it is
   public static ifNumber(value: any): any {
     if (!isNaN(value) && value !== null && value !== '') {
@@ -496,7 +531,7 @@ export class Utils {
   //----------------------------------------------
   // Strings
   //----------------------------------------------
-  
+
   //generate a random GUID
   public static generateGUID(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

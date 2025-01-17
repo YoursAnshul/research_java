@@ -11,11 +11,12 @@ export class UnsavedChangesDialogComponent {
   dialogType: string;
   netId: string;
   saveUser: any = () =>{ };
+  isUserProfile: boolean  = false;
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<UnsavedChangesDialogComponent>) {
-    console.log('---- data>', data);
     this.dialogType = data.dialogType; // 'confirmation' or 'error' or any other type
     this.netId = data.netId;
     this.saveUser = data.saveUser;
+    this.isUserProfile = data.isUserProfile;
   }
 
   close(): void {
@@ -28,6 +29,10 @@ export class UnsavedChangesDialogComponent {
 
   closeWindon(): void {
     this.dialogRef.close("close");
+  }
+
+  discardChanges(): void {
+    this.dialogRef.close("discardChanges");
   }
   save(): void {
     this.saveUser().then((r:any )=> {

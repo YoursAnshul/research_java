@@ -13,13 +13,13 @@
     <div style="width: 0.25%; border: none;"></div>
     <!--<div style="width: 1%; border: none;"></div>-->
   </div>
-  @if (!weekSchedules?.day1Schedules
-    && !weekSchedules?.day2Schedules
-    && !weekSchedules?.day3Schedules
-    && !weekSchedules?.day4Schedules
-    && !weekSchedules?.day5Schedules
-    && !weekSchedules?.day6Schedules
-    && !weekSchedules?.day7Schedules) {
+  @if ((weekSchedules?.day1Schedules || []).length < 1
+    && (weekSchedules?.day2Schedules || []).length < 1
+    && (weekSchedules?.day3Schedules || []).length < 1
+    && (weekSchedules?.day4Schedules || []).length < 1
+    && (weekSchedules?.day5Schedules || []).length < 1
+    && (weekSchedules?.day6Schedules || []).length < 1
+    && (weekSchedules?.day7Schedules || []).length < 1) {
     <div class="no-results bold italic"
       >
       No schedules found for this date range...

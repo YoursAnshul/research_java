@@ -680,6 +680,9 @@ export class ViewUserComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result == 'close') {
         this.closewindow.emit();
+      }if (result == 'discardChanges') {
+        this.isEdit = true;
+       this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       } else if (result == 'save') {
         this.userSaved.emit(this.selectedUser);
       }
@@ -692,7 +695,8 @@ export class ViewUserComponent implements OnInit {
 
   showUnsavedChangesDialog(): void {
     this.openDialog({
-      dialogType: 'error'
+      dialogType: 'error',
+      isUserProfile: !this.showBreadcrum
     })
   }
 
@@ -963,6 +967,7 @@ export class ViewUserComponent implements OnInit {
 
   clickOnEdit(): void {
     this.isEdit = false;
+    this.tab2Invalid = false;
   }
 
   closeWindow(): void {

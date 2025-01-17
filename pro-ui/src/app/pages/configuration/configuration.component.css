@@ -1,0 +1,303 @@
+.btn-primary {
+  margin-bottom: 10px;
+}
+
+.inner-container {
+  width: 1210px;
+  margin-left: 100px;
+}
+
+.code-value,
+.sort-order {
+  width: 55px !important;
+  margin-right: 15px !important;
+  text-align: center !important;
+}
+
+.config-save-header {
+  width: 100%;
+  float: left;
+}
+
+.config-segment {
+  float: left;
+  margin-right: 50px;
+}
+
+.inner-save-button-right {
+  float: right;
+}
+
+.inner-save-button-left {
+  float: left;
+}
+
+#configuration-save-button {
+  margin-top: 10px;
+}
+
+.config-tab-title {
+  font-size: 1.3em;
+  font-weight: 500;
+  margin-top: 5px;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.config-field {
+  display: inline-table;
+  margin: 5px;
+  padding: 5px;
+}
+
+.config-field .expanded {
+  border: 0.5px solid lightblue;
+}
+
+.expand-placeholder {
+  display: inline-block;
+  width: 70px;
+  margin-right: 70px;
+}
+
+.expand-icon-container {
+  display: inline-block;
+  width: 70px;
+  padding: 15px;
+  margin-right: 70px;
+  color: darkmagenta;
+}
+
+.expand-icon {
+  cursor: pointer;
+}
+
+.codelist-details {
+  padding-left: 15px;
+}
+
+.dropdown-item {
+  width: 175px;
+  padding: 0px;
+  margin-right: 15px;
+}
+
+.dropdown-abbr {
+  width: 80px;
+  margin-right: 15px;
+}
+
+.dropdown-color {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#general-config-container {
+  display: inline-flex;
+  width: 100%;
+}
+
+#admin-options-container,
+#block-out-dates-container {
+  display: inline-block;
+  width: 50%;
+}
+
+#admin-options-container {
+  padding-left: 50px;
+}
+
+#new-block-out-dates-container {
+  border-bottom: 0.5px solid lightgrey;
+}
+
+#new-block-out-date {
+  width: 175px;
+  display: inline-block;
+  margin-right: 15px;
+}
+
+#block-out-date-add-button {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.checkbox-field {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.time-select {
+  width: 140px;
+  margin-right: 15px;
+}
+
+#block-out-date-list {
+  padding: 15px;
+}
+
+.block-out-date-list-item {
+  display: flex;
+  margin-bottom: 15px;
+  margin-left: 25px;
+}
+
+.delete-block-out-date {
+  display: inline-block;
+  margin-left: 25px;
+  cursor: pointer;
+}
+
+.start-end-time {
+  margin-left: 10px;
+  font-size: 0.9em;
+}
+
+.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.confirm-delete {
+  margin-bottom: 30px;
+}
+
+.new-value-text {
+  color: green;
+  margin-right: 10px;
+}
+
+.delete-codelist, .add-codelist {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.delete-codelist {
+}
+
+.add-codelist {
+
+}
+
+.schedule-lock-example {
+  font-size: 0.8em;
+  font-style:italic;
+  max-width: 250px;
+}
+
+#comm-hub-table,
+#new-comm-hub-config-table,
+#new-comm-hub-choice-table {
+  width: 100%;
+  margin-right: 25px;
+  margin-bottom: 25px;
+}
+
+#new-comm-hub-config-table {
+
+}
+
+#new-comm-hub-choice-table {
+  width: 30%;
+}
+
+#comm-hub-table td,
+#comm-hub-table th,
+#new-comm-hub-config-table td,
+#new-comm-hub-config-table th,
+#new-comm-hub-choice-table td,
+#new-comm-hub-choice-table th {
+  padding: 10px;
+  border: 0.5px solid rgb(0,0,0,0.15);
+  width: 250px;
+}
+
+#comm-hub-table td.actions,
+#comm-hub-table th.actions,
+#new-comm-hub-config-table td.actions,
+#new-comm-hub-config-table th.actions,
+#new-comm-hub-choice-table td.actions td.actions,
+#new-comm-hub-choice-table th.actions th.actions {
+  width: 90px;
+}
+
+#comm-hub-table th,
+#new-comm-hub-config-table th,
+#new-comm-hub-choice-table th {
+  font-weight: 500;
+  color: #1b6ec2;
+  font-size: 1.1em;
+}
+
+#comm-hub-table .long-text-field .mat-form-field,
+#new-comm-hub-config-table .long-text-field .mat-form-field,
+#new-comm-hub-choice-table .long-text-field .mat-form-field {
+  width: 200px;
+  height: 75px;
+}
+
+#comm-hub-table .long-text-field .mat-form-field textarea,
+#new-comm-hub-config-table .long-text-field .mat-form-field textarea,
+#new-comm-hub-choice-table .long-text-field .mat-form-field textarea {
+  width: 200px;
+  height: 75px;
+}
+
+#comm-hub-table th,
+#new-comm-hub-config-table th,
+#new-comm-hub-choice-table th {
+  border-color: #0062cc;
+  background-color: rgb(0,120,212, 0.25);
+}
+
+/*#comm-hub-table thead {
+  width: 100%;
+  display: table;
+}
+
+#comm-hub-table tbody {
+  height: 500px;
+  width: 1000px;
+  overflow-x: auto;
+  display: block;
+}*/
+
+.edit-comm-hub-row,
+.delete-comm-hub-row {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.edit-comm-hub-row {
+  margin-right: 10px;
+}
+
+#comm-hub-config-no-results {
+  width: 100%;
+  margin-left: 15px;
+  margin-bottom: 25px;
+}
+
+#comm-hub-save-button {
+  margin-right: 15px;
+}
+
+.edit-choices-container {
+  margin-top: 25px;
+  height: 500px;
+  overflow-x: clip;
+  overflow-y: auto;
+}
+
+.new-comm-hub-field-container {
+  margin-top: 25px;
+  max-height: 500px;
+  overflow-x: clip;
+  overflow-y: auto;
+}
+
+.validation-message {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  max-width: 200px;
+}

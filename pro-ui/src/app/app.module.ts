@@ -158,6 +158,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatFormFieldModule,
     MatNativeDateModule,
     MatSelectModule,
     MatCardModule,
