@@ -100,25 +100,12 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
 					projectIds, request.getIcon(), userName, request.getAnnouncementId());
 
-			String auditUpdate = "UPDATE core.announcements_audit SET  auditaction = ?, auditdate = ?, titletext = ?, bodytext = ?, "
-					+ "author = ?, dispauthor = ?, startdate = ?, expiredate = ?, dispprojects = ?, icon = ?, moddt=NOW(), modBy=? "
-					+ "WHERE announcementid = ?";
-			this.jdbcTemplate.update(auditUpdate, "UPDATE", new Date(), request.getTitle(), request.getBodyText(),
-					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-					projectIds, request.getIcon(), loginUserObj.getUserName(), request.getAnnouncementId());
-
 		} else {
 			sql = "INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
 					+ "startdate, expiredate, dispprojects, icon, entrydt, entryby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
 					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
 					projectIds, request.getIcon(), new Date(), userName);
-
-			String sqlAudit = "INSERT INTO core.announcements_audit (auditaction, auditdate, titletext, bodytext, author, dispauthor, "
-					+ "startdate, expiredate, dispprojects, icon, entrydt, entryby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
-			this.jdbcTemplate.update(sqlAudit, "INSERT", new Date(), request.getTitle(), request.getBodyText(),
-					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-					projectIds, request.getIcon(), new Date(), loginUserObj.getUserName());
 
 		}
 
