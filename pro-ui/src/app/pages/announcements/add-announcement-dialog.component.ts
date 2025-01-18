@@ -245,8 +245,10 @@ export class AddAnnouncementDialogComponent implements OnInit {
         authorId: selectedAuthorId,
         isAuthor: this.announcementForm.value.isAuthor,
         startDate: adjustToUTCPlus530(this.announcementForm.value.startDate),
-      expireDate: adjustToUTCPlus530(this.announcementForm.value.expireDate) || null,
+        expireDate:
+          adjustToUTCPlus530(this.announcementForm.value.expireDate) || null,
         projectIds: selectedProjectsIds,
+        email: this.userObj.eppn
       };
       if (this.id) {
         announcementData.announcementId = this.id;
@@ -305,8 +307,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
       displayTo: this.isAnyProjectsSelected
         ? 'Any Projects'
         : this.selectedProjects,
-      
-    }
+    };
     this.dialog.open(PreviewComponent, {
       width: '600px',
       data: announcementData,
@@ -363,19 +364,19 @@ export class AddAnnouncementDialogComponent implements OnInit {
       next: (data: any) => {
         console.log(data.Subject);
         this.selectedEmoji = data.Subject.icon;
-        console.log("data.Subject.startDate",data.Subject.startDate);
-        console.log("data.Subject.expireDate",data.Subject.expireDate);
+        console.log('data.Subject.startDate', data.Subject.startDate);
+        console.log('data.Subject.expireDate', data.Subject.expireDate);
         const adjustDate = (date: string | null): Date | null => {
           if (!date) return null;
           const d = new Date(date);
           return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
         };
-        
+
         this.announcementForm.patchValue({
           title: data.Subject.title,
           isAuthor: data.Subject.isAuthor,
           startDate: adjustDate(data.Subject.startDate),
-        expireDate: adjustDate(data.Subject.expireDate),
+          expireDate: adjustDate(data.Subject.expireDate),
         });
         if (data.Subject.bodyText) {
           this.quill.root.innerHTML = data.Subject.bodyText;

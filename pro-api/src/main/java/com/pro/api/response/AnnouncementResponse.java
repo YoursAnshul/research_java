@@ -19,6 +19,7 @@ public class AnnouncementResponse {
 	private List<String> projectColor;
 	private List<ProjectResponse> projectObject;
 	private Boolean isAnyProjectsSelected;
+	private String email;
 	
 
 	public Boolean getIsAnyProjectsSelected() {
@@ -131,6 +132,14 @@ public class AnnouncementResponse {
 
 	public void setProjectNames(List<String> projectNames) {
 		this.projectNames = projectNames;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

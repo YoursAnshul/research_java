@@ -2,6 +2,7 @@ package com.pro.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,18 +88,38 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 				: null;
 		String sql = "";
 		int rowsAffected = 0;
+		AuthorResponse loginUserObj = getLoginUser(request.getEmail());
+		String userName = "";
+		if (loginUserObj != null) {
+			userName = loginUserObj.getUserName();
+		}
 		if (request.getAnnouncementId() != null && request.getAnnouncementId() > 0) {
 			sql = "UPDATE core.announcements SET titletext = ?, bodytext = ?, author = ?, dispauthor = ?, "
-					+ "startdate = ?, expiredate = ?, dispprojects = ?, icon = ? WHERE announcementid = ?";
+					+ "startdate = ?, expiredate = ?, dispprojects = ?, icon = ?, moddt=NOW(), modBy=? WHERE announcementid = ?";
 			rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
 					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-					projectIds, request.getIcon(), request.getAnnouncementId()); // Corrected parameter order
+					projectIds, request.getIcon(), userName, request.getAnnouncementId());
+
+			String auditUpdate = "UPDATE core.announcements_audit SET  auditaction = ?, auditdate = ?, titletext = ?, bodytext = ?, "
+					+ "author = ?, dispauthor = ?, startdate = ?, expiredate = ?, dispprojects = ?, icon = ?, moddt=NOW(), modBy=? "
+					+ "WHERE announcementid = ?";
+			this.jdbcTemplate.update(auditUpdate, "UPDATE", new Date(), request.getTitle(), request.getBodyText(),
+					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
+					projectIds, request.getIcon(), loginUserObj.getUserName(), request.getAnnouncementId());
+
 		} else {
 			sql = "INSERT INTO core.announcements (titletext, bodytext, author, dispauthor, "
-					+ "startdate, expiredate, dispprojects, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "startdate, expiredate, dispprojects, icon, entrydt, entryby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			rowsAffected = this.jdbcTemplate.update(sql, request.getTitle(), request.getBodyText(),
 					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
-					projectIds, request.getIcon());
+					projectIds, request.getIcon(), new Date(), userName);
+
+			String sqlAudit = "INSERT INTO core.announcements_audit (auditaction, auditdate, titletext, bodytext, author, dispauthor, "
+					+ "startdate, expiredate, dispprojects, icon, entrydt, entryby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+			this.jdbcTemplate.update(sqlAudit, "INSERT", new Date(), request.getTitle(), request.getBodyText(),
+					request.getAuthorId(), request.getIsAuthor(), request.getStartDate(), request.getExpireDate(),
+					projectIds, request.getIcon(), new Date(), loginUserObj.getUserName());
+
 		}
 
 		GeneralResponse response = new GeneralResponse();
@@ -188,7 +209,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 			}
 		} else {
-			sql.append(" ORDER BY announcementid desc ");
+			sql.append(" ORDER BY startdate desc ");
 		}
 		if (limit != null) {
 			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
