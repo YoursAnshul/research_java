@@ -209,7 +209,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 			}
 		} else {
-			sql.append(" ORDER BY startdate desc ");
+			sql.append(" ORDER BY a.announcementid  desc ");
 		}
 		if (limit != null) {
 			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
