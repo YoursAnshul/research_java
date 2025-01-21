@@ -13,6 +13,8 @@ export class TrainedOnProjectsComponent implements OnInit {
   @Output() trainedOnChange = new EventEmitter<IProjectMin>();
   projectToAdd!: IProjectMin | null;
   projectToRemove!: IProjectMin | null;
+  isStarFilled:boolean=false;
+  
 
   constructor() { }
 
@@ -101,6 +103,9 @@ export class TrainedOnProjectsComponent implements OnInit {
     return {
       'background-color': color
     }
+  }
+  toggleStar() {
+    this.isStarFilled = !this.isStarFilled;  
   }
 
 }

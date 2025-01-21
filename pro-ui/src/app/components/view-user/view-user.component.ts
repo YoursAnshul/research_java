@@ -84,6 +84,8 @@ export class ViewUserComponent implements OnInit {
   acceptedFormats = ['image/jpeg', 'image/png'];
   maxFileSizeMB = 10;
   isEdit: boolean = true;
+  isStarFilled: boolean = false;  
+
 
   public selectedTab: string = 'scheduling';
 
@@ -1060,5 +1062,5 @@ export class ViewUserComponent implements OnInit {
       `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
     );
   }
-
+  
 }

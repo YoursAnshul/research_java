@@ -166,12 +166,21 @@
             <!-- trained on box -->
             <div class="h-[210px] overflow-y-auto"
               style="overflow-y: auto;">
-              @for (item of getTrainingProjects(selectedUser.trainedon);track item){
+
+              <!-- @for (item of getTrainingProjects(selectedUser.trainedon);track item){
               <div class="flex items-center my-2 gap-2">
                 <div class="w-3 h-3" [ngStyle]="getSwatchColor(item)"></div>
-                <div>{{item}}</div>
+                <div class="flex-1"> {{item}}</div> 
               </div>
-              }
+              } -->
+
+              <div *ngFor="let item of getTrainingProjects(selectedUser.trainedon); let i = index;" class="flex items-center my-2 gap-2">
+                <div class="w-3 h-3" [ngStyle]="getSwatchColor(item)"></div>
+                <div class="flex-1"> {{item}}</div>
+                <mat-icon *ngIf="i === 0" style="font-size: 20px; color: blue;">
+                  {{'star'}}
+                </mat-icon>
+              </div>
             </div>
 
           </div>

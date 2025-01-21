@@ -1,71 +1,106 @@
 <div>
   <div>
     <div>
-
       <div class="flex">
+        <div
+          class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] pt-2 pr-3"
+          style="border-color: #c2c2c2 !important"
+        >
+          <div
+            class="pb-1 ml-3 mb-2 border-b border-b-2 font-medium"
+            style="border-color: #c2c2c2 !important"
+          >
+            Trained On
+          </div>
+          <div class="h-[210px] overflow-y-auto" style="overflow-y: auto">
+            <div
+              *ngFor="let proj of trainedOnProjects; let i = index"
+              class="flex items-center py-1 pl-3 gap-2 cursor-default hover:bg-[#0078d41a]"
+              [class.bg-[#0078d41a]]="proj.selected"
+              (click)="setProjectToRemove(proj)"
+            >
+              <div class="w-3 h-3" [ngStyle]="getSwatchColor(proj)"></div>
 
-        <div class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] pt-2 pr-3"
-          style="border-color: #c2c2c2 !important;">
-          <div class="pb-1 ml-3 mb-2 border-b border-b-2 font-medium"
-            style="border-color: #c2c2c2 !important;">Trained On</div>
-          <div class="h-[210px] overflow-y-auto"
-            style="overflow-y: auto;">
+              <div class="flex-1">{{ proj.projectName }}</div>
 
-            @for (proj of trainedOnProjects; track proj){
-              <div class="flex items-center py-1 pl-3 gap-2 cursor-default hover:bg-[#0078d41a]"
-                [class.bg-[#0078d41a]]="proj.selected"
-                (click)="setProjectToRemove(proj)">
-                <div class="w-3 h-3" [ngStyle]="getSwatchColor(proj)"></div>
-                <div>{{proj.projectName}}</div>
-              </div>
-            }
+              <mat-icon *ngIf="i === 0" style="font-size: 20px; color: blue">
+                {{ "star" }}
+              </mat-icon>
 
-            <div class="italic pl-3"
-                *ngIf="trainedOnProjects && (trainedOnProjects || []).length < 1">
-              Not trained on any active projects
+              <mat-icon *ngIf="i !== 0" style="font-size: 20px">
+                {{ "star_border" }}
+              </mat-icon>
             </div>
 
+            <div
+              class="italic pl-3"
+              *ngIf="trainedOnProjects && (trainedOnProjects || []).length < 1"
+            >
+              Not trained on any active projects
+            </div>
           </div>
         </div>
 
-        <div class="flex flex-col justify-center gap-2 m-4"
-             *ngIf="!listingOnly">
-            <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle-fill" fill="#2D6BA4" xmlns="http://www.w3.org/2000/svg"
-                 (click)="addTrainedOn()"
-                 [class.not-allowed]="buttonAllowed(true)">
-              <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"></path>
-            </svg>
+        <div
+          class="flex flex-col justify-center gap-2 m-4"
+          *ngIf="!listingOnly"
+        >
+          <svg
+            width="1.5em"
+            viewBox="0 0 16 16"
+            class="bi bi-arrow-left-circle-fill"
+            fill="#2D6BA4"
+            xmlns="http://www.w3.org/2000/svg"
+            (click)="addTrainedOn()"
+            [class.not-allowed]="buttonAllowed(true)"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"
+            ></path>
+          </svg>
 
-            <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="red" xmlns="http://www.w3.org/2000/svg"
-                 (click)="removeTrainedOn()"
-                 [class.not-allowed]="buttonAllowed(false)">
-              <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path>
-            </svg>
+          <svg
+            width="1.5em"
+            viewBox="0 0 16 16"
+            class="bi bi-arrow-right-circle-fill"
+            fill="red"
+            xmlns="http://www.w3.org/2000/svg"
+            (click)="removeTrainedOn()"
+            [class.not-allowed]="buttonAllowed(false)"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"
+            ></path>
+          </svg>
         </div>
 
-        <div class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] pt-2 pr-3"
-          style="border-color: #c2c2c2 !important;"
-          *ngIf="!listingOnly">
-          <div class="pb-1 ml-3 mb-2 border-b border-b-2 font-medium"
-            style="border-color: #c2c2c2 !important;">Available</div>
-          <div class="h-[210px] overflow-y-auto"
-            style="overflow-y: auto;">
-            
+        <div
+          class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] pt-2 pr-3"
+          style="border-color: #c2c2c2 !important"
+          *ngIf="!listingOnly"
+        >
+          <div
+            class="pb-1 ml-3 mb-2 border-b border-b-2 font-medium"
+            style="border-color: #c2c2c2 !important"
+          >
+            Available
+          </div>
+          <div class="h-[210px] overflow-y-auto" style="overflow-y: auto">
             @for (proj of notTrainedOnProjects; track proj){
-              <div class="flex items-center py-1 pl-3 gap-2 cursor-default hover:bg-[#0078d41a]"
-                [class.bg-[#0078d41a]]="proj.selected"
-                (click)="setProjectToAdd(proj)">
-                <div class="w-3 h-3" [ngStyle]="getSwatchColor(proj)"></div>
-                <div>{{proj.projectName}}</div>
-              </div>
+            <div
+              class="flex items-center py-1 pl-3 gap-2 cursor-default hover:bg-[#0078d41a]"
+              [class.bg-[#0078d41a]]="proj.selected"
+              (click)="setProjectToAdd(proj)"
+            >
+              <div class="w-3 h-3" [ngStyle]="getSwatchColor(proj)"></div>
+              <div>{{ proj.projectName }}</div>
+            </div>
             }
-
           </div>
         </div>
-
-
       </div>
-
     </div>
   </div>
 </div>
