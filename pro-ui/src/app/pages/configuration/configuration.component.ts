@@ -53,6 +53,8 @@ export class ConfigurationComponent implements OnInit {
   adminOptionsChanged: boolean = false;
   formFieldsInvalid: boolean = false;
   showNewFieldPopup: boolean = false;
+  showPopupMessage: boolean = false;
+  showHoverMessage: boolean = false;
   showEditChoicesPopup: boolean = false;
   //codelist should be a field in the formfields table, but we don't have time to add a field as of this writing
   codeListLock: string[] = ['ProjectDisplayID', 'employmenttype', 'role', 'schedulinglevel', 'requestCodeID', 'decisionID'];
@@ -86,6 +88,17 @@ export class ConfigurationComponent implements OnInit {
       error => {
         this.errorMessage = <string>(error.message);
         this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      }
+    );
+    this.globalsService.showPopupMessage.subscribe(
+      showPopupMessage => {
+        this.showPopupMessage = showPopupMessage;
+      }
+    );
+
+    this.globalsService.showHoverMessage.subscribe(
+      showHoverMessage => {
+        this.showHoverMessage = showHoverMessage;
       }
     );
 
@@ -174,7 +187,9 @@ export class ConfigurationComponent implements OnInit {
 
     return false;
   }
-
+  closeModalPopup(): void {
+    this.globalsService.hidePopupMessage();
+  }
   addCodeList(formField: IFormFieldVariable): void {
     let newCodeList: IDropDownValue = {} as IDropDownValue;
     newCodeList.tempKey = this.uniqueKeyTracker;

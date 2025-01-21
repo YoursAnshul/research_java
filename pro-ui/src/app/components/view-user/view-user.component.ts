@@ -582,8 +582,9 @@ export class ViewUserComponent implements OnInit {
   }
 
   private validateRequiredFields() {
+    this.tab2Invalid = false;
     for (var i = 0; i < this.userFormFields.length; i++) {
-      if (this.userFormFields[i].formFieldVariable.formField.required) {
+      if (this.userFormFields[i].formFieldVariable.formField.required && !this.disableRules(this.userFormFields[i])) {
         //if null
         if (!this.userFormFields[i].value) {
           this.invalid = true;

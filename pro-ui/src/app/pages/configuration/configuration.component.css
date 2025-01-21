@@ -296,6 +296,20 @@
   overflow-y: auto;
 }
 
+.modal-save-popup {
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  padding: 20px 30px;
+  min-width: 300px;
+  box-shadow: 0 0px 25px rgb(57 63 72);
+  position: fixed;
+  top: 40%;
+  left: 40%;
+  z-index: 999;
+  min-height: 10px;
+  overflow: auto;
+}
+
 .validation-message {
   margin-top: 5px;
   margin-bottom: 10px;

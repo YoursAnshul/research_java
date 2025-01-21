@@ -193,6 +193,13 @@ td {
   max-height: 585px;
 }
 
+.no-results {
+  min-height: 410px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .gap-32 {
   gap: 32px !important;
 }
