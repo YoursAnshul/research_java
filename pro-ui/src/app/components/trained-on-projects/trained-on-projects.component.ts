@@ -1,41 +1,48 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { IProjectMin } from '../../interfaces/interfaces';
+import { DefPro, IProjectMin } from '../../interfaces/interfaces';
 
 @Component({
   selector: 'app-trained-on-projects',
   templateUrl: './trained-on-projects.component.html',
-  styleUrls: ['./trained-on-projects.component.css']
+  styleUrls: ['./trained-on-projects.component.css'],
 })
 export class TrainedOnProjectsComponent implements OnInit {
   @Input() trainedOnProjects!: IProjectMin[];
+  @Input() defPro!:DefPro[];
   @Input() notTrainedOnProjects!: IProjectMin[];
   @Input() listingOnly!: boolean;
   @Output() trainedOnChange = new EventEmitter<IProjectMin>();
   projectToAdd!: IProjectMin | null;
   projectToRemove!: IProjectMin | null;
-  isStarFilled:boolean=false;
-  
+  defaultproject: number = 0;
 
-  constructor() { }
+  constructor() {}
 
-    ngOnInit(): void {
-        const trainedProjectIds = new Set(this.trainedOnProjects.map(p => p.projectID));
-        this.notTrainedOnProjects = this.notTrainedOnProjects.filter(project =>
-            !trainedProjectIds.has(project.projectID));
-    }
+  ngOnInit(): void {
+    console.log("trainedOnProjects---",this.defPro);
+    const trainedProjectIds = new Set(
+      this.trainedOnProjects.map((p) => p.projectID)
+    );
+    this.notTrainedOnProjects = this.notTrainedOnProjects.filter(
+      (project) => !trainedProjectIds.has(project.projectID)
+    );
+  }
 
   addTrainedOn(): void {
     if (!this.projectToAdd) {
       return;
     }
-    if(this.projectAlreadyExists(this.projectToAdd.projectID)){
+    if (this.projectAlreadyExists(this.projectToAdd.projectID)) {
       return;
     }
 
     this.projectToAdd.selected = false;
-
+    this.projectToAdd.defaultproject = this.defaultproject;
     this.trainedOnProjects.push(this.projectToAdd);
-    this.notTrainedOnProjects.splice(this.notTrainedOnProjects.indexOf(this.projectToAdd), 1);
+    this.notTrainedOnProjects.splice(
+      this.notTrainedOnProjects.indexOf(this.projectToAdd),
+      1
+    );
     this.trainedOnChange.emit(this.projectToAdd);
     this.projectToAdd = null;
   }
@@ -47,9 +54,14 @@ export class TrainedOnProjectsComponent implements OnInit {
 
     this.projectToRemove.selected = false;
 
-    this.trainedOnProjects.splice(this.trainedOnProjects.indexOf(this.projectToRemove), 1);
+    this.trainedOnProjects.splice(
+      this.trainedOnProjects.indexOf(this.projectToRemove),
+      1
+    );
     this.notTrainedOnProjects.push(this.projectToRemove);
-    this.notTrainedOnProjects.sort((a, b) => a.projectName.localeCompare(b.projectName));
+    this.notTrainedOnProjects.sort((a, b) =>
+      a.projectName.localeCompare(b.projectName)
+    );
     this.trainedOnChange.emit(this.projectToRemove);
     this.projectToRemove = null;
   }
@@ -92,8 +104,8 @@ export class TrainedOnProjectsComponent implements OnInit {
     return false;
   }
 
-   projectAlreadyExists(id: number) {
-    return this.trainedOnProjects.some(function(el) {
+  projectAlreadyExists(id: number) {
+    return this.trainedOnProjects.some(function (el) {
       return el.projectID === id;
     });
   }
@@ -101,11 +113,17 @@ export class TrainedOnProjectsComponent implements OnInit {
   public getSwatchColor(project: IProjectMin) {
     let color: string = project?.projectColor || '';
     return {
-      'background-color': color
-    }
+      'background-color': color,
+    };
   }
-  toggleStar() {
-    this.isStarFilled = !this.isStarFilled;  
+  toggleClickState(projectToAdd: IProjectMin) {
+    this.trainedOnProjects.forEach((project) => {
+      project.clicked = false;
+      project.defaultproject = 0;
+    });
+    projectToAdd.clicked = true;
+    projectToAdd.defaultproject = projectToAdd.projectID;
+    this.defaultproject = projectToAdd.projectID;
+    this.trainedOnChange.emit(projectToAdd);
   }
-
 }

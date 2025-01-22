@@ -78,7 +78,7 @@ export interface IProject {
   notTrainedOnUsers?: string[];
 }
 
-export interface IProjectMin {
+export interface IProjectMin  {
   projectID: number;
   projectName: string;
   projectAbbr: string;
@@ -92,6 +92,12 @@ export interface IProjectMin {
   trainedOnUsersMin?: User[];
   trainedOnUsers?: string[];
   notTrainedOnUsers?: string[];
+  clicked?:boolean;
+  defaultproject:number;
+}
+
+export interface DefPro  {
+  defaultproject:number;
 }
 
 export interface IDropDownValue {
