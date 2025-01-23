@@ -306,6 +306,7 @@
       <div *ngIf="!isEdit">
         <app-trained-on-projects
           [trainedOnProjects]="trainedOnProjects"
+          [defPro]="defPro"
           [notTrainedOnProjects]="notTrainedOnProjects"
           [listingOnly]="readOnly"
           (trainedOnChange)="trainedOnChange($event)"
