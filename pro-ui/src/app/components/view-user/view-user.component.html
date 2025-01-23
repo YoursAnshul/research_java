@@ -131,14 +131,34 @@
       <div class="flex items-center gap-2">
         <div
           class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
-          [class.invalid-emphasis]="coreHoursInvalid"
+          [class.invalid-emphasis]="
+            coreHoursInvalid ||
+            !selectedUser.defaultproject ||
+            selectedUser.defaultproject === 0
+          "
           [class.text-[#1874CA]]="selectedTab === 'scheduling'"
           [class.border-b]="selectedTab === 'scheduling'"
           [class.border-b-[3px]]="selectedTab === 'scheduling'"
+          [ngStyle]="{
+            fontSize: selectedTab === 'scheduling' ? '16px' : '14px',
+            borderBottomColor:
+              coreHoursInvalid ||
+              !selectedUser.defaultproject ||
+              selectedUser.defaultproject === 0
+                ? '#dc4a38'
+                : '#1874CA'
+          }"
           (click)="onTabChanged('scheduling')"
         >
           <div>Scheduling</div>
           <div *ngIf="coreHoursInvalid">**</div>
+          <div
+            *ngIf="
+              !selectedUser.defaultproject || selectedUser.defaultproject === 0
+            "
+          >
+            *
+          </div>
         </div>
         <div
           class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
@@ -285,15 +305,16 @@
               <div class="flex-1">{{ item }}</div>
               <mat-icon
                 [ngStyle]="{
-                  fontSize: '20px',
+                  'font-size': '20px',
+                  'padding-right': '30%',
                   color:
-                    selectedUser.defaultproject === getProjectId(item)
-                      ? 'blue'
+                    selectedUser?.defaultproject === getProjectId(item)
+                      ? '#0d6efd'
                       : null
                 }"
               >
                 {{
-                  selectedUser.defaultproject === getProjectId(item)
+                  selectedUser?.defaultproject === getProjectId(item)
                     ? "star"
                     : ""
                 }}

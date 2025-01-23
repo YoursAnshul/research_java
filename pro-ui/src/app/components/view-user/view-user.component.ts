@@ -59,7 +59,7 @@ export class ViewUserComponent implements OnInit {
   activeProjects!: IProjectMin[];
 
   trainedOnProjects!: IProjectMin[];
-  defPro!:DefPro[];
+  defPro!: DefPro[];
   notTrainedOnProjects!: IProjectMin[];
   requestCodeDropDown!: IDropDownValue[];
   decisionIdDropDown!: IDropDownValue[];
@@ -442,7 +442,6 @@ export class ViewUserComponent implements OnInit {
   }
 
   trainedOnChange(project: IProjectMin): void {
-    this.defaultproject = project.defaultproject;
     this.trainedOnProjects.sort((x, y) => {
       return x.projectName < y.projectName
         ? -1
@@ -450,8 +449,12 @@ export class ViewUserComponent implements OnInit {
         ? 1
         : 0;
     });
-    if (project.defaultproject) {
+    if (project && project.defaultproject && project.defaultproject > 0) {
+      this.defaultproject = project.defaultproject;
       this.selectedUser.defaultproject = project.defaultproject;
+    } else {
+      this.defaultproject = 0;
+      this.selectedUser.defaultproject = 0;
     }
     this.selectedUser.trainedon = this.trainedOnProjects
       .map((x) => x.projectID.toString())
@@ -484,12 +487,12 @@ export class ViewUserComponent implements OnInit {
       trainedOnIds.includes(x.projectID.toString())
     );
 
+    // Push the dummy project into the defPro array
 
-  // Push the dummy project into the defPro array
-  
-      this.defPro = [{defaultproject: Number(this.selectedUser.defaultproject)}]; // Ensure defPro is initialized
-  console.log("this.defPro---------- ",this.defPro);
-  
+    this.defPro = [
+      { defaultproject: Number(this.selectedUser.defaultproject) },
+    ]; // Ensure defPro is initialized
+    console.log('this.defPro---------- ', this.defPro);
   }
 
   setNotTrainedOn(): void {
@@ -877,6 +880,9 @@ export class ViewUserComponent implements OnInit {
   }
 
   saveUser(): void {
+    if (!this.defaultproject || this.defaultproject === 0) {
+      return;
+    }
     this.mapUserFieldsBackToUser();
     //set modified metadata
     this.selectedUser.modBy = this.authenticatedUser.netID;

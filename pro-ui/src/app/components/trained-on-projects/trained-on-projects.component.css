@@ -1,0 +1,12 @@
+.error-message {
+  display: flex;
+  align-items: center;
+  color: #dc4a38;
+  font-size: 14px;
+}
+
+.error-icon {
+  color: #dc4a38;
+  margin-right: 8px;
+  font-size: 25px;
+}

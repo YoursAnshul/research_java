@@ -571,12 +571,17 @@ app-form-field {
   text-decoration: underline;
 }
 
-::ng-deep .mdc-text-field--filled.mdc-text-field--disabled{
+::ng-deep .mdc-text-field--filled.mdc-text-field--disabled {
   background-color: white !important;
   border: 1px solid !important;
   border-radius: 4px;
 }
 
-::ng-deep .mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input{
+::ng-deep
+  .mdc-text-field--filled.mdc-text-field--disabled
+  .mdc-text-field__input {
   color: initial !important;
+}
+.invalid-emphasis {
+  color: #dc4a38 !important;
 }

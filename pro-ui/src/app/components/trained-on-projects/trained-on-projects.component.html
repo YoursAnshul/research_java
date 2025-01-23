@@ -1,6 +1,13 @@
 <div>
   <div>
     <div>
+      <div
+        class="pt-2 pr-3 mb-2 error-message"
+        *ngIf="!this.defaultproject || this.defaultproject === 0"
+      >
+        <mat-icon class="error-icon" aria-hidden="true">error</mat-icon>
+        <span>Please select a default user for this user</span>
+      </div>
       <div class="flex">
         <div
           class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] pt-2 pr-3"
@@ -24,8 +31,9 @@
               <mat-icon
                 (click)="toggleClickState(proj); $event.stopPropagation()"
                 [ngStyle]="{
-                  fontSize: '20px',
-                  color: defaultproject === proj.projectID ? 'blue' : null
+                  'font-size': '20px',
+                  'padding-right': '30%',
+                  color: defaultproject === proj.projectID ? '#0d6efd' : null
                 }"
               >
                 {{ defaultproject === proj.projectID ? "star" : "star_border" }}

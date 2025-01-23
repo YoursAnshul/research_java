@@ -8,7 +8,7 @@ import { DefPro, IProjectMin } from '../../interfaces/interfaces';
 })
 export class TrainedOnProjectsComponent implements OnInit {
   @Input() trainedOnProjects!: IProjectMin[];
-  @Input() defPro!:DefPro[];
+  @Input() defPro!: DefPro[];
   @Input() notTrainedOnProjects!: IProjectMin[];
   @Input() listingOnly!: boolean;
   @Output() trainedOnChange = new EventEmitter<IProjectMin>();
@@ -23,6 +23,10 @@ export class TrainedOnProjectsComponent implements OnInit {
     const trainedProjectIds = new Set(
       this.trainedOnProjects.map((p) => p.projectID)
     );
+    if (this.trainedOnProjects.length === 1) {
+      const singleProject = this.trainedOnProjects[0];
+      this.toggleClickState(singleProject);
+    }
     this.notTrainedOnProjects = this.notTrainedOnProjects.filter(
       (project) => !trainedProjectIds.has(project.projectID)
     );
@@ -36,8 +40,13 @@ export class TrainedOnProjectsComponent implements OnInit {
       return;
     }
 
+    if (this.projectToAdd.clicked) {
+      this.projectToAdd.clicked = false;
+      this.projectToAdd.defaultproject = 0;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(this.projectToAdd);
+    }
     this.projectToAdd.selected = false;
-    this.projectToAdd.defaultproject = this.defaultproject;
     this.trainedOnProjects.push(this.projectToAdd);
     this.notTrainedOnProjects.splice(
       this.notTrainedOnProjects.indexOf(this.projectToAdd),
@@ -51,13 +60,23 @@ export class TrainedOnProjectsComponent implements OnInit {
     if (!this.projectToRemove) {
       return;
     }
-
+    if (this.projectToRemove.clicked) {
+      this.projectToRemove.clicked = false;
+      this.projectToRemove.defaultproject = 0;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(this.projectToRemove);
+    }
     this.projectToRemove.selected = false;
+    this.projectToRemove.clicked = false;
 
     this.trainedOnProjects.splice(
       this.trainedOnProjects.indexOf(this.projectToRemove),
       1
     );
+    if (this.trainedOnProjects.length === 1) {
+      const singleProject = this.trainedOnProjects[0];
+      this.toggleClickState(singleProject);
+    }
     this.notTrainedOnProjects.push(this.projectToRemove);
     this.notTrainedOnProjects.sort((a, b) =>
       a.projectName.localeCompare(b.projectName)
@@ -69,7 +88,6 @@ export class TrainedOnProjectsComponent implements OnInit {
   setProjectToAdd(projectToAdd: IProjectMin): void {
     this.projectToAdd = projectToAdd;
     this.projectToRemove = null;
-
     this.notTrainedOnProjects.forEach(function (project, index) {
       if (project.projectID == projectToAdd.projectID) {
         project.selected = true;
@@ -82,7 +100,6 @@ export class TrainedOnProjectsComponent implements OnInit {
   setProjectToRemove(projectToRemove: IProjectMin): void {
     this.projectToRemove = projectToRemove;
     this.projectToAdd = null;
-
     this.trainedOnProjects.forEach(function (project, index) {
       if (project.projectID == projectToRemove.projectID) {
         project.selected = true;
@@ -116,14 +133,25 @@ export class TrainedOnProjectsComponent implements OnInit {
       'background-color': color,
     };
   }
-  toggleClickState(projectToAdd: IProjectMin) {
-    this.trainedOnProjects.forEach((project) => {
-      project.clicked = false;
-      project.defaultproject = 0;
-    });
-    projectToAdd.clicked = true;
-    projectToAdd.defaultproject = projectToAdd.projectID;
-    this.defaultproject = projectToAdd.projectID;
-    this.trainedOnChange.emit(projectToAdd);
+  toggleClickState(projectToToggle: IProjectMin) {
+    if (this.defaultproject === projectToToggle.projectID) {
+      this.trainedOnProjects.forEach((project) => {
+        project.clicked = false;
+        project.defaultproject = 0;
+      });
+      projectToToggle.clicked = false;
+      projectToToggle.defaultproject = 0;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(projectToToggle);
+    } else {
+      this.trainedOnProjects.forEach((project) => {
+        project.clicked = false;
+        project.defaultproject = 0;
+      });
+      projectToToggle.clicked = true;
+      projectToToggle.defaultproject = projectToToggle.projectID;
+      this.defaultproject = projectToToggle.projectID;
+      this.trainedOnChange.emit(projectToToggle);
+    }
   }
 }
