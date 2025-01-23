@@ -48,10 +48,6 @@ export class TrainedOnProjectsComponent implements OnInit {
     }
     this.projectToAdd.selected = false;
     this.trainedOnProjects.push(this.projectToAdd);
-    if (this.trainedOnProjects.length === 1) {
-      const singleProject = this.trainedOnProjects[0];
-      this.toggleClickState(singleProject);
-    }
     this.notTrainedOnProjects.splice(
       this.notTrainedOnProjects.indexOf(this.projectToAdd),
       1
@@ -71,6 +67,8 @@ export class TrainedOnProjectsComponent implements OnInit {
       this.trainedOnChange.emit(this.projectToRemove);
     }
     this.projectToRemove.selected = false;
+    this.projectToRemove.clicked = false;
+
     this.trainedOnProjects.splice(
       this.trainedOnProjects.indexOf(this.projectToRemove),
       1
