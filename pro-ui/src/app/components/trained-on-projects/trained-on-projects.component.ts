@@ -19,7 +19,7 @@ export class TrainedOnProjectsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log("trainedOnProjects---",this.defPro);
+    this.defaultproject = this.defPro[0].defaultproject;
     const trainedProjectIds = new Set(
       this.trainedOnProjects.map((p) => p.projectID)
     );
