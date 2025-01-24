@@ -23,10 +23,6 @@ export class TrainedOnProjectsComponent implements OnInit {
     const trainedProjectIds = new Set(
       this.trainedOnProjects.map((p) => p.projectID)
     );
-    if (this.trainedOnProjects.length === 1) {
-      const singleProject = this.trainedOnProjects[0];
-      this.toggleClickState(singleProject);
-    }
     this.notTrainedOnProjects = this.notTrainedOnProjects.filter(
       (project) => !trainedProjectIds.has(project.projectID)
     );
@@ -39,22 +35,25 @@ export class TrainedOnProjectsComponent implements OnInit {
     if (this.projectAlreadyExists(this.projectToAdd.projectID)) {
       return;
     }
-
-    if (this.projectToAdd.clicked) {
-      this.projectToAdd.clicked = false;
-      this.projectToAdd.defaultproject = 0;
-      this.defaultproject = 0;
-      this.trainedOnChange.emit(this.projectToAdd);
-    }else{
-      this.projectToAdd.defaultproject=this.defPro[0].defaultproject;
-      this.defaultproject=this.defPro[0].defaultproject;
-    }
     this.projectToAdd.selected = false;
     this.trainedOnProjects.push(this.projectToAdd);
     this.notTrainedOnProjects.splice(
       this.notTrainedOnProjects.indexOf(this.projectToAdd),
       1
     );
+    if (this.trainedOnProjects.length === 1) {
+      let singleProject = this.trainedOnProjects[0];
+      singleProject.defaultproject = this.defPro[0].defaultproject;
+      singleProject.clicked = true;
+      this.projectToAdd.defaultproject = this.defPro[0].defaultproject;
+      this.projectToAdd.clicked = true;
+      this.toggleClickState(singleProject);
+      this.trainedOnChange.emit(this.projectToAdd);
+    } else {
+      this.projectToAdd.defaultproject = 0;
+      this.projectToAdd.clicked = false;
+      this.defaultproject = 0;
+    }
     this.trainedOnChange.emit(this.projectToAdd);
     this.projectToAdd = null;
   }
@@ -63,34 +62,32 @@ export class TrainedOnProjectsComponent implements OnInit {
     if (!this.projectToRemove) {
       return;
     }
-    console.log("gfngfhubgfhbgfgfh");
-    if(this.projectToRemove.defaultproject==this.defPro[0].defaultproject){
-      this.projectToRemove.defaultproject = 0;
-      this.defaultproject = 0;
-      this.trainedOnChange.emit(this.projectToRemove);
-    }
-    if (this.projectToRemove.clicked) {
-      this.projectToRemove.clicked = false;
-      this.projectToRemove.defaultproject = 0;
-      this.defaultproject = 0;
-      this.trainedOnChange.emit(this.projectToRemove);
-    }
     this.projectToRemove.selected = false;
-    this.projectToRemove.clicked = false;
-
     this.trainedOnProjects.splice(
       this.trainedOnProjects.indexOf(this.projectToRemove),
       1
     );
-    if (this.trainedOnProjects.length === 1) {
-      const singleProject = this.trainedOnProjects[0];
-      this.toggleClickState(singleProject);
-    }
     this.notTrainedOnProjects.push(this.projectToRemove);
     this.notTrainedOnProjects.sort((a, b) =>
       a.projectName.localeCompare(b.projectName)
     );
-    this.trainedOnChange.emit(this.projectToRemove);
+    console.log("this.trainedOnProjects------------ ",this.trainedOnProjects);
+    
+    if (this.trainedOnProjects.length === 1) {
+      let singleProject = this.trainedOnProjects[0];
+      singleProject.clicked = true;
+      this.defaultproject=singleProject.projectID
+      
+      console.log("singleProject.defaultproject------------ ,",singleProject);
+      this.projectToRemove.defaultproject = singleProject.projectID;
+      this.projectToRemove.clicked = true;
+      this.trainedOnChange.emit(this.projectToRemove);
+    } else {
+      this.projectToRemove.defaultproject = 0;
+      this.projectToRemove.clicked = false;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(this.projectToRemove);
+    }
     this.projectToRemove = null;
   }
 
