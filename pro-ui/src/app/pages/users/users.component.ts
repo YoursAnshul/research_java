@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../models/data/user';
 import { IDropDownValue, IFormFieldVariable, IProjectMin } from '../../interfaces/interfaces';
 import { MatTableDataSource } from '@angular/material/table';
@@ -10,24 +10,29 @@ import { ProjectsService } from '../../services/projects/projects.service';
 import { SelectedValue } from '../../models/presentation/selected-value';
 import { GlobalsService } from '../../services/globals/globals.service';
 import { UserActions } from '../../models/presentation/enums';
-import {user} from "@joeattardi/emoji-button/dist/icons";
+import { user } from "@joeattardi/emoji-button/dist/icons";
+import { CanComponentDeactivate } from '../../guards/unsaved-changes.guard';
+import { MatDialog } from '@angular/material/dialog';
+import { UnsavedChangesDialogComponent } from '../../components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
-export class UsersComponent {
+export class UsersComponent implements CanComponentDeactivate {
 
   public allUsers: User[] | undefined = undefined;
   public filteredUsers: User[] | undefined = undefined;
-  public selectedUser!: User ;
+  public selectedUser!: User;
   public allUsersSelected: boolean = false;
+  public isUnsavedChanges: boolean = false;
+  public isNavigate: boolean = false;
   @Input() showSelectedUser = false;
 
   //user status
   public statuses: IFormFieldVariable | undefined = undefined;
-  public activeDv: IDropDownValue = {codeValues: 1, dropDownItem: 'Active', sortOrder: 1};
+  public activeDv: IDropDownValue = { codeValues: 1, dropDownItem: 'Active', sortOrder: 1 };
   // public userStatusDv: IDropDownValue[] = [
   //   this.activeDv,
   //   {codeValues: 0, dropDownItem: 'Terminated', sortOrder: 2},
@@ -36,8 +41,8 @@ export class UsersComponent {
 
   //edit schedule status
   public canEditDv: IDropDownValue[] = [
-    {codeValues: 2, dropDownItem: 'Locked', sortOrder: 1},
-    {codeValues: 1, dropDownItem: 'Unlocked', sortOrder: 2},
+    { codeValues: 2, dropDownItem: 'Locked', sortOrder: 1 },
+    { codeValues: 1, dropDownItem: 'Unlocked', sortOrder: 2 },
   ];
   public selectedCanEdit: SelectedValue[] = [];
 
@@ -51,14 +56,14 @@ export class UsersComponent {
 
   public roles: IFormFieldVariable | undefined = undefined;
   public selectedRoles: SelectedValue[] = [];
-  public createUser: boolean  = false;
+  public createUser: boolean = false;
 
   public projectSelected: boolean = false;
 
   public userStatusAnySelected: boolean = false;
   public canEditAnySelected: boolean = true;
   public projectsAnySelected: boolean = true;
-  
+
   //Table definition
   public netIdHeaderItem: TableHeaderItem = new TableHeaderItem('NetID', 'dempoid', false, true, true, false);
   public firstNameHeaderItem: TableHeaderItem = new TableHeaderItem('First Name', 'fname', false, true, true, false);
@@ -93,7 +98,7 @@ export class UsersComponent {
   constructor(private usersService: UsersService,
     private projectsService: ProjectsService,
     private configurationService: ConfigurationService,
-    private globalsService: GlobalsService,
+    private globalsService: GlobalsService
   ) {
 
     this.getAllUsers();
@@ -161,11 +166,11 @@ export class UsersComponent {
 
       let maxPage: number = Math.floor((this.filteredUsers || []).length / this.pageSize);
       maxPage = (maxPage == 0 ? 1 : maxPage);
-      
+
       if (this.currentPage < 1) {
         this.currentPage = 1;
       }
-      
+
       if (this.currentPage > maxPage) {
         this.currentPage = maxPage;
       }
@@ -180,11 +185,11 @@ export class UsersComponent {
   public applyFilters(): void {
 
     this.filteredUsers = (this.allUsers || []).
-    sort((a, b) => {
-      const nameA = a.preferredfname || a.fname;
-      const nameB = b.preferredfname || b.fname;
-      return nameA.localeCompare(nameB);
-    });
+      sort((a, b) => {
+        const nameA = a.preferredfname || a.fname;
+        const nameB = b.preferredfname || b.fname;
+        return nameA.localeCompare(nameB);
+      });
 
     //filter by user status
     if (this.selectedUserStatus.length > 0
@@ -206,15 +211,15 @@ export class UsersComponent {
 
       if (this.trainedOn == 1) {
 
-          this.filteredUsers = this.filteredUsers.filter(user =>
-            Utils.arrayIncludesAll(
-              this.selectedProjects.map(x => x.value.toString()),
-              Utils.pipeStringToArray(user.trainedon)
-            )
-          );
+        this.filteredUsers = this.filteredUsers.filter(user =>
+          Utils.arrayIncludesAll(
+            this.selectedProjects.map(x => x.value.toString()),
+            Utils.pipeStringToArray(user.trainedon)
+          )
+        );
 
       } else if (this.trainedOn == 0) {
-        
+
         this.filteredUsers = this.filteredUsers.filter(user =>
           !Utils.arrayIncludesAny(
             this.selectedProjects.map(x => x.value.toString()),
@@ -227,7 +232,7 @@ export class UsersComponent {
       && this.selectedProjects.length > 0
       && this.trainedOn == 1) {
       this.filteredUsers = this.filteredUsers.filter(user => (user.trainedon || '').length > 0);
-  
+
     } else if (this.trainedOn == 0) {
       this.filteredUsers = this.filteredUsers.filter(user => !user.trainedon);
     }
@@ -285,10 +290,10 @@ export class UsersComponent {
   }
 
   //handle change on 
-  
+
   //filter the users on header item change
   public headerItemsChange(headerItems: TableHeaderItem[]): void {
-    
+
     this.selectedUserStatus = this.userStatusHeaderItem.filterValue;
     if ((this.selectedUserStatus.map((x: any) => x.value) || []).includes('0')) {
       this.userStatusAnySelected = true;
@@ -297,7 +302,7 @@ export class UsersComponent {
     }
 
     this.selectedCanEdit = this.canEditHeaderItem.filterValue;
-    
+
     if ((this.selectedCanEdit.map((x: any) => x.value) || []).includes('0')) {
       this.canEditAnySelected = true;
     } else {
@@ -326,12 +331,12 @@ export class UsersComponent {
     this.firstNameHeaderItem.searchValue = '';
     this.lastNameHeaderItem.searchValue = '';
     this.emailHeaderItem.searchValue = '';
-    
+
     //reset the inline table header filters
     this.userStatusHeaderItem.filterValue = this.selectedUserStatus;
     this.canEditHeaderItem.filterValue = this.selectedCanEdit;
     this.roleHeaderItem.filterValue = this.selectedRoles;
-    
+
     this.applyFilters();
   }
 
@@ -404,8 +409,9 @@ export class UsersComponent {
     return Utils.formatDateOnlyToDateOnlyString(dateToFormat);
   }
 
-  public makeSelectedUserVisible(user:User){
-    this.showSelectedUser=true
+  public makeSelectedUserVisible(user: User) {
+    this.showSelectedUser = true
+    this.isUnsavedChanges = false;
     this.selectedUser = user;
   }
 
@@ -415,9 +421,9 @@ export class UsersComponent {
 
   onUserAdded(user: any) {
     this.createUser = false;
-    this.showSelectedUser =  false;
-     //get users
-     this.usersService.getAllUsers().subscribe( {
+    this.showSelectedUser = false;
+    //get users
+    this.usersService.getAllUsers().subscribe({
       next: (response) => {
 
         this.allUsers = <User[]>response.Subject;
@@ -427,11 +433,11 @@ export class UsersComponent {
 
         //default sort by first name
         this.filteredUsers = this.allUsers.
-        sort((a, b) => {
-          const nameA = a.preferredfname || a.fname;
-          const nameB = b.preferredfname || b.fname;
-          return nameA.localeCompare(nameB);
-        });
+          sort((a, b) => {
+            const nameA = a.preferredfname || a.fname;
+            const nameB = b.preferredfname || b.fname;
+            return nameA.localeCompare(nameB);
+          });
 
         //default filter by active users
         this.filteredUsers = this.filteredUsers.filter(user => user.status == '1');
@@ -444,7 +450,7 @@ export class UsersComponent {
         console.log(this.errorMessage);
       },
     });
-   }
+  }
 
   //execute batch action on selected users
   executeUserAction(userAction: UserActions): void {
@@ -477,11 +483,11 @@ export class UsersComponent {
         checkedUsers[i].active = true;
         action = 'User Activation';
       }
-      
+
       //unselect all users
       this.allUsersSelected = false;
       this.toggleAllUsersSelected();
-      
+
     }
 
     //pass to save user api to save
@@ -506,21 +512,21 @@ export class UsersComponent {
   getAllUsers() {
 
     //get users
-    this.usersService.getAllUsers().subscribe( {
+    this.usersService.getAllUsers().subscribe({
       next: (response) => {
-        
+
         this.allUsers = <User[]>response.Subject;
 
         //only users with status
         this.allUsers = this.allUsers.filter(user => user.status);
-                
+
         //default sort by first name
         this.filteredUsers = this.allUsers.
-        sort((a, b) => {
-          const nameA = a.preferredfname || a.fname;
-          const nameB = b.preferredfname || b.fname;
-          return nameA.localeCompare(nameB);
-        });
+          sort((a, b) => {
+            const nameA = a.preferredfname || a.fname;
+            const nameB = b.preferredfname || b.fname;
+            return nameA.localeCompare(nameB);
+          });
 
         //COMMENT/UNCOMMENT TO SKIP TO THE VIEW USER COMPONENT
         // this.showSelectedUser = true;
@@ -545,4 +551,16 @@ export class UsersComponent {
     this.applyFilters();
   }
 
+  // Guard method
+  canDeactivate(): boolean {
+    if (this.showSelectedUser && this.isUnsavedChanges) {
+      this.isNavigate = true;
+      return false;
+    }
+    return true;
+  }
+
+  setUnsavedChanges(value: boolean) {
+    this.isUnsavedChanges = value;
+  }
 }

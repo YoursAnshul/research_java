@@ -571,17 +571,38 @@ app-form-field {
   text-decoration: underline;
 }
 
+.profile-image-container {
+  width: 60px; /* Fixed width */
+  height: 60px; /* Fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px; /* Optional: Rounded corners */
+  overflow: hidden; /* Ensures any overflow is trimmed */
+  cursor: pointer;
+  position: relative;
+}
+
+.profile-image-container img {
+  width: 100%; /* Make the image fill the container */
+  height: 100%; /* Maintain full height */
+  object-fit: cover; /* Ensures the image is cropped to fill the container */
+}
+
 ::ng-deep .mdc-text-field--filled.mdc-text-field--disabled {
   background-color: white !important;
   border: 1px solid !important;
   border-radius: 4px;
 }
 
-::ng-deep
-  .mdc-text-field--filled.mdc-text-field--disabled
-  .mdc-text-field__input {
+::ng-deep .mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input{
   color: initial !important;
 }
+
+.disabled {
+  cursor: none;
+}
+
 .invalid-emphasis {
   color: #dc4a38 !important;
 }

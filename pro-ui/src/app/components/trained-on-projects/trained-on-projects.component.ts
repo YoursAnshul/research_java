@@ -39,6 +39,13 @@ export class TrainedOnProjectsComponent implements OnInit {
     if (this.projectAlreadyExists(this.projectToAdd.projectID)) {
       return;
     }
+
+    if (this.projectToAdd.clicked) {
+      this.projectToAdd.clicked = false;
+      this.projectToAdd.defaultproject = 0;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(this.projectToAdd);
+    }
     this.projectToAdd.selected = false;
     this.trainedOnProjects.push(this.projectToAdd);
     this.notTrainedOnProjects.splice(
@@ -46,7 +53,6 @@ export class TrainedOnProjectsComponent implements OnInit {
       1
     );
     this.trainedOnChange.emit(this.projectToAdd);
-    this.toggleClickState(this.projectToAdd);
     this.projectToAdd = null;
   }
 
@@ -54,24 +60,28 @@ export class TrainedOnProjectsComponent implements OnInit {
     if (!this.projectToRemove) {
       return;
     }
+    if (this.projectToRemove.clicked) {
+      this.projectToRemove.clicked = false;
+      this.projectToRemove.defaultproject = 0;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(this.projectToRemove);
+    }
     this.projectToRemove.selected = false;
+    this.projectToRemove.clicked = false;
 
     this.trainedOnProjects.splice(
       this.trainedOnProjects.indexOf(this.projectToRemove),
       1
     );
+    if (this.trainedOnProjects.length === 1) {
+      const singleProject = this.trainedOnProjects[0];
+      this.toggleClickState(singleProject);
+    }
     this.notTrainedOnProjects.push(this.projectToRemove);
     this.notTrainedOnProjects.sort((a, b) =>
       a.projectName.localeCompare(b.projectName)
     );
     this.trainedOnChange.emit(this.projectToRemove);
-    if (this.trainedOnProjects.length === 1) {
-      let singleProject = this.trainedOnProjects[0];
-      singleProject.clicked = true;
-      this.toggleClickState(singleProject);
-    } else {
-      this.toggleClickState(this.projectToRemove);
-    }
     this.projectToRemove = null;
   }
 

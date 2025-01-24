@@ -366,11 +366,24 @@ export class CalendarComponent implements OnInit {
     let anyTrainedOnFilter: IAnyFilter = this.anyFilter(this.trainedOnFilter, this.anyTrainedOnToggle);
     this.trainedOnFilter.setValue(anyTrainedOnFilter.filterControl.value);
     this.anyTrainedOnToggle = anyTrainedOnFilter.anyToggle;
+    if(this.anyTrainedOnToggle){
+      this.notTrainedOnFilter.disable();
+    }else{
+      this.notTrainedOnFilter.enable();
+    }
+
 
     //not trained on
     let anyNotTrainedOnFilter: IAnyFilter = this.anyFilter(this.notTrainedOnFilter, this.anyNotTrainedOnToggle);
     this.notTrainedOnFilter.setValue(anyNotTrainedOnFilter.filterControl.value);
     this.anyNotTrainedOnToggle = anyNotTrainedOnFilter.anyToggle;
+
+    if(this.anyNotTrainedOnToggle){
+      this.trainedOnFilter.disable();
+    }else{
+      this.trainedOnFilter.enable();
+    }
+
 
     //reset filtered datasets to default and then refilter
     //this.setDefaultFilters(true);

@@ -19,6 +19,7 @@ import { ParticipantSearchComponent } from './components/participant-search/part
 import { ManageAnnouncementsComponent } from './pages/announcements/announcement.management.component';
 import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
 
 const routes: Routes = [
 
@@ -33,14 +34,14 @@ const routes: Routes = [
   { path: 'projects', component: ProjectsComponent},
   { path: 'communications', component: CommunicationsComponent},
   { path: 'reports', component: ReportsComponent},
-  { path: 'users', component: UsersComponent},
+  { path: 'users', component: UsersComponent, canDeactivate: [UnsavedChangesGuard]},
   { path: 'forecasting', component: ForecastingComponent},
   { path: 'requests', component: RequestsComponent },
   { path: 'configuration', component: ConfigurationComponent},
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent},
   { path: 'announcement-management', component: ManageAnnouncementsComponent},
   { path: 'scheduling-info', data: { hideHeaderFooter: true }, component: SchedulingInfoComponent},
-  { path: 'user-profile', component: UserProfileComponent}
+  { path: 'user-profile', component: UserProfileComponent, canDeactivate: [UnsavedChangesGuard]}
   //{ path: 'test', component: TestComponent },
 ];
 

@@ -26,6 +26,9 @@ html {
     --mdc-filled-button-container-color: #0680CD;
     --mdc-outlined-text-field-disabled-outline-color: #B5B5B5;
     --mat-select-trigger-text-size: 12px;   
+    --mdc-outlined-text-field-disabled-input-text-color: rgba(0, 0, 0, 0.87);
+    --mdc-outlined-text-field-disabled-label-text-color:  #0680CD;
+    --mat-select-disabled-trigger-text-color: rgba(0, 0, 0, 0.87);
 }
 .mat-mdc-outlined-button:not(:disabled) {
     --mdc-outlined-button-outline-color: #0680CD;
@@ -157,7 +160,7 @@ html {
 }
 
 .black.mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
-    color: #58595B;
+    color: #0680CD;
 }
 
 .round .mat-mdc-form-field-infix {

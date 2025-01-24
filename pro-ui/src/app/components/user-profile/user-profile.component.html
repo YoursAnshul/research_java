@@ -2,6 +2,6 @@
 <div id="user-profile" *ngIf="selectedUser">
 
     <app-view-user id="view-user-profile"
-                   [viewUser]="selectedUser" [showBreadcrum]="false">
+                   [viewUser]="selectedUser" [showBreadcrum]="false" (setUnsavedChanges)="setUnsavedChanges($event)" [discardChanges]="discardChanges">
     </app-view-user>
   </div>
