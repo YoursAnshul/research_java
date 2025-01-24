@@ -45,6 +45,9 @@ export class TrainedOnProjectsComponent implements OnInit {
       this.projectToAdd.defaultproject = 0;
       this.defaultproject = 0;
       this.trainedOnChange.emit(this.projectToAdd);
+    }else{
+      this.projectToAdd.defaultproject=this.defPro[0].defaultproject;
+      this.defaultproject=this.defPro[0].defaultproject;
     }
     this.projectToAdd.selected = false;
     this.trainedOnProjects.push(this.projectToAdd);
@@ -59,6 +62,12 @@ export class TrainedOnProjectsComponent implements OnInit {
   removeTrainedOn(): void {
     if (!this.projectToRemove) {
       return;
+    }
+    console.log("gfngfhubgfhbgfgfh");
+    if(this.projectToRemove.defaultproject==this.defPro[0].defaultproject){
+      this.projectToRemove.defaultproject = 0;
+      this.defaultproject = 0;
+      this.trainedOnChange.emit(this.projectToRemove);
     }
     if (this.projectToRemove.clicked) {
       this.projectToRemove.clicked = false;
