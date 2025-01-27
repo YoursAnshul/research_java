@@ -8,6 +8,7 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ParticipantService } from '../../services/participant/participant.service';
 import { MatPaginator } from '@angular/material/paginator';
+import moment from 'moment';
 
 interface Participant {
   dateOfBirth: string;
@@ -123,7 +124,7 @@ export class ParticipantSearchComponent {
               participantIn
             }
           });
-          this.dataSource.data = [...this.participants];
+         // this.dataSource.data = [...this.participants];
         }
       }
     )
@@ -170,6 +171,10 @@ export class ParticipantSearchComponent {
   }
 
   filter() {
+    if(!this.firstNameFilter && !this.lastNameFilter && !this.phoneNumberFilter && (!this.projectFilter || this.projectFilter?.length < 1)) {
+      this.dataSource.data = [];
+      return;
+    }
     let lookups = this.participants;
     if (this.firstNameFilter) {
       lookups = lookups.filter((lookup) => lookup?.participantFName?.toLowerCase().includes(this.firstNameFilter))
@@ -194,7 +199,8 @@ export class ParticipantSearchComponent {
     this.selectedParticipant = {
       ...row,
       participantName: `${row.participantFName} ${row.participantLName}`,
-      recordLocation: this.getParticipantIn(row.participantIn , 'value')
+      recordLocation: this.getParticipantIn(row.participantIn , 'value'),
+      dateOfBirth: this.formatDate(row.dateOfBirth)
     };
   }
 
@@ -242,5 +248,9 @@ export class ParticipantSearchComponent {
       default:
         return  type === 'Icon' ? '' : 'Undefined';
     }
+  }
+
+  formatDate(dateString: string): string {
+    return moment.utc(dateString).format('MM/DD/YYYY');
   }
 }

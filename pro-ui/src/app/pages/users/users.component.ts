@@ -29,7 +29,6 @@ export class UsersComponent implements CanComponentDeactivate {
   public isUnsavedChanges: boolean = false;
   public isNavigate: boolean = false;
   @Input() showSelectedUser = false;
-
   //user status
   public statuses: IFormFieldVariable | undefined = undefined;
   public activeDv: IDropDownValue = { codeValues: 1, dropDownItem: 'Active', sortOrder: 1 };
@@ -98,7 +97,8 @@ export class UsersComponent implements CanComponentDeactivate {
   constructor(private usersService: UsersService,
     private projectsService: ProjectsService,
     private configurationService: ConfigurationService,
-    private globalsService: GlobalsService
+    private globalsService: GlobalsService,
+    private dialog: MatDialog
   ) {
 
     this.getAllUsers();
@@ -550,17 +550,34 @@ export class UsersComponent implements CanComponentDeactivate {
     this.trainedOn = trainedOn;
     this.applyFilters();
   }
+// Guard method
+canDeactivate(): boolean {
+  if (this.isUnsavedChanges) {
+    this.openDialog({
+      dialogType: 'error'
+    })
+    return false;
+  }
+  return true;
+}
 
-  // Guard method
-  canDeactivate(): boolean {
-    if (this.showSelectedUser && this.isUnsavedChanges) {
-      this.isNavigate = true;
-      return false;
+openDialog(data: any,): void {
+  const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+    width: '300px',
+    data: {
+      ...data
     }
-    return true;
-  }
+  });
 
-  setUnsavedChanges(value: boolean) {
-    this.isUnsavedChanges = value;
-  }
+  dialogRef.afterClosed().subscribe(result => {
+    if (result == 'close') {
+      this.showSelectedUser = false;
+      this.isUnsavedChanges = false;
+    }
+  });
+}
+
+setUnsavedChanges(value:boolean) {
+  this.isUnsavedChanges = value;
+}
 }

@@ -18,13 +18,16 @@ import { GlobalsService } from '../../services/globals/globals.service';
 import { LogsService } from '../../services/logs/logs.service';
 import { ProjectsService } from '../../services/projects/projects.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
+import {CanComponentDeactivate} from "../../guards/unsaved-changes.guard";
+import {UnsavedChangesDialogComponent} from "../../components/unsaved-changes-dialog/unsaved-changes-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-configuration',
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.css']
 })
-export class ConfigurationComponent implements OnInit {
+export class ConfigurationComponent implements CanComponentDeactivate {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
 
     if (this.changedFormFields.length > 0 || this.adminOptionsChanged) {
@@ -72,7 +75,7 @@ export class ConfigurationComponent implements OnInit {
               private userSchedulesService: UserSchedulesService,
               private authenticationService: AuthenticationService,
               private projectsService: ProjectsService,
-              private logsService: LogsService) {
+              private logsService: LogsService,private dialog: MatDialog) {
 
     this.selectedCommHubFormField.dropDownValues = [];
 
@@ -1087,6 +1090,36 @@ export class ConfigurationComponent implements OnInit {
         break;
 
     }
+  }
+
+  canDeactivate(): boolean {
+
+    if (this.adminOptionsChanged || (typeof this.newBlockOutDate !== 'undefined' && this.newBlockOutDate !== null && this.newBlockOutDate.blockOutDay !=null)) {
+      this.openDialog({
+        dialogType: 'error',
+        isUserProfile: true
+      })
+      return false;
+    }
+    return true;
+
+  }
+
+  openDialog(data: any,): void {
+    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+      width: '300px',
+      data: {
+        ...data
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == 'discardChanges') {
+        this.getAllConfiguration();
+        this.newBlockOutDate = {} as IBlockOutDate;
+        this.adminOptionsChanged = false;
+      }
+    });
   }
 
   public toNumber(value: any): number {

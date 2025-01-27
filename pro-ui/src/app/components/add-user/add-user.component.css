@@ -496,7 +496,6 @@ app-form-field {
   justify-content: center;
   border-radius: 10px; /* Optional: Rounded corners */
   overflow: hidden; /* Ensures any overflow is trimmed */
-  cursor: pointer;
   position: relative;
 }
 
@@ -514,4 +513,12 @@ app-form-field {
 
 .upper {
   text-transform: uppercase;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.w-fit {
+  cursor: pointer;
 }

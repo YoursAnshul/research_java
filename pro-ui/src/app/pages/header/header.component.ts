@@ -214,7 +214,7 @@ export class HeaderComponent implements OnInit {
   public openParticipantModal(): void {
     //this.globalsService.openSchedulePopup();
     this.dialog.open(DialogComponent, {
-      width: '75.5%',
+      width: '85.5%',
       data: {
         template: this.participantTemplate,
       },
