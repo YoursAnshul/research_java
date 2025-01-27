@@ -451,13 +451,16 @@ export class AddUserComponent implements OnInit{
     this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
     //assign to tab arrays
     this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 0);
+    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2');
     this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
     this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
     this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 1);
     this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 2);
     this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 3);
-
+    console.log("this.tab2UserFields--------- ", this.tab2UserFields);
+    console.log("this.userFormFields---------", this.userFormFields);
+    
+    
     this.validateRequiredFields();
 
   }
@@ -774,7 +777,7 @@ export class AddUserComponent implements OnInit{
                 for (var i = 1; i < 15; i++) {
                   this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
                 }
-                /* this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
+                 this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
                    response => {
                      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                        this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
@@ -799,7 +802,7 @@ export class AddUserComponent implements OnInit{
    
                      this.userSaved.emit(this.selectedUser);
    
-                   }); */
+                   }); 
                 resolver("Saved Succesfully user")
               } else {
                 this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
