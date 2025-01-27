@@ -76,8 +76,10 @@ export class AddUserComponent implements OnInit{
   acceptedFormats = ['image/jpeg', 'image/png'];
   maxFileSizeMB = 10;
   selectedTabIndex = 1;
+  currentDate = new Date();
 
-  public selectedTab: string = 'scheduling';
+
+  public selectedTab: string = 'user-details';
 
   constructor(private fb: FormBuilder,private globalsService: GlobalsService,
   private authenticationService: AuthenticationService,
@@ -187,22 +189,37 @@ export class AddUserComponent implements OnInit{
       this.coreHours = {} as ICoreHours;
 
       //default core hours
-      let ch: any = this.coreHours;
-      let currentDate: Date = new Date();
-      ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-      ch.coreHours1 = 0;
-      ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      ch.coreHours2 = 0;
-      for (var i = 1; i < 13; i++) {
-        console.log(ch);
-        ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
-        ch['coreHours' + (i + 2)] = 0;
-      }
-      console.log(ch);
+      // let ch: any = this.coreHours;
+      // let currentDate: Date = new Date();
+      // ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      // ch.coreHours1 = 0;
+      // ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      // ch.coreHours2 = 0;
+      // for (var i = 1; i < 13; i++) {
+      //   ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+      //   ch['coreHours' + (i + 2)] = 0;
+      // }
 
+      // this.coreHours = ch;
+
+      let ch: any = {};
+      let currentDate: Date = new Date();
+      
+      for (let i = 0; i < 14; i++) {
+        const monthKey = `month${i + 1}`;
+        const coreHoursKey = `coreHours${i + 1}`;
+      
+        const calculatedDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 2);
+      
+        ch[monthKey] = calculatedDate;
+        ch[coreHoursKey] = 0;
+      }
+      
       this.coreHours = ch;
 
-      //set trained/not trained on if not already set and if we have already populated active projects
+                 
+      
+      console.log("this.coreHours----", this.coreHours);
       if (this.activeProjects) {
         this.setTrainedOn();
         this.setNotTrainedOn();
@@ -229,7 +246,6 @@ export class AddUserComponent implements OnInit{
                  response => {
                    if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                      this.coreHours = <ICoreHours>response.Subject;
-
                      let rebuildCoreHours: boolean = false;
                      if (!this.coreHours) {
                        rebuildCoreHours = true;
@@ -300,6 +316,7 @@ export class AddUserComponent implements OnInit{
         }
       );
     }
+    
   }
 
 
