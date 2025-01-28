@@ -248,7 +248,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         expireDate:
           adjustToUTCPlus530(this.announcementForm.value.expireDate) || null,
         projectIds: selectedProjectsIds,
-        email: this.userObj.eppn
+        email: this.userObj.eppn,
       };
       if (this.id) {
         announcementData.announcementId = this.id;
@@ -330,65 +330,97 @@ export class AddAnnouncementDialogComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.authorList = data;
-        console.log(' this.authorList--', this.authorList);
-        this.getLoginAuthor(this.userObj.eppn);
+        this.authorList = Array.isArray(data) ? data : [];
+        console.log('Author List:', this.authorList);
+
+        if (!this.id || this.id === 0) {
+          // If `id` is not present, set login author
+          if (this.userObj?.eppn) {
+            this.getLoginAuthor(this.userObj.eppn);
+          } else {
+            console.error('User email (eppn) is not defined');
+          }
+        } else {
+          // If `id` is present, fetch details
+          this.getDetails(this.id);
+        }
       },
       error: (error: any) => {
-        console.error('Error fetching project info:', error);
+        console.error('Error fetching authors:', error);
       },
     });
   }
+
   getLoginAuthor(email: string): void {
-    const params = new HttpParams().set('email', email);
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
-    this.http.get(apiUrl, { params }).subscribe({
-      next: (data: any) => {
-        this.selectedAuthor = [];
-        this.selectedAuthor = this.authorList.find(
-          (author) => author?.userId === data?.userId
-        );
-      },
-      error: (error: any) => {
-        console.error('Error fetching project info:', error);
-      },
-    });
-  }
-  getDetails(id: number | undefined): void {
-    if (id == null || id === 0) {
-      console.warn('Invalid ID. Skipping API call.');
+    if (!email) {
+      console.error('Email is required to fetch login author');
       return;
     }
+
+    const params = new HttpParams().set('email', email);
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
+
+    this.http.get(apiUrl, { params }).subscribe({
+      next: (data: any) => {
+        this.selectedAuthor =
+          this.authorList.find((author) => author?.userId === data?.userId) ||
+          null; // Ensure `null` if no match is found
+        console.log('Login Author Selected:', this.selectedAuthor);
+      },
+      error: (error: any) => {
+        console.error('Error fetching user info:', error);
+      },
+    });
+  }
+
+  getDetails(id: number | undefined): void {
+    if (!id || id === 0) {
+      console.warn('Invalid ID. Skipping details API call.');
+      return;
+    }
+
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/announcement/${id}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        console.log(data.Subject);
-        this.selectedEmoji = data.Subject.icon;
-        console.log('data.Subject.startDate', data.Subject.startDate);
-        console.log('data.Subject.expireDate', data.Subject.expireDate);
+        if (!data?.Subject) {
+          console.warn('No subject data found in response');
+          return;
+        }
+
+        console.log('Announcement Details:', data.Subject);
+
         const adjustDate = (date: string | null): Date | null => {
           if (!date) return null;
           const d = new Date(date);
           return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
         };
 
+        // Patch announcement form values
         this.announcementForm.patchValue({
-          title: data.Subject.title,
-          isAuthor: data.Subject.isAuthor,
+          title: data.Subject.title || '',
+          isAuthor: data.Subject.isAuthor || false,
           startDate: adjustDate(data.Subject.startDate),
           expireDate: adjustDate(data.Subject.expireDate),
         });
+
+        // Set body text if available
         if (data.Subject.bodyText) {
           this.quill.root.innerHTML = data.Subject.bodyText;
+        } else {
+          this.quill.root.innerHTML = '';
         }
-        this.selectedAuthor = [];
-        this.selectedAuthor = this.authorList.find(
-          (author) => author.userId === data.Subject.authorId
-        );
-        this.selectedProjects = [];
-        this.selectedProjects = this.projectList.filter((project) =>
-          data.Subject.projectIds.includes(project.projectId)
-        );
+
+        // Select author from `authorList`
+        this.selectedAuthor =
+          this.authorList.find(
+            (author) => author?.userId === data.Subject?.authorId
+          ) || null;
+
+        // Select associated projects
+        this.selectedProjects =
+          this.projectList?.filter((project) =>
+            data.Subject?.projectIds?.includes(project.projectId)
+          ) || [];
       },
       error: (error: any) => {
         console.error('Error fetching announcement details:', error);
