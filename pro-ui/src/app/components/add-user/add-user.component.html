@@ -95,7 +95,40 @@
   
         <!-- Tab 1: Scheduling -->
         @if (selectedTab === 'scheduling') {
-            <div class="m-3 mt-4">
+            <div>
+                <div class="font-medium tracking-wider mb-2">CORE HOURS MONTHLY</div>
+                <table id="core-hours-table">
+                  <thead>
+                    <tr id="core-hours-header" class="bold">
+                        <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
+                        <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngFor="let ch of numSequence(14); let i = index">
+                        <mat-form-field class="coreHoursInput" style="height: 50px; ">
+                          <input style="align-items: center; " type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
+                            (keyup)="setChanged(); nvlHours(coreHours, (i + 1))" (keypress)="numberRestrict($event)"
+                            name="core-hours-{{i}}" autocomplete="off" maxlength="4">
+                        </mat-form-field>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            <!-- <div class="m-3 mt-4">
                     <span class="bold">Core Hours Monthly</span>
                     <table id="core-hours-table">
                     <thead>
@@ -130,7 +163,7 @@
                         </td>
                     </tr>
                     </table>
-            </div>
+            </div> -->
         }
             
         <!-- Tab 2: User Details -->

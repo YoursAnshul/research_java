@@ -18,6 +18,9 @@ import { User } from '../../models/data/user';
 export class CalendarComponent implements OnInit {
   @Input() authenticatedUser!: IAuthenticatedUser;
   @Input() contextUser!: User;
+  @Input() selectedUser!: User;
+  user!: User;
+
   @Input() contextProject!: IProject;
   //SCHEDULES
   allUsers!: User[];
@@ -132,6 +135,9 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.user = this.selectedUser;
+    console.log("thhhh",this.user);
+    
      //subscribe to scheduleFetchStatus
      this.userSchedulesService.scheduleFetchStatus.subscribe(
       scheduleFetchStatus => {

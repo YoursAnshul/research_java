@@ -19,7 +19,7 @@
       <div class="calendar-wrapper">
         <div class="legend-container">
           @if (tabIndex == 0) {
-            <app-legend [userSchedules]="filteredUserSchedulesDay"></app-legend>
+            <app-legend [userSchedules]="filteredUserSchedulesDay" [selectedUser]="selectedUser"></app-legend>
           }
         </div>
         <div>
@@ -50,7 +50,7 @@
       <div class="calendar-wrapper">
         <div class="legend-container">
           @if (tabIndex == 1) {
-            <app-legend [weekSchedules]="weekSchedules"></app-legend>
+            <app-legend [weekSchedules]="weekSchedules" [selectedUser]="selectedUser"></app-legend>
           }
         </div>
         <div>
@@ -82,7 +82,7 @@
       <div class="calendar-wrapper">
         <div class="legend-container">
           @if (tabIndex == 2) {
-            <app-legend [monthSchedules]="monthSchedules"></app-legend>
+            <app-legend [monthSchedules]="monthSchedules" [selectedUser]="selectedUser"></app-legend>
           }
         </div>
         <div [ngClass] ="authenticatedUser?.interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
