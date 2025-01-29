@@ -160,7 +160,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             const d = new Date(date);
             return !isNaN(d.getTime())
               ? new Intl.DateTimeFormat('en-US', {
-                  timeZone: 'UTC', 
+                  timeZone: 'UTC',
                   month: '2-digit',
                   day: '2-digit',
                   year: 'numeric',
@@ -196,12 +196,15 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
 
   openAddAnnouncementDialog(): void {
-    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent);
-    dialogRef.afterClosed().subscribe((result) => {
-      this.pageIndex = 0;
-      this.getList(this.pageIndex + 1);
+    const dialogRef = this.dialog.open(AddAnnouncementDialogComponent, {
+      disableClose: true,
     });
-   
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.pageIndex = 0;
+        this.getList(this.pageIndex + 1);
+      }
+    });
   }
   handlePageEvent(e: PageEvent) {
     this.pageEvent = e;
@@ -218,11 +221,14 @@ export class ManageAnnouncementsComponent implements OnInit {
   }
   editAnnouncement(announcement: any): void {
     const dialogRef = this.dialog.open(AddAnnouncementDialogComponent, {
+      disableClose: true,
       data: announcement,
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.pageIndex = 0;
-      this.getList(this.pageIndex + 1);
+      if (result) {
+        this.pageIndex = 0;
+        this.getList(this.pageIndex + 1);
+      }
     });
   }
   deleteAnnouncement(announcement: any): void {

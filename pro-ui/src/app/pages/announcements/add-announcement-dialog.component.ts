@@ -255,6 +255,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
         this.http.post(apiUrl, announcementData).subscribe({
           next: (response: any) => {
+            this.dialogRef.close(true);
             console.log('Announcement saved successfully:', response);
             this.showToastMessage(
               'Announcement update successfully!',
@@ -273,6 +274,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
         const apiUrl = `${environment.DataAPIUrl}/manage-announement/save`;
         this.http.post(apiUrl, announcementData).subscribe({
           next: (response: any) => {
+            this.dialogRef.close(true);
             console.log('Announcement saved successfully:', response);
             this.showToastMessage(
               'Announcement saved successfully!',

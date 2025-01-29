@@ -18,6 +18,7 @@ import {Utils} from "../../classes/utils";
 import { User } from '../../models/data/user';
 import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import moment from 'moment';
 
 @Component({
   selector: 'app-add-user',
@@ -923,4 +924,14 @@ export class AddUserComponent implements OnInit{
     );
   }
 
+    isCurrentMonth(month: Date | null): boolean {
+      if (!month) {
+        return false;
+      }
+  
+      const currentMonth = moment.utc().startOf('month');
+      const monthToCheck = moment.utc(month).startOf('month');
+  
+      return currentMonth.isSame(monthToCheck);
+    }
 }
