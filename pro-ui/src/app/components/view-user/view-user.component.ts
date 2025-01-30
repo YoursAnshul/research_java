@@ -450,7 +450,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   trainedOnChange(project: IProjectMin): void {
-    this.changedTrainedOnProjects.push(project);
+    // this.changedTrainedOnProjects.push(project);
     this.trainedOnProjects.sort((x, y) => {
       
       return x.projectName < y.projectName
@@ -891,7 +891,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
         this.setUnsavedChanges.emit(false);
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
         this.coreHours = { ... this.coreHoursResponse };
-        this.trainedOnProjects = this.trainedOnProjects.filter(project => !this.changedTrainedOnProjects.some(project_two => project.projectID === project_two.projectID))
+        // this.trainedOnProjects = this.trainedOnProjects.filter(project => !this.changedTrainedOnProjects.some(project_two => project.projectID === project_two.projectID))
        this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       } else if (result == 'save') {
         this.userSaved.emit(this.selectedUser);
