@@ -180,6 +180,7 @@
               @for (item of getTrainingProjects(selectedUser.trainedon);track item){
               <div class="flex items-center my-2 gap-2">
                 <div class="w-3 h-3" [ngStyle]="getSwatchColor(item)"></div>
+                <div>{{item}}</div>
                 <mat-icon
                   [ngStyle]="{
                     'font-size': '20px',
@@ -196,7 +197,6 @@
                       : ""
                   }}
                 </mat-icon>
-                <div>{{item}}</div>
               </div>
               }
               } @else {
