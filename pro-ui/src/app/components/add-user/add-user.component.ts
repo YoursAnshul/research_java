@@ -534,7 +534,7 @@ export class AddUserComponent implements OnInit {
     this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
     //assign to tab arrays
     this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-   this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' );
+   this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 0);
     this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
     this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
     this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 1);
