@@ -1,0 +1,17 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <span class="icon-warning">!</span>
+  </div>
+  <h2 class="dialog-title">
+    Are you sure you want to close the window?
+  </h2>
+  <p class="dialog-message">Any changes made will be discard.</p>
+  <div class="dialog-actions">
+    <button mat-flat-button class="w-100 primary-button" (click)="onConfirm()">
+      Yes, Close Window
+    </button>
+    <button mat-flat-button class="w-100 warn-button" (click)="onCancel()">
+      No, Go Back
+    </button>
+  </div>
+</div>

@@ -16,6 +16,7 @@ import {
 } from '@angular/material/snack-bar';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { ConfirmationDialogComponent } from '../../components/add-user/confirmation-dialog.component';
 
 declare var Quill: any;
 
@@ -293,9 +294,21 @@ export class AddAnnouncementDialogComponent implements OnInit {
     }
   }
 
-  closeDialog(): void {
-    this.dialogRef.close();
+  confirmationPopup(): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent,{
+      panelClass: 'custom-dialog-container'
+    });
+    
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.closeDialog();
+      }
+    });
   }
+  closeDialog(): void {
+    this.dialogRef?.close();
+  }
+
   openPreview(): void {
     this.announcement.content = this.quill.root.innerHTML;
     const plainTextContent = this.quill.root.textContent;
