@@ -23,7 +23,7 @@
                 (click)="setProjectToRemove(proj)">
                 <div class="w-3 h-3" [ngStyle]="getSwatchColor(proj)"></div>
                 <div>{{proj.projectName}}</div>
-                <mat-icon
+                <mat-icon class="ml-auto pr-3"
                 (click)="toggleClickState(proj); $event.stopPropagation()"
                 [ngStyle]="{
                   'font-size': '20px',
