@@ -13,6 +13,7 @@ import {
   IFormFieldInstance, IFormFieldVariable,
   IProjectMin,
   IRequest,
+  DefPro
 } from "../../interfaces/interfaces";
 import { Utils } from "../../classes/utils";
 import { User } from '../../models/data/user';
@@ -51,6 +52,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];
+  defPro!: DefPro[];
   changedTrainedOnProjects!:IProjectMin[];
   trainedOnProjects!: IProjectMin[];
   notTrainedOnProjects!: IProjectMin[];
@@ -77,6 +79,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
   public roles: IFormFieldVariable | undefined = undefined;
   public activeProjectsDv: IDropDownValue[] = [];
   errorMessage!: string;
+  isStarFilled: boolean = false;
+  defaultproject: number = 0;
 
   requestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes'];
   noRequestsResultsMessage: string = 'Loading requests...';
@@ -401,6 +405,19 @@ export class ViewUserComponent implements OnInit, OnChanges {
       return (x.projectName < y.projectName) ? -1 : (x.projectName > y.projectName) ? 1 : 0;
     });
 
+    if (
+      project &&
+      project.defaultproject &&
+      project.defaultproject !== undefined &&
+      project.defaultproject > 0
+    ) {
+      this.defaultproject = project.defaultproject;
+      this.selectedUser.defaultproject = project.defaultproject;
+    } else {
+      this.defaultproject = 0;
+      this.selectedUser.defaultproject = 0;
+    }
+
     this.selectedUser.trainedon = this.trainedOnProjects.map(x => x.projectID.toString()).join('|');
     this.setNotTrainedOn();
     this.changed = true;
@@ -429,6 +446,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
       trainedOnIds = this.selectedUser.trainedon.split('|');
     }
     this.trainedOnProjects = this.activeProjects.filter(x => trainedOnIds.includes(x.projectID.toString()));
+    this.defPro = [
+      { defaultproject: Number(this.selectedUser.defaultproject) },
+    ];
+    console.log('this.defPro---------- ', this.defPro);
   }
 
   setNotTrainedOn(): void {
@@ -729,6 +750,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   saveUser(): void {
+    if (!this.defaultproject || this.defaultproject === 0) {
+      return;
+    }
     this.mapUserFieldsBackToUser();
     //set modified metadata
     this.selectedUser.modBy = this.authenticatedUser.netID;
@@ -738,7 +762,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.selectedUser.entryBy = this.authenticatedUser.netID;
     this.selectedUser.entryDt = new Date();
     this.selectedUser.userImage = this.previewUrl;
-
+    this.selectedUser.defaultproject = this.defaultproject;
     //pass to save user api to save
 
 
