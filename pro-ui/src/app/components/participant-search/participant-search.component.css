@@ -185,8 +185,14 @@ td {
   border-bottom: 1px solid #B5B5B5;
 }
 
-.ht371 {
-  max-height: 371px;
+.ht410 {
+  height: 410px;
+  overflow: auto;
+}
+
+.ht573 {
+  height: 573px;
+  overflow: auto;
 }
 
 .ht585 {
@@ -194,7 +200,7 @@ td {
 }
 
 .no-results {
-  min-height: 410px;
+  min-height: 573px;
   display: flex;
   align-items: center;
   justify-content: center;

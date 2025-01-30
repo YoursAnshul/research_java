@@ -36,3 +36,15 @@
         <button mat-stroked-button color="primary" (click)="cancel()">No, Cancel</button>
     </div>
 </div>
+
+<div class="dialog-container" *ngIf="dialogType === 'DuplicateId'">
+    <mat-icon color="warn" class="error-icon">error_outline</mat-icon>
+    <span class="heading">User not saved</span>
+    <span class="dialog-content">
+        A user with this NetID already exists.
+    </span>
+    <div class="dialog-actions">
+        <button mat-flat-button color="primary" (click)="return()">Return to Add New User</button>
+        <button mat-stroked-button color="primary" (click)="discardChanges()">Cancel And Discard Changes</button>
+    </div>
+</div>

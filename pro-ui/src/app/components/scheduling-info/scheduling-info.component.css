@@ -9,7 +9,6 @@ body {
     height: 98vh;
     width: 100%;
     max-width: 500px;
-    overflow: hidden;
     margin: auto;
     margin-top: 10px;
     max-width: 450px !important;
@@ -18,4 +17,6 @@ body {
     border-radius: 15px 15px 0px 15px !important;
     border: 2px 0px 0px 0px !important;
     margin-top: 10px;
+    overflow-y: auto;
+   
 }

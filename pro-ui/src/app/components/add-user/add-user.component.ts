@@ -1,12 +1,12 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {GlobalsService} from "../../services/globals/globals.service";
-import {LogsService} from "../../services/logs/logs.service";
-import {RequestsService} from "../../services/requests/requests.service";
-import {ProjectsService} from "../../services/projects/projects.service";
-import {ConfigurationService} from "../../services/configuration/configuration.service";
-import {UsersService} from "../../services/users/users.service";
-import {AuthenticationService} from "../../services/authentication/authentication.service";
+import { GlobalsService } from "../../services/globals/globals.service";
+import { LogsService } from "../../services/logs/logs.service";
+import { RequestsService } from "../../services/requests/requests.service";
+import { ProjectsService } from "../../services/projects/projects.service";
+import { ConfigurationService } from "../../services/configuration/configuration.service";
+import { UsersService } from "../../services/users/users.service";
+import { AuthenticationService } from "../../services/authentication/authentication.service";
 import {
   IAuthenticatedUser,
   ICoreHours, IDropDownValue,
@@ -14,18 +14,18 @@ import {
   IProjectMin,
   IRequest
 } from "../../interfaces/interfaces";
-import {Utils} from "../../classes/utils";
+import { Utils } from "../../classes/utils";
 import { User } from '../../models/data/user';
 import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import moment from 'moment';
+import moment from 'moment';   
 
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.css'],
 })
-export class AddUserComponent implements OnInit{
+export class AddUserComponent implements OnInit {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
 
     if (this.changed || this.createForm) {
@@ -40,7 +40,7 @@ export class AddUserComponent implements OnInit{
   @Input() viewUser: User | undefined = undefined;
   @Output() userSaved = new EventEmitter<User>();
   @Output() closewindow = new EventEmitter<void>();
-  
+
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];
@@ -52,6 +52,7 @@ export class AddUserComponent implements OnInit{
   userFields!: IFormFieldVariable[];
   allUsers: User[] = [];
   coreHours: any = {} as any;
+  clonedCoreHours: any = {} as any;
   coreHoursInvalid: boolean = false;
   changed: boolean = false;
   readOnly!: boolean;
@@ -82,14 +83,14 @@ export class AddUserComponent implements OnInit{
 
   public selectedTab: string = 'user-details';
 
-  constructor(private fb: FormBuilder,private globalsService: GlobalsService,
-  private authenticationService: AuthenticationService,
-  private usersService: UsersService,
-  private configurationService: ConfigurationService,
-  private projectsService: ProjectsService,
-  private requestsService: RequestsService,
-  private logsService: LogsService, private dialog: MatDialog) {
-    if(this.viewUser){
+  constructor(private fb: FormBuilder, private globalsService: GlobalsService,
+    private authenticationService: AuthenticationService,
+    private usersService: UsersService,
+    private configurationService: ConfigurationService,
+    private projectsService: ProjectsService,
+    private requestsService: RequestsService,
+    private logsService: LogsService, private dialog: MatDialog) {
+    if (this.viewUser) {
       this.selectedUser = this.viewUser;
       this.createForm = true;
     }
@@ -106,7 +107,7 @@ export class AddUserComponent implements OnInit{
           let userFields: IFormFieldVariable[] = <IFormFieldVariable[]>response.Subject;
           this.userFields = userFields;
           console.log('this.createForm => ', this.createForm);
-          console.log('this.selectedUser  => ', this.selectedUser )
+          console.log('this.selectedUser  => ', this.selectedUser)
           //set selected user to a blank user object if creating a new object
           if (this.createForm) {
             this.selectedUser = this.blankUser();
@@ -218,8 +219,8 @@ export class AddUserComponent implements OnInit{
       
       this.coreHours = ch;
 
-                 
-      
+      this.clonedCoreHours = {...this.coreHours};
+      //set trained/not trained on if not already set and if we have already populated active projects
       console.log("this.coreHours----", this.coreHours);
       if (this.activeProjects) {
         this.setTrainedOn();
@@ -231,19 +232,31 @@ export class AddUserComponent implements OnInit{
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       }
     } else {
-      
+
       //subscribe to the selected user
       this.usersService.selectedUser.subscribe(
         user => {
-          if(this.viewUser)
-          this.selectedUser = this.viewUser;
+          if (this.viewUser)
+            this.selectedUser = this.viewUser;
 
           if (this.selectedUser) {
 
             let selectedDempoId: string = this.selectedUser.dempoid;
 
             //get core hours
-               this.usersService.getUserCoreHoursByNetId(this.selectedUser.dempoid).subscribe(
+
+            this.usersService.getUserCoreHoursByNetId(this.selectedUser.dempoid).subscribe(
+              response => {
+                if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                  this.coreHours = <ICoreHours>response.Subject;
+
+                  let rebuildCoreHours: boolean = false;
+                  if (!this.coreHours) {
+                    rebuildCoreHours = true;
+                  } else if (!this.coreHours.month1) {
+                    rebuildCoreHours = true;
+
+            this.usersService.getUserCoreHoursByNetId(this.selectedUser.dempoid).subscribe(
                  response => {
                    if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                      this.coreHours = <ICoreHours>response.Subject;
@@ -300,7 +313,59 @@ export class AddUserComponent implements OnInit{
                         this.setNoRequestsResultsMessage('Error loading requests...');
                       }
                     );
+
                   }
+
+                  if (rebuildCoreHours) {
+
+                    this.coreHours = {} as ICoreHours;
+
+                    let ch: any = this.coreHours;
+                    let currentDate: Date = new Date();
+                    ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+                    ch.coreHours1 = 0;
+                    ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                    ch.coreHours2 = 0;
+                    for (var i = 1; i < 13; i++) {
+                      ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+                      ch['coreHours' + (i + 2)] = 0;
+                    }
+                    ch.dempoid = selectedDempoId;
+                    this.coreHours = ch;
+                  } else {
+                    //set current core hours
+                    this.setCurrentCoreHours();
+                  }
+                }
+              }
+             }
+            );
+
+
+            
+            if (this.selectedUser.dempoid) {
+              //get requests for selected user
+              this.requestsService.getRequestsByNetId(this.selectedUser.dempoid).subscribe(
+                response => {
+                  if (response.Status == 'Success') {
+                    this.requests = <IRequest[]>response.Subject;
+                    this.setNoRequestsResultsMessage();
+                    this.trySetRequestValues();
+                  } else {
+                    this.setNoRequestsResultsMessage('Error loading requests...');
+                    this.errorMessage = response.Message;
+                    this.logsService.logError(this.errorMessage);
+                    console.log(this.errorMessage);
+                  }
+                },
+                error => {
+                  this.errorMessage = <string>(error.message);
+                  this.logsService.logError(this.errorMessage);
+                  console.log(this.errorMessage);
+                  this.setNoRequestsResultsMessage('Error loading requests...');
+                }
+              );
+            }
 
           }
 
@@ -374,7 +439,7 @@ export class AddUserComponent implements OnInit{
   }
 
   setNotTrainedOn(): void {
-   // this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
+    // this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
     this.notTrainedOnProjects = this.activeProjects;
   }
 
@@ -411,7 +476,7 @@ export class AddUserComponent implements OnInit{
       this.isTrainedOnVisible = true;
 
     } else if (tab == 'user-details') {
-      
+
       this.isUserCalendarVisible = false;
       this.isTrainedOnVisible = false;
       this.isUserFormInvalid = false;
@@ -436,8 +501,8 @@ export class AddUserComponent implements OnInit{
     let u: any = user;
     for (var property in u) {
       let propertyFormFieldVariable: IFormFieldVariable | undefined = userFields.find(x => (x.formField?.columnName ? x.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
-      if(!propertyFormFieldVariable) {
-      
+      if (!propertyFormFieldVariable) {
+
       }
       if (propertyFormFieldVariable) {
         let value: any = u[property];
@@ -469,16 +534,14 @@ export class AddUserComponent implements OnInit{
     this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
     //assign to tab arrays
     this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2');
+   this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 0);
     this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
     this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
-    this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 1);
-    this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 2);
-    this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' &&  x.formFieldVariable.formField.formSection == 3);
-    console.log("this.tab2UserFields--------- ", this.tab2UserFields);
-    console.log("this.userFormFields---------", this.userFormFields);
-    
-    
+    this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 1);
+    this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 2);
+    this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 3);
+
+
     this.validateRequiredFields();
 
   }
@@ -574,7 +637,7 @@ export class AddUserComponent implements OnInit{
           this.userFormFields[i].invalid = false;
         }
 
-       
+
       }
 
       //make sure to correctly set invalid to false for default project when it's not required (it can be ruled invalid before determined that it shouldn't be required, but this above only looks at required fields to mark valid/invalid)
@@ -582,15 +645,15 @@ export class AddUserComponent implements OnInit{
         && !this.userFormFields[i].formFieldVariable.formField.required) {
         this.userFormFields[i].invalid = false;
       }
-     
-     }
-      if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
-      if (!this.tab2Invalid) {
-        if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
-      }
+
+    }
+    if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+    if (!this.tab2Invalid) {
+      if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+    }
     //tab validation
     this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
-   
+
   }
 
   disableRules(formField: IFormFieldInstance): boolean {
@@ -601,8 +664,8 @@ export class AddUserComponent implements OnInit{
     if (formField.formFieldVariable.formField?.columnName == 'empstatus') {
       let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
       let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
-     
-      if(formField.value == 1) {
+
+      if (formField.value == 1) {
         if (permStartDateField) {
           permStartDateField.formFieldVariable.formField.required = true;
           permStartDateField.invalid = false;
@@ -611,7 +674,7 @@ export class AddUserComponent implements OnInit{
           tempStartDateField.formFieldVariable.formField.required = false;
           tempStartDateField.invalid = false;
         }
-      } else if(formField.value == 2) {
+      } else if (formField.value == 2) {
         if (permStartDateField) {
           permStartDateField.formFieldVariable.formField.required = false;
           permStartDateField.invalid = false;
@@ -620,43 +683,43 @@ export class AddUserComponent implements OnInit{
           tempStartDateField.formFieldVariable.formField.required = true;
           tempStartDateField.invalid = false;
         }
-      }   
-  }
-  
+      }
+    }
+
     //shoehorn in required temp/perm date checking before anything that could return a true/false
     if (formField.formFieldVariable.formField?.columnName == 'permstartdate' || formField.formFieldVariable.formField?.columnName == 'permstartdate') {
       let empstatus: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'empstatus');
-       if(empstatus && !empstatus.value) {
-      let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
-      let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
-      if (permStartDateField) {
-        permStartDateField.formFieldVariable.formField.required = true;
-        if (permStartDateField.value) {
-          permStartDateField.formFieldVariable.formField.required = false;
-          permStartDateField.invalid = false;
-
-          if (tempStartDateField) {
-            tempStartDateField.formFieldVariable.formField.required = false;
-            tempStartDateField.invalid = false;
-          }
-          this.validateRequiredFields();
-        }
-      }
-      if (tempStartDateField) {
-        tempStartDateField.formFieldVariable.formField.required = true;
-        if (tempStartDateField.value) {
-
-          if (permStartDateField) {
+      if (empstatus && !empstatus.value) {
+        let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
+        let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
+        if (permStartDateField) {
+          permStartDateField.formFieldVariable.formField.required = true;
+          if (permStartDateField.value) {
             permStartDateField.formFieldVariable.formField.required = false;
             permStartDateField.invalid = false;
-          }
 
-          tempStartDateField.formFieldVariable.formField.required = false;
-          tempStartDateField.invalid = false;
-          this.validateRequiredFields();
+            if (tempStartDateField) {
+              tempStartDateField.formFieldVariable.formField.required = false;
+              tempStartDateField.invalid = false;
+            }
+            this.validateRequiredFields();
+          }
+        }
+        if (tempStartDateField) {
+          tempStartDateField.formFieldVariable.formField.required = true;
+          if (tempStartDateField.value) {
+
+            if (permStartDateField) {
+              permStartDateField.formFieldVariable.formField.required = false;
+              permStartDateField.invalid = false;
+            }
+
+            tempStartDateField.formFieldVariable.formField.required = false;
+            tempStartDateField.invalid = false;
+            this.validateRequiredFields();
+          }
         }
       }
-    }
     }
 
 
@@ -757,6 +820,15 @@ export class AddUserComponent implements OnInit{
         this.closewindow.emit();
       } else if (result == 'save') {
         this.userSaved.emit(this.selectedUser);
+      } else if (result == 'discardChanges') {
+        console.log('Enter')
+        this.coreHours = {...this.clonedCoreHours};
+        this.selectedUser = this.blankUser();
+        this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
+      } else if(result == 'reject') {
+        this.openDialog({
+          dialogType: 'DuplicateId'
+        })
       }
     });
   }
@@ -823,7 +895,12 @@ export class AddUserComponent implements OnInit{
                    }); 
                 resolver("Saved Succesfully user")
               } else {
-                this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
+             
+                if (response.Message == 'NetId already exists.') {
+                  reject("NetId already exists.")
+                } else {
+                  this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
+                }
                 this.logsService.logError(response.Message);
               }
 
@@ -899,7 +976,7 @@ export class AddUserComponent implements OnInit{
   }
 
   getTitle(): string {
-    if(this.createForm) {
+    if (this.createForm) {
       return 'Add New User';
     }
     return `${this.selectedUser?.fname} ${this.selectedUser?.lname}`
@@ -911,12 +988,12 @@ export class AddUserComponent implements OnInit{
 
   moveToPage(event: MouseEvent): void {
     event.stopPropagation();
-    const url = "/scheduling-info"; 
+    const url = "/scheduling-info";
     const width = 350;
-    const height = 1000; 
-    const left = window.screen.width / 2 - width / 2; 
-    const top = window.screen.height / 2 - height / 2; 
-    
+    const height = 1000;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
     window.open(
       url,
       "_blank",
@@ -924,14 +1001,15 @@ export class AddUserComponent implements OnInit{
     );
   }
 
-    isCurrentMonth(month: Date | null): boolean {
-      if (!month) {
-        return false;
-      }
-  
-      const currentMonth = moment.utc().startOf('month');
-      const monthToCheck = moment.utc(month).startOf('month');
-  
-      return currentMonth.isSame(monthToCheck);
+  isCurrentMonth(month: Date | null): boolean {
+    if (!month) {
+      return false;
     }
+
+    const currentMonth = moment.utc().startOf('month');
+    const monthToCheck = moment.utc(month).startOf('month');
+
+    return currentMonth.isSame(monthToCheck);
+  }
+
 }

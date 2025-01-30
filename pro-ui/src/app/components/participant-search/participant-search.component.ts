@@ -171,6 +171,7 @@ export class ParticipantSearchComponent {
   }
 
   filter() {
+    this.selectedParticipant = null;
     if(!this.firstNameFilter && !this.lastNameFilter && !this.phoneNumberFilter && (!this.projectFilter || this.projectFilter?.length < 1)) {
       this.dataSource.data = [];
       return;

@@ -14,6 +14,7 @@ import { user } from "@joeattardi/emoji-button/dist/icons";
 import { CanComponentDeactivate } from '../../guards/unsaved-changes.guard';
 import { MatDialog } from '@angular/material/dialog';
 import { UnsavedChangesDialogComponent } from '../../components/unsaved-changes-dialog/unsaved-changes-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -28,6 +29,7 @@ export class UsersComponent implements CanComponentDeactivate {
   public allUsersSelected: boolean = false;
   public isUnsavedChanges: boolean = false;
   public isNavigate: boolean = false;
+  public nextUrl: string | null = null;
   @Input() showSelectedUser = false;
   //user status
   public statuses: IFormFieldVariable | undefined = undefined;
@@ -98,7 +100,8 @@ export class UsersComponent implements CanComponentDeactivate {
     private projectsService: ProjectsService,
     private configurationService: ConfigurationService,
     private globalsService: GlobalsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {
 
     this.getAllUsers();
@@ -551,8 +554,9 @@ export class UsersComponent implements CanComponentDeactivate {
     this.applyFilters();
   }
 // Guard method
-canDeactivate(): boolean {
+canDeactivate(nextUrl: string | null): boolean {
   if (this.isUnsavedChanges) {
+    this.nextUrl = nextUrl;
     this.openDialog({
       dialogType: 'error'
     })
@@ -573,6 +577,9 @@ openDialog(data: any,): void {
     if (result == 'close') {
       this.showSelectedUser = false;
       this.isUnsavedChanges = false;
+      if(this.nextUrl) {
+        this.router.navigateByUrl(this.nextUrl);
+      }
     }
   });
 }

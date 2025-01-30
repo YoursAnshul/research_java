@@ -64,6 +64,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   defPro!: DefPro[];
 
   trainedOnProjects!: IProjectMin[];
+  changedTrainedOnProjects!: IProjectMin[];
   notTrainedOnProjects!: IProjectMin[];
   requestCodeDropDown!: IDropDownValue[];
   decisionIdDropDown!: IDropDownValue[];
@@ -71,6 +72,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   userFields!: IFormFieldVariable[];
   allUsers: User[] = [];
   coreHours: any = {} as any;
+  coreHoursResponse: any = {} as any;
   coreHoursInvalid: boolean = false;
   changed: boolean = false;
   readOnly!: boolean;
@@ -248,6 +250,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
       // Handle discardChanges dynamically
       this.setUnsavedChanges.emit(false);
       this.isEdit = true;
+      this.coreHours = { ... this.coreHoursResponse };
+
       this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
     }
   }
@@ -446,7 +450,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   trainedOnChange(project: IProjectMin): void {
+    this.changedTrainedOnProjects.push(project);
     this.trainedOnProjects.sort((x, y) => {
+      
       return x.projectName < y.projectName
         ? -1
         : x.projectName > y.projectName
@@ -747,6 +753,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   private validateRequiredFields() {
+    if(this.authenticatedUser.interviewer) {
+      return;
+    }
     this.tab2Invalid = false;
     for (var i = 0; i < this.userFormFields.length; i++) {
       if (
@@ -881,6 +890,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
         this.changed = false;
         this.setUnsavedChanges.emit(false);
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
+        this.coreHours = { ... this.coreHoursResponse };
+        this.trainedOnProjects = this.trainedOnProjects.filter(project => !this.changedTrainedOnProjects.some(project_two => project.projectID === project_two.projectID))
+       this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       } else if (result == 'save') {
         this.userSaved.emit(this.selectedUser);
       }
@@ -1193,15 +1205,22 @@ export class ViewUserComponent implements OnInit, OnChanges {
         formField.value = null;
         formField.formFieldVariable.formField.required = false;
         formField.invalid = false;
-        this.validateRequiredFields();
+        // this.validateRequiredFields();
         return true;
       } else {
         formField.formFieldVariable.formField.required = true;
-        this.validateRequiredFields();
+        if(!this.tab2Invalid) {
+          this.tab2Invalid =  !formField.value;
+         }
+        // this.validateRequiredFields();
       }
     }
 
     return false;
+  }
+
+  addShift(): void{
+    this.globalsService.openSchedulePopup();
   }
 
   clickOnEdit(): void {

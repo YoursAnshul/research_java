@@ -56,7 +56,7 @@
     </div>
     <div class="results-container">
         <span class="reset-heading">Results</span>
-        <div class="table-ht" [ngClass]="selectedParticipant ? 'ht371' : 'ht585'">
+        <div class="table-ht" [ngClass]="selectedParticipant ? 'ht410' : 'ht573'" *ngIf="(dataSource?.data || []).length > 0">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
 
                 <!-- Columns Definitions -->
@@ -141,9 +141,11 @@
             showFirstLastButtons>
         </mat-paginator>
     </div>
+   
     <div class="seprator" *ngIf="selectedParticipant">
         <hr />
     </div>
+   
     <div class="preview-container" *ngIf="selectedParticipant">
         <div class="flex center gap-32">
             <span class="reset-heading">Preview</span>

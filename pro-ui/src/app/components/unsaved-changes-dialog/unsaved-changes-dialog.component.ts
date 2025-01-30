@@ -37,6 +37,12 @@ export class UnsavedChangesDialogComponent {
   save(): void {
     this.saveUser().then((r:any )=> {
       this.dialogRef.close("save");
+    }).catch((e: any) => {
+      this.dialogRef.close("reject");
     })
+  }
+
+  return(): void {
+    this.dialogRef.close("return");
   }
 }

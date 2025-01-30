@@ -18,7 +18,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import java.lang.reflect.Field;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -191,6 +192,14 @@ public class UsersController {
 		boolean traininLogUpdated = false;
 
 		try {
+			if (user.getUserid() == 0) {
+				User userExitsWithNetId = userRepository.findFirstByDempoidIgnoreCase(user.getDempoid());
+				if (userExitsWithNetId != null) {
+					response.Status = "Failure";
+					response.Message = "NetId already exists.";
+					return response;
+				}
+			}
 			traininLogUpdated = updateTrainingLog(user, netId);
 			user = userRepository.save(user);
 			response.Status = "Success";
@@ -268,7 +277,7 @@ public class UsersController {
 			for (UserMin userMin : usersMin) {
 				Optional<User> optionalUser = userRepository.findById(userMin.getUserid());
 				User user = optionalUser.orElseGet(User::new);
-//				user.setStatus(userMin.getStatus());
+				user.setStatus(userMin.getStatus());
 				user.setCanedit(userMin.getCanEdit());
 				try {
 					userRepository.save(user);
