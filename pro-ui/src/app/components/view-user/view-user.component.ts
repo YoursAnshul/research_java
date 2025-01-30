@@ -452,6 +452,13 @@ export class ViewUserComponent implements OnInit, OnChanges {
     console.log('this.defPro---------- ', this.defPro);
   }
 
+  public getProjectId(item: string) {
+    return (
+      this.activeProjects.find((project) => project.projectName === item)
+        ?.projectID || ''
+    );
+  }
+
   setNotTrainedOn(): void {
     //  this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
     this.notTrainedOnProjects = this.activeProjects;
