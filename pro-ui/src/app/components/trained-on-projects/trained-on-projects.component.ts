@@ -15,6 +15,7 @@ export class TrainedOnProjectsComponent implements OnInit {
   projectToAdd!: IProjectMin | null;
   projectToRemove!: IProjectMin | null;
   defaultproject: number = 0;
+  private previousDefaultProject: number | null = null;
 
   constructor() {}
 
@@ -35,25 +36,30 @@ export class TrainedOnProjectsComponent implements OnInit {
     if (this.projectAlreadyExists(this.projectToAdd.projectID)) {
       return;
     }
+
     this.projectToAdd.selected = false;
     this.trainedOnProjects.push(this.projectToAdd);
     this.notTrainedOnProjects.splice(
       this.notTrainedOnProjects.indexOf(this.projectToAdd),
       1
     );
+
     if (this.trainedOnProjects.length === 1) {
       let singleProject = this.trainedOnProjects[0];
-      singleProject.defaultproject = this.defPro[0].defaultproject;
+      this.defaultproject =
+        this.previousDefaultProject ?? singleProject.projectID;
+      singleProject.defaultproject = this.defaultproject;
       singleProject.clicked = true;
-      this.projectToAdd.defaultproject = this.defPro[0].defaultproject;
-      this.projectToAdd.clicked = true;
-      this.toggleClickState(singleProject);
-      this.trainedOnChange.emit(this.projectToAdd);
     } else {
-      this.projectToAdd.defaultproject = 0;
-      this.projectToAdd.clicked = false;
-      this.defaultproject = 0;
+      if (this.projectToAdd.projectID === this.previousDefaultProject) {
+        this.defaultproject = this.previousDefaultProject;
+        this.projectToAdd.clicked = true;
+      } else {
+        this.projectToAdd.clicked = false;
+      }
+      this.projectToAdd.defaultproject = this.defaultproject;
     }
+
     this.trainedOnChange.emit(this.projectToAdd);
     this.projectToAdd = null;
   }
@@ -71,23 +77,24 @@ export class TrainedOnProjectsComponent implements OnInit {
     this.notTrainedOnProjects.sort((a, b) =>
       a.projectName.localeCompare(b.projectName)
     );
-    console.log("this.trainedOnProjects------------ ",this.trainedOnProjects);
-    
+
+    if (this.projectToRemove.projectID === this.defaultproject) {
+      this.previousDefaultProject = this.defaultproject;
+      this.defaultproject = 0;
+      this.projectToRemove.clicked = false;
+    }
+
     if (this.trainedOnProjects.length === 1) {
       let singleProject = this.trainedOnProjects[0];
+      this.defaultproject = singleProject.projectID;
       singleProject.clicked = true;
-      this.defaultproject=singleProject.projectID
-      
-      console.log("singleProject.defaultproject------------ ,",singleProject);
-      this.projectToRemove.defaultproject = singleProject.projectID;
-      this.projectToRemove.clicked = true;
-      this.trainedOnChange.emit(this.projectToRemove);
-    } else {
-      this.projectToRemove.defaultproject = 0;
-      this.projectToRemove.clicked = false;
+    } else if (this.trainedOnProjects.length === 0) {
       this.defaultproject = 0;
-      this.trainedOnChange.emit(this.projectToRemove);
     }
+
+    this.projectToRemove.defaultproject = this.defaultproject;
+
+    this.trainedOnChange.emit(this.projectToRemove);
     this.projectToRemove = null;
   }
 
