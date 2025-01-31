@@ -17,7 +17,7 @@
 
           <!-- help icon -->
           <mat-icon style="width: 16px; height: 16px;"
-            svgIcon="info" [ngbTooltip]="tooltipContent" *ngIf="!isEdit" ></mat-icon>
+            svgIcon="info" [ngbTooltip]="tooltipContent" *ngIf="!isEdit && !authenticatedUser?.interviewer" ></mat-icon>
           <ng-template #tooltipContent>
               JPG or PNG <br />
               Max. 10 MB
@@ -35,7 +35,7 @@
               </ng-template>
             </div>
 
-            <div class="flex gap-1 items-center" *ngIf="!isEdit"  [class.disabled]="authenticatedUser?.interviewer" (click)="fileInput.click()">
+            <div class="flex gap-1 items-center" *ngIf="!isEdit && !authenticatedUser?.interviewer"  [class.disabled]="authenticatedUser?.interviewer" (click)="fileInput.click()">
               <span class="text-xs text-[#005698] text-center underline cursor-pointer"  [class.disabled]="authenticatedUser?.interviewer">Upload Photo</span>
             </div>
           </div>

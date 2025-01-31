@@ -21,6 +21,7 @@ import { UserSchedulesService } from '../../services/userSchedules/user-schedule
 import {CanComponentDeactivate} from "../../guards/unsaved-changes.guard";
 import {UnsavedChangesDialogComponent} from "../../components/unsaved-changes-dialog/unsaved-changes-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-configuration',
@@ -69,13 +70,14 @@ export class ConfigurationComponent implements CanComponentDeactivate {
   selectedCommHubFormField: IFormFieldVariable = {} as IFormFieldVariable;
   choicesSaveDisabled: boolean = true;
   choicesSaveInvalid: boolean = false;
-
+  public nextUrl: string | null = null;
   constructor(private configurationService: ConfigurationService,
               private globalsService: GlobalsService,
               private userSchedulesService: UserSchedulesService,
               private authenticationService: AuthenticationService,
               private projectsService: ProjectsService,
-              private logsService: LogsService,private dialog: MatDialog) {
+              private logsService: LogsService,private dialog: MatDialog,
+              private router: Router) {
 
     this.selectedCommHubFormField.dropDownValues = [];
 
@@ -1092,9 +1094,10 @@ export class ConfigurationComponent implements CanComponentDeactivate {
     }
   }
 
-  canDeactivate(): boolean {
+  canDeactivate(nextUrl: string | null): boolean {
 
     if (this.adminOptionsChanged || (typeof this.newBlockOutDate !== 'undefined' && this.newBlockOutDate !== null && this.newBlockOutDate.blockOutDay !=null)) {
+      this.nextUrl = nextUrl;
       this.openDialog({
         dialogType: 'error',
         isUserProfile: true
@@ -1118,6 +1121,9 @@ export class ConfigurationComponent implements CanComponentDeactivate {
         this.getAllConfiguration();
         this.newBlockOutDate = {} as IBlockOutDate;
         this.adminOptionsChanged = false;
+        if(this.nextUrl) {
+          this.router.navigateByUrl(this.nextUrl);
+        }
       }
     });
   }

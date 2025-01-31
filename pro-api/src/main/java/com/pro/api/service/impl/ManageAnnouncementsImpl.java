@@ -17,6 +17,7 @@ import com.pro.api.response.AuthorResponse;
 import com.pro.api.response.PageResponse;
 import com.pro.api.response.ProjectResponse;
 import com.pro.api.service.ManageAnnouncements;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ManageAnnouncementsImpl implements ManageAnnouncements {
@@ -272,8 +273,11 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	}
 
 	@Override
-	public GeneralResponse delete(Integer id) {
+	@Transactional
+	public GeneralResponse delete(Integer id,String userName) {
+		String sqlUpdate ="UPDATE core.auditusertemp SET audituser = ? WHERE auditusertempid = 1";
 		String sql = "DELETE FROM core.announcements WHERE announcementid = '" + id + "'";
+		this.jdbcTemplate.update(sqlUpdate,userName);
 		this.jdbcTemplate.execute(sql);
 		GeneralResponse respone = new GeneralResponse();
 		respone.Message = "Delete successfully!!";

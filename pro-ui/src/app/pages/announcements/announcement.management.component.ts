@@ -236,7 +236,7 @@ export class ManageAnnouncementsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}`;
+        const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}/${this.authenticatedUser.netID}`;
         this.http.delete(apiUrl).subscribe({
           next: (data: any) => {
             this.pageIndex = 0;

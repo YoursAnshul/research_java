@@ -18,8 +18,7 @@ import { Utils } from "../../classes/utils";
 import { User } from '../../models/data/user';
 import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import moment from 'moment';   
-
+import moment from 'moment';  
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
@@ -825,10 +824,6 @@ export class AddUserComponent implements OnInit {
         this.coreHours = {...this.clonedCoreHours};
         this.selectedUser = this.blankUser();
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
-      } else if(result == 'reject') {
-        this.openDialog({
-          dialogType: 'DuplicateId'
-        })
       }
     });
   }
@@ -841,79 +836,83 @@ export class AddUserComponent implements OnInit {
 
   confirmDialog(): void {
     this.mapUserFieldsBackToUser();
-
-    this.openDialog({
-      dialogType: 'confirmation', // Pass dialog type here
-      netId: this.selectedUser.dempoid,  // You can customize the message based on dialog type 
-      saveUser: () => {
-        //set modified metadata
-        this.selectedUser.modBy = this.authenticatedUser.netID;
-        this.selectedUser.modDt = new Date();
-
-        //set created metadata (if applicable)
-        this.selectedUser.entryBy = this.authenticatedUser.netID;
-        this.selectedUser.entryDt = new Date();
-        this.selectedUser.userImage = this.previewUrl;
-
-        //pass to save user api to save
-
-        return new Promise((resolver, reject) => {
-          this.usersService.saveUser(this.selectedUser).subscribe(
-            response => {
-              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-
-                //make sure the netid is set or core hours won't save
-                this.coreHours.dempoid = this.selectedUser.dempoid;
-                for (var i = 1; i < 15; i++) {
-                  this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
-                }
-                 this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
-                   response => {
-                     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
-                     } else {
-                       this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
-                     }
-   
-                     //set changed to false to re-disable the save button
-                     this.changed = false;
-                     this.globalsService.currentChanges.next(false);
-   
-                     //set ID for "selected" user if user is newly added
-                     if (this.selectedUser.userid < 1) {
-                       let subject: User = <User>response.Subject;
-                       this.selectedUser.userid = subject.userid;
-                     }
-   
-                     //sync users trained on
-                     this.usersService.setAllUsersMin();
-   
-                     this.usersService.setSelectedUser(this.selectedUser.dempoid);
-   
-                     this.userSaved.emit(this.selectedUser);
-   
-                   }); 
-                resolver("Saved Succesfully user")
-              } else {
-             
-                if (response.Message == 'NetId already exists.') {
-                  reject("NetId already exists.")
-                } else {
-                  this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
-                }
-                this.logsService.logError(response.Message);
-              }
-
-            },
-            error => {
-              this.errorMessage = <string>(error.message);
-              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
-              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+    this.usersService.getUserByNetId(this.selectedUser.dempoid).subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS' && response.Subject) {
+          this.openDialog({
+            dialogType: 'DuplicateId'
+          });
+        } else {
+          this.openDialog({
+            dialogType: 'confirmation', // Pass dialog type here
+            netId: this.selectedUser.dempoid,  // You can customize the message based on dialog type 
+            saveUser: () => {
+              //set modified metadata
+              this.selectedUser.modBy = this.authenticatedUser.netID;
+              this.selectedUser.modDt = new Date();
+      
+              //set created metadata (if applicable)
+              this.selectedUser.entryBy = this.authenticatedUser.netID;
+              this.selectedUser.entryDt = new Date();
+              this.selectedUser.userImage = this.previewUrl;
+      
+              //pass to save user api to save
+      
+              return new Promise((resolver, reject) => {
+                this.usersService.saveUser(this.selectedUser).subscribe(
+                  response => {
+                    if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+      
+                      //make sure the netid is set or core hours won't save
+                      this.coreHours.dempoid = this.selectedUser.dempoid;
+                      for (var i = 1; i < 15; i++) {
+                        this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
+                      }
+                       this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
+                         response => {
+                           if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                             this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'User saved successfully', ['OK']));
+                           } else {
+                             this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
+                           }
+         
+                           //set changed to false to re-disable the save button
+                           this.changed = false;
+                           this.globalsService.currentChanges.next(false);
+         
+                           //set ID for "selected" user if user is newly added
+                           if (this.selectedUser.userid < 1) {
+                             let subject: User = <User>response.Subject;
+                             this.selectedUser.userid = subject.userid;
+                           }
+         
+                           //sync users trained on
+                           this.usersService.setAllUsersMin();
+         
+                           this.usersService.setSelectedUser(this.selectedUser.dempoid);
+         
+                           this.userSaved.emit(this.selectedUser);
+         
+                         }); 
+                      resolver("Saved Succesfully user")
+                    } else {
+                      this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
+                      this.logsService.logError(response.Message);
+                    }
+      
+                  },
+                  error => {
+                    this.errorMessage = <string>(error.message);
+                    this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save user', ['OK']));
+                    this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+                  }
+                );
+              });
             }
-          );
-        });
+          })
+        }
       }
-    })
+    );
   }
 
   //map field values back to user

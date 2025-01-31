@@ -750,10 +750,14 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesDialog(): void {
-    this.openDialog({
-      dialogType: 'error',
-      isUserProfile: !this.showBreadcrum
-    })
+    if(this.changed) {
+      this.openDialog({
+        dialogType: 'error',
+        isUserProfile: !this.showBreadcrum,
+      });
+    } else {
+      this.closewindow.emit();
+    }
   }
 
   saveUser(): void {

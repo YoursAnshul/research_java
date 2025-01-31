@@ -76,9 +76,9 @@ public class ManageAnnouncementsController {
 		return ResponseEntity.status(HttpStatus.OK).body(user);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<GeneralResponse> delete(@PathVariable Integer id) {
-		GeneralResponse res = manageAnnouncements.delete(id);
+	@DeleteMapping("/{id}/{user}")
+	public ResponseEntity<GeneralResponse> delete(@PathVariable Integer id,@PathVariable String user) {
+		GeneralResponse res = manageAnnouncements.delete(id,user);
 		return ResponseEntity.status(HttpStatus.OK).body(res);
 	}
 

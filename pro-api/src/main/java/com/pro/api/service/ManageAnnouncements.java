@@ -26,7 +26,7 @@ public interface ManageAnnouncements {
 
 	public AuthorResponse getLoginUser(String email);
 
-	public GeneralResponse delete(Integer id);
+	public GeneralResponse delete(Integer id,String user);
 
 	public List<ProjectResponse> getProjectObject(List<Long> projectIdList);
 
