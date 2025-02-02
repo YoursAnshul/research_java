@@ -484,8 +484,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   onTabChanged(tab: string) {
-    this.selectedUser.defaultproject = 0;
-    this.defaultproject = 0;
     this.selectedTab = tab;
     // Based on the new tab, some tasks are performed.
     // console.log('Tab changed: ', event);
@@ -494,6 +492,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
     // Implementation...
     if (tab == 'scheduling') {
+      this.defPro = [
+        { defaultproject: Number(this.selectedUser.defaultproject) },
+      ];
       this.isUserCalendarVisible = true;
 
     } else if (tab == 'user-details') {
@@ -505,7 +506,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
     } else {
       this.isUserCalendarVisible = false;
-
+      this.defPro = [
+        { defaultproject: Number(0) },
+      ];
     }
   }
 
