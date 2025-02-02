@@ -101,8 +101,8 @@
       <div class="flex items-center gap-2">
 
         <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
-          [class.invalid-emphasis]="coreHoursInvalid ||!selectedUser.defaultproject ||selectedUser.defaultproject === 0"
-          [class.text-[#1874CA]]="selectedTab === 'scheduling'"
+        [class.invalid-emphasis]="coreHoursInvalid || ((!selectedUser.defaultproject || selectedUser.defaultproject === 0) && selectedTab === 'scheduling')"
+        [class.text-[#1874CA]]="selectedTab === 'scheduling'"
           [class.border-b]="selectedTab === 'scheduling'"
           [class.border-b-[3px]]="selectedTab === 'scheduling'"
           [ngStyle]="{
@@ -116,7 +116,7 @@
           }"
           (click)="onTabChanged('scheduling')">
           <div>Scheduling</div><div *ngIf="coreHoursInvalid">**</div>
-          <div *ngIf="!selectedUser.defaultproject || selectedUser.defaultproject === 0">*</div>
+          <div *ngIf="((!selectedUser.defaultproject || selectedUser.defaultproject === 0) && selectedTab === 'scheduling')">*</div>
         </div>
         <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
           [class.invalid-emphasis]="coreHoursInvalid"
@@ -412,7 +412,7 @@
 
         <div *ngIf="createForm">
           <div class="font-medium tracking-wider mb-2">SHIFT SCHEDULE</div>
-          <app-calendar [authenticatedUser]="authenticatedUser" [contextUser]="selectedUser" [selectedUser]="selectedUser"></app-calendar>
+          <app-calendar [authenticatedUser]="authenticatedUser" [contextUser]="selectedUser"></app-calendar>
         </div>
       </div>
     </div>

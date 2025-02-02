@@ -43,7 +43,7 @@ export class LegendComponent implements OnInit, OnChanges, OnDestroy {
   @Input() weekSchedules!: IWeekSchedules | null;
   @Input() monthSchedules!: IMonthSchedules;
   activeProjects!: IProjectMin[];
-  @Input() selectedUser!: User;
+  // @Input() selectedUser!: User;
 
   readonly unsub$ = new Subject<void>();
 
@@ -61,23 +61,23 @@ export class LegendComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {    
-    if (this.activeProjects && this.selectedUser) {
-      this.uniqueProjectDetails = [];
-      for (let item of this.activeProjects) {
-        if (item.projectID === this.selectedUser.defaultproject) {
-          console.log('Item found:', item); 
-          this.uniqueProjectDetails = [
-            {
-              projectName: item.projectName,
-              projectColor: item.projectColor,
-              projectid: item.projectID,
-            },
-          ];
-        }
-      }
-    } else {
-      console.log('activeProjects or selectedUser is undefined');
-    }
+    // if (this.activeProjects && this.selectedUser) {
+    //   this.uniqueProjectDetails = [];
+    //   for (let item of this.activeProjects) {
+    //     if (item.projectID === this.selectedUser.defaultproject) {
+    //       console.log('Item found:', item); 
+    //       this.uniqueProjectDetails = [
+    //         {
+    //           projectName: item.projectName,
+    //           projectColor: item.projectColor,
+    //           projectid: item.projectID,
+    //         },
+    //       ];
+    //     }
+    //   }
+    // } else {
+    //   console.log('activeProjects or selectedUser is undefined');
+    // }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

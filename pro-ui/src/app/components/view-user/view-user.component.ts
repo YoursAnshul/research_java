@@ -484,7 +484,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   onTabChanged(tab: string) {
-
+    this.selectedUser.defaultproject = 0;
+    this.defaultproject = 0;
     this.selectedTab = tab;
     // Based on the new tab, some tasks are performed.
     // console.log('Tab changed: ', event);
