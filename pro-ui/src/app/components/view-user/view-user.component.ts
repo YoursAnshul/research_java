@@ -765,9 +765,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   saveUser(): void {
-    if (!this.defaultproject || this.defaultproject === 0) {
-      return;
-    }
+    // if (!this.selectedUser.defaultproject || this.selectedUser.defaultproject === 0) {
+    //   return;
+    // }
     this.mapUserFieldsBackToUser();
     //set modified metadata
     this.selectedUser.modBy = this.authenticatedUser.netID;
@@ -777,7 +777,11 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.selectedUser.entryBy = this.authenticatedUser.netID;
     this.selectedUser.entryDt = new Date();
     this.selectedUser.userImage = this.previewUrl;
-    this.selectedUser.defaultproject = this.defaultproject;
+    if(this.defaultproject>0){
+      this.selectedUser.defaultproject = this.defaultproject
+    }else{
+      this.selectedUser.defaultproject = this.selectedUser.defaultproject;
+    }
     //pass to save user api to save
 
 
