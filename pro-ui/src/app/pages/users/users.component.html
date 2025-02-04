@@ -127,16 +127,19 @@
     <!-- table -->
     <div class="table text-sm">
 
-        <div class="table-body">
+        <div class="table-container relative h-[500px] overflow-y-auto border border-[#B5B5B5]">
 
             <!-- header -->
+             <!-- <div class="table-header sticky top-0 bg-white shadow z-10"> -->
+
+             
             <app-table-header
-                class="table-row"
+                class="table-row table-header sticky top-0 bg-white z-10"
                 [(headerItems)]="headerItems"
                 (headerItemsChange)="headerItemsChange($event)"
                 [(allSelected)]="allUsersSelected"
                 (allSelectedChange)="toggleAllUsersSelected()"></app-table-header>
-
+            <!-- </div> -->
             <!-- table body -->
             @if (allUsers !== undefined
                     && paginatedUsers.length > 0) {
