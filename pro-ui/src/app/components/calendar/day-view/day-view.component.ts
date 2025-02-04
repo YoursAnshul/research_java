@@ -14,7 +14,7 @@ export class DayViewComponent implements OnInit {
 
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
-  
+
   hoverMessage: HoverMessage = new HoverMessage();
 
   constructor(private globalsService: GlobalsService) { }
@@ -87,7 +87,7 @@ export class DayViewComponent implements OnInit {
 
   displayHoverMessage(event: any, schedule: ISchedule, us: IUserSchedule): void {
 
-    let htmlMessage: string = '<p class="hover-message-title">' + us.user.displayName + ' (' + schedule.projectName + '): ' + schedule.startTime + ' – ' + schedule.endTime + '<p>';
+    let htmlMessage: string = '<p class="hover-message-title">' + us.user.displayName + ' (' + schedule.projectName + '): ' + ' - ' + schedule.startTime + ' – '  + schedule.endTime + ' - ' + Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + '<p>';
 
     //comments
     if (schedule.comments) {
