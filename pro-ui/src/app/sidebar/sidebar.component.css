@@ -1,27 +1,24 @@
-/* app.component.css */
 .sidenav-container {
   display: flex;
-  height: calc(100vh - 112px);
-  /* Full screen height */
+  height: 100vh; /* Full viewport height */
 }
 
 .sidenav {
-  flex: 0 0 auto;
-  /* Prevents the sidenav from shrinking or growing */
-  overflow-y: auto;
-  /* Allows vertical scrolling */
-  width: 250px;
-  /* Default width when expanded */
+  position: fixed; /* Fixes sidebar position */
+  top: 0;
+  left: 0;
+  height: 100vh; /* Ensures full height */
+  width: 250px; /* Default width */
   background-color: #f8f9fa;
+  overflow-y: auto; /* Allows scrolling within the sidebar */
   transition: width 0.3s ease;
-  /* Smooth transition for expand/collapse */
-  z-index: 999;
-  /* Ensure it's on top of other elements */
+  z-index: 999; /* Keeps sidebar above other elements */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin-top: 65px;
 }
 
 .sidenav.collapsed {
-  width: 70px;
-  /* Reduced width when collapsed */
+  width: 70px; /* Reduced width when collapsed */
 }
 
 .sidenav ul {
@@ -42,7 +39,6 @@
 .sidenav li.selected {
   --tw-bg-opacity: 1;
   border-right: 5px solid rgb(0 86 155 / var(--tw-bg-opacity));
-  /* Adjust color as needed */
   background-color: rgb(0 86 155 / .2);
   border-top-left-radius: 10px;
 }
@@ -71,8 +67,9 @@ span {
 .menu {
   display: flex;
   align-items: center;
-  justify-content: end;
   margin-left: 15px;
+  justify-content: end;
+  /* padding: 10px; */
   text-transform: uppercase;
 }
 
@@ -95,10 +92,14 @@ span {
 }
 
 .main-content {
-  padding: 16px 24px;
   flex-grow: 1;
+  padding: 16px 24px;
+  margin-left: 250px; /* Push content to the right */
   transition: margin-left 0.3s ease;
-  /* Smooth transition for main content when collapsing */
+}
+
+.sidenav.collapsed + .main-content {
+  margin-left: 70px; /* Adjust when collapsed */
 }
 
 ul {
