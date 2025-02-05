@@ -1,10 +1,11 @@
-<div class="text-[#262626] w-fit" *ngIf="!showSelectedUser && !createUser">
+<div class="text-[#262626] w-fit" *ngIf="!showSelectedUser && !createUser" style="overflow: hidden; position: fixed;  height: 100vh; max-height: 100vh;">
+    
     <div class="text-xl font-medium mb-6">
         Users
     </div>
 
     <!-- quick filters -->
-    <div class="mt-4">
+    <div class="mt-">
         <div class="text-sm font-normal uppercase tracking-wide text-gray-800 flex items-center gap-3">
             <div>Quick Filters</div>
             <button class="text-xs text-white border-2 border-button-blue shadow-none py-1 px-2 bg-button-blue rounded-md"
@@ -234,10 +235,12 @@
     }
 
     <!-- table paginator -->
+   <div class="mb-4">
     <app-table-paginator
-        [sourceData]="filteredUsers"
-        [(currentPage)]="currentPage"
-        [(paginatedData)]="paginatedUsers"></app-table-paginator>
+    [sourceData]="filteredUsers"
+    [(currentPage)]="currentPage"
+    [(paginatedData)]="paginatedUsers"></app-table-paginator>
+   </div>
 
 </div>
 
