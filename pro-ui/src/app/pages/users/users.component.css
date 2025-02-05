@@ -2,7 +2,7 @@
     background-color: unset !important;
 }
 
-.sticky-content {
+/* .sticky-content {
     position: fixed;
     top: 65px;
     width: 100%;
@@ -17,4 +17,4 @@
 
 ::ng-deep .text-xl{
     line-height: 0.75rem;
-}
+} */
