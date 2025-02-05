@@ -1,3 +1,20 @@
 ::ng-deep .bg-black\/5{
     background-color: unset !important;
 }
+
+.sticky-content {
+    position: fixed;
+    top: 65px;
+    width: 100%;
+    background: white;
+    z-index: 100;
+    padding: 10px;
+}
+
+::ng-deep .sidenav-container{
+    height: 80vh !important;
+}
+
+::ng-deep .text-xl{
+    line-height: 0.75rem;
+}
