@@ -38,7 +38,7 @@ export class TrainedOnProjectsComponent implements OnInit {
 
     this.trainedOnProjects.push(this.projectToAdd);
     this.notTrainedOnProjects.splice(this.notTrainedOnProjects.indexOf(this.projectToAdd), 1);
-    if (this.trainedOnProjects.length === 1) {
+    if (this.trainedOnProjects.length === 1 && this.trainedOnProjects[0].clicked) {
       let singleProject = this.trainedOnProjects[0];
       this.defaultproject =
         this.previousDefaultProject ?? singleProject.projectID;
@@ -73,7 +73,7 @@ export class TrainedOnProjectsComponent implements OnInit {
       this.projectToRemove.clicked = false;
     }
 
-    if (this.trainedOnProjects.length === 1) {
+    if (this.trainedOnProjects.length === 1 && this.trainedOnProjects[0].clicked) {
       let singleProject = this.trainedOnProjects[0];
       this.defaultproject = singleProject.projectID;
       singleProject.clicked = true;

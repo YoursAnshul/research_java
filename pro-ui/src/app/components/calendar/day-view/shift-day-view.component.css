@@ -1,0 +1,110 @@
+#day-calendar-time-header {
+    width: 100%;
+}
+
+  #day-calendar-time-header > div {
+    display: inline-block;
+    border: 1px solid gray;
+    text-align: center;
+    font-size: 0.9em;
+    border: 1.5px solid #0078d4;
+    color: #0078d4;
+    background-color: lightgoldenrodyellow;
+    font-weight: 500;
+    cursor: default;
+  }
+
+#day-calendar-user-schedules {
+  /*height: 600px;*/
+  /*overflow-y: auto;*/
+}
+
+  #day-calendar-user-schedules .user-card {
+    padding: 5px;
+    padding-left: 10px;
+    display: inline-table;
+    overflow: hidden;
+    min-height: 40px;
+    cursor: pointer;
+    user-select: none;
+    width: 10.1%;
+    font-size: 0.8em;
+    background-color: lightgoldenrodyellow;
+    border-top: 0.5px solid gray;
+    border-right: 0.5px solid gray;
+  }
+
+  #day-calendar-user-schedules .schedule-card {
+    padding: 5px;
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+    /*min-height: 50px;*/
+    background-color: white;
+    white-space: nowrap;
+    border: 0.5px solid #66AEFF;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+    cursor: pointer;
+    user-select: none;
+    margin-top: 3px;
+    font-size: 0.75em;
+  }
+
+  #day-calendar-user-schedules .user-schedule-row {
+    min-height: 40px;
+  }
+
+.center-align-container {
+  /*display: flex;*/
+  align-items: center;
+  height: 100%;
+}
+
+.project-time {
+  margin-left: 5px;
+  font-style: italic;
+  display: inline-block;
+}
+
+@media only screen and (max-width: 1300px) {
+  #day-calendar-time-header .hour-header {
+    font-size: 0.75em;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #day-calendar-time-header .hour-header {
+    font-size: 0.5em;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #day-calendar-time-header .hour-header {
+    font-size: 0.5em;
+  }
+}
+
+@media only screen and (max-width: 1260px) {
+  #day-calendar-user-schedules .user-card {
+    font-size: 0.8em;
+  }
+}
+
+@media only screen and (max-width: 1150px) {
+  #day-calendar-user-schedules .user-card {
+    font-size: 0.7em;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #day-calendar-user-schedules .user-card {
+    font-size: 0.6em;
+  }
+}
+
+.no-results {
+  padding: 15px;
+  display: inline-block;
+  height: 50px;
+  vertical-align: top;
+}

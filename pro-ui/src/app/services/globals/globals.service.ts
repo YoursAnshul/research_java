@@ -4,6 +4,8 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { Utils } from '../../classes/utils';
 import { IPopupMessage } from '../../interfaces/interfaces';
 import { UserSchedulesService } from '../userSchedules/user-schedules.service';
+import { ShiftScheduleComponent } from '../../components/schedule/shift-schedule.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +24,20 @@ export class GlobalsService {
   public scheduleTabIndex: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public sessionEndReminderSent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public showParticipantModal: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  constructor(private userSchedulesService: UserSchedulesService) { }
+  constructor(private userSchedulesService: UserSchedulesService, private dialog: MatDialog) { }
 
   public openSchedulePopup(): void {
-    this.scheduleTabIndex.next(0);
-    this.showScheduler.next(true);
-    this.showScheduleBlackFilter.next(true);
+    // this.scheduleTabIndex.next(0);
+    // this.showScheduler.next(true);
+    // this.showScheduleBlackFilter.next(true);
+
+    const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      width: '1900px',
+      height: '900px'
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Shift Schedule dialog was closed', result);
+    });
   }
 
   public closeSchedulePopup(): void {

@@ -84,6 +84,8 @@ import { UnsavedChangesDialogComponent } from './components/unsaved-changes-dial
 import { SelectComponent } from './components/form-inputs/select/select.component';
 import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { ShiftScheduleComponent } from './components/schedule/shift-schedule.component';
+import { ShiftDayViewComponent } from './components/calendar/day-view/shift-day-view.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -142,7 +144,9 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     UnsavedChangesDialogComponent,
     SelectComponent,
     SchedulingInfoComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    ShiftScheduleComponent,
+    ShiftDayViewComponent
   ],
   imports: [
     BrowserModule,

@@ -20,6 +20,7 @@ import { ManageAnnouncementsComponent } from './pages/announcements/announcement
 import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { ShiftScheduleComponent } from './components/schedule/shift-schedule.component';
 
 const routes: Routes = [
 
@@ -41,7 +42,9 @@ const routes: Routes = [
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent},
   { path: 'announcement-management', component: ManageAnnouncementsComponent},
   { path: 'scheduling-info', data: { hideHeaderFooter: true }, component: SchedulingInfoComponent},
-  { path: 'user-profile', component: UserProfileComponent, canDeactivate: [UnsavedChangesGuard]}
+  { path: 'user-profile', component: UserProfileComponent, canDeactivate: [UnsavedChangesGuard]},
+  { path: 'shift-schedule', component: ShiftScheduleComponent}
+
   //{ path: 'test', component: TestComponent },
 ];
 
