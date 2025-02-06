@@ -255,5 +255,5 @@
 </div>
 
 <div *ngIf="createUser">
-    <app-add-user (closewindow)="createUser = false" (userSaved)="onUserAdded($event)" [createForm] ="true"/>
+    <app-add-user (closewindow)="createUser = false" (userSaved)="onUserAdded($event)" [createForm] ="true" (setUnsavedChanges)="setUnsavedChanges($event)"/>
 </div>

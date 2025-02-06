@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output,SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GlobalsService } from "../../services/globals/globals.service";
 import { LogsService } from "../../services/logs/logs.service";
@@ -37,6 +37,7 @@ export class AddUserComponent implements OnInit {
   @Input() isUserCalendarVisible = true;
   @Input() isTrainedOnVisible = true;
   @Input() viewUser: User | undefined = undefined;
+  @Output() setUnsavedChanges = new EventEmitter<boolean>();
   @Output() userSaved = new EventEmitter<User>();
   @Output() closewindow = new EventEmitter<void>();
 
@@ -412,6 +413,7 @@ export class AddUserComponent implements OnInit {
     this.selectedUser.trainedon = this.trainedOnProjects.map(x => x.projectID.toString()).join('|');
     this.setNotTrainedOn();
     this.changed = true;
+    this.setUnsavedChanges.emit(true);
     this.globalsService.currentChanges.next(true);
   }
 
@@ -593,6 +595,7 @@ export class AddUserComponent implements OnInit {
 
   setChanged(): void {
     this.changed = true;
+    this.setUnsavedChanges.emit(true);
     this.globalsService.currentChanges.next(true);
     this.validateRequiredFields();
   }
@@ -805,6 +808,13 @@ export class AddUserComponent implements OnInit {
       return false;
     }
   }
+    ngOnChanges(changes: SimpleChanges): void {
+      if (changes['discardChanges'] && changes['discardChanges'].currentValue) {
+        // Handle discardChanges dynamically
+        this.setUnsavedChanges.emit(false);  
+        this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
+      }
+    }
 
   openDialog(data: any): void {
     const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
@@ -821,8 +831,10 @@ export class AddUserComponent implements OnInit {
         this.userSaved.emit(this.selectedUser);
       } else if (result == 'discardChanges') {
         console.log('Enter')
+        this.setUnsavedChanges.emit(false);
         this.coreHours = {...this.clonedCoreHours};
         this.selectedUser = this.blankUser();
+        
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       }
     });
@@ -875,7 +887,7 @@ export class AddUserComponent implements OnInit {
                            } else {
                              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Partial Success', 'User saved successfully but there may have been an issue saving core hours', ['OK']));
                            }
-         
+                           this.setUnsavedChanges.emit(false);
                            //set changed to false to re-disable the save button
                            this.changed = false;
                            this.globalsService.currentChanges.next(false);
