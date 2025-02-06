@@ -8,6 +8,7 @@ import { ConfigurationService } from "../../services/configuration/configuration
 import { UsersService } from "../../services/users/users.service";
 import { AuthenticationService } from "../../services/authentication/authentication.service";
 import {
+  DefPro,
   IAuthenticatedUser,
   ICoreHours, IDropDownValue,
   IFormFieldInstance, IFormFieldVariable,
@@ -79,6 +80,10 @@ export class AddUserComponent implements OnInit {
   maxFileSizeMB = 10;
   selectedTabIndex = 1;
   currentDate = new Date();
+  defPro!: DefPro[];
+  public activeProjectsDv: IDropDownValue[] = [];
+  defaultProject: number=0;
+
 
 
   public selectedTab: string = 'user-details';
@@ -135,10 +140,11 @@ export class AddUserComponent implements OnInit {
     this.projectsService.allProjectsMin.subscribe(
       allProjects => {
         this.activeProjects = allProjects.filter(x => (x.active /*&& x.projectType !== 'Administrative'*/));
+        this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
         this.setNotTrainedOn();
       }
     );
-
+  
     //get active users
     this.usersService.allUsersMin.subscribe(
       allUsers => {
@@ -410,6 +416,17 @@ export class AddUserComponent implements OnInit {
       return (x.projectName < y.projectName) ? -1 : (x.projectName > y.projectName) ? 1 : 0;
     });
 
+    console.log("project.defaultproject---",project.defaultproject);
+    if (
+      project &&
+      project.defaultproject &&
+      project.defaultproject !== undefined &&
+      project.defaultproject > 0
+    ) {
+      this.defaultProject = project.defaultproject;
+    } else {
+      this.defaultProject= 0;
+    }
     this.selectedUser.trainedon = this.trainedOnProjects.map(x => x.projectID.toString()).join('|');
     this.setNotTrainedOn();
     this.changed = true;
@@ -535,7 +552,7 @@ export class AddUserComponent implements OnInit {
     this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
     //assign to tab arrays
     this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-   this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 0);
+   this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' );
     this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
     this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
     this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 1);
@@ -867,7 +884,9 @@ export class AddUserComponent implements OnInit {
               this.selectedUser.entryBy = this.authenticatedUser.netID;
               this.selectedUser.entryDt = new Date();
               this.selectedUser.userImage = this.previewUrl;
-      
+              console.log("this.defaultProject--------->",this.defaultProject);
+              this.selectedUser.defaultproject = this.defaultProject;
+              
               //pass to save user api to save
       
               return new Promise((resolver, reject) => {
@@ -1021,6 +1040,34 @@ export class AddUserComponent implements OnInit {
     const monthToCheck = moment.utc(month).startOf('month');
 
     return currentMonth.isSame(monthToCheck);
+  }
+  public getProjectId(item: string) {
+    return (
+      this.activeProjects.find((project) => project.projectName === item)
+        ?.projectID || ''
+    );
+  }
+  public getSwatchColor(item: string) {
+     let color: string = this.activeProjects.find((project) => project.projectName === item)?.projectColor || '';
+      return {
+        'background-color': color
+      } 
+  }
+
+  public getTrainingProjects(trainingData: string): string[] {
+    if (trainingData) {
+      return trainingData
+        .split('|')
+        .map(projectId => this.getProjectDisplayName(Number(projectId))).filter(x => x != "");
+    } else {
+      return [];
+    }
+  }
+  private getProjectDisplayName(projectId: number): string {
+    return this.getProjectDisplay(projectId);
+  }
+  public getProjectDisplay(projectId: number) {
+    return this.activeProjectsDv.find((project) => project.codeValues === projectId)?.dropDownItem || '';
   }
 
 }

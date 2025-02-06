@@ -20,7 +20,17 @@ export class TrainedOnProjectsComponent implements OnInit {
   constructor() { }
 
     ngOnInit(): void {
-      this.defaultproject = this.defPro[0].defaultproject;
+      if(this.defPro && this.defPro.length>0){
+        this.defaultproject = this.defPro[0]?.defaultproject;
+      }
+      if (this.trainedOnProjects.length === 1) {
+        let singleProject = this.trainedOnProjects[0];
+        this.defaultproject =
+          this.previousDefaultProject ?? singleProject.projectID;
+        singleProject.defaultproject = this.defaultproject;
+        singleProject.clicked = true;
+        this.trainedOnChange.emit(singleProject);
+      } 
         const trainedProjectIds = new Set(this.trainedOnProjects.map(p => p.projectID));
         this.notTrainedOnProjects = this.notTrainedOnProjects.filter(project =>
             !trainedProjectIds.has(project.projectID));
@@ -38,12 +48,13 @@ export class TrainedOnProjectsComponent implements OnInit {
 
     this.trainedOnProjects.push(this.projectToAdd);
     this.notTrainedOnProjects.splice(this.notTrainedOnProjects.indexOf(this.projectToAdd), 1);
-    if (this.trainedOnProjects.length === 1 && this.trainedOnProjects[0].clicked) {
+    if (this.trainedOnProjects.length === 1) {
       let singleProject = this.trainedOnProjects[0];
       this.defaultproject =
         this.previousDefaultProject ?? singleProject.projectID;
       singleProject.defaultproject = this.defaultproject;
       singleProject.clicked = true;
+      this.trainedOnChange.emit(this.projectToAdd);
     } else {
       if (this.projectToAdd.projectID === this.previousDefaultProject) {
         this.defaultproject = this.previousDefaultProject;
@@ -52,8 +63,8 @@ export class TrainedOnProjectsComponent implements OnInit {
         this.projectToAdd.clicked = false;
       }
       this.projectToAdd.defaultproject = this.defaultproject;
+      this.trainedOnChange.emit(this.projectToAdd);
     }
-    this.trainedOnChange.emit(this.projectToAdd);
     this.projectToAdd = null;
   }
 
@@ -67,13 +78,21 @@ export class TrainedOnProjectsComponent implements OnInit {
     this.trainedOnProjects.splice(this.trainedOnProjects.indexOf(this.projectToRemove), 1);
     this.notTrainedOnProjects.push(this.projectToRemove);
     this.notTrainedOnProjects.sort((a, b) => a.projectName.localeCompare(b.projectName));
+    if (this.trainedOnProjects.length === 1) {
+      let singleProject = this.trainedOnProjects[0];
+      this.defaultproject =
+        this.previousDefaultProject ?? singleProject.projectID;
+      singleProject.defaultproject = this.defaultproject;
+      singleProject.clicked = true;
+      this.trainedOnChange.emit(singleProject);
+    } 
     if (this.projectToRemove.projectID === this.defaultproject) {
       this.previousDefaultProject = this.defaultproject;
       this.defaultproject = 0;
       this.projectToRemove.clicked = false;
     }
 
-    if (this.trainedOnProjects.length === 1 && this.trainedOnProjects[0].clicked) {
+    if (this.trainedOnProjects.length === 1) {
       let singleProject = this.trainedOnProjects[0];
       this.defaultproject = singleProject.projectID;
       singleProject.clicked = true;

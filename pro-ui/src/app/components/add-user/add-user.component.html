@@ -59,12 +59,22 @@
             <div class="flex items-center gap-2">
     
                 <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
-                    [class.invalid-emphasis]="coreHoursInvalid"
-                    [class.text-[#1874CA]]="selectedTab === 'scheduling'"
+                [class.invalid-emphasis]="coreHoursInvalid || ((!defaultProject || defaultProject === 0))"
+                [class.text-[#1874CA]]="selectedTab === 'scheduling'"
                     [class.border-b]="selectedTab === 'scheduling'"
                     [class.border-b-[3px]]="selectedTab === 'scheduling'"
+                    [ngStyle]="{
+                        fontSize: selectedTab === 'scheduling' ? '16px' : '14px',
+                        borderBottomColor:
+                          coreHoursInvalid ||
+                          !selectedUser.defaultproject ||
+                          selectedUser.defaultproject === 0
+                            ? '#dc4a38'
+                            : '#1874CA'
+                      }"
                     (click)="onTabChanged('scheduling')">
                     <div>Scheduling</div><div *ngIf="coreHoursInvalid">**</div>
+                    <div *ngIf="((!defaultProject || defaultProject === 0) )">*</div>
                 </div>
                 <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
                     [class.invalid-emphasis]="coreHoursInvalid"
@@ -96,6 +106,19 @@
         <!-- Tab 1: Scheduling -->
         @if (selectedTab === 'scheduling') {
             <div class="ml-3 mr-3">
+            <div class="font-medium tracking-wider mb-2">PROJECTS</div>  
+          <div>
+            <app-trained-on-projects [trainedOnProjects]="trainedOnProjects"
+                                      [defPro]="defPro"
+                                      [notTrainedOnProjects]="notTrainedOnProjects"
+                                      [listingOnly]="readOnly"
+                                      (trainedOnChange)="trainedOnChange($event)"
+                                      *ngIf="createForm"></app-trained-on-projects>
+          </div>
+  
+          <!-- divider -->
+          <div class="my-4 border-b border-b-2"
+            style="border-color: #c2c2c2 !important;"></div>
                 <div class="font-medium tracking-wider mb-2">CORE HOURS MONTHLY</div>
                 <table id="core-hours-table">
                   <thead>
@@ -129,42 +152,6 @@
                   </tbody>
                 </table>
             </div>
-            <!-- <div class="m-3 mt-4">
-                    <span class="bold">Core Hours Monthly</span>
-                    <table id="core-hours-table">
-                    <thead>
-                    <tr id="core-hours-header" class="bold">
-                        <td>{{formatDateToShortMonthYear(coreHours?.month1 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month2 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month3 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month4 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month5 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month6 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month7 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month8 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month9 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month10 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month11 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month12 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month13 || null)}}</td>
-                        <td>{{formatDateToShortMonthYear(coreHours?.month14 || null)}}</td>
-                    </tr>
-                    </thead>
-                    <tr>
-                        <td *ngFor="let ch of numSequence(14); let i = index">
-                        <mat-form-field class="coreHoursInput">
-                            <input type="text"  matInput
-                                [(ngModel)]="coreHours['coreHours' + (i + 1)]"
-                                (keyup)="setChanged(); nvlHours(coreHours, (i+1))"
-                                (keypress)="numberRestrict($event)"
-                                name="core-hours-{{i}}"
-                                autocomplete="off"
-                                maxlength="4">
-                        </mat-form-field>
-                        </td>
-                    </tr>
-                    </table>
-            </div> -->
         }
             
         <!-- Tab 2: User Details -->
