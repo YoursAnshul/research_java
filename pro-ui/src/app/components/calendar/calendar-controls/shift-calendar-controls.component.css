@@ -1,0 +1,73 @@
+#today-picker {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    color: #0062cc;
+    font-size: 0.85em;
+    font-style: italic;
+}
+
+#currentMonth-picker {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: #0062cc;
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+#currentMonth-picker span {
+  border-bottom: 0.5px solid #0062cc;
+}
+
+#today-picker span {
+    border-bottom: 0.5px solid #0062cc;
+}
+
+#calendar-date-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+#reset-button {
+    width: 85px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0680CD;
+    color: #ffff;
+}
+
+#calendar-filters,
+#trained-on-section,
+#user-language-filters,
+#conditional-operator-filter-outer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px
+}
+
+#calendar-filters-outer {
+    margin-bottom: 10px;
+}
+
+.arrow-nav {
+    cursor: pointer;
+}
+
+#user-language-filters,
+#trained-on-section {
+    flex-direction: column;
+}
+
+.interviewer {
+    flex-direction: row !important;
+    gap: 20px !important;
+}

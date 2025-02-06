@@ -1,8 +1,14 @@
-#day-calendar-time-header {
+#month-calendar-time-header {
     width: 100%;
 }
 
-  #day-calendar-time-header > div {
+.week-schedules-container {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+  #month-calendar-time-header > div {
     display: inline-block;
     border: 1px solid gray;
     text-align: center;
@@ -14,12 +20,12 @@
     cursor: default;
   }
 
-#day-calendar-user-schedules {
+#month-calendar-user-schedules {
   /*height: 600px;*/
   /*overflow-y: auto;*/
 }
 
-  #day-calendar-user-schedules .user-card {
+  #month-calendar-user-schedules .user-card {
     padding: 5px;
     padding-left: 10px;
     display: inline-table;
@@ -27,14 +33,14 @@
     min-height: 40px;
     cursor: pointer;
     user-select: none;
-    width: 10.1%;
+    width: 14.1%;
     font-size: 0.8em;
     background-color: lightgoldenrodyellow;
     border-top: 0.5px solid gray;
     border-right: 0.5px solid gray;
   }
 
-  #day-calendar-user-schedules .schedule-card {
+  #month-calendar-user-schedules .schedule-card {
     padding: 5px;
     display: inline-block;
     position: absolute;
@@ -50,7 +56,7 @@
     font-size: 0.75em;
   }
 
-  #day-calendar-user-schedules .user-schedule-row {
+  #month-calendar-user-schedules .user-schedule-row {
     min-height: 40px;
   }
 
@@ -65,61 +71,39 @@
   font-style: italic;
   display: inline-block;
 }
-#day-calendar-time-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.hour-header {
-  flex: 1;
-  height: 42px;
-  padding: 5px;
-  box-sizing: border-box;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid blue;
-}
-
-.hour-header:last-child {
-  flex: 1;
-}
-
 
 @media only screen and (max-width: 1300px) {
-  #day-calendar-time-header .hour-header {
+  #month-calendar-time-header .hour-header {
     font-size: 0.75em;
   }
 }
 
 @media only screen and (max-width: 1000px) {
-  #day-calendar-time-header .hour-header {
+  #month-calendar-time-header .hour-header {
     font-size: 0.5em;
   }
 }
 
 @media only screen and (max-width: 1000px) {
-  #day-calendar-time-header .hour-header {
+  #month-calendar-time-header .hour-header {
     font-size: 0.5em;
   }
 }
 
 @media only screen and (max-width: 1260px) {
-  #day-calendar-user-schedules .user-card {
+  #month-calendar-user-schedules .user-card {
     font-size: 0.8em;
   }
 }
 
 @media only screen and (max-width: 1150px) {
-  #day-calendar-user-schedules .user-card {
+  #month-calendar-user-schedules .user-card {
     font-size: 0.7em;
   }
 }
 
 @media only screen and (max-width: 1000px) {
-  #day-calendar-user-schedules .user-card {
+  #month-calendar-user-schedules .user-card {
     font-size: 0.6em;
   }
 }

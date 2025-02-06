@@ -1,0 +1,146 @@
+<div id="week-calendar">
+    <div id="week-calendar-header">
+  
+    </div>
+    <div id="week-calendar-time-header" class="week-calendar-time-header">
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 1), 1)">Monday {{GetDaysDate(weekSchedules?.weekStart, 1)}}</div>
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 2), 1)">Tuesday {{GetDaysDate(weekSchedules?.weekStart, 2)}}</div>
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 3), 1)">Wednesday {{GetDaysDate(weekSchedules?.weekStart, 3)}}</div>
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 4), 1)">Thursday {{GetDaysDate(weekSchedules?.weekStart, 4)}}</div>
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 5), 1)">Friday {{GetDaysDate(weekSchedules?.weekStart, 5)}}</div>
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 6), 1)">Saturday {{GetDaysDate(weekSchedules?.weekStart, 6)}}</div>
+      <div style="width: 14.25%;" (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, 7), 1)">Sunday {{GetDaysDate(weekSchedules?.weekStart, 7)}}</div>
+      <div style="width: 0.25%; border: none;"></div>
+      <!--<div style="width: 1%; border: none;"></div>-->
+    </div>
+    @if ((weekSchedules?.day1Schedules || []).length < 1
+      && (weekSchedules?.day2Schedules || []).length < 1
+      && (weekSchedules?.day3Schedules || []).length < 1
+      && (weekSchedules?.day4Schedules || []).length < 1
+      && (weekSchedules?.day5Schedules || []).length < 1
+      && (weekSchedules?.day6Schedules || []).length < 1
+      && (weekSchedules?.day7Schedules || []).length < 1) {
+      <div class="no-results bold italic"
+        >
+        No schedules found for this date range...
+      </div>
+    }
+    <div id="week-calendar-user-schedules">
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day1Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day2Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day3Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day4Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day5Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day6Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+      <div class="day-schedules-container">
+        @for (schedule of weekSchedules?.day7Schedules; track schedule) {
+          <div class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.dempoid, schedule.projectName, schedule.startdatetime)"
+            (mouseenter)="displayHoverMessage($event, schedule)"
+            (mouseleave)="hideHoverMessage()">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div>
+                <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+  
+    </div>
+  
+  </div>
+  
+  <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>
+  

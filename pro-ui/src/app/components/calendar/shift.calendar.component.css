@@ -1,0 +1,79 @@
+
+#calendar-container {
+    border: 1px solid #c2c2c2;
+    border-radius: 5px;
+    position: relative;
+    margin-top: 30px;
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+.spin {
+    animation-name: spin;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.calendar-wrapper {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 4px;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+  }
+
+.legend-container {
+    flex: 0 0 18.5em
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#refresh-calendar {
+    cursor: pointer;
+    z-index: 10;
+}
+
+#refresh-calendar-message {
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+#refresh-calendar-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+}
+
+.mat-mdc-tab-group {
+    background-color: white;
+}
+
+.calendar-control-container {
+    display: flex;
+    align-items: center;
+}
+
+.wd70 {
+    width: 70%;
+    justify-content: flex-start;
+}
+
+.wd100 {
+    width: 100%;
+    justify-content: center;
+}
+

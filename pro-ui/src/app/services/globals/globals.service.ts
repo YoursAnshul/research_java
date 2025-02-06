@@ -27,17 +27,17 @@ export class GlobalsService {
   constructor(private userSchedulesService: UserSchedulesService, private dialog: MatDialog) { }
 
   public openSchedulePopup(): void {
-    // this.scheduleTabIndex.next(0);
-    // this.showScheduler.next(true);
-    // this.showScheduleBlackFilter.next(true);
+    this.scheduleTabIndex.next(0);
+    this.showScheduler.next(true);
+    this.showScheduleBlackFilter.next(true);
 
-    const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-      width: '1900px',
-      height: '900px'
-    });
-    dialogRef.afterClosed().subscribe((result: any) => {
-      console.log('Shift Schedule dialog was closed', result);
-    });
+    // const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+    //   width: '1400px',
+    //   height: '900px'
+    // });
+    // dialogRef.afterClosed().subscribe((result: any) => {
+    //   console.log('Shift Schedule dialog was closed', result);
+    // });
   }
 
   public closeSchedulePopup(): void {

@@ -207,6 +207,18 @@ public class UsersController {
 			if (!traininLogUpdated)
 				response.Message = "Successfully saved user, but the training log was not updated";
 			response.Subject = user;
+			System.out.println("user.getDefaultproject()---------" + user.getDefaultproject());
+			if (user.getDefaultproject() != null) {
+				String sql = "SET defaultproject = COALESCE((SELECT proj_id FROM ( SELECT proj_id,"
+						+ " LAG(proj_id) OVER (ORDER BY ordinality) AS prev_id "
+						+ " FROM unnest(string_to_array(u1.trainedon, '|')::int[]) WITH ORDINALITY AS "
+						+ " t(proj_id, ordinality) WHERE proj_id IN (SELECT projectid FROM projects "
+						+ " WHERE active = 1)) seq  WHERE prev_id = u1.defaultproject  LIMIT 1),"
+						+ " (SELECT proj_id FROM unnest(string_to_array(u1.trainedon, '|')::int[]) AS t(proj_id)"
+						+ " WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1) ORDER BY proj_id"
+						+ "  LIMIT 1 ) ) WHERE u1.defaultproject = " + user.getDefaultproject() + "";
+				this.jdbcTemplate.execute(sql);
+			}
 		} catch (Exception ex) {
 			response.Status = "Failure";
 			response.Message = ex.getMessage();

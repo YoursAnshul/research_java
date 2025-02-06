@@ -86,6 +86,10 @@ import { SchedulingInfoComponent } from './components/scheduling-info/scheduling
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { ShiftScheduleComponent } from './components/schedule/shift-schedule.component';
 import { ShiftDayViewComponent } from './components/calendar/day-view/shift-day-view.component';
+import { ShifCalendarComponent } from './components/calendar/shift.calendar.component';
+import { ShiftWeekViewComponent } from './components/calendar/week-view/shift-week-view.component';
+import { ShiftMonthViewComponent } from './components/calendar/month-view/shift-month-view.component';
+import { ShiftCalendarControlsComponent } from './components/calendar/calendar-controls/shift-calendar-controls.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -146,7 +150,11 @@ import { ShiftDayViewComponent } from './components/calendar/day-view/shift-day-
     SchedulingInfoComponent,
     UserProfileComponent,
     ShiftScheduleComponent,
-    ShiftDayViewComponent
+    ShiftDayViewComponent,
+    ShifCalendarComponent,
+    ShiftWeekViewComponent,
+    ShiftMonthViewComponent,
+    ShiftCalendarControlsComponent
   ],
   imports: [
     BrowserModule,
