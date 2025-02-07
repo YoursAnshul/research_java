@@ -136,14 +136,15 @@ export class AddUserComponent implements OnInit {
       }
     );
 
-    //get active projects
-    this.projectsService.allProjectsMin.subscribe(
-      allProjects => {
-        this.activeProjects = allProjects.filter(x => (x.active /*&& x.projectType !== 'Administrative'*/));
-        this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
-        this.setNotTrainedOn();
-      }
-    );
+ //get active projects
+ this.projectsService.allProjectsMin.subscribe(
+  allProjects => {
+    this.activeProjects = allProjects.filter(x => (x.active && x.projectType !== 'Administrative'));
+    //setup active projects as an iDropDownValue type
+    this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
+    this.setNotTrainedOn();
+  }
+);
   
     //get active users
     this.usersService.allUsersMin.subscribe(

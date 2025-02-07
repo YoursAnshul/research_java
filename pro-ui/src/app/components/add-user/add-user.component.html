@@ -99,7 +99,7 @@
             <!-- Buttons -->
             <div class="flex items-center gap-2">
                 <button class="btn-outline" (click)="showUnsavedChangesDialog()">Cancel</button>
-                <button mat-raised-button color="primary submit" [disabled]="tab2Invalid" (click)="confirmDialog()">Save</button>
+                <button mat-raised-button color="primary submit" [disabled]="tab2Invalid || !defaultProject || defaultProject === 0" (click)="confirmDialog()">Save</button>
             </div>
         </div>
   

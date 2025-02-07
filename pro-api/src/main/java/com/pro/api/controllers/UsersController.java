@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -56,6 +57,9 @@ public class UsersController {
 
 	@Autowired
 	private SessionUserEmail UserEmail;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
     @Value("${spring.profiles.active}")
     private String environment;
@@ -200,6 +204,8 @@ public class UsersController {
 					return response;
 				}
 			}
+			user.setDefaultproject(user.getDefaultproject());
+			System.out.println("user.getDefaultproject()----6666-----" + user.getDefaultproject());
 			traininLogUpdated = updateTrainingLog(user, netId);
 			user = userRepository.save(user);
 			response.Status = "Success";
@@ -209,16 +215,38 @@ public class UsersController {
 			response.Subject = user;
 			System.out.println("user.getDefaultproject()---------" + user.getDefaultproject());
 			if (user.getDefaultproject() != null) {
-				String sql = "SET defaultproject = COALESCE((SELECT proj_id FROM ( SELECT proj_id,"
-						+ " LAG(proj_id) OVER (ORDER BY ordinality) AS prev_id "
-						+ " FROM unnest(string_to_array(u1.trainedon, '|')::int[]) WITH ORDINALITY AS "
-						+ " t(proj_id, ordinality) WHERE proj_id IN (SELECT projectid FROM projects "
-						+ " WHERE active = 1)) seq  WHERE prev_id = u1.defaultproject  LIMIT 1),"
-						+ " (SELECT proj_id FROM unnest(string_to_array(u1.trainedon, '|')::int[]) AS t(proj_id)"
-						+ " WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1) ORDER BY proj_id"
-						+ "  LIMIT 1 ) ) WHERE u1.defaultproject = " + user.getDefaultproject() + "";
-				this.jdbcTemplate.execute(sql);
-			}
+			String sql = "Update core.users SET defaultproject ='"+user.getDefaultproject()+"'  WHERE userid	 = " + user.getUserid() ;
+			this.jdbcTemplate.execute(sql);
+		}
+//			if (user.getDefaultproject() != null) {
+//			    String sql = """
+//			        UPDATE core.users 
+//			        SET defaultproject = COALESCE(
+//			            (
+//			                SELECT proj_id FROM (
+//			                    SELECT proj_id, 
+//			                           LAG(proj_id) OVER (ORDER BY ordinality) AS prev_id 
+//			                    FROM unnest(string_to_array(core.users.trainedon, '|')::int[]) 
+//			                         WITH ORDINALITY AS t(proj_id, ordinality)
+//			                    WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1)
+//			                ) seq 
+//			                WHERE prev_id = core.users.defaultproject 
+//			                LIMIT 1
+//			            ),
+//			            (
+//			                SELECT proj_id FROM unnest(string_to_array(core.users.trainedon, '|')::int[]) 
+//			                     AS t(proj_id)
+//			                WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1) 
+//			                ORDER BY proj_id 
+//			                LIMIT 1
+//			            )
+//			        )
+//			        WHERE defaultproject = ?
+//			    """;
+//
+//			    jdbcTemplate.update(sql, user.getDefaultproject());
+//			}
+
 		} catch (Exception ex) {
 			response.Status = "Failure";
 			response.Message = ex.getMessage();
