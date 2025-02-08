@@ -59,22 +59,20 @@
             <div class="flex items-center gap-2">
     
                 <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
-                [class.invalid-emphasis]="coreHoursInvalid || ((!defaultProject || defaultProject === 0))"
+                [class.invalid-emphasis]="coreHoursInvalid || (!defaultProject || defaultProject === 0)"
                 [class.text-[#1874CA]]="selectedTab === 'scheduling'"
                     [class.border-b]="selectedTab === 'scheduling'"
                     [class.border-b-[3px]]="selectedTab === 'scheduling'"
                     [ngStyle]="{
                         fontSize: selectedTab === 'scheduling' ? '16px' : '14px',
                         borderBottomColor:
-                          coreHoursInvalid ||
-                          !selectedUser.defaultproject ||
-                          selectedUser.defaultproject === 0
+                        selectedTab === 'scheduling' && (coreHoursInvalid || !defaultProject || defaultProject === 0)
                             ? '#dc4a38'
                             : '#1874CA'
                       }"
                     (click)="onTabChanged('scheduling')">
                     <div>Scheduling</div><div *ngIf="coreHoursInvalid">**</div>
-                    <div *ngIf="((!defaultProject || defaultProject === 0) )">*</div>
+                    <div *ngIf="!defaultProject || defaultProject === 0">*</div>
                 </div>
                 <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
                     [class.invalid-emphasis]="coreHoursInvalid"

@@ -3,13 +3,15 @@
     <div>
       <div
       class="pt-2 pr-3 mb-2 error-message"
-      *ngIf="!this.defaultproject || this.defaultproject === 0"
+      *ngIf="!isLoading && (!this.defaultproject || this.defaultproject === 0)"
     >
       <mat-icon class="error-icon" aria-hidden="true">error</mat-icon>
       <span>Please select a default project for this user</span>
     </div>
-      <div class="flex">
-
+    <div *ngIf="isLoading" class="spinner-container">
+      <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
+    </div>
+      <div class="flex" *ngIf="!isLoading" >
         <div class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] pt-2 pr-3"
           style="border-color: #c2c2c2 !important;">
           <div class="pb-1 ml-3 mb-2 border-b border-b-2 font-medium"

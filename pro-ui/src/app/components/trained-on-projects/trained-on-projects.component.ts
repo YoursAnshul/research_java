@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { DefPro,IProjectMin } from '../../interfaces/interfaces';
+import { ProjectsService } from '../../services/projects/projects.service';
 
 @Component({
   selector: 'app-trained-on-projects',
@@ -16,8 +17,14 @@ export class TrainedOnProjectsComponent implements OnInit {
   projectToRemove!: IProjectMin | null;
   defaultproject: number = 0;
   private previousDefaultProject: number | null = null;
+  isLoading = false; 
 
-  constructor() { }
+  constructor(private projectsService: ProjectsService
+  ) { 
+    this.projectsService.isLoading.subscribe(loading => {
+      this.isLoading = loading;
+    });
+  }
 
     ngOnInit(): void {
       if(this.defPro && this.defPro.length>0){

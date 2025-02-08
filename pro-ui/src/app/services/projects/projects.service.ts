@@ -15,6 +15,7 @@ export class ProjectsService {
   public errorMessage!: string;
   public allProjectsMin: BehaviorSubject<IProjectMin[]> = new BehaviorSubject<IProjectMin[]>([] as IProjectMin[]);
   public selectedProject: BehaviorSubject<IProject> = new BehaviorSubject<IProject>({} as IProject);
+  isLoading = new BehaviorSubject<boolean>(false); 
 
   constructor(private http: HttpClient,
     private logsService: LogsService) {
@@ -38,13 +39,16 @@ export class ProjectsService {
   }
 
   setAllProjectsMin(): void {
+    this.isLoading.next(true); 
     this.http.get<IGeneralResponse>(`${this.apiRootUrl}/min`).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.allProjectsMin.next(<IProjectMin[]>response.Subject);
         }
+        this.isLoading.next(false); 
       },
       error => {
+        this.isLoading.next(false);
         this.errorMessage = <string>(error.message);
         this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
       }

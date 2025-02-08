@@ -10,3 +10,10 @@
   margin-right: 8px;
   font-size: 25px;
 }
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust height as needed */
+}
+
