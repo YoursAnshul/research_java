@@ -1,21 +1,26 @@
 #week-calendar-time-header {
-    width: 100%;
-    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
-    cursor: pointer;
-    user-select: none;
-  }
+  width: 100%;
+  display: flex;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  cursor: pointer;
+  user-select: none;
   
-  #week-calendar-time-header > div {
-    display: inline-block;
-    border: 1px solid gray;
-    text-align: center;
-    font-size: 0.9em;
-    border: 1.5px solid #0078d4;
-    color: #0078d4;
-    background-color: lightgoldenrodyellow;
-    font-weight: 500;
-  }
+}
   
+#week-calendar-time-header > div {
+  border: 1.5px solid #0078d4;
+  color: #0078d4;
+  background-color: lightgoldenrodyellow;
+  font-weight: 500;
+  text-align: center;
+  padding: 5px;
+  
+}
+#week-calendar-add-icons {
+  display: flex;
+  width: 100%;
+  padding-top: 5px;
+}
   #week-calendar-user-schedules {
     /*height: 600px;*/
     /*overflow-y: auto;*/
@@ -113,4 +118,39 @@
       font-size: 0.6em;
     }
   }
+  .no-spinner {
+    -moz-appearance: textfield; 
+  }
   
+  .no-spinner::-webkit-inner-spin-button, 
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .no-spinner::-ms-clear {
+    display: none;
+  }
+  .hour-input {
+    width: 60px;
+    text-align: right;
+    -moz-appearance: textfield;
+    border: 2px solid #58595B;
+  }
+  
+  .hour-input::-webkit-inner-spin-button, 
+  .hour-input::-webkit-outer-spin-button {
+    -webkit-appearance: none; 
+    margin: 0;
+  }
+  .hour-input::placeholder {
+    color: #58595B; /* Placeholder color */
+    opacity: 1;
+  }
+  .hour-input:-ms-input-placeholder { /* Edge */
+    color: #58595B;
+  }
+  
+  .hour-input::-ms-input-placeholder { /* IE */
+    color: #58595B;
+  }

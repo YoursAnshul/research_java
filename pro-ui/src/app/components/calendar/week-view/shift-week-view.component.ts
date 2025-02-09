@@ -6,8 +6,8 @@ import { HoverMessage } from '../../../models/presentation/hover-message';
 
 @Component({
   selector: 'app-shift-week-view',
-  templateUrl: './week-view.component.html',
-  styleUrls: ['./week-view.component.css']
+  templateUrl: './shift-week-view.component.html',
+  styleUrls: ['./shift-week-view.component.css']
 })
 export class ShiftWeekViewComponent implements OnInit {
 

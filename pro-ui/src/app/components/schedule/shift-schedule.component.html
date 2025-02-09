@@ -1,5 +1,14 @@
-<h2 style="color: #0680cd; margin-top: 10px; margin-left: 15px; margin-right: 15px;">Add Shift Schedule</h2>
- <div style="margin-left: 15px; margin-right: 15px;">
+<h2
+  style="
+    color: #0680cd;
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+  "
+>
+  Add Shift Schedule
+</h2>
+<div style="margin-left: 15px; margin-right: 15px">
   <form [formGroup]="announcementForm">
     <div class="form-container">
       <div class="d-flex">
@@ -7,7 +16,7 @@
           <mat-form-field
             appearance="outline"
             class="custom-form-field title-width"
-            style="width: 170px"
+            style="width: 165px;"
           >
             <mat-label>User</mat-label>
             <mat-select [(value)]="selectedUser">
@@ -17,12 +26,12 @@
             </mat-select>
           </mat-form-field>
         </div>
-  
+
         <div class="ml-3">
           <mat-form-field
             appearance="outline"
             class="custom-form-field title-width"
-            style="width: 155px"
+            style="width: 165px"
           >
             <mat-label>Project</mat-label>
             <mat-select [(value)]="selectedProjects" multiple>
@@ -62,7 +71,7 @@
           <mat-form-field
             appearance="outline"
             class="date-width custom-form-field title-width"
-            style="width: 170px"
+            style="width: 155px"
           >
             <mat-label>Monday</mat-label>
             <input
@@ -82,29 +91,35 @@
           <mat-form-field
             appearance="outline"
             class="time-width custom-form-field title-width"
-            style="width: 120px"
+            style="width: 100px"
           >
             <mat-label>Start Time</mat-label>
             <input
               matInput
+              [ngxTimepicker]="startPicker"
               placeholder="Choose start time"
               formControlName="startTime"
+              readonly
             />
+            <ngx-material-timepicker #startPicker></ngx-material-timepicker>
           </mat-form-field>
         </div>
-  
-        <div>
+
+        <div class="ml-3 mr-3">
           <mat-form-field
             appearance="outline"
             class="time-width custom-form-field title-width"
-            style="width: 120px"
+            style="width: 100px"
           >
             <mat-label>End Time</mat-label>
             <input
               matInput
+              [ngxTimepicker]="endPicker"
               placeholder="Choose end time"
               formControlName="endTime"
+              readonly
             />
+            <ngx-material-timepicker #endPicker></ngx-material-timepicker>
           </mat-form-field>
         </div>
         <span class="ml-2 mr-2">0 hr.</span>
@@ -112,18 +127,19 @@
           <mat-form-field
             appearance="outline"
             class="custom-form-field"
-            style="width: 140px"
+            style="width: 165px"
           >
             <mat-label>Comments</mat-label>
             <input matInput placeholder="comments" formControlName="comments" />
           </mat-form-field>
         </div>
         <div class="ml-2 mr-2">
-          <button mat-raised-button color="primary" disabled><mat-icon>add</mat-icon>
-            Add to Calender</button>
+          <button mat-raised-button color="primary" disabled>
+            <mat-icon>add</mat-icon> Add to Calender
+          </button>
         </div>
       </div>
     </div>
     <app-shift-calendar></app-shift-calendar>
   </form>
- </div>
+</div>

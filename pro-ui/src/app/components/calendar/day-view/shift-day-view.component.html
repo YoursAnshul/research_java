@@ -18,12 +18,30 @@
     <div class="hour-header">09:00 PM</div>
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
-    <div class="hour-header total-header">Total</div>
+    <div
+      class="hour-header"
+      style="
+        text-align: center;
+        background: #0078d4;
+        color: white;
+        font-weight: bold;
+      "
+    >
+      Total
+    </div>
   </div>
 
   <div id="day-calendar-user-schedules">
-    <div class="user-card"></div>
-    <mat-icon style="margin-left: 508px; color: #0680cd">add</mat-icon>
+    <div class="user-row">
+      <div class="user-card"></div>
+      <mat-icon class="add-icon">add</mat-icon>
+      <input
+        style="width: 5.25%; text-align: center; margin-right: -4px"
+        type="number"
+        placeholder="0 hr"
+        class="no-spinner hour-input"
+      />
+    </div>
   </div>
 </div>
 

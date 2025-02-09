@@ -3,7 +3,6 @@
 }
 
   #day-calendar-time-header > div {
-    display: inline-block;
     border: 1px solid gray;
     text-align: center;
     font-size: 0.9em;
@@ -129,4 +128,54 @@
   display: inline-block;
   height: 50px;
   vertical-align: top;
+}
+.add-icon {
+  font-size: 24px;
+  text-align: center;
+  flex: 1;
+  color: #0078d4;
+
+}
+.no-spinner {
+  -moz-appearance: textfield; 
+}
+
+.no-spinner::-webkit-inner-spin-button, 
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner::-ms-clear {
+  display: none;
+}
+.hour-input {
+  width: 60px;
+  text-align: right;
+  -moz-appearance: textfield;
+  border: 2px solid #58595B;
+}
+
+.hour-input::-webkit-inner-spin-button, 
+.hour-input::-webkit-outer-spin-button {
+  -webkit-appearance: none; 
+  margin: 0;
+}
+.user-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between; 
+  padding: 5px;
+}
+.hour-input::placeholder {
+  color: #58595B; /* Placeholder color */
+  opacity: 1;
+}
+.hour-input:-ms-input-placeholder { /* Edge */
+  color: #58595B;
+}
+
+.hour-input::-ms-input-placeholder { /* IE */
+  color: #58595B;
 }

@@ -235,3 +235,7 @@
   flex-grow: 0 !important;
 }
 
+.mat-form-field {
+  position: relative;
+  z-index: 10001; /* Ensures input is above modal */
+}

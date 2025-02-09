@@ -90,6 +90,8 @@ import { ShifCalendarComponent } from './components/calendar/shift.calendar.comp
 import { ShiftWeekViewComponent } from './components/calendar/week-view/shift-week-view.component';
 import { ShiftMonthViewComponent } from './components/calendar/month-view/shift-month-view.component';
 import { ShiftCalendarControlsComponent } from './components/calendar/calendar-controls/shift-calendar-controls.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -184,7 +186,9 @@ import { ShiftCalendarControlsComponent } from './components/calendar/calendar-c
     MatTableModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    MatRippleModule
+    MatRippleModule,
+    NgxMaterialTimepickerModule,
+    NgxMatTimepickerModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]
