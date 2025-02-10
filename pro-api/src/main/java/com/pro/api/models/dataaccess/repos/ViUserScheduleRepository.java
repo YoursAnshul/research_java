@@ -9,8 +9,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ViUserScheduleRepository extends JpaRepository<ViUserSchedule, Integer> {
-	@Query("SELECT us FROM ViUserSchedule us JOIN User u on us.userid = u.userid WHERE u.active = true "
-			+ "AND (YEAR(us.startdatetime) = :year " + "OR YEAR(us.weekStart) = :year "
+	@Query("SELECT us FROM ViUserSchedule us JOIN User u on us.userid = u.userid WHERE "
+			+ " (YEAR(us.startdatetime) = :year " + "OR YEAR(us.weekStart) = :year "
 			+ "OR YEAR(us.weekEnd) = :year) " + "AND (MONTH(us.startdatetime) = :month "
 			+ "OR MONTH(us.weekStart) = :month " + "OR MONTH(us.weekEnd) = :month) "
 			+ "ORDER BY us.startdatetime, us.enddatetime")

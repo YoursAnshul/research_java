@@ -81,7 +81,8 @@ export class CalendarComponent implements OnInit {
     this.usersService.allUsersMin.subscribe(
       allUsers => {
         this.allUsers = allUsers;
-
+        console.log("this.allUsers----------",this.allUsers);
+        
         this.getAllUserSchedulesByAnchorDate();
       },
       error => {
@@ -288,8 +289,19 @@ export class CalendarComponent implements OnInit {
     // day view
     //-------------------------------
     var tempUserSchedulesDay: IUserSchedule[] = [];
+    console.log("this.filteredUserSchedulesMonth----------",this.filteredUserSchedulesMonth);
 
-    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
+    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => {
+      let formattedStartDate = Utils.formatDateOnlyToStringUTC(x.startdatetime);
+      let formattedSelectedDate = Utils.formatDateOnlyToStringUTC(this.selectedDate.value);
+      
+      console.log("Start Date (formatted):", formattedStartDate);
+      console.log("Selected Date (formatted):", formattedSelectedDate);
+      
+      return formattedStartDate === formattedSelectedDate;
+  });
+    
+    // var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
 
     //get user schedules for the selected day
     this.allUsers.forEach(function (user) {
@@ -297,10 +309,11 @@ export class CalendarComponent implements OnInit {
         user: user,
         schedules: <ISchedule[]>tempSchedulesToday.filter(x => x.userid === user.userid)
       };
-
+      console.log("userSchedule.schedules",userSchedule.schedules);
       //sort user schedules by start time
       userSchedule.schedules.sort(function (a, b) { return (Utils.formatDateOnly(a.startdatetime) || new Date()).getTime() - (Utils.formatDateOnly(b.startdatetime) || new Date()).getTime(); });
-
+     
+      
       tempUserSchedulesDay.push(userSchedule);
     });
     this.userSchedulesDay = tempUserSchedulesDay;
@@ -406,7 +419,11 @@ export class CalendarComponent implements OnInit {
 
     //user schedule filter
     if (this.userSchedulesDay) {
+      // console.log("this.userSchedulesDay",this.userSchedulesDay);
+      
       this.filteredUserSchedulesDay = this.userSchedulesDay.filter(x => this.filterUser(x));
+      // console.log("this.filteredUserSchedulesDay",this.filteredUserSchedulesDay);
+      
     }
   }
 
@@ -415,6 +432,8 @@ export class CalendarComponent implements OnInit {
     let keepUser: boolean = false;
 
     //user filter
+    console.log("this.userFilter.value---------",this.userFilter.value,user.user.status,user.schedules.length);
+    
     if (this.userFilter.value == '1' && user.user.status == '1') {
       keepUser = true;
     } else if (this.userFilter.value == '2' && user.user.status == '1' && user.schedules.length > 0) {
@@ -476,7 +495,8 @@ export class CalendarComponent implements OnInit {
         keepUser = true;
       }
     }
-
+    console.log("keepUser----------",keepUser);
+    
     return keepUser;
   }
 

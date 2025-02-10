@@ -104,7 +104,7 @@ public class UsersController {
 
 			response.Status = "Success";
 			response.Message = "Successfully retrieved users";
-			response.Subject = userRepository.findAllUserMinsOrderedByName();
+			response.Subject = userRepository.findAll();
 		} catch (Exception ex) {
 			response.Status = "Failure";
 			response.Message = ex.getMessage();
