@@ -491,7 +491,9 @@ export class AddUserComponent implements OnInit {
 
     // Implementation...
     if (tab == 'scheduling') {
-
+      this.defPro = [
+        { defaultproject: Number(this.defaultProject) },
+      ];
       this.isUserCalendarVisible = true;
       this.isTrainedOnVisible = true;
 
@@ -507,7 +509,9 @@ export class AddUserComponent implements OnInit {
       this.isTrainedOnVisible = false;
 
     } else {
-
+      this.defPro = [
+        { defaultproject: Number(this.defaultProject) },
+      ];
       this.isUserCalendarVisible = true;
       this.isTrainedOnVisible = false;
 
