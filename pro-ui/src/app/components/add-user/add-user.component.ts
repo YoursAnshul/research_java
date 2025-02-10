@@ -83,6 +83,7 @@ export class AddUserComponent implements OnInit {
   defPro!: DefPro[];
   public activeProjectsDv: IDropDownValue[] = [];
   defaultProject: number=0;
+  newFlag: boolean = true; 
 
 
 

@@ -18,7 +18,7 @@ export class TrainedOnProjectsComponent implements OnInit {
   defaultproject: number = 0;
   private previousDefaultProject: number | null = null;
   isLoading = false; 
-
+  @Input() newFlag: boolean = false; 
   constructor(private projectsService: ProjectsService
   ) { 
     this.projectsService.isLoading.subscribe(loading => {
@@ -26,7 +26,7 @@ export class TrainedOnProjectsComponent implements OnInit {
     });
   }
 
-    ngOnInit(): void {
+    ngOnInit(): void {      
       if(this.defPro && this.defPro.length>0){
         this.defaultproject = this.defPro[0]?.defaultproject;
       }

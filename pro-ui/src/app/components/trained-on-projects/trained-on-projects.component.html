@@ -5,8 +5,8 @@
       class="pt-2 pr-3 mb-2 error-message"
       *ngIf="!isLoading && (!this.defaultproject || this.defaultproject === 0)"
     >
-      <mat-icon class="error-icon" aria-hidden="true">error</mat-icon>
-      <span>Please select a default project for this user</span>
+      <mat-icon *ngIf="!newFlag" class="error-icon" aria-hidden="true">error</mat-icon>
+      <span *ngIf="!newFlag">Please select a default project for this user</span>
     </div>
     <div *ngIf="isLoading" class="spinner-container">
       <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
