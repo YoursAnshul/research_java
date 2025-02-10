@@ -137,6 +137,10 @@ export class UsersService {
     return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/coreHours`, coreHours);
   }
 
+  saveUserCoreHoursWithAudit(coreHours: ICoreHours[],netId: String): Observable<IGeneralResponse> {
+    return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/coreHours/${netId}`, coreHours);
+  }
+
   getUserCoreHoursByNetId(netId: string): Observable<IGeneralResponse> {
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/coreHours-V2/${netId}`);
   }

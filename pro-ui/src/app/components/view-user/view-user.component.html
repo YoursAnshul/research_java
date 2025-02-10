@@ -156,7 +156,7 @@
        <div class="flex items-center gap-2">
         <button mat-raised-button color="primary submit wd90" (click)="clickOnEdit()"  [disabled]="authenticatedUser?.interviewer && selectedTab != 'personal-contact-info'" *ngIf=" isEdit">Edit User</button>
         <button class="btn-outline" (click)="showUnsavedChangesDialog()" [disabled] ="!changed"  *ngIf="!isEdit">Cancel</button>
-        
+
         @if (selectedUser.defaultproject === 0) {
           <button mat-raised-button color="primary submit" [disabled]="true" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
         }@else {
@@ -343,15 +343,25 @@
           Loading profile...
         </div>
         <div *ngIf="tab3UserFields">
-          <div class="row" style="width: 80%">
-            <div *ngFor="let ff of tab3UserFields;"
+          <div class="row" style="width: 90%">
+            <div *ngFor="let ff of getTabThreeFirstBatch(); index as i"
               [class.relative]="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
               [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
               [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
               <app-form-field [formField]="ff" [readOnly]="isEdit || disableRules(ff)" [contextUser]="selectedUser"
                 [allProjectsMin]="activeProjects" [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
               </app-form-field>
+            </div>
 
+          </div>
+          <div class="row" style="width: 80%">
+            <div *ngFor="let ff of getTabThreeSecondBatch(); index as i"
+                 [class.relative]="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                 [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                 [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+              <app-form-field [formField]="ff" [readOnly]="isEdit || disableRules(ff)" [contextUser]="selectedUser"
+                              [allProjectsMin]="activeProjects" [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+              </app-form-field>
             </div>
           </div>
         </div>

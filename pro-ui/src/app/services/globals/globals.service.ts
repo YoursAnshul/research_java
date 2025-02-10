@@ -32,8 +32,8 @@ export class GlobalsService {
     // this.showScheduleBlackFilter.next(true);
 
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-      width: '1400px',
-      height: '900px',
+      width: '1900px',
+      height: '900px'
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       console.log('Shift Schedule dialog was closed', result);

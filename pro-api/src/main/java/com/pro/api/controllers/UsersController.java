@@ -6,6 +6,7 @@ import com.pro.api.models.business.UserMin;
 import com.pro.api.models.dataaccess.*;
 //import com.pro.api.models.dataaccess.repos.CoreHourRepository;
 import com.pro.api.models.dataaccess.repos.*;
+import com.pro.api.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -47,6 +48,9 @@ public class UsersController {
 
 	@Autowired
 	FormFieldRepository formFieldRepo;
+
+	@Autowired
+	private AuditService auditService;
 
 	@Autowired
 	private CoreHourRepository coreHourRepository;
@@ -185,75 +189,72 @@ public class UsersController {
 	}
 
 	@PostMapping
-	public GeneralResponse saveUser(HttpServletRequest request, @RequestBody User user) {
-		GeneralResponse response = new GeneralResponse();
-		String netId = "Unknown";
-		// Retrieve NetId from session if available
-		Object netIdObj = request.getSession().getAttribute("NetId");
-		if (netIdObj != null) {
-			netId = (String) netIdObj;
-		}
-		boolean traininLogUpdated = false;
-
-		try {
-			if (user.getUserid() == 0) {
-				User userExitsWithNetId = userRepository.findFirstByDempoidIgnoreCase(user.getDempoid());
-				if (userExitsWithNetId != null) {
-					response.Status = "Failure";
-					response.Message = "NetId already exists.";
-					return response;
-				}
-			}
-			user.setDefaultproject(user.getDefaultproject());
-			System.out.println("user.getDefaultproject()----6666-----" + user.getDefaultproject());
-			traininLogUpdated = updateTrainingLog(user, netId);
-			user = userRepository.save(user);
-			response.Status = "Success";
-			response.Message = "Successfully saved user";
-			if (!traininLogUpdated)
-				response.Message = "Successfully saved user, but the training log was not updated";
-			response.Subject = user;
-			System.out.println("user.getDefaultproject()---------" + user.getDefaultproject());
-			if (user.getDefaultproject() != null) {
-			String sql = "Update core.users SET defaultproject ='"+user.getDefaultproject()+"'  WHERE userid	 = " + user.getUserid() ;
-			this.jdbcTemplate.execute(sql);
-		}
-//			if (user.getDefaultproject() != null) {
-//			    String sql = """
-//			        UPDATE core.users 
-//			        SET defaultproject = COALESCE(
-//			            (
-//			                SELECT proj_id FROM (
-//			                    SELECT proj_id, 
-//			                           LAG(proj_id) OVER (ORDER BY ordinality) AS prev_id 
-//			                    FROM unnest(string_to_array(core.users.trainedon, '|')::int[]) 
-//			                         WITH ORDINALITY AS t(proj_id, ordinality)
-//			                    WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1)
-//			                ) seq 
-//			                WHERE prev_id = core.users.defaultproject 
-//			                LIMIT 1
-//			            ),
-//			            (
-//			                SELECT proj_id FROM unnest(string_to_array(core.users.trainedon, '|')::int[]) 
-//			                     AS t(proj_id)
-//			                WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1) 
-//			                ORDER BY proj_id 
-//			                LIMIT 1
-//			            )
-//			        )
-//			        WHERE defaultproject = ?
-//			    """;
+    public GeneralResponse saveUser(HttpServletRequest request, @RequestBody User user) {
+        GeneralResponse response = new GeneralResponse();
+        String netId = "Unknown";
+        // Retrieve NetId from session if available
+        Object netIdObj = request.getSession().getAttribute("NetId");
+        if (netIdObj != null) {
+            netId = (String) netIdObj;
+        }
+        boolean traininLogUpdated = false;
+        try {
+            if (user.getUserid() == 0) {
+                User userExitsWithNetId = userRepository.findFirstByDempoidIgnoreCase(user.getDempoid());
+                if (userExitsWithNetId != null) {
+                    response.Status = "Failure";
+                    response.Message = "NetId already exists.";
+                    return response;
+                }
+            }
+            user.setDefaultproject(user.getDefaultproject());
+            System.out.println("user.getDefaultproject()----6666-----" + user.getDefaultproject());
+            traininLogUpdated = updateTrainingLog(user, netId);
+            user = userRepository.save(user);
+            response.Status = "Success";
+            response.Message = "Successfully saved user";
+            if (!traininLogUpdated)
+                response.Message = "Successfully saved user, but the training log was not updated";
+            response.Subject = user;
+            System.out.println("user.getDefaultproject()---------" + user.getDefaultproject());
+            if (user.getDefaultproject() != null) {
+            String sql = "Update core.users SET defaultproject ='"+user.getDefaultproject()+"'  WHERE userid     = " + user.getUserid() ;
+            this.jdbcTemplate.execute(sql);
+        }
+//          if (user.getDefaultproject() != null) {
+//              String sql = """
+//                  UPDATE core.users 
+//                  SET defaultproject = COALESCE(
+//                      (
+//                          SELECT proj_id FROM (
+//                              SELECT proj_id, 
+//                                     LAG(proj_id) OVER (ORDER BY ordinality) AS prev_id 
+//                              FROM unnest(string_to_array(core.users.trainedon, '|')::int[]) 
+//                                   WITH ORDINALITY AS t(proj_id, ordinality)
+//                              WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1)
+//                          ) seq 
+//                          WHERE prev_id = core.users.defaultproject 
+//                          LIMIT 1
+//                      ),
+//                      (
+//                          SELECT proj_id FROM unnest(string_to_array(core.users.trainedon, '|')::int[]) 
+//                               AS t(proj_id)
+//                          WHERE proj_id IN (SELECT projectid FROM projects WHERE active = 1) 
+//                          ORDER BY proj_id 
+//                          LIMIT 1
+//                      )
+//                  )
+//                  WHERE defaultproject = ?
+//              """;
 //
-//			    jdbcTemplate.update(sql, user.getDefaultproject());
-//			}
-
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
-
-		return response;
-	}
+//              jdbcTemplate.update(sql, user.getDefaultproject());
+//          }
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
+        return response;
+    }
 
 	private boolean updateTrainingLog(User user, String netId) {
 		if (netId == null || netId.isBlank()) {
@@ -969,21 +970,17 @@ public DirContext getUserDetails(String duid) {
 		return response;
 	}
 
-	@PostMapping("/coreHours")
-	public GeneralResponse saveUserCoreHours(HttpServletRequest request, @RequestBody List<CoreHour> userCoreHours) {
+	@PostMapping("/coreHours/{netId}")
+	public GeneralResponse saveUserCoreHours(HttpServletRequest request, @RequestBody List<CoreHour> userCoreHours,@PathVariable String netId) {
 		GeneralResponse response = new GeneralResponse();
-		String netId = "Unknown";
-		// Retrieve NetId from session if available
-		Object netIdObj = request.getSession().getAttribute("NetId");
-		if (netIdObj != null) {
-			netId = (String) netIdObj;
-		}
+		GeneralResponse auditResponse = null;
 		List<CoreHour> savedCoreHours = new ArrayList<CoreHour>();
 		List<String> errorMessages = new ArrayList<String>();
 		try {
 			for (CoreHour coreHours : userCoreHours) {
 				try {
 					try {
+						auditResponse = auditService.updateNetId(netId);
 						CoreHour ch = coreHourRepository.save(coreHours);
 						savedCoreHours.add(ch);
 					} catch (Exception ex) {
@@ -994,7 +991,7 @@ public DirContext getUserDetails(String duid) {
 				}
 			}
 			response.Status = "Success";
-			response.Message = "Successfully saved core hours";
+			response.Message = String.format("Successfully saved core hours with Audit log update %s", auditResponse == null ? "unSuccessful" : "Successful");
 			response.Subject = savedCoreHours;
 			if (errorMessages.size() > 0) {
 				response.Message = String.format("%d core hours saved, %d core hours failed to save:\n%s",

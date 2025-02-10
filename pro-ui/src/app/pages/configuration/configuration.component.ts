@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import { Utils } from '../../classes/utils';
 import {
   IAdminOptionsVariable,
@@ -423,7 +423,7 @@ export class ConfigurationComponent implements CanComponentDeactivate {
 
   //add a new block-out date
   addBlockOutDate(): void {
-    this.configurationService.saveBlockOutDate(this.newBlockOutDate).subscribe(
+    this.configurationService.saveBlockOutDateWithAudit(this.newBlockOutDate,this.authenticatedUser.netID).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.newBlockOutDate = {} as IBlockOutDate;
@@ -447,7 +447,7 @@ export class ConfigurationComponent implements CanComponentDeactivate {
 
   //remove a block-out date
   deleteBlockOutDate(blockOutDate: IBlockOutDate): void {
-    this.configurationService.deleteBlockOutDate(blockOutDate).subscribe(
+    this.configurationService.deleteBlockOutDateWithAudit(blockOutDate,this.authenticatedUser.netID).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Successfully removed block-out date', ['OK']));
@@ -1136,4 +1136,5 @@ export class ConfigurationComponent implements CanComponentDeactivate {
     return Number(value);
   }
 
+  protected readonly Utils = Utils;
 }

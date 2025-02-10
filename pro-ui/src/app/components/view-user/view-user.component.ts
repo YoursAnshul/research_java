@@ -607,6 +607,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
   }
 
+  writeLog(item:any ){
+    console.log(item);
+  }
+
   setChanged(): void {
     this.changed = true;
     this.setUnsavedChanges.emit(true);
@@ -749,6 +753,18 @@ export class ViewUserComponent implements OnInit, OnChanges {
     });
   }
 
+  getTabThreeFirstBatch():IFormFieldInstance[]{
+    return this.tab3UserFields.filter(item1 => {
+      return !this.getTabThreeSecondBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName);
+    });
+  }
+
+  getTabThreeSecondBatch():IFormFieldInstance[]{
+    return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'emercontactnumber2' ||
+      field.formFieldVariable.formField.columnName === 'emercontactname2' ||
+      field.formFieldVariable.formField.columnName === 'emercontactrel2');
+  }
+
   cancelEdits(){
     this.closewindow.next();
   }
@@ -794,7 +810,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
             for (var i = 1; i < 15; i++) {
               this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
             }
-            this.usersService.saveUserCoreHours([this.coreHours]).subscribe(
+            this.usersService.saveUserCoreHoursWithAudit([this.coreHours],this.authenticatedUser.netID).subscribe(
               response => {
                 //set changed to false to re-disable the save button
                 this.changed = false;

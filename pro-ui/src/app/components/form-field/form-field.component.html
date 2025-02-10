@@ -17,7 +17,7 @@
 </div>
 
 <!--select input-->
-<div 
+<div
      *ngIf="formField.formFieldVariable.formField.fieldType == 'selectbox'">
   <mat-form-field appearance="outline" class="ctm">
     <mat-label [class.red]="this.formField.formFieldVariable.formField.required && !this.formField.value" [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
@@ -69,7 +69,7 @@
 </div>
 
 <!--date input-->
-<mat-form-field  appearance="outline" class="black ctm" *ngIf="formField.formFieldVariable.formField.fieldType == 'dateonly' || formField.formFieldVariable.formField.fieldType == 'dob'">
+<mat-form-field  appearance="outline" class="black ctm" *ngIf="formField.formFieldVariable.formField.fieldType == 'dateonly'">
   <mat-label [class.invalid]="this.formField.invalid">{{formField.formFieldVariable.formField.fieldLabel}}</mat-label>
   <input matInput [matDatepicker]="datePicker"
          [class.invalid]="this.formField.invalid"
@@ -83,6 +83,44 @@
   <mat-datepicker #datePicker
                   startView="month"></mat-datepicker>
 </mat-form-field>
+
+<!--dob input-->
+<div class="dob-field"
+     [class.require-confirmation]="this.formField.formFieldVariable.formField.requireConfirmation"
+     *ngIf="formField.formFieldVariable.formField.fieldType == 'dob'">
+
+  <!--month-->
+  <mat-form-field appearance="outline" class="ctm">
+    <mat-label [class.invalid]="this.formField.invalid">DOB-Month</mat-label>
+    <input type="number" min="1" max="12" matInput
+           [(ngModel)]="month"
+           placeholder="{{formField.formFieldVariable.formField.fieldLabel}} Month"
+           (keyup)="setChanged($event)"
+           (change)="setChanged($event)"
+           [disabled]="readOnly"
+           [class.read-only]="readOnly"
+           [required]="formField.formFieldVariable.formField.required || false"
+           [class.invalid]="this.formField.invalid"
+           name="{{formField.formFieldVariable.formField.fieldLabel}}-month"
+           autocomplete="off">
+  </mat-form-field>
+  <!--day-->
+  <mat-form-field appearance="outline" class="ctm">
+    <mat-label [class.invalid]="this.formField.invalid">DOB-Day</mat-label>
+    <input type="number" min="1" max="31" matInput
+           [(ngModel)]="day"
+           placeholder="{{formField.formFieldVariable.formField.fieldLabel}} Day"
+           (keyup)="setChanged($event)"
+           (change)="setChanged($event)"
+           [disabled]="readOnly"
+           [class.read-only]="readOnly"
+           [required]="formField.formFieldVariable.formField.required || false"
+           [class.invalid]="this.formField.invalid"
+           name="{{formField.formFieldVariable.formField.fieldLabel}}-day"
+           autocomplete="off">
+  </mat-form-field>
+</div>
+
 
 <!--long text box-->
 <div *ngIf="formField.formFieldVariable.formField.fieldType == 'longtextbox'">

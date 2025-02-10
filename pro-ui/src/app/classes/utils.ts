@@ -221,6 +221,23 @@ export class Utils {
     return dateToFormat.toLocaleString('default', { month: 'long' });
   }
 
+  public static formatDateMonthNameWithDateAndYearToString(dateToFormat: Date | null | undefined): string | null {
+    if (!dateToFormat) {
+      return null;
+    }
+
+    //make sure we are using a Date type and not Date?
+    dateToFormat = new Date(dateToFormat);
+
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(dateToFormat);
+
+    return formattedDate;
+  }
+
   public static formatDateToTimeString(dateToFormat: Date | null | undefined, zeroPadHours: boolean = false, includeSeconds: boolean = false): string | null {
     if (!dateToFormat) {
       return null;

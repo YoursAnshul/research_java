@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.pro.api.service.AuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +25,9 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private AuditService auditService;
 
 	@Override
 	public List<AuthorResponse> getAllAuthors() {
@@ -275,9 +279,9 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	@Override
 	@Transactional
 	public GeneralResponse delete(Integer id,String userName) {
-		String sqlUpdate ="UPDATE core.auditusertemp SET audituser = ? WHERE auditusertempid = 1";
 		String sql = "DELETE FROM core.announcements WHERE announcementid = '" + id + "'";
-		this.jdbcTemplate.update(sqlUpdate,userName);
+
+		this.auditService.updateNetId(userName);
 		this.jdbcTemplate.execute(sql);
 		GeneralResponse respone = new GeneralResponse();
 		respone.Message = "Delete successfully!!";

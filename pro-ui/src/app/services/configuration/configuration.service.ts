@@ -90,9 +90,17 @@ export class ConfigurationService {
     return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/blockOutDates`, blockOutDate);
   }
 
+  saveBlockOutDateWithAudit(blockOutDate: IBlockOutDate,netId:String): Observable<IGeneralResponse> {
+    return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/blockOutDates/${netId}`, blockOutDate);
+  }
+
   //delete a block-out date
   deleteBlockOutDate(blockOutDate: IBlockOutDate): Observable<IGeneralResponse> {
     return this.http.request<IGeneralResponse>('delete', `${this.apiRootUrl}/blockOutDates`, { body: blockOutDate });
+  }
+
+  deleteBlockOutDateWithAudit(blockOutDate: IBlockOutDate,netId:String): Observable<IGeneralResponse> {
+    return this.http.request<IGeneralResponse>('delete', `${this.apiRootUrl}/blockOutDates/${netId}`, { body: blockOutDate });
   }
 
   //comm hub

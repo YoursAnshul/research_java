@@ -1,5 +1,6 @@
 package com.pro.api.controllers;
 
+import com.pro.api.ProApiApplication;
 import com.pro.api.models.business.*;
 import com.pro.api.models.dataaccess.AdminOption;
 
@@ -7,10 +8,15 @@ import com.pro.api.models.dataaccess.BlockOutDate;
 import com.pro.api.models.dataaccess.DropDownValue;
 import com.pro.api.models.dataaccess.FormField;
 import com.pro.api.models.dataaccess.repos.*;
+import com.pro.api.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -23,7 +29,7 @@ import java.util.stream.Collectors;
 @Scope("session")
 @RequestMapping("/api/configuration")
 public class ConfigurationController {
-
+	private static final Logger logger = LoggerFactory.getLogger(ConfigurationController.class);
 	@Autowired
 	private AdminOptionRepository adminOptionRepository;
 	@Autowired
@@ -32,6 +38,8 @@ public class ConfigurationController {
 	private FormFieldRepository formFieldRepository;
 	@Autowired
 	private BlockOutDateRepository blockOutDateRepository;
+	@Autowired
+	private AuditService auditService;
 /*	@Autowired
 	private CommunicationsHubRepository communicationsHubRepository;*/
 
@@ -335,12 +343,14 @@ public class ConfigurationController {
 		return response;
 	}
 
-
-	@PostMapping("/blockOutDates")
-	public GeneralResponse saveBlockoutDate(@RequestBody BlockOutDate blockOutDate) {
+    @Transactional
+	@PostMapping("/blockOutDates/{netId}")
+	public GeneralResponse saveBlockoutDate(@RequestBody BlockOutDate blockOutDate,@PathVariable String netId) {
 		GeneralResponse response = new GeneralResponse();
 		try {
+			GeneralResponse r = this.auditService.updateNetId(netId);
 			BlockOutDate savedBlockOutDate = blockOutDateRepository.save(blockOutDate);
+			logger.info("Audit service update NetId  status {}", r.Status);
 			response.Status = "Success";
 			response.Message = "Successfully saved block-out date";
 			response.Subject = savedBlockOutDate;
@@ -352,16 +362,19 @@ public class ConfigurationController {
 	}
 
 
-
-	@DeleteMapping("/blockOutDates")
-	public GeneralResponse deleteBlockoutDate(@RequestBody BlockOutDate blockOutDate) {
+    @Transactional
+	@DeleteMapping("/blockOutDates/{netId}")
+	public GeneralResponse deleteBlockoutDate(@RequestBody BlockOutDate blockOutDate,@PathVariable String netId) {
 		GeneralResponse response = new GeneralResponse();
 		try {
+			GeneralResponse r = this.auditService.updateNetId(netId);
 			blockOutDateRepository.delete(blockOutDate);
+			logger.info("Audit service update NetId  status {}", r.Status);
 			response.Status = "Success";
 			response.Message = "Successfully deleted block-out date";
+
 		} catch (Exception ex) {
-			response.Status = "Error deleting block-out date";
+			response.Status = "Error deleting block-out date and updating NetId";
 			response.Message = ex.getMessage();
 		}
 		return response;

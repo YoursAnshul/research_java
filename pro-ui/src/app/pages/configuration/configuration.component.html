@@ -4,17 +4,17 @@
   <mat-tab-group animationDuration="10ms">
 
     <!--general-->
-    <mat-tab label="General"
+    <mat-tab label="Scheduling"
              *ngIf="authenticatedUser?.admin">
       <div class="tab-inner">
-        <div id="general-config-container">
+        <div id="general-config-container" class="configuration-container">
 
           <!-- admin options -->
-          <div id="admin-options-container">
-            <font class="config-tab-title">Admin Configuration</font>
-            <div *ngFor="let config of getFilteredConfiguration()">
+          <div id="admin-options-container" class="Monthly-Lock-date">
+            <font class="config-tab-title" style="margin-left: -45px">Monthly Lock Date</font>
+            <div class="monthly-lock-date-select" *ngFor="let config of getFilteredConfiguration()">
 
-                <mat-form-field>
+                <mat-form-field appearance="outline">
                   <!--label-->
                   <mat-label>{{config.fieldLabel}}</mat-label>
 
@@ -42,113 +42,155 @@
 
                 </mat-form-field>
                 <p class="schedule-lock-example" *ngIf="config?.fieldLabel == 'Schedule Lock'">On or before <span class="bold">{{lockDate(toNumber(config.optionValue))}}</span>, interviewers will be able to add/modify schedules for <span class="bold">{{unlockDate(true)}}</span> and later.</p>
-                <p class="schedule-lock-example" *ngIf="config?.fieldLabel == 'Schedule Lock'">After <span class="bold">{{lockDate(toNumber(config.optionValue))}}</span>, interviewers will only be able to add/modify schedules for <span class="bold">{{unlockDate(false)}}</span> and later.</p>
+                <p class="schedule-lock-example-lower" *ngIf="config?.fieldLabel == 'Schedule Lock'">After <span class="bold">{{lockDate(toNumber(config.optionValue))}}</span>, interviewers will only be able to add/modify schedules for <span class="bold">{{unlockDate(false)}}</span> and later.</p>
             </div>
 
-            <div class="config-save-header">
-              <button id="configuration-save-button" mat-raised-button class="inner-save-button-left btn btn-primary" color="primary" (click)="saveConfiguration()">
-                Save
-              </button>
-            </div>
           </div>
+          <div class="config-save-header">
+            <button id="configuration-save-button" class="text-xs text-white border-2 border-button-blue shadow-none py-1 px-3 bg-button-blue rounded-md" (click)="saveConfiguration()">
+              Save
+            </button>
+          </div>
+
+
           <app-modal-popup id="modal-save-popup-message"
                            class="modal-save-popup"
                            (closeEvent)="closeModalPopup()"
                            *ngIf="showPopupMessage">
           </app-modal-popup>
-          <!--block-out dates-->
-          <div id="block-out-dates-container">
-            <div id="new-block-out-dates-container">
 
-              <font class="config-tab-title">Block-out Dates</font>
-
-              <!--block-out date-->
-              <mat-form-field id="new-block-out-date">
-                <mat-label [class.invalid]="!newBlockOutDate.blockOutDay">Block-Out Date</mat-label>
-                <input matInput [matDatepicker]="datePicker"
-                       [(ngModel)]="newBlockOutDate.blockOutDay"
-                       [required]="true"
-                       [class.invalid]="!newBlockOutDate.blockOutDay"
-                       autocomplete="off"
-                       (dateChange)="blockOutDateValidation('date')" />
-                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                <mat-datepicker #datePicker
-                                startView="month"></mat-datepicker>
-              </mat-form-field>
-
-              <!--all day-->
-              <div class="checkbox-field bold">
-                <mat-checkbox labelPosition="after"
-                              color="primary"
-                              class="all-day-checkbox"
-                              name="all-day-checkbox"
-                              [(ngModel)]="newBlockOutDate.allDay"
-                              [checked]="true"
-                              (change)="blockOutDateValidation('checkbox')">All Day</mat-checkbox>
-              </div>
-
-              <button id="block-out-date-add-button" mat-raised-button class="btn btn-primary" color="primary"
-                      [disabled]="!newBlockOutDate.blockOutDay || (startEndTimeRequired && (!newBlockOutDate.startTime || !newBlockOutDate.endTime))"
-                      (click)="addBlockOutDate()">
-                Add
-              </button>
-
-              <div>
-                <!--start time-->
-                <mat-form-field class="time-select">
-                  <mat-label [class.invalid]="startEndTimeRequired && !newBlockOutDate.startTime">Start Time</mat-label>
-                  <mat-select autocomplete="off"
-                              [(ngModel)]="newBlockOutDate.startTime"
-                              (selectionChange)="blockOutDateValidation('start')"
-                              [required]="startEndTimeRequired"
-                              [class.invalid]="startEndTimeRequired && !newBlockOutDate.startTime">
-                    <mat-option value="0" selected="selected"></mat-option>
-                    <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <!--end time-->
-                <mat-form-field class="time-select">
-                  <mat-label [class.invalid]="startEndTimeRequired && !newBlockOutDate.endTime">End Time</mat-label>
-                  <mat-select autocomplete="off"
-                              [(ngModel)]="newBlockOutDate.endTime"
-                              (selectionChange)="blockOutDateValidation('end')"
-                              [required]="startEndTimeRequired"
-                              [class.invalid]="startEndTimeRequired && !newBlockOutDate.endTime">
-                    <mat-option value="0" selected="selected"></mat-option>
-                    <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-              </div>
-            </div>
-
-            <!--list block-out dates-->
-            <div id="block-out-date-list">
-
-              <div class="block-out-date-list-item"
-                   *ngFor="let b of blockOutDates">
-                <font class="bold">{{formatDateOnlyWithMonthNameToString(b.blockOutDay || undefined)}}</font> <font class="italic start-end-time"
-                                                                                                                    *ngIf="!b.allDay">{{b.startTime}} – {{b.endTime}}</font>
-
-                <div class="delete-block-out-date"
-                     (click)="deleteBlockOutDate(b)">
-                  <svg width="18px" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"></path>
-                  </svg>
-                </div>
-              </div>
-
-              <div class="italic"
-                   *ngIf="(blockOutDates || []).length < 1">
-                No future block-out dates found...
-              </div>
-            </div>
-          </div>
 
         </div>
 
+        <div class="divider"></div>
+
+        <!--block-out dates-->
+        <div id="block-out-dates-container">
+          <div id="new-block-out-dates-container" class="block-out-dates">
+
+            <font class="config-tab-title">Block-out Dates</font>
+
+            <!--block-out date-->
+            <mat-form-field id="new-block-out-date" appearance="outline">
+              <mat-label [class.invalid]="!newBlockOutDate.blockOutDay">Block-Out Date</mat-label>
+              <input matInput [matDatepicker]="datePicker"
+                     [(ngModel)]="newBlockOutDate.blockOutDay"
+                     [required]="true"
+                     [class.invalid]="!newBlockOutDate.blockOutDay"
+                     autocomplete="off"
+                     (dateChange)="blockOutDateValidation('date')" />
+              <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+              <mat-datepicker #datePicker
+                              startView="month"></mat-datepicker>
+            </mat-form-field>
+
+            <!--all day-->
+            <div class="checkbox-field bold">
+              <mat-checkbox labelPosition="after"
+                            color="primary"
+                            class="all-day-checkbox"
+                            name="all-day-checkbox"
+                            [(ngModel)]="newBlockOutDate.allDay"
+                            [checked]="true"
+                            (change)="blockOutDateValidation('checkbox')">All Day</mat-checkbox>
+            </div>
+            <div class="stime-etime">
+              <!--start time-->
+              <mat-form-field class="time-select" appearance="outline">
+                <mat-label [class.invalid]="startEndTimeRequired && !newBlockOutDate.startTime">Start Time</mat-label>
+                <mat-select autocomplete="off"
+                            [(ngModel)]="newBlockOutDate.startTime"
+                            (selectionChange)="blockOutDateValidation('start')"
+                            [required]="startEndTimeRequired"
+                            [class.invalid]="startEndTimeRequired && !newBlockOutDate.startTime">
+                  <mat-option value="0" selected="selected"></mat-option>
+                  <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!--end time-->
+              <mat-form-field class="time-select" appearance="outline">
+                <mat-label [class.invalid]="startEndTimeRequired && !newBlockOutDate.endTime">End Time</mat-label>
+                <mat-select autocomplete="off"
+                            [(ngModel)]="newBlockOutDate.endTime"
+                            (selectionChange)="blockOutDateValidation('end')"
+                            [required]="startEndTimeRequired"
+                            [class.invalid]="startEndTimeRequired && !newBlockOutDate.endTime">
+                  <mat-option value="0" selected="selected"></mat-option>
+                  <mat-option *ngFor="let tc of timeCodes" value="{{tc.timePeriodampm}}">{{tc.timePeriodampm}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            </div>
+            <button id="block-out-date-add-button" mat-raised-button class="btn btn-primary" class="add-button" color="primary"
+                    [disabled]="!newBlockOutDate.blockOutDay || (startEndTimeRequired && (!newBlockOutDate.startTime || !newBlockOutDate.endTime))"
+                    (click)="addBlockOutDate()">
+              Add
+            </button>
+
+          </div>
+          <div class="block-dates-container">
+            <!--list block-out dates-->
+            <div id="block-out-date-list" class="block-out-table">
+              <table>
+                <thead>
+                <tr style="border: black;align-items: center">
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let col of blockOutDates; let i = index">
+                  <td>
+                    <font class="mt-6">{{Utils.formatDateMonthNameWithDateAndYearToString(col.blockOutDay || undefined) }}</font>
+                  </td>
+                  <td>
+                    <font class="italic start-end-time" *ngIf="!col.allDay">{{ col.startTime }}
+                      – {{ col.endTime }}</font>
+                  </td>
+                  <td style= "text-align:center;">
+                    <div class="delete-block-out-date"
+                         (click)="deleteBlockOutDate(col)">
+
+                      <svg width="22"
+                        height="21"
+                        viewBox="0 0 17 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <mask
+                          id="mask0_591_21654"
+                          style="mask-type: alpha"
+                          maskUnits="userSpaceOnUse"
+                          x="0"
+                          y="0"
+                          width="22"
+                          height="21"
+                        >
+                          <rect x="0.5" width="21" height="21" fill="#D9D9D9" />
+                        </mask>
+                        <g mask="url(#mask0_591_21654)">
+                          <path
+                            d="M6.76675 11L8.50008 9.26667L10.2334 11L11.1667 10.0667L9.43342 8.33333L11.1667 6.6L10.2334 5.66667L8.50008 7.4L6.76675 5.66667L5.83341 6.6L7.56675 8.33333L5.83341 10.0667L6.76675 11ZM5.16675 14C4.80008 14 4.48619 13.8694 4.22508 13.6083C3.96397 13.3472 3.83341 13.0333 3.83341 12.6667V4H3.16675V2.66667H6.50008V2H10.5001V2.66667H13.8334V4H13.1667V12.6667C13.1667 13.0333 13.0362 13.3472 12.7751 13.6083C12.514 13.8694 12.2001 14 11.8334 14H5.16675Z"
+                            fill="#DC4A38"
+                          />
+                        </g>
+                      </svg>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+             <div class="italic"
+                   *ngIf="(blockOutDates || []).length < 1">
+                No future block-out dates found...
+             </div>
+          </div>
+        </div>
+        </div>
       </div>
+
     </mat-tab>
 
     <!--form fields-->

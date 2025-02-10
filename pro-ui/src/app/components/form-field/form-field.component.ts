@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectorRef } fro
 import { Utils } from '../../classes/utils';
 import { IDropDownValue, IFormFieldInstance, IProject, IProjectMin, IKeyValue } from '../../interfaces/interfaces';
 import { User } from '../../models/data/user';
+import moment from "moment";
 @Component({
   selector: 'app-form-field',
   templateUrl: './form-field.component.html',
@@ -67,13 +68,23 @@ export class FormFieldComponent implements OnInit {
     this.fieldTypes = Utils.convertObjectArrayToDropDownValues(fieldTypeKeyValues, 'Key', 'Value');
 
     //dateonly handling - date only fields should not be treated as UTC
-    if ((this.formField.formFieldVariable.formField.fieldType == 'dateonly' || this.formField.formFieldVariable.formField.fieldType == 'dob')
+    if ((this.formField.formFieldVariable.formField.fieldType == 'dateonly')
       && this.formField.value !== null
     ) {
       let dateString = this.formField.value as string;
       let [year, month, day] = dateString.split("-").map(Number);
       this.formField.value = new Date(year, month - 1, day); // months are 0-indexed in JavaScript
     }
+
+/*    if(this.formField.formFieldVariable.formField.fieldType == 'dob' && this.formField.value !== null){
+      let dateString = this.formField.value as string;
+      const dob = new Date(dateString);
+      console.log("Dob String:"+dateString);
+      console.log("Dob Date:"+dob.toISOString());
+
+    }*/
+    // dob parsing
+    this.parseDob();
 
     //datetime handling
     this.parseDateTime();
@@ -171,6 +182,22 @@ export class FormFieldComponent implements OnInit {
 
   }
 
+  //parse out date of birth into month and day variables
+  parseDob(): void {
+    if (this.formField.formFieldVariable.formField.fieldType == 'dob' && this.formField.value) {
+      if (this.formField.value) {
+        let dob: Date = moment(this.formField.value).toDate();
+        if (dob) {
+          ////set date back to UTC using offset so we don't misinterpret the date
+          //dob.setHours(dob.getDate() + (dob.getTimezoneOffset() / 60));
+          this.month = Utils.zeroPad(dob.getMonth() + 1);
+          this.day = Utils.zeroPad(dob.getDate());
+        }
+      }
+    }
+
+  }
+
   //parse out date/time into variables
   parseDateTime(): void {
     if (this.formField.formFieldVariable.formField.fieldType == 'datetime' && this.formField.value) {
@@ -218,7 +245,56 @@ export class FormFieldComponent implements OnInit {
     if (this.formField.value) {
       nvlFieldValue = this.formField.value.toString() as string;
     }
+    //dob handling
+    if (this.formField.formFieldVariable.formField.fieldType == 'dob') {
+      //basic min/max handling
+      let dayNumber: number = 1;
+      let monthNumber: number = 1;
+      //day
+      if (this.day || this.day == '0' || this.day == '00') {
+        dayNumber = parseInt(this.day);
+        if (dayNumber < 1) {
+          dayNumber = 1;
+        }
+        if (dayNumber > 31) {
+          dayNumber = 31;
+        }
 
+        //convert back to 0 padded string
+        this.day = Utils.zeroPad(dayNumber);
+      }
+
+      //month
+      if (this.month) {
+        monthNumber = parseInt(this.month);
+        if (monthNumber < 1) {
+          monthNumber = 1;
+        }
+        if (monthNumber > 12) {
+          monthNumber = 12;
+        }
+
+        //convert back to 0 padded string
+        this.month = Utils.zeroPad(monthNumber);
+      }
+
+      //validate max day and build date value if both month and day are set
+      if (this.month && this.day) {
+        let maxDay: number = new Date(new Date().getFullYear(), monthNumber, 0).getDate();
+        if (dayNumber > maxDay) {
+          dayNumber = maxDay;
+
+          //convert back to 0 padded string
+          this.day = Utils.zeroPad(dayNumber);
+        }
+
+        this.formField.value = new Date(new Date().getFullYear(), monthNumber - 1, dayNumber);
+      }
+      //return and don't emit change if we don't have a value for both month and day
+      else {
+        return;
+      }
+    }
     //date/time handling
     if (this.formField.formFieldVariable.formField.fieldType == 'datetime') {
       //basic min/max handling
