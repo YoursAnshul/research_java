@@ -1,145 +1,130 @@
-<h2
-  style="
-    color: #0680cd;
-    margin-top: 10px;
-    margin-left: 15px;
-    margin-right: 15px;
-  "
+<div
+  class="d-flex align-items-center justify-content-between"
+  style="padding: 10px 15px"
 >
-  Add Shift Schedule
-</h2>
+  <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
+
+  <div class="d-flex" style="margin-left: auto">
+    <button style="height: 25px" mat-raised-button color="primary" class="submit wd90">
+      Save Calendar
+    </button>
+    <button style="height: 25px" class="btn-outline ml-2">Exit</button>
+  </div>
+</div>
+
 <div style="margin-left: 15px; margin-right: 15px">
-  <form [formGroup]="announcementForm">
+  <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
     <div class="form-container">
       <div class="d-flex">
-        <div>
-          <mat-form-field
-            appearance="outline"
-            class="custom-form-field title-width"
-            style="width: 165px;"
-          >
-            <mat-label>User</mat-label>
-            <mat-select [(value)]="selectedUser">
-              <mat-option *ngFor="let user of userList" [value]="user">
-                {{ user.userName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+        <!-- User Dropdown -->
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field"
+          style="width: 165px"
+        >
+          <mat-label>User</mat-label>
+          <mat-select formControlName="user">
+            <mat-option *ngFor="let user of userList" [value]="user">{{
+              user.userName
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <div class="ml-3">
-          <mat-form-field
-            appearance="outline"
-            class="custom-form-field title-width"
-            style="width: 165px"
-          >
-            <mat-label>Project</mat-label>
-            <mat-select [(value)]="selectedProjects" multiple>
-              <div class="custom-checkbox-container">
-                <label class="custom-checkbox">
-                  <input
-                    type="checkbox"
-                    [checked]="isAllSelected()"
-                    [indeterminate]="isIndeterminate()"
-                    (change)="onCheckboxChange($event)"
-                  />
-                  <span class="checkmark"></span>
-                  Any Projects
-                </label>
-              </div>
-              <mat-select-trigger>
-                <span *ngIf="isAllSelected()">Any Projects</span>
-                <span *ngFor="let selected of selectedProjects">
-                  <span *ngIf="!isAllSelected()">
-                    <span
-                      class="tag"
-                      [ngStyle]="{ '--tag-color': selected.projectColor }"
-                    >
-                      {{ selected.projectName }}
-                    </span>
-                  </span>
-                </span>
-              </mat-select-trigger>
-              <mat-option *ngFor="let project of projectList" [value]="project">
-                {{ project.projectName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <span class="ml-2 mr-2">Monday</span>
-        <div>
-          <mat-form-field
-            appearance="outline"
-            class="date-width custom-form-field title-width"
-            style="width: 160px"
-          >
-            <mat-label>Monday</mat-label>
-            <input
-              matInput
-              [matDatepicker]="dayWisePicker"
-              placeholder="Choose an date"
-              formControlName="dayWiseDate"
-            />
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="dayWisePicker"
-            ></mat-datepicker-toggle>
-            <mat-datepicker #dayWisePicker></mat-datepicker>
-          </mat-form-field>
-        </div>
-        <div class="ml-2 mr-2">
-          <mat-form-field
-            appearance="outline"
-            class="time-width custom-form-field title-width"
-            style="width: 120px"
-          >
-            <mat-label>Start Time</mat-label>
-            <input
-              matInput
-              [ngxTimepicker]="startPicker"
-              placeholder="Choose start time"
-              formControlName="startTime"
-              readonly
-            />
-            <ngx-material-timepicker #startPicker></ngx-material-timepicker>
-          </mat-form-field>
-        </div>
+        <!-- Project Multi-select -->
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 165px"
+        >
+          <mat-label>Project</mat-label>
+          <mat-select formControlName="projects">
+            <mat-option *ngFor="let project of projectList" [value]="project">{{
+              project.projectName
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <div>
-          <mat-form-field
-            appearance="outline"
-            class="time-width custom-form-field title-width"
-            style="width: 120px"
-          >
-            <mat-label>End Time</mat-label>
-            <input
-              matInput
-              [ngxTimepicker]="endPicker"
-              placeholder="Choose end time"
-              formControlName="endTime"
-              readonly
-            />
-            <ngx-material-timepicker #endPicker></ngx-material-timepicker>
-          </mat-form-field>
-        </div>
-        <span class="ml-1 mr-1">0 hr.</span>
-        <div>
-          <mat-form-field
-            appearance="outline"
-            class="custom-form-field"
-            style="width: 160px"
-          >
-            <mat-label>Comments</mat-label>
-            <input matInput placeholder="comments" formControlName="comments" />
-          </mat-form-field>
-        </div>
+        <!-- Current Day Display -->
+        <span class="ml-2">{{ currentDay }}</span>
+
+        <!-- Day Wise Date Picker -->
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 160px"
+        >
+          <mat-label>{{ currentDay }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="dayWisePicker"
+            formControlName="dayWiseDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="dayWisePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #dayWisePicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Start Time Picker -->
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 120px"
+        >
+          <mat-label>Start Time</mat-label>
+          <input
+            matInput
+            [ngxTimepicker]="startPicker"
+            formControlName="startTime"
+            readonly
+          />
+          <ngx-material-timepicker #startPicker></ngx-material-timepicker>
+        </mat-form-field>
+
+        <!-- End Time Picker -->
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 120px"
+        >
+          <mat-label>End Time</mat-label>
+          <input
+            matInput
+            [ngxTimepicker]="endPicker"
+            formControlName="endTime"
+            readonly
+          />
+          <ngx-material-timepicker #endPicker></ngx-material-timepicker>
+        </mat-form-field>
+
+        <!-- Dynamic Duration Display -->
+        <span class="ml-2">{{ duration }}</span>
+
+        <!-- Comments (Optional) -->
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 150px"
+        >
+          <mat-label>Comments</mat-label>
+          <input matInput formControlName="comments" />
+        </mat-form-field>
+
+        <!-- Add to Calendar Button -->
         <div class="ml-1 mr-1">
-          <button mat-raised-button color="primary" disabled>
-            <mat-icon>add</mat-icon> Add to Calender
+          <button
+            mat-raised-button
+            color="primary"
+            [disabled]="!scheduleFetchStatus"
+          >
+            <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Shift Calendar Component -->
     <app-shift-calendar></app-shift-calendar>
   </form>
 </div>
