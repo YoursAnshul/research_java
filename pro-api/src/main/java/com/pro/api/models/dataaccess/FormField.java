@@ -51,6 +51,8 @@ public class FormField implements Cloneable{
     @Column(name = "requireconfirmation")
     private Boolean requireConfirmation;
 
+    @Column(name = "formsection")
+    private Integer formSection;
     
     public FormField() {
     }
@@ -166,6 +168,14 @@ public class FormField implements Cloneable{
     public void setRequireConfirmation(Boolean requireConfirmation) {
         this.requireConfirmation = requireConfirmation;
     }
+
+	public Integer getFormSection() {
+		return formSection;
+	}
+
+	public void setFormSection(Integer formSection) {
+		this.formSection = formSection;
+	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
