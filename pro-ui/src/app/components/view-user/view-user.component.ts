@@ -774,7 +774,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
       dialogType: 'error',
       isUserProfile: !this.showBreadcrum,
     });
-    this.closewindow.emit();
+    // this.closewindow.emit();
     // if(this.changed) {
     //   this.openDialog({
     //     dialogType: 'error',
