@@ -228,10 +228,13 @@
 }
 
 .box-container {
-  border: 1px solid #58595B;
-  background-color: #fff; 
+  border: 1px solid #58595b;
+  background-color: #fff;
 }
-::ng-deep .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab {
+::ng-deep
+  .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs
+  > .mat-mdc-tab-header
+  .mat-mdc-tab {
   flex-grow: 0 !important;
 }
 
@@ -239,3 +242,11 @@
   position: relative;
   z-index: 10001; /* Ensures input is above modal */
 }
+::ng-deep .timepicker-overlay {
+  z-index: 10000000 !important;
+}
+
+::ng-deep .timepicker-backdrop-overlay {
+  z-index: 10000000 !important;
+}
+
