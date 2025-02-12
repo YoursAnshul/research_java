@@ -16,6 +16,7 @@ export class ShifCalendarComponent implements OnInit {
   @Input() authenticatedUser!: IAuthenticatedUser;
   @Input() contextUser!: User;
   user!: User;
+  @Input() formData!: any; 
 
   @Input() contextProject!: IProject;
   userSchedulesMonth!: ISchedule[];
@@ -55,7 +56,8 @@ export class ShifCalendarComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {  
+    console.log("Received Form Data in Shift Calendar:", this.formData);  
      this.userSchedulesService.scheduleFetchStatus.subscribe(
       scheduleFetchStatus => {
         this.scheduleFetchStatus = scheduleFetchStatus;

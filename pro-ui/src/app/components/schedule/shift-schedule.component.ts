@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -17,6 +17,7 @@ export class ShiftScheduleComponent implements OnInit {
   currentDay: string = '';
   duration: string = '0 hr';
   scheduleFetchStatus: boolean = false;
+  @Output() formSubmitted = new EventEmitter<any>();
 
   selectedDate = new FormControl<Date | null>(new Date(), Validators.required);
   currentYear: number = new Date().getFullYear();
@@ -49,6 +50,7 @@ export class ShiftScheduleComponent implements OnInit {
   onSubmit(): void {
     if (this.announcementForm.valid) {
       console.log("Form Submitted:", this.announcementForm.value);
+      this.formSubmitted.emit(this.announcementForm.value);
     } else {
       console.log("Form is invalid");
     }
