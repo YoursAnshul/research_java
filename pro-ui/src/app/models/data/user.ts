@@ -9,6 +9,8 @@ export class User {
     public corehours?: number | null;
     public employmenttype?: number | null;
     public displayName: string | null = null;
+    public userName: string | null = null;
+    public projectName: string | null = null;
     public fname: string = '';
     public lname: string = '';
     public permstartdate?: Date | null;

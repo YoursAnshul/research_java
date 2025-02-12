@@ -56,8 +56,19 @@
         }
       </div>
     }
+    <div class="user-row">
+      <div class="user-card"></div>
+      <mat-icon class="add-icon">add</mat-icon>
+      <input
+        style="width: 5.25%; text-align: center; margin-right: -4px"
+        type="number"
+        placeholder="0 hr"
+        class="no-spinner hour-input"
+      />
+    </div>
   </div>
-  
+  <div *ngIf="showTooltip" class="custom-tooltip" [ngStyle]="tooltipPosition" [innerHTML]="tooltipMessage"></div>
+
   
   
 </div>

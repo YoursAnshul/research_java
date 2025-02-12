@@ -225,6 +225,7 @@ export interface ISchedule {
   scheduledate: Date;
   comments: string | null;
   startdatetime?: Date | null;
+  dayWiseDate?: Date | null;
   enddatetime?: Date | null;
   startTime?: string;
   endTime?: string;

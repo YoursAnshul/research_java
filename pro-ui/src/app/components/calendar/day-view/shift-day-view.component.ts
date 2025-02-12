@@ -16,6 +16,10 @@ export class ShiftDayViewComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Input() shiftSchedule: any[] = [];
 
+  tooltipMessage: string = ''; // New property to store tooltip content
+  showTooltip: boolean = false; // Control visibility
+  tooltipPosition = { top: '0px', left: '0px' };
+
   hoverMessage: HoverMessage = new HoverMessage();
 
   constructor(private globalsService: GlobalsService) { }
@@ -73,20 +77,31 @@ export class ShiftDayViewComponent implements OnInit {
     this.globalsService.showContextualPopup(1, netId, null, (this.selectedDate.value ? Utils.formatDateOnly(this.selectedDate.value as Date) : null) as Date);
   }
 
-  displayHoverMessage(event: any, schedule: ISchedule, us: IUserSchedule): void {
-
-    let htmlMessage: string = '<p class="hover-message-title">' + us.user.displayName + ' (' + schedule.projectName + '): ' + ' - ' + schedule.startTime + ' – '  + schedule.endTime + ' - ' + Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + '<p>';
-
+  displayHoverMessage(event: MouseEvent, schedule: ISchedule, us: IUserSchedule): void {
+    console.log("us-------",us);
+    
+    let htmlMessage: string = `
+      <p class="hover-message-title">
+        ${us.user.userName} : ${schedule.startTime} – ${schedule.endTime} - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
+      </p>`;
+    
     if (schedule.comments) {
-      htmlMessage = htmlMessage + '<p class="bold">Comments:</p><p>' + schedule.comments + '</p>';
+      htmlMessage += `<p class="bold">Comments:</p><p>${schedule.comments}</p>`;
     }
 
-    this.hoverMessage.setAndShow(event, htmlMessage);
+    // Set tooltip content
+    this.tooltipMessage = htmlMessage;
+    this.showTooltip = true;
 
+    // Position tooltip near cursor
+    this.tooltipPosition = {
+      top: `${event.clientY + 10}px`,
+      left: `${event.clientX + 10}px`,
+    };
   }
 
   hideHoverMessage(): void {
-    this.hoverMessage.hide();
+    this.showTooltip = false;
   }
 
 }
