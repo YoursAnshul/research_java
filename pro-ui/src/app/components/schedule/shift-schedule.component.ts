@@ -40,19 +40,20 @@ export class ShiftScheduleComponent implements OnInit {
       endTime: new FormControl('', Validators.required),
       comments: new FormControl(''),
     });
-
+    
     this.shiftForm.valueChanges.subscribe(() => {
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
-    });
+    });    
   }
   onSubmit(): void {
-    if (this.shiftForm.valid) {
-      const newShift = { ...this.shiftForm.value }; 
-      this.shiftSchedule = [...this.shiftSchedule, newShift]; 
-      console.log('Shift Schedule:', this.shiftSchedule);
+     if (this.shiftForm.valid) {
+      const newShift = { ...this.shiftForm.value }; // Copy form data
+      this.shiftSchedule = [...this.shiftSchedule, newShift]; // Update array reference
+      console.log('Updated Shift Schedule:', this.shiftSchedule);
     }
   }
+  
 
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
