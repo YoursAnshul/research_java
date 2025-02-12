@@ -1,3 +1,67 @@
+#day-calendar {
+  width: 100%;
+  margin: 10px 0;
+}
+
+#day-calendar-time-header {
+  display: flex;
+  align-items: center;
+}
+
+.hour-header {
+  width: 5.25%;
+  text-align: center;
+  font-weight: bold;
+  border-right: 1px solid #ccc;
+  padding: 5px 0;
+}
+
+.hour-header.total {
+  background: #0078d4;
+  color: white;
+  font-weight: bold;
+}
+
+#day-calendar-user-schedules {
+  margin-top: 10px;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid #ccc;
+  padding: 5px 0;
+}
+
+.user-card {
+  width: 10%;
+  font-weight: bold;
+}
+
+.schedule-block {
+  position: absolute;
+  height: 30px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.schedule-text {
+  padding: 2px 5px;
+}
+
+.total-hour-input {
+  width: 5%;
+  text-align: center;
+  margin-left: auto;
+  border: none;
+  font-weight: bold;
+  background: #f0f0f0;
+}
 #day-calendar-time-header {
     width: 100%;
 }

@@ -13,14 +13,14 @@ export class ShiftScheduleComponent implements OnInit {
   userList: any[] = [];
   projectList: any[] = [];
   selectedProjects: any[] = []; // Added to track selected projects
-  announcementForm!: FormGroup;
+  shiftForm!: FormGroup;
   currentDay: string = '';
   duration: string = '0 hr';
   scheduleFetchStatus: boolean = false;
-
   selectedDate = new FormControl<Date | null>(new Date(), Validators.required);
   currentYear: number = new Date().getFullYear();
   currentMonth: number = new Date().getMonth() + 1;
+  shiftSchedule: any[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -32,7 +32,7 @@ export class ShiftScheduleComponent implements OnInit {
     }).format(new Date());
 
     // Initialize Form
-    this.announcementForm = new FormGroup({
+    this.shiftForm = new FormGroup({
       user: new FormControl(null, Validators.required),
       projects: new FormControl([], Validators.required),
       dayWiseDate: new FormControl(new Date(), Validators.required),
@@ -41,19 +41,18 @@ export class ShiftScheduleComponent implements OnInit {
       comments: new FormControl(''),
     });
 
-    this.announcementForm.valueChanges.subscribe(() => {
+    this.shiftForm.valueChanges.subscribe(() => {
       this.updateDuration();
-      this.scheduleFetchStatus = this.announcementForm.valid;
-    });    
+      this.scheduleFetchStatus = this.shiftForm.valid;
+    });
   }
   onSubmit(): void {
-    if (this.announcementForm.valid) {
-      console.log("Form Submitted:", this.announcementForm.value);
-    } else {
-      console.log("Form is invalid");
+    if (this.shiftForm.valid) {
+      const newShift = { ...this.shiftForm.value }; 
+      this.shiftSchedule = [...this.shiftSchedule, newShift]; 
+      console.log('Shift Schedule:', this.shiftSchedule);
     }
   }
-  
 
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
@@ -132,8 +131,8 @@ export class ShiftScheduleComponent implements OnInit {
     this.emitSelectedDate();
   }
   updateDuration(): void {
-    const start = this.announcementForm.get('startTime')?.value;
-    const end = this.announcementForm.get('endTime')?.value;
+    const start = this.shiftForm.get('startTime')?.value;
+    const end = this.shiftForm.get('endTime')?.value;
 
     if (!start || !end) {
       this.duration = '0 hr 0 min';

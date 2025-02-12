@@ -84,12 +84,12 @@ export class ShiftCalendarControlsComponent implements OnInit {
     //group projects for dropdown
     let projectGroup: IProjectGroup = {
       name: 'Projects',
-      projects: this._projects.filter(x => x.projectType !== 'Administrative')
+      projects: this._projects?.filter(x => x.projectType !== 'Administrative')
     };
 
     let adminGroup: IProjectGroup = {
       name: 'Admin',
-      projects: this._projects.filter(x => x.projectType == 'Administrative')
+      projects: this._projects?.filter(x => x.projectType == 'Administrative')
     };
 
     this.projectGroups = [projectGroup, adminGroup];

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import { ILegend, ISchedule, IUserSchedule } from '../../../interfaces/interfaces';
@@ -14,13 +14,22 @@ export class ShiftDayViewComponent implements OnInit {
 
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
+  @Input() shiftSchedule: any[] = [];
 
   hoverMessage: HoverMessage = new HoverMessage();
 
   constructor(private globalsService: GlobalsService) { }
 
   ngOnInit(): void {
+    console.log('this.shiftSchedule----------:', this.shiftSchedule);
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('this.shiftSchedule----------:', this.shiftSchedule);
+    if (changes['shiftSchedule']) {
+      console.log('this.shiftSchedule----------:', this.shiftSchedule);
+    }
+  }
+  
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;

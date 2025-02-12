@@ -13,7 +13,7 @@
 </div>
 
 <div style="margin-left: 15px; margin-right: 15px">
-  <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
     <div class="form-container">
       <div class="d-flex">
         <!-- User Dropdown -->
@@ -125,6 +125,6 @@
     </div>
 
     <!-- Shift Calendar Component -->
-    <app-shift-calendar></app-shift-calendar>
+    <app-shift-calendar [shiftSchedule]="shiftSchedule"></app-shift-calendar>
   </form>
 </div>
