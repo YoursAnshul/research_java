@@ -21,17 +21,17 @@
   color: white;
   font-weight: bold;
 }
-
+/* 
 #day-calendar-user-schedules {
   margin-top: 10px;
-}
+} */
 
 .user-row {
   display: flex;
   align-items: center;
   position: relative;
   border-bottom: 1px solid #ccc;
-  padding: 5px 0;
+  /* padding: 5px 0; */
 }
 
 .user-card {
