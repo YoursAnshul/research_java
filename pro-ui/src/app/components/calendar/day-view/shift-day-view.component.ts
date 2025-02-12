@@ -21,12 +21,12 @@ export class ShiftDayViewComponent implements OnInit {
   constructor(private globalsService: GlobalsService) { }
 
   ngOnInit(): void {
-    console.log('this.shiftSchedule----------:', this.shiftSchedule);
+    console.log('this.shiftSchedule-fff---------:', this.shiftSchedule);
   }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('this.shiftSchedule----------:', this.shiftSchedule);
+    console.log('this.shiftSchedule--fff--------:', this.shiftSchedule);
     if (changes['shiftSchedule']) {
-      console.log('this.shiftSchedule----------:', this.shiftSchedule);
+      console.log('this.shiftSchedule----fff------:', this.shiftSchedule);
     }
   }
   
