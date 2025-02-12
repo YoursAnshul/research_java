@@ -31,20 +31,23 @@ export class ShiftDayViewComponent implements OnInit {
   }
   
 
-  customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
-    var startTimeCode = 0;
-    startTime = new Date(startTime || '');
-    startTimeCode = startTime.getHours() * 2;
-    if (startTime.getMinutes() == 30) {
-      startTimeCode = startTimeCode + 1;
-    }
-
+  customScheduleCard(startTime: string, endTime: string) {
+    const startHour = this.convertTimeToSlot(startTime);
+    const endHour = this.convertTimeToSlot(endTime);
+    const duration = endHour - startHour;
+  
     return {
-      'left': ((((startTimeCode) - 15 + 1) * 2.625) + 8.8) + '%',
-      'width': (totalHours * 5.25) + '%',
+      'left': `${(startHour - 8) * 6.25 + 10.1}%`, 
+      'width': `${duration * 6.25}%`, 
     };
   }
-
+  convertTimeToSlot(time: string): number {
+    const [hour, minute, period] = time.match(/(\d+):(\d+) (\w+)/)!.slice(1);
+    let hours = parseInt(hour);
+    if (period === 'PM' && hours !== 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
+    return hours;
+  }
   customProjectSwatch(projectColor: string, scheduledHours?: number) {
     if (projectColor.length > 7) {
       projectColor = projectColor.substring(0, 7);

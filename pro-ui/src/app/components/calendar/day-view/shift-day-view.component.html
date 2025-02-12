@@ -32,17 +32,34 @@
   </div>
 
   <div id="day-calendar-user-schedules">
-    <div class="user-row">
-      <div class="user-card"></div>
-      <mat-icon class="add-icon">add</mat-icon>
-      <input
-        style="width: 5.25%; text-align: center; margin-right: -4px"
-        type="number"
-        placeholder="0 hr"
-        class="no-spinner hour-input"
-      />
-    </div>
+    @for (us of shiftSchedule; track us) {
+      <div class="user-schedule-row">
+        <div class="user-card">
+          {{ us.user.userName }}
+        </div>
+  
+        @for (schedule of [us]; track schedule) {
+          <div 
+            class="schedule-card"
+            (dblclick)="openUserSchedule(schedule.user.userId, schedule.projects.projectName)"
+            (mouseenter)="displayHoverMessage($event, schedule, us)"
+            (mouseleave)="hideHoverMessage()"
+            [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projects.projectColor"></app-project-swatch>
+              <div>
+                <span class="bold">{{ schedule.user.userName }}:</span> 
+                <span class="project-time">{{ schedule.startTime }} - {{ schedule.endTime }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
   </div>
+  
+  
+  
 </div>
 
 <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>
