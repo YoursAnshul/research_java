@@ -101,21 +101,21 @@
       <div class="flex items-center gap-2">
 
         <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
-        [class.invalid-emphasis]="coreHoursInvalid || ((!selectedUser.defaultproject || selectedUser.defaultproject === 0))"
+        [class.invalid-emphasis]="coreHoursInvalid || ((!selectedUser.defaultproject || selectedUser.defaultproject === 0) && this.trainedOnProjects.length > 0)"
         [class.text-[#1874CA]]="selectedTab === 'scheduling'"
           [class.border-b]="selectedTab === 'scheduling'"
           [class.border-b-[3px]]="selectedTab === 'scheduling'"
           [ngStyle]="{
             borderBottomColor:
               coreHoursInvalid ||
-              !selectedUser.defaultproject ||
-              selectedUser.defaultproject === 0
+              (!selectedUser.defaultproject ||
+              selectedUser.defaultproject === 0)&& this.trainedOnProjects.length > 0
                 ? '#dc4a38'
                 : '#1874CA'
           }"
           (click)="onTabChanged('scheduling')">
           <div>Scheduling</div><div *ngIf="coreHoursInvalid">**</div>
-          <div *ngIf="((!selectedUser.defaultproject || selectedUser.defaultproject === 0) )">*</div>
+          <div *ngIf="((!selectedUser.defaultproject || selectedUser.defaultproject === 0) ) && this.trainedOnProjects.length > 0">*</div>
         </div>
         <div class="cursor-pointer flex items-center gap-1 border-b-[#1874CA] px-3 pb-1"
           [class.invalid-emphasis]="coreHoursInvalid"
@@ -156,7 +156,7 @@
         <button mat-raised-button color="primary submit wd90" (click)="clickOnEdit()"  [disabled]="authenticatedUser?.interviewer && selectedTab != 'personal-contact-info'" *ngIf=" isEdit">Edit User</button>
         <button class="btn-outline" (click)="showUnsavedChangesDialog()"  *ngIf="!isEdit">Cancel</button>
 
-        @if (selectedUser.defaultproject === 0) {
+        @if (selectedUser.defaultproject === 0 && this.trainedOnProjects.length > 0) {
           <button mat-raised-button color="primary submit" [disabled]="true" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
         }@else {
           <button mat-raised-button color="primary submit"  (click)="saveUser()"  *ngIf="!isEdit">Save</button>

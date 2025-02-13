@@ -61,6 +61,8 @@ export class TrainedOnProjectsComponent implements OnInit {
         this.previousDefaultProject ?? singleProject.projectID;
       singleProject.defaultproject = this.defaultproject;
       singleProject.clicked = true;
+      console.log("this.trainedOnProjects.length-----add if------------",this.trainedOnProjects.length);
+      
       this.trainedOnChange.emit(this.projectToAdd);
     } else {
       if (this.projectToAdd.projectID === this.previousDefaultProject) {
@@ -70,6 +72,7 @@ export class TrainedOnProjectsComponent implements OnInit {
         this.projectToAdd.clicked = false;
       }
       this.projectToAdd.defaultproject = this.defaultproject;
+      console.log("this.trainedOnProjects.length------add else-----------",this.trainedOnProjects.length);
       this.trainedOnChange.emit(this.projectToAdd);
     }
     this.projectToAdd = null;
@@ -91,6 +94,7 @@ export class TrainedOnProjectsComponent implements OnInit {
         this.previousDefaultProject ?? singleProject.projectID;
       singleProject.defaultproject = this.defaultproject;
       singleProject.clicked = true;
+      console.log("this.trainedOnProjects.length-----rem if------------",this.trainedOnProjects.length);
       this.trainedOnChange.emit(singleProject);
     } 
     if (this.projectToRemove.projectID === this.defaultproject) {
@@ -108,6 +112,7 @@ export class TrainedOnProjectsComponent implements OnInit {
     }
 
     this.projectToRemove.defaultproject = this.defaultproject;
+    console.log("this.trainedOnProjects.length--------rem out---------",this.trainedOnProjects.length);
     this.trainedOnChange.emit(this.projectToRemove);
     this.projectToRemove = null;
   }
