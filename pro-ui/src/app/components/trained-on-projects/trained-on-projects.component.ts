@@ -59,6 +59,9 @@ export class TrainedOnProjectsComponent implements OnInit {
       let singleProject = this.trainedOnProjects[0];
       this.defaultproject =
         this.previousDefaultProject ?? singleProject.projectID;
+        console.log("this.previousDefaultProject------",this.previousDefaultProject);
+        console.log("singleProject.projectID-----",singleProject.projectID);
+        this.defaultproject = singleProject.projectID
       singleProject.defaultproject = this.defaultproject;
       singleProject.clicked = true;
       console.log("this.trainedOnProjects.length-----add if------------",this.trainedOnProjects.length);
@@ -92,6 +95,8 @@ export class TrainedOnProjectsComponent implements OnInit {
       let singleProject = this.trainedOnProjects[0];
       this.defaultproject =
         this.previousDefaultProject ?? singleProject.projectID;
+        console.log("this.previousDefaultProject------",this.previousDefaultProject);
+        console.log("singleProject.projectID-----",singleProject.projectID);
       singleProject.defaultproject = this.defaultproject;
       singleProject.clicked = true;
       console.log("this.trainedOnProjects.length-----rem if------------",this.trainedOnProjects.length);
