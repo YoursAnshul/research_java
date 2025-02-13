@@ -1,17 +1,20 @@
-import { Component, Input, OnInit, SimpleChanges, } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
-import { ILegend, ISchedule, IUserSchedule } from '../../../interfaces/interfaces';
+import {
+  ILegend,
+  ISchedule,
+  IUserSchedule,
+} from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 
 @Component({
   selector: 'app-shift-day-view',
   templateUrl: './shift-day-view.component.html',
-  styleUrls: ['./shift-day-view.component.css']
+  styleUrls: ['./shift-day-view.component.css'],
 })
 export class ShiftDayViewComponent implements OnInit {
-
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
   @Input() shiftSchedule: any[] = [];
@@ -21,28 +24,41 @@ export class ShiftDayViewComponent implements OnInit {
   tooltipPosition = { top: '0px', left: '0px' };
 
   hoverMessage: HoverMessage = new HoverMessage();
+  filteredShiftSchedule: any[] = [];
 
-  constructor(private globalsService: GlobalsService) { }
+  constructor(private globalsService: GlobalsService) {}
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('this.selectedDate-fff---------:', this.selectedDate);
-    if (changes['shiftSchedule']) {
-      console.log('this.shiftSchedule----fff------:', this.shiftSchedule);
+    
+    if (this.selectedDate) {
+      const selectedDateValue = this.selectedDate?.value
+        ? new Date(this.selectedDate.value)
+        : null;
+      if (selectedDateValue) {
+        const formattedDate = selectedDateValue.toLocaleDateString('en-CA');
+        this.filteredShiftSchedule = this.shiftSchedule.filter((schedule) => {
+          const scheduleDate = new Date(
+            schedule.dayWiseDate
+          ).toLocaleDateString('en-CA');
+          return scheduleDate === formattedDate;
+        });
+      } else {
+        this.filteredShiftSchedule = [...this.shiftSchedule];
+      }
+    } else {
+      // this.filteredShiftSchedule = [...this.shiftSchedule];
     }
   }
-  
 
   customScheduleCard(startTime: string, endTime: string) {
     const startHour = this.convertTimeToSlot(startTime);
     const endHour = this.convertTimeToSlot(endTime);
     const duration = endHour - startHour;
-  
+
     return {
-      'left': `${(startHour - 8) * 6.25 + 10.1}%`, 
-      'width': `${duration * 6.25}%`, 
+      left: `${(startHour - 8) * 6.25 + 10.1}%`,
+      width: `${duration * 6.25}%`,
     };
   }
   convertTimeToSlot(time: string): number {
@@ -74,17 +90,30 @@ export class ShiftDayViewComponent implements OnInit {
     return Utils.formatDateToTimeString(dateToFormat, true);
   }
   openUserSchedule(netId: string, projectName: string | null = null): void {
-    this.globalsService.showContextualPopup(1, netId, null, (this.selectedDate.value ? Utils.formatDateOnly(this.selectedDate.value as Date) : null) as Date);
+    this.globalsService.showContextualPopup(
+      1,
+      netId,
+      null,
+      (this.selectedDate.value
+        ? Utils.formatDateOnly(this.selectedDate.value as Date)
+        : null) as Date
+    );
   }
 
-  displayHoverMessage(event: MouseEvent, schedule: ISchedule, us: IUserSchedule): void {
-    console.log("us-------",us);
-    
+  displayHoverMessage(
+    event: MouseEvent,
+    schedule: ISchedule,
+    us: IUserSchedule
+  ): void {
+    console.log('us-------', us);
+
     let htmlMessage: string = `
       <p class="hover-message-title">
-        ${us.user.userName} : ${schedule.startTime} – ${schedule.endTime} - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
+        ${us.user.userName} : ${schedule.startTime} – ${
+      schedule.endTime
+    } - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
       </p>`;
-    
+
     if (schedule.comments) {
       htmlMessage += `<p class="bold">Comments:</p><p>${schedule.comments}</p>`;
     }
@@ -103,5 +132,7 @@ export class ShiftDayViewComponent implements OnInit {
   hideHoverMessage(): void {
     this.showTooltip = false;
   }
+  addShift(): void {
 
+  }
 }

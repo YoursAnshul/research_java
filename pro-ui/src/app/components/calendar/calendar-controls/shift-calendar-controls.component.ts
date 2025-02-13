@@ -62,7 +62,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
     private logsService: LogsService) { }
 
   ngOnInit(): void {
-
+     
     this.setStartView();
 //subscribe to scheduleFetchStatus
     this.userSchedulesService.scheduleFetchStatus.subscribe(

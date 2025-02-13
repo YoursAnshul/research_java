@@ -159,9 +159,8 @@
         @if (selectedUser.defaultproject === 0 && this.trainedOnProjects.length > 0) {
           <button mat-raised-button color="primary submit" [disabled]="true" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
         }@else {
-          <button mat-raised-button color="primary submit"  (click)="saveUser()"  *ngIf="!isEdit">Save</button>
+          <button mat-raised-button color="primary submit"  [disabled]="tab2Invalid ||  !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
           <!-- <button mat-raised-button color="primary submit" [disabled]="tab2Invalid || !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button> -->
-
         }
       </div>
     </div>

@@ -168,7 +168,8 @@ export class ShifCalendarComponent implements OnInit {
            start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
            end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
          });
- 
+       console.log("selectedDate----",selectedDate);
+       
        }
      );
  
@@ -184,6 +185,8 @@ export class ShifCalendarComponent implements OnInit {
      //filters
      this.setDefaultFilters(false);
  
+     console.log("this.selectedDate ---",this.selectedDate );
+     
    }
  
    ngOnChanges(): void {

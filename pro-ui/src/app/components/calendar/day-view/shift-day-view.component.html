@@ -30,9 +30,8 @@
       Total
     </div>
   </div>
-
   <div id="day-calendar-user-schedules">
-    @for (us of shiftSchedule; track us) {
+    @for (us of filteredShiftSchedule; track us) {
     <div class="user-schedule-row">
       <div class="user-card">
         {{ us.user.userName }}
@@ -66,7 +65,9 @@
     <div class="user-schedule-row">
       <div class="user-row">
         <div class="user-card"></div>
-        <mat-icon class="add-icon">add</mat-icon>
+        <mat-icon style="cursor: pointer" class="add-icon" (click)="addShift()"
+          >add</mat-icon
+        >
         <input
           style="width: 5.25%; text-align: center; margin-right: -4px"
           type="number"
