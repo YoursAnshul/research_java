@@ -57,8 +57,8 @@ export class TrainedOnProjectsComponent implements OnInit {
     this.notTrainedOnProjects.splice(this.notTrainedOnProjects.indexOf(this.projectToAdd), 1);
     if (this.trainedOnProjects.length === 1) {
       let singleProject = this.trainedOnProjects[0];
-      this.defaultproject =
-        this.previousDefaultProject ?? singleProject.projectID;
+      // this.defaultproject =
+      //   this.previousDefaultProject ?? singleProject.projectID;
         console.log("this.previousDefaultProject------",this.previousDefaultProject);
         console.log("singleProject.projectID-----",singleProject.projectID);
         this.defaultproject = singleProject.projectID
@@ -93,8 +93,9 @@ export class TrainedOnProjectsComponent implements OnInit {
     this.notTrainedOnProjects.sort((a, b) => a.projectName.localeCompare(b.projectName));
     if (this.trainedOnProjects.length === 1) {
       let singleProject = this.trainedOnProjects[0];
-      this.defaultproject =
-        this.previousDefaultProject ?? singleProject.projectID;
+      // this.defaultproject =
+      //   this.previousDefaultProject ?? singleProject.projectID;
+      this.defaultproject = singleProject.projectID
         console.log("this.previousDefaultProject------",this.previousDefaultProject);
         console.log("singleProject.projectID-----",singleProject.projectID);
       singleProject.defaultproject = this.defaultproject;

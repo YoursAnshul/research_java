@@ -801,7 +801,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     if(this.defaultproject>0){
       this.selectedUser.defaultproject = this.defaultproject
     }else{
-      this.selectedUser.defaultproject = this.selectedUser.defaultproject;
+      this.selectedUser.defaultproject =0;
     }
     //pass to save user api to save
 
