@@ -54,6 +54,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     private snackBar: MatSnackBar,
     private authenticationService: AuthenticationService
   ) {
+
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
       startDate: ['', Validators.required],
@@ -62,9 +63,12 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
     this.id = data?.id;
     this.announcementData = data;
+    this.selectedEmoji = data.icon
+    
   }
 
   ngOnInit(): void {
+    
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -313,6 +317,8 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.announcement.content = this.quill.root.innerHTML;
     const plainTextContent = this.quill.root.textContent;
     const selectedAuthorName = this.selectedAuthor?.userName;
+
+    
     const announcementData = {
       title: this.announcementForm.value.title,
       bodyText: plainTextContent,
@@ -322,6 +328,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
       displayTo: this.isAnyProjectsSelected
         ? 'Any Projects'
         : this.selectedProjects,
+      icon: this.selectedEmoji
     };
     this.dialog.open(PreviewComponent, {
       width: '600px',
@@ -416,6 +423,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
           isAuthor: data.Subject.isAuthor || false,
           startDate: adjustDate(data.Subject.startDate),
           expireDate: adjustDate(data.Subject.expireDate),
+          icon: this.selectedEmoji
         });
 
         // Set body text if available
