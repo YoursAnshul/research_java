@@ -25,6 +25,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-user',
@@ -103,7 +104,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     private projectsService: ProjectsService,
     private requestsService: RequestsService,
     private logsService: LogsService, private dialog: MatDialog,
-    private snackBar: MatSnackBar,) {
+    private snackBar: MatSnackBar,private router: Router) {
     if (this.viewUser) {
       this.selectedUser = this.viewUser;
       this.trainedOn =this.selectedUser.trainedon;
@@ -680,7 +681,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
       if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
     }
     console.log('this.tab2Invalid : --000', this.tab2Invalid);
-    console.log('this.selectedUser-- defaultproject-',this.selectedUser.defaultproject);
     //tab validation
     this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
 
@@ -746,6 +746,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
       if (result == 'close') {
         this.closewindow.emit();
       }if (result == 'discardChanges') {
+        if (!this.isShow) {
+          this.router.navigate(['/home']); // Navigate to /home if isShow is false
+        }
         this.isEdit = true;
         this.changed = false;
         this.setUnsavedChanges.emit(false);
