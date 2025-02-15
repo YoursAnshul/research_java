@@ -59,6 +59,9 @@ export class Utils {
 
     dateToFormat = new Date(dateToFormat);
 
+    const offset = dateToFormat.getTimezoneOffset() / 60;
+    dateToFormat.setHours(dateToFormat.getHours() + offset);
+
     return new Date(dateToFormat.getFullYear(), dateToFormat.getMonth(), dateToFormat.getDate());
   }
 

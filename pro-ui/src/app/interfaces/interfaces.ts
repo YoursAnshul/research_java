@@ -17,6 +17,11 @@ export interface ITimeCard {
   //MachineName: string;
 }
 
+export interface IDateTimeCards {
+  timeCards: ITimeCard[];
+  date: Date;
+}
+
 export interface ICurrentUser {
   user: User;
   timecards: ITimeCard[];

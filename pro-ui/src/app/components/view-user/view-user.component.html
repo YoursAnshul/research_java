@@ -161,6 +161,7 @@
         }@else {
           <button mat-raised-button color="primary submit"  [disabled]="tab2Invalid ||  !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
           <!-- <button mat-raised-button color="primary submit" [disabled]="tab2Invalid || !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button> -->
+
         }
       </div>
     </div>
@@ -362,6 +363,28 @@
               </app-form-field>
             </div>
           </div>
+          
+          <div class="row" style="width: 80%">
+            <div *ngFor="let ff of getTabThreeThirdBatch(); index as i"
+                 [class.relative]="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                 [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                 [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+              <app-form-field [formField]="ff" [readOnly]="isEdit || disableRules(ff)" [contextUser]="selectedUser"
+                              [allProjectsMin]="activeProjects" [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+              </app-form-field>
+            </div>
+          </div>
+          <div class="row" style="width: 80%">
+            <div *ngFor="let ff of getTabThreeFourthBatch(); index as i"
+                 [class.relative]="ff.formFieldVariable.formField?.columnName == 'schedulinglevel'"
+                 [class.wd250]="ff.formFieldVariable.formField.fieldType != 'longtextbox'"
+                 [class.wd516]="ff.formFieldVariable.formField.fieldType == 'longtextbox'">
+              <app-form-field [formField]="ff" [readOnly]="isEdit || disableRules(ff)" [contextUser]="selectedUser"
+                              [allProjectsMin]="activeProjects" [class.disabled]="disableRules(ff)" (formFieldChanged)="setChanged()">
+              </app-form-field>
+            </div>
+          </div>
+
         </div>
       </div>
     }

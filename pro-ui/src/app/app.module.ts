@@ -84,6 +84,7 @@ import { UnsavedChangesDialogComponent } from './components/unsaved-changes-dial
 import { SelectComponent } from './components/form-inputs/select/select.component';
 import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { TimeInOutComponent } from './components/time-in-out/time-in-out.component';
 import { ShiftScheduleComponent } from './components/schedule/shift-schedule.component';
 import { ShiftDayViewComponent } from './components/calendar/day-view/shift-day-view.component';
 import { ShifCalendarComponent } from './components/calendar/shift.calendar.component';
@@ -156,7 +157,8 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     ShifCalendarComponent,
     ShiftWeekViewComponent,
     ShiftMonthViewComponent,
-    ShiftCalendarControlsComponent
+    ShiftCalendarControlsComponent,
+    TimeInOutComponent
   ],
   imports: [
     BrowserModule,

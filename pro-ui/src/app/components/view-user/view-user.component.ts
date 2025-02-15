@@ -755,14 +755,26 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   getTabThreeFirstBatch():IFormFieldInstance[]{
     return this.tab3UserFields.filter(item1 => {
-      return !this.getTabThreeSecondBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName);
+      return !this.getTabThreeSecondBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName)&&
+             !this.getTabThreeThirdBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName)&&
+             !this.getTabThreeFourthBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName);
     });
   }
 
   getTabThreeSecondBatch():IFormFieldInstance[]{
+    return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'city' ||
+      field.formFieldVariable.formField.columnName === 'zipcode' ||
+      field.formFieldVariable.formField.columnName === 'state' || field.formFieldVariable.formField.columnName === 'homeaddress');
+  }
+  getTabThreeFourthBatch():IFormFieldInstance[]{
     return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'emercontactnumber2' ||
       field.formFieldVariable.formField.columnName === 'emercontactname2' ||
       field.formFieldVariable.formField.columnName === 'emercontactrel2');
+  }
+  getTabThreeThirdBatch():IFormFieldInstance[]{
+    return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'emercontactnumber' ||
+      field.formFieldVariable.formField.columnName === 'emercontactrel' ||
+      field.formFieldVariable.formField.columnName === 'emercontactname');
   }
 
   cancelEdits(){

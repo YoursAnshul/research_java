@@ -2,8 +2,12 @@
   <div id="header-inner">
     <img id="wordmark-logo" src="/assets/DCRI_PRO_wordmark.jpg" />
     <div id="logged-in-as-section" *ngIf="authenticatedUser">
-      <div class="flex">
+      <div class="flex-custom">
         
+        <!-- time in/out -->
+        <app-time-in-out
+        [(currentTimecard)]="currentTimecard"></app-time-in-out>
+
         <div class="circle" ngbTooltip="Search Participants" placement="bottom" (click)="openParticipantModal()">
           <mat-icon svgIcon="search" />
         </div>
@@ -94,7 +98,7 @@
                     [(ngModel)]="searchTerms"
                   />
                   <div
-                    class="absolute inset-y-0 right-0 flex items-center pr-3"
+                    class="absolute inset-y-0 right-0 flex-custom items-center pr-3"
                   >
                     <!-- Search icon -->
 
@@ -213,7 +217,7 @@
                     </div>
                     <div class="scroll-container1">
                       <div
-                        class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
+                        class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex-custom border-l-4 border-yellow-400"
                       >
                         <div class="space-y-4">
                           <!-- dynamic -->
@@ -337,7 +341,7 @@
                   <mat-tab label="Project Info">
                     <div class="scroll-container">
                       <div
-                        class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex border-l-4 border-yellow-400"
+                        class="max-w-md mx-auto bg-white border border-gray-300 rounded-lg shadow-lg p-3 flex-custom border-l-4 border-yellow-400"
                       >
                         <div class="space-y-4">
                           <div
@@ -727,7 +731,7 @@
         </ng-template>
       </div>
 
-      <div id="logout-button" title="logout" (click)="logout()">
+      <div id="logout-button" title="logout" (click)="logoutClick()">
         <!--door fill-->
         <!--<svg xmlns="http://www.w3.org/2000/svg" width="21px" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
         <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z" />
@@ -1173,3 +1177,41 @@
 }
 
 </style>
+
+@if (displayLogoutTimeOutPrompt) {
+  <div class="bg-black bg-opacity-50 fixed inset-0 z-40 flex items-center justify-center">
+    <div class="absolute z-50 p-3 mt-1 mx-auto w-[300px] top-1/4
+      border border-2 border-duke-blue-extra-dark rounded-lg
+      bg-white shadow-md"
+      style="border-color: #164B8B !important;">
+
+      <div class="m-auto rounded-full bg-warn-red bg-opacity-15 text-warn-red h-[54px] w-[54px] text-3xl flex items-center justify-center font-medium">
+        !
+      </div>
+      
+      <div class="font-bold text-lg w-fit mx-auto my-3">
+        You Are Still Timed In!
+      </div>
+      
+      <div class="text-sm text-dark-neutral m-auto mb-4">
+        You are trying to log out of PRO Platform without timing out from your shift. What do you want to do?
+      </div>
+
+      <div class="text-xs font-medium text-white text-center border-2 border-button-blue shadow-none px-3 py-1.5 my-3 bg-button-blue rounded-md cursor-pointer"
+      (click)="displayLogoutTimeOutPrompt = false">
+      Go Back
+      </div>
+      
+      <div class="text-xs font-medium text-button-blue text-center border-2 border-button-blue shadow-none px-3 py-1.5 my-3 bg-white rounded-md cursor-pointer"
+      (click)="timeOut(true)">
+      Time Out & Log Out
+      </div>
+      <div class="text-xs font-medium text-warn-red w-fit mx-auto my-3 underline cursor-pointer"
+        (click)="logout()">
+        Log Out without Timing Out
+      </div>
+      
+    </div>
+  </div>
+}
+

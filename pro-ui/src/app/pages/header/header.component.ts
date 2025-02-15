@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { IAuthenticatedUser } from '../../interfaces/interfaces';
+import { IAuthenticatedUser, ITimeCard } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { HttpClient } from '@angular/common/http';
@@ -8,6 +8,7 @@ import { DialogComponent } from '../../components/dialog/dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
+import { UsersService } from '../../services/users/users.service';
 
 @Component({
   selector: 'app-header',
@@ -53,6 +54,10 @@ export class HeaderComponent implements OnInit {
   loading = false;
   activeTabIndex: number = 0;
 
+  public currentTimecard: ITimeCard = {} as ITimeCard;
+
+  displayLogoutTimeOutPrompt: boolean = false;
+
 
 
   @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
@@ -62,6 +67,7 @@ export class HeaderComponent implements OnInit {
     private http: HttpClient,
     private dialog: MatDialog,
     private globalsService: GlobalsService,
+    private usersService: UsersService,
     private router: Router
   ) {}
 
@@ -102,14 +108,40 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-
   addASchedulePopup(): void {
     this.globalsService.openSchedulePopup();
   }
 
+  public logoutClick(): void {
+    if (this.currentTimecard.datetimein && !this.currentTimecard.datetimeout) {
+      this.displayLogoutTimeOutPrompt = true;
+    } else {
+      this.logout();
+    }
+  }
 
   public logout(): void {
     this.authenticationService.logout();
+  }
+
+  public timeOut(logoutOnSuccess: boolean = false): void {
+    //add current time to timeout field in current timecard
+    this.currentTimecard.datetimeout = new Date();
+
+    //pass current time card to timeinout api to time out
+    this.usersService.timeInOut(this.currentTimecard).subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          if (logoutOnSuccess) {
+            this.logout();
+          }
+        } else {
+          //on failure, wipe out the timeout field
+          this.currentTimecard.datetimeout = undefined;
+        }
+      }
+    );
+    
   }
 
   copyToClipboard(text: string): void {
@@ -262,4 +294,5 @@ export class HeaderComponent implements OnInit {
   openUserProfile(): void  {
     this.router.navigate(['user-profile']);
   }
+
 }

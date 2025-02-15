@@ -1,0 +1,102 @@
+
+@if (authenticatedUser?.interviewer) {
+
+    @if ((currentTimecard?.datetimeout || !currentTimecard?.datetimein || !currentTimecardIsToday()) && currentUser) {
+        <!-- time in -->
+        <div class="cursor-pointer rounded-2xl bg-[#DC4A38] w-[120px] h-[35px] text-white text-[14px] font-semibold flex items-center gap-3 select-none"
+            style="padding: 0.35rem !important; padding-left: 0.25rem !important;"
+            (click)="timeIn()"
+            (mouseenter)="showHistory = true"
+            (mouseleave)="showHistory = false">
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="28" height="28"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-clock-play">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 7v5l2 2" /><path d="M17 22l5 -3l-5 -3z" /><path d="M13.017 20.943a9 9 0 1 1 7.831 -7.292" />
+            </svg>
+            <div>Time In</div>
+        </div>
+    }
+
+    @if ((currentTimecard?.datetimein && !currentTimecard?.datetimeout) && currentUser && currentTimecardIsToday()) {
+        <!-- time out -->
+        <div class="cursor-pointer rounded-2xl bg-[#41B200] w-[120px] h-[35px] text-white text-[14px] font-semibold flex items-center gap-3 select-none"
+            style="padding: 0.35rem !important; padding-left: 0.25rem !important;"
+            (click)="timeOut()"
+            (mouseenter)="showHistory = true"
+            (mouseleave)="showHistory = false">
+            <svg  xmlns="http://www.w3.org/2000/svg"  width="28" height="28"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-clock-stop">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12a9 9 0 1 0 -9 9" /><path d="M12 7v5l1 1" /><path d="M16 16h6v6h-6z" />
+            </svg>
+            <div>Time Out</div>
+        </div>
+    }
+
+    @if (showHistory) {
+        <!-- time in/out history -->
+        <div class="relative">
+            <div class="absolute z-50 p-3 mt-1 border border-2 border-duke-gray-dark rounded-lg bg-white shadow-md w-fit whitespace-nowrap"
+                style="border-color: #b5b5b5 !important;">
+
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="text-button-blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                            <path d="M480-120q-138 0-240.5-91.5T122-440h82q14 104 92.5 172T480-200q117 0 198.5-81.5T760-480q0-117-81.5-198.5T480-760q-69 0-129 32t-101 88h110v80H120v-240h80v94q51-64 124.5-99T480-840q75 0 140.5 28.5t114 77q48.5 48.5 77 114T840-480q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T480-120Zm112-192L440-464v-216h80v184l128 128-56 56Z"/>
+                        </svg>
+                    </div>
+                    <div class="font-semibold text-base text-[#262626]">History</div>
+                </div>
+
+                @if ((currentTimecards || []).length < 1) {
+                    <div class="text-center italic text-duke-gray-dark text-sm">
+                        No timestamps today
+                    </div>
+                } @else {
+                    <div class="text-[#262626]">
+                        @for (uniqueDate of dateTimeCards; track uniqueDate) {
+                            <div class="mb-1">
+                                {{ uniqueDate.date | date: 'EEEE, MMMM d' }}
+                            </div>
+                            @for (timecard of uniqueDate.timeCards; track timecard; let index = $index) {
+
+                                @if (timecard.datetimeout) {
+                                    <div class="flex items-center gap-3 mt-3 mx-3">
+                                        <div class="flex items-center gap-1 w-[95px]">
+                                            <div class="text-duke-gray-dark">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                                    <path d="M400-240 160-480l240-240 56 58-142 142h486v80H314l142 142-56 58Z"/>
+                                                </svg>
+                                            </div>
+                                            <div>Time Out </div>
+                                        </div>
+                                        <div class="font-semibold">
+                                            {{ timecard.datetimeout | date: 'hh:mm a' }}
+                                        </div>
+                                    </div>
+                                }
+                                @if (timecard.datetimein) {
+                                    <div class="flex items-center gap-3 mt-3 mx-3">
+                                        <div class="flex items-center gap-1 w-[95px]">
+                                            <div class="text-duke-gray-dark flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                                    <path d="m560-240-56-58 142-142H160v-80h486L504-662l56-58 240 240-240 240Z"/>
+                                                </svg>
+                                            </div>
+                                            <div>Time In</div>
+                                        </div>
+                                        <div class="font-semibold">
+                                            {{ timecard.datetimein | date: 'hh:mm a' }}
+                                        </div>
+                                    </div>
+                                }
+                                @if (!isLastIteration(uniqueDate.timeCards, index)) {
+                                    <div class="border-b border-duke-gray w-full mt-3"></div>
+                                }
+                            }
+                        }
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+    
+}
+    
