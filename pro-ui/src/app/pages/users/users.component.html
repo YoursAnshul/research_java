@@ -250,7 +250,7 @@
 
   <app-view-user id="view-user-form"
                  [viewUser]="selectedUser"
-                 (closewindow)="showSelectedUser = false; getAllUsers()" (userSaved)="onUserAdded($event)" (setUnsavedChanges)="setUnsavedChanges($event)">
+                 (closewindow)="showSelectedUser = false; getAllUsers()" (userSaved)="onUserAdded($event)" (setUnsavedChanges)="setUnsavedChanges($event)" [isShow]="true">
   </app-view-user>
 </div>
 

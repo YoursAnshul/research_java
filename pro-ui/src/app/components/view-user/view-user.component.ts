@@ -49,6 +49,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   @Output() closewindow = new EventEmitter<void>();
   @Input() showBreadcrum: boolean =  true;
   @Input() discardChanges = true;
+  @Input() isShow = false;
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];
@@ -484,6 +485,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   onTabChanged(tab: string) {
+    if(!this.isShow){
+      this.trainedOnProjects = [];
+    }
     this.selectedTab = tab;
     // Based on the new tab, some tasks are performed.
     // console.log('Tab changed: ', event);
@@ -782,6 +786,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesDialog(): void {
+    if(!this.isShow){
+      this.trainedOnProjects = [];
+    }
     this.openDialog({
       dialogType: 'error',
       isUserProfile: !this.showBreadcrum,

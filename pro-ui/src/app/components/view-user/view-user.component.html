@@ -152,7 +152,7 @@
         <button mat-raised-button color="primary submit" [disabled]="tab2Invalid" (click)="saveUser()"  *ngIf="selectedTab == 'personal-contact-info' && !isEdit">Save</button>
       </div>-->
        <!-- Buttons -->
-       <div class="flex items-center gap-2">
+       <!-- <div class="flex items-center gap-2">
         <button mat-raised-button color="primary submit wd90" (click)="clickOnEdit()"  [disabled]="authenticatedUser?.interviewer && selectedTab != 'personal-contact-info'" *ngIf=" isEdit">Edit User</button>
         <button class="btn-outline" (click)="showUnsavedChangesDialog()"  *ngIf="!isEdit">Cancel</button>
 
@@ -160,10 +160,51 @@
           <button mat-raised-button color="primary submit" [disabled]="true" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
         }@else {
           <button mat-raised-button color="primary submit"  [disabled]="tab2Invalid ||  !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
-          <!-- <button mat-raised-button color="primary submit" [disabled]="tab2Invalid || !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button> -->
+        }
+      </div> -->
+      @if(!authenticatedUser?.interviewer){
+      <div class="flex items-center gap-2">
+        <button mat-raised-button color="primary submit wd90" (click)="clickOnEdit()"  [disabled]="authenticatedUser?.interviewer && selectedTab != 'personal-contact-info'" *ngIf=" isEdit">Edit User</button>
+        <button class="btn-outline" (click)="showUnsavedChangesDialog()"  *ngIf="!isEdit">Cancel</button>
 
+        @if (selectedUser.defaultproject === 0 && this.trainedOnProjects.length > 0) {
+          <button mat-raised-button color="primary submit" [disabled]="true" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
+        }@else {
+          <button mat-raised-button color="primary submit"  [disabled]="tab2Invalid ||  !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
         }
       </div>
+      }@else {
+        <div class="flex items-center gap-2">
+          <button 
+            mat-raised-button 
+            color="primary submit wd90" 
+            (click)="clickOnEdit()"  
+            [disabled]="authenticatedUser?.interviewer && selectedTab !== 'personal-contact-info'" 
+            *ngIf="selectedTab != 'personal-contact-info'">
+            Edit User
+          </button>
+          <ng-container *ngIf="selectedTab == 'personal-contact-info'">
+            <button class="btn-outline" (click)="showUnsavedChangesDialog()"  *ngIf="!isEdit">Cancel</button>
+            <button 
+              mat-raised-button 
+              color="primary submit"  
+              [disabled]="selectedUser.defaultproject === 0 && trainedOnProjects.length > 0 ? true : (tab2Invalid || !changed)" 
+              (click)="saveUser()"  
+              *ngIf="!isEdit">
+              Save
+            </button>
+            <button 
+            mat-raised-button 
+            color="primary submit wd90" 
+            (click)="clickOnEdit()"  
+            [disabled]="authenticatedUser?.interviewer && selectedTab !== 'personal-contact-info'" 
+            *ngIf="isEdit">
+            Edit User
+          </button>
+          </ng-container>
+        </div>
+      }
+      
     </div>
 
 
@@ -189,7 +230,6 @@
                 <div>{{item}}</div>
                 <mat-icon
                   [ngStyle]="{
-                    'font-size': '20px',
                     'padding-right': '30%',
                     color:
                       selectedUser?.defaultproject === getProjectId(item)
