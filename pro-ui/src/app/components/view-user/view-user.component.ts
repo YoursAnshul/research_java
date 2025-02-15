@@ -815,7 +815,11 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.selectedUser.entryBy = this.authenticatedUser.netID;
     this.selectedUser.entryDt = new Date();
     this.selectedUser.userImage = this.previewUrl;
-
+    if(this.defaultproject == 0){
+      this.selectedUser.defaultproject =  this.selectedUser.defaultproject;
+    }else {
+      this.selectedUser.defaultproject = this.defaultproject;
+    }
     //pass to save user api to save
 
 
