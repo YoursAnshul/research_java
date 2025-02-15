@@ -442,7 +442,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   setTrainedOn(): void {
-    let trainedOnIds: string[] = [];
+   let trainedOnIds: string[] = [];
     if (this.selectedUser?.trainedon) {
       trainedOnIds = this.selectedUser.trainedon.split('|');
     }
@@ -511,7 +511,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     } else {
       this.isUserCalendarVisible = false;
       this.defPro = [
-        { defaultproject: Number(0) },
+        { defaultproject: Number(this.selectedUser.defaultproject) },
       ];
     }
   }
@@ -679,7 +679,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
     if (!this.tab2Invalid) {
       if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
     }
-    console.log('this.tab2Invalid : ', this.tab2Invalid);
+    console.log('this.tab2Invalid : --000', this.tab2Invalid);
+    console.log('this.selectedUser-- defaultproject-',this.selectedUser.defaultproject);
     //tab validation
     this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
 
@@ -750,7 +751,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
         this.setUnsavedChanges.emit(false);
         this.coreHours = { ... this.coreHoursResponse };
         this.trainedOnProjects = this.trainedOnProjects.filter(project => !this.changedTrainedOnProjects.some(project_two => project.projectID === project_two.projectID));
-       this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
+        this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       } else if (result == 'save') {
         this.userSaved.emit(this.selectedUser);
       }
@@ -786,9 +787,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   showUnsavedChangesDialog(): void {
-    if(!this.isShow){
-      this.trainedOnProjects = [];
-    }
     this.openDialog({
       dialogType: 'error',
       isUserProfile: !this.showBreadcrum,
@@ -817,11 +815,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.selectedUser.entryBy = this.authenticatedUser.netID;
     this.selectedUser.entryDt = new Date();
     this.selectedUser.userImage = this.previewUrl;
-    if(this.defaultproject>0){
-      this.selectedUser.defaultproject = this.defaultproject
-    }else{
-      this.selectedUser.defaultproject =0;
-    }
+
     //pass to save user api to save
 
 
