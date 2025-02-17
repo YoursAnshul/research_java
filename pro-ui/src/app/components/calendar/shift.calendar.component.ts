@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
   ISchedule,
   IUserSchedule,
@@ -77,6 +77,8 @@ export class ShifCalendarComponent implements OnInit {
  
    tabIndex = 0;
    @Input() shiftSchedule: any[] = [];
+    @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
+   
 
    //constructor
    constructor(
@@ -167,9 +169,7 @@ export class ShifCalendarComponent implements OnInit {
          this.selectedDateRange = new FormGroup({
            start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
            end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
-         });
-       console.log("selectedDate----",selectedDate);
-       
+         });       
        }
      );
  
@@ -592,4 +592,8 @@ export class ShifCalendarComponent implements OnInit {
  
      return true;
    }
+   onResetShiftSchedule(): void {
+    console.log('Shift schedule and form reset.');
+    this.resetShiftSchedule.emit(); // Emit event to parent component
+  }
  }

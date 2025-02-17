@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import {
@@ -25,6 +25,7 @@ export class ShiftDayViewComponent implements OnInit {
 
   hoverMessage: HoverMessage = new HoverMessage();
   filteredShiftSchedule: any[] = [];
+  @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
 
   constructor(private globalsService: GlobalsService) {}
 
@@ -114,6 +115,9 @@ export class ShiftDayViewComponent implements OnInit {
     } - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
       </p>`;
 
+    if(schedule.duration){
+      htmlMessage += `<p class="bold">Comments:</p><p>${schedule.duration}</p>`;
+    }
     if (schedule.comments) {
       htmlMessage += `<p class="bold">Comments:</p><p>${schedule.comments}</p>`;
     }
@@ -133,6 +137,7 @@ export class ShiftDayViewComponent implements OnInit {
     this.showTooltip = false;
   }
   addShift(): void {
-
+    this.resetShiftSchedule.emit(); // Emit event to parent component
   }
+  
 }

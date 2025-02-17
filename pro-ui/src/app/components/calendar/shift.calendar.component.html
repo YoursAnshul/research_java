@@ -40,7 +40,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-day-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate"> </app-shift-day-view>
+      <app-shift-day-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate"  (resetShiftSchedule)="onResetShiftSchedule()"> </app-shift-day-view>
     </mat-tab>
     <mat-tab label="Week">
       <div class="calendar-wrapper">
@@ -58,7 +58,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-week-view [weekSchedules]="weekSchedules"></app-shift-week-view>
+      <app-shift-week-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange"></app-shift-week-view>
     </mat-tab>
     <mat-tab label="Month">
       <div class="calendar-wrapper">

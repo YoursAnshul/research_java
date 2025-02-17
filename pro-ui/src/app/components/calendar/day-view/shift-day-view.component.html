@@ -56,6 +56,11 @@
             <span class="project-time"
               >{{ schedule.startTime }} - {{ schedule.endTime }}</span
             >
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -68,12 +73,6 @@
         <mat-icon style="cursor: pointer" class="add-icon" (click)="addShift()"
           >add</mat-icon
         >
-        <input
-          style="width: 5.25%; text-align: center; margin-right: -4px"
-          type="number"
-          placeholder="0 hr"
-          class="no-spinner hour-input"
-        />
       </div>
     </div>
   </div>

@@ -266,6 +266,7 @@ export interface ISchedule {
   scheduleConflict?: boolean;
   justAdded?: boolean;
   initialProjectid?: number | null;
+  duration?: number | null;
 }
 
 export interface IScheduleMin {

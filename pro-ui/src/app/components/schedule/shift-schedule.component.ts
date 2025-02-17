@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { IWeekSchedules } from '../../interfaces/interfaces';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -21,6 +22,7 @@ export class ShiftScheduleComponent implements OnInit {
   currentYear: number = new Date().getFullYear();
   currentMonth: number = new Date().getMonth() + 1;
   shiftSchedule: any[] = [];
+  weekSchedules: IWeekSchedules[] = []; // Data for Week View
 
   constructor(private http: HttpClient) {}
 
@@ -40,20 +42,20 @@ export class ShiftScheduleComponent implements OnInit {
       endTime: new FormControl('', Validators.required),
       comments: new FormControl(''),
     });
-    
+
     this.shiftForm.valueChanges.subscribe(() => {
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
-    });    
+    });
   }
   onSubmit(): void {
-     if (this.shiftForm.valid) {
-      const newShift = { ...this.shiftForm.value }; // Copy form data
+    if (this.shiftForm.valid) {
+      const newShift = { ...this.shiftForm.value, duration: this.duration }; // Copy form data
       this.shiftSchedule = [...this.shiftSchedule, newShift]; // Update array reference
+      this.weekSchedules =  [...this.shiftSchedule, newShift]; 
       console.log('Updated Shift Schedule:', this.shiftSchedule);
     }
   }
-  
 
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
@@ -134,25 +136,31 @@ export class ShiftScheduleComponent implements OnInit {
   updateDuration(): void {
     const start = this.shiftForm.get('startTime')?.value;
     const end = this.shiftForm.get('endTime')?.value;
-
+  
     if (!start || !end) {
-      this.duration = '0 hr 0 min';
+      this.duration = '0hr';
       return;
     }
-
+  
     const startDate = this.parseTime(start);
     const endDate = this.parseTime(end);
-
+  
     if (endDate <= startDate) {
       endDate.setDate(endDate.getDate() + 1);
     }
-
+  
     const diffMs = endDate.getTime() - startDate.getTime();
+  
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-    this.duration = `${diffHours} hr ${diffMinutes} min`;
+    this.duration  = "";
+    if (diffMinutes >= 60) {
+      this.duration = `${diffHours + 1} hr`;
+    } else {
+      this.duration = `${diffHours}.${diffMinutes} hr`;
+    }
   }
+  
   parseTime(time: string): Date {
     const date = new Date();
     const [timePart, period] = time.split(' ');
@@ -167,5 +175,18 @@ export class ShiftScheduleComponent implements OnInit {
 
     date.setHours(hours, minutes, 0, 0);
     return date;
+  }
+
+  onResetShiftSchedule(): void {
+    console.log('Final Shift schedule and form reset.');
+    this.shiftForm.reset({
+      user: null,
+      projects: [],
+      dayWiseDate: new Date(),
+      startTime: '',
+      endTime: '',
+      comments: '',
+    });
+    this.selectedDate = new FormControl<Date | null>(null, Validators.required);
   }
 }

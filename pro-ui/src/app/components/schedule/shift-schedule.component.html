@@ -116,8 +116,10 @@
           <button
             mat-raised-button
             color="primary"
-            [disabled]="!scheduleFetchStatus"
+            disabled
           >
+          <!-- [disabled]="!scheduleFetchStatus" -->
+
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
@@ -125,6 +127,6 @@
     </div>
 
     <!-- Shift Calendar Component -->
-    <app-shift-calendar [shiftSchedule]="shiftSchedule"></app-shift-calendar>
+    <app-shift-calendar [shiftSchedule]="shiftSchedule" (resetShiftSchedule)="onResetShiftSchedule()"></app-shift-calendar>
   </form>
 </div>
