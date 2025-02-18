@@ -557,6 +557,28 @@ export interface IProjectTotalsReportFlat {
   totalColumn: number;
 }
 
+export interface IUserMin {
+  userid: number;
+  dempoid: string;
+  displayName: string | null;
+  fname: string;
+  lname: string;
+  preferredfname: string;
+  preferredlname: string;
+  language: string;
+  role: number;
+  buddy?: boolean;
+  employmenttype?: number;
+  trainedon: string;
+  trainedOnArray: string[];
+  active?: boolean;
+  canEdit?: boolean;
+  selected?: boolean;
+  checked?: boolean;
+  changed?: boolean;
+  schedulinglevel?: number;
+}
+
 export interface IRequest {
   requestId: number;
   requestType?: string;

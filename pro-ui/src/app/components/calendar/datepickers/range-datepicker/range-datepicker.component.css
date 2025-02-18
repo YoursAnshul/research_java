@@ -1,5 +1,5 @@
 .date-picker-form-field {
   /*width: 150px;*/
-  width: 600px;
+  width: fit-content;
   font-size: 0.9em;
 }

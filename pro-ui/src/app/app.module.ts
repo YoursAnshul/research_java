@@ -49,7 +49,7 @@ import { MatDialogModule} from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
-
+import { AnySelectComponent } from './components/any-select/any-select.component';
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { LanguageIconComponent } from './components/language-icon/language-icon.component';
 import { DialogComponent } from './components/dialog/dialog.component';
@@ -152,15 +152,18 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     SelectComponent,
     SchedulingInfoComponent,
     UserProfileComponent,
+    TimeInOutComponent,
+    AnySelectComponent,
     ShiftScheduleComponent,
     ShiftDayViewComponent,
     ShifCalendarComponent,
     ShiftWeekViewComponent,
     ShiftMonthViewComponent,
     ShiftCalendarControlsComponent,
-    TimeInOutComponent
   ],
   imports: [
+    NgxMaterialTimepickerModule,
+    NgxMatTimepickerModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -188,9 +191,7 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     MatTableModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    MatRippleModule,
-    NgxMaterialTimepickerModule,
-    NgxMatTimepickerModule
+    MatRippleModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]
