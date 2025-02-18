@@ -96,6 +96,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   isEdit: boolean = true;
   trainedOn: string = '';
   public selectedTab: string = 'scheduling';
+  isLoading = false; 
 
   constructor(private fb: FormBuilder, private globalsService: GlobalsService,
     private authenticationService: AuthenticationService,
@@ -203,6 +204,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
         this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
       }
     );
+
+    this.projectsService.isLoading.subscribe(loading => {
+      this.isLoading = loading;
+    });
 
   }
 

@@ -222,8 +222,11 @@
               style="border-color: #c2c2c2 !important;">Trained On</div>
 
             <!-- trained on box -->
+            <div *ngIf="isLoading" class="spinner-container">
+              <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
+            </div>
             <div class="h-[210px] overflow-y-auto"
-              style="overflow-y: auto;">
+              style="overflow-y: auto;" *ngIf="!isLoading">
               @if (getTrainingProjects(selectedUser.trainedon).length>0){
               @for (item of getTrainingProjects(selectedUser.trainedon);track item){
               <div class="flex items-center my-2 gap-2">
