@@ -1,6 +1,10 @@
-import { Component, Input, OnInit, SimpleChanges, } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Utils } from '../../../classes/utils';
-import {ILegend, ISchedule, IWeekSchedules} from '../../../interfaces/interfaces';
+import {
+  ILegend,
+  ISchedule,
+  IWeekSchedules,
+} from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -8,77 +12,87 @@ import { FormControl, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-shift-week-view',
   templateUrl: './shift-week-view.component.html',
-  styleUrls: ['./shift-week-view.component.css']
+  styleUrls: ['./shift-week-view.component.css'],
 })
 export class ShiftWeekViewComponent implements OnInit {
-
-
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Input() monthPart: boolean = false;
   @Input() shiftSchedule: any[] = [];
   @Input() selectedDate!: FormControl;
   @Input() selectedDateRange!: FormGroup;
+  @Output() resetShiftSchedule = new EventEmitter<void>();
 
   hoverMessage: HoverMessage = new HoverMessage();
 
-  constructor(private globalsService: GlobalsService) { }
+  constructor(private globalsService: GlobalsService) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    
+    this.processShiftSchedules();
   }
-    ngOnChanges(changes: SimpleChanges): void {
-      console.log("selectedDateRange---",this.selectedDateRange);
-      
-      this.populateWeekSchedules();
+  processShiftSchedules(): void {
+    if (
+      !this.selectedDateRange?.value?.start ||
+      !this.selectedDateRange?.value?.end
+    ) {
+      return;
     }
-    private populateWeekSchedules(): void {
-      // Initialize empty week schedules
-      const weekSchedules: IWeekSchedules = {
-        weekStart: new Date(), // Set the starting date for the week
-        day1Schedules: [],
-        day2Schedules: [],
-        day3Schedules: [],
-        day4Schedules: [],
-        day5Schedules: [],
-        day6Schedules: [],
-        day7Schedules: []
-      };
-  
-      // Iterate over each schedule to assign it to the correct day of the week
-      this.shiftSchedule.forEach((schedule: ISchedule) => {
-        const scheduleDate = new Date(schedule.dayOfWeek);
-        const dayOfWeek = scheduleDate.getDay(); // Get the day of the week (0 = Sunday, 6 = Saturday)
-  
-        switch (dayOfWeek) {
-          case 0:
-            weekSchedules.day1Schedules.push(schedule);
-            break;
-          case 1:
-            weekSchedules.day2Schedules.push(schedule);
-            break;
-          case 2:
-            weekSchedules.day3Schedules.push(schedule);
-            break;
-          case 3:
-            weekSchedules.day4Schedules.push(schedule);
-            break;
-          case 4:
-            weekSchedules.day5Schedules.push(schedule);
-            break;
-          case 5:
-            weekSchedules.day6Schedules.push(schedule);
-            break;
-          case 6:
-            weekSchedules.day7Schedules.push(schedule);
-            break;
-          default:
-            break;
-        }
-      });
-  
-      this.weekSchedules = weekSchedules;
-      // console.log("weekSchedules---",this.weekSchedules);
-    }
-  
+
+    const startOfWeek = new Date(this.selectedDateRange.value.start);
+    const endOfWeek = new Date(this.selectedDateRange.value.end);
+
+    this.weekSchedules = {
+      weekStart: startOfWeek,
+      day1Schedules: [],
+      day2Schedules: [],
+      day3Schedules: [],
+      day4Schedules: [],
+      day5Schedules: [],
+      day6Schedules: [],
+      day7Schedules: [],
+    };
+
+    this.shiftSchedule.forEach((shift) => {
+      const shiftDate = new Date(shift.dayWiseDate);
+      if (shiftDate >= startOfWeek && shiftDate <= endOfWeek) {
+        const dayIndex = shiftDate.getDay();
+        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
+        const schedule: ISchedule = {
+          preschedulekey: shift.user.userId,
+          displayName: shift.user.userName,
+          projectName: shift.projects.projectName,
+          projectColor: shift.projects.projectColor,
+          scheduledate: shiftDate,
+          comments: shift.comments,
+          startTime: shift.startTime,
+          endTime: shift.endTime,
+          duration: parseFloat(shift.duration),
+          dayOfWeek: adjustedDayIndex,
+          weekStart: startOfWeek,
+          weekEnd: endOfWeek,
+          month: shiftDate.toLocaleString('default', { month: 'long' }),
+          requestDetails: '',
+          requestCode: '',
+          userid: shift.user.userId,
+          trainedon: '',
+          language: null,
+          entryBy: null,
+          dempoid: null,
+          fname: null,
+          lname: null,
+          preferredfname: null,
+          preferredlname: null,
+          userName: null,
+          expr1: null,
+        };
+        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
+          schedule
+        );
+      }
+    });
+    console.log('Updated Week Schedules:', this.weekSchedules);
+  }
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
     let workingDate: Date = new Date(weekStart || '');
@@ -91,7 +105,10 @@ export class ShiftWeekViewComponent implements OnInit {
     return workingDate.toLocaleString('en-US', options);
   }
 
-  public GetDaysDateAsDate(weekStart: Date | undefined, dayOfWeek: number): Date {
+  public GetDaysDateAsDate(
+    weekStart: Date | undefined,
+    dayOfWeek: number
+  ): Date {
     let workingDate: Date = new Date(weekStart || '');
     workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
 
@@ -107,33 +124,58 @@ export class ShiftWeekViewComponent implements OnInit {
   }
 
   //open contextual popup for the clicked user
-  openUserSchedule(netId: string | null, projectName: string | null = null, contextDate: Date | null = null, scheduleTabIndex: number | null = null): void {
+  openUserSchedule(
+    netId: string | null,
+    projectName: string | null = null,
+    contextDate: Date | null = null,
+    scheduleTabIndex: number | null = null
+  ): void {
     if (!scheduleTabIndex) {
       if (this.monthPart) {
         //tab index of 3 = Month tab
         scheduleTabIndex = 3;
       } else {
         //tab index of 2 = Week tab
-        scheduleTabIndex = 2
+        scheduleTabIndex = 2;
       }
     }
 
-    this.globalsService.showContextualPopup(scheduleTabIndex, netId, null, contextDate as Date);
+    this.globalsService.showContextualPopup(
+      scheduleTabIndex,
+      netId,
+      null,
+      contextDate as Date
+    );
   }
 
   displayHoverMessage(event: any, schedule: ISchedule): void {
-
-    let htmlMessage: string = '<p class="hover-message-title">' + schedule.displayName + ' (' + schedule.projectName + '): ' + schedule.startTime + ' – ' + schedule.endTime + ' – ' + this.formatDateOnlyString(schedule.startdatetime) + ' </p>';
+    let htmlMessage: string =
+      '<p class="hover-message-title">' +
+      schedule.displayName +
+      ' (' +
+      schedule.projectName +
+      '): ' +
+      schedule.startTime +
+      ' – ' +
+      schedule.endTime +
+      ' – ' +
+      this.formatDateOnlyString(schedule.startdatetime) +
+      ' </p>';
     if (schedule.comments) {
-      htmlMessage = htmlMessage + '<p class="bold">Comments:</p><p>' + schedule.comments + '</p>';
+      htmlMessage =
+        htmlMessage +
+        '<p class="bold">Comments:</p><p>' +
+        schedule.comments +
+        '</p>';
     }
 
     this.hoverMessage.setAndShow(event, htmlMessage);
-
   }
 
   hideHoverMessage(): void {
     this.hoverMessage.hide();
   }
-
+  addShift(): void {
+    this.resetShiftSchedule.emit(); // Emit event to parent component
+  }
 }

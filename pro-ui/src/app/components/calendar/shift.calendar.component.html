@@ -58,7 +58,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-week-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange"></app-shift-week-view>
+      <app-shift-week-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange" (resetShiftSchedule)="onResetShiftSchedule()"></app-shift-week-view>
     </mat-tab>
     <mat-tab label="Month">
       <div class="calendar-wrapper">

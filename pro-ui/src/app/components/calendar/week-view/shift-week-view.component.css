@@ -80,16 +80,28 @@
   }
   
   .project-time {
+    margin-left: 5px;
     font-style: italic;
+    display: inline-block;
   }
   
   .day-schedules-container {
-    display: inline-block;
+    display: inline-table;
     width: 14.25%;
     vertical-align: top;
     margin-bottom: 25px;
+    align-items: center; /* Centers items horizontally */
+    justify-content: center; /* Centers items vertically */
   }
   
+  .day-schedules-container mat-icon {
+    cursor: pointer;
+    color: #0078d4;
+    text-align: center;
+    margin-top: 10px; /* Add space above the icon */
+    font-size: 24px; /* Adjust icon size */
+    display: table-footer-group;
+  }
   .bold {
     font-weight: bold;
   }
@@ -153,4 +165,27 @@
   
   .hour-input::-ms-input-placeholder { /* IE */
     color: #58595B;
+  }
+  .duration-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 7cap;
+    height: 15px;
+    border-radius: 100px;
+    border: 1px solid #b5b5b5;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #ffffff;
+    color: #262626;
+    flex-shrink: 0;
+  }
+  .schedule-block .duration-circle {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 10px;
+    padding: 2px 5px;
   }

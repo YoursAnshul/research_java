@@ -1,4 +1,4 @@
-<div id="week-calendar" style="background-color: #f2f2f2 !important;">
+<div id="week-calendar" style="background-color: #f2f2f2 !important">
   <div id="week-calendar-header"></div>
   <div id="week-calendar-time-header" class="week-calendar-time-header">
     <div
@@ -26,34 +26,13 @@
       }}
       {{ GetDaysDate(weekSchedules?.weekStart, day) }}
     </div>
-    <div
-      style="
-        width: 7%;
-        text-align: center;
-        background: #0078d4;
-        color: white;
-        font-weight: bold;
-      "
-    >
-      Total
-    </div>
   </div>
 
   <div id="week-calendar-add-icons" class="week-calendar-add-icons">
     <div
       *ngFor="let day of [1, 2, 3, 4, 5, 6, 7]; let i = index"
       style="width: 14.25%; text-align: center"
-    >
-      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center">
-        add
-      </mat-icon>
-    </div>
-    <input
-      style="width: 7%; text-align: center"
-      type="number"
-      placeholder="0 hr"
-      class="no-spinner hour-input"
-    />
+    ></div>
   </div>
 
   <div id="week-calendar-user-schedules">
@@ -80,10 +59,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center" (click)="addShift()">
+        add
+      </mat-icon>
     </div>
 
     <div class="day-schedules-container">
@@ -109,10 +96,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center" (click)="addShift()">
+        add
+      </mat-icon>
     </div>
 
     <div class="day-schedules-container">
@@ -138,10 +133,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center" (click)="addShift()">
+        add
+      </mat-icon>
     </div>
 
     <div class="day-schedules-container">
@@ -167,10 +170,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center" (click)="addShift()">
+        add
+      </mat-icon>
     </div>
 
     <div class="day-schedules-container">
@@ -196,10 +207,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center" (click)="addShift()">
+        add
+      </mat-icon>
     </div>
 
     <div class="day-schedules-container">
@@ -225,10 +244,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center"(click)="addShift()">
+        add
+      </mat-icon>
     </div>
 
     <div class="day-schedules-container">
@@ -254,10 +281,18 @@
             <div class="project-time">
               {{ schedule.startTime }} - {{ schedule.endTime }}
             </div>
+            <div class="project-time">
+              <div class="duration-circle">
+                {{ schedule.duration }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       }
+      <mat-icon style="cursor: pointer; color: #0078d4; text-align: center" (click)="addShift()">
+        add
+      </mat-icon>
     </div>
   </div>
 </div>
