@@ -106,6 +106,7 @@
           [class.border-b]="selectedTab === 'scheduling'"
           [class.border-b-[3px]]="selectedTab === 'scheduling'"
           [ngStyle]="{
+            fontSize: selectedTab === 'scheduling' ? '16px' : '14px',
             borderBottomColor:
               coreHoursInvalid ||
               (!selectedUser.defaultproject ||
