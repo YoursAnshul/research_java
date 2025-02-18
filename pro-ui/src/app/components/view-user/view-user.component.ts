@@ -1074,6 +1074,11 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
 
   clickOnEdit(): void {
+    let trainedOnIds: string[] = [];
+    if (this.selectedUser?.trainedon) {
+      trainedOnIds = this.selectedUser.trainedon.split('|');
+    }
+    this.trainedOnProjects = this.activeProjects.filter(x => trainedOnIds.includes(x.projectID.toString()));
     this.isEdit = false;
     this.changed = false;
     this.setUnsavedChanges.emit(false);
