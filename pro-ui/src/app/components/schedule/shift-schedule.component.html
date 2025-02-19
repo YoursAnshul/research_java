@@ -51,7 +51,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 160px"
+          style="width: 175px"
         >
           <mat-label>{{ currentDay }}</mat-label>
           <input
@@ -67,35 +67,24 @@
         </mat-form-field>
 
         <!-- Start Time Picker -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
-          style="width: 120px"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
           <mat-label>Start Time</mat-label>
-          <input
-            matInput
-            [ngxTimepicker]="startPicker"
-            formControlName="startTime"
-            readonly
-          />
-          <ngx-material-timepicker #startPicker></ngx-material-timepicker>
+          <mat-select formControlName="startTime">
+            <mat-option *ngFor="let time of timeSlots" [value]="time">
+              {{ time }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
+        
 
         <!-- End Time Picker -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
-          style="width: 120px"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
           <mat-label>End Time</mat-label>
-          <input
-            matInput
-            [ngxTimepicker]="endPicker"
-            formControlName="endTime"
-            readonly
-          />
-          <ngx-material-timepicker #endPicker></ngx-material-timepicker>
+          <mat-select formControlName="endTime">
+            <mat-option *ngFor="let time of timeSlots" [value]="time">
+              {{ time }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
 
         <!-- Dynamic Duration Display -->

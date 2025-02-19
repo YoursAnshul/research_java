@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { Utils } from '../../../classes/utils';
 import {
   ILegend,
@@ -28,7 +35,6 @@ export class ShiftWeekViewComponent implements OnInit {
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
-    
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
@@ -55,6 +61,9 @@ export class ShiftWeekViewComponent implements OnInit {
 
     this.shiftSchedule.forEach((shift) => {
       const shiftDate = new Date(shift.dayWiseDate);
+      shiftDate.setHours(0, 0, 0, 0);
+      startOfWeek.setHours(0, 0, 0, 0);
+      endOfWeek.setHours(0, 0, 0, 0);
       if (shiftDate >= startOfWeek && shiftDate <= endOfWeek) {
         const dayIndex = shiftDate.getDay();
         const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;

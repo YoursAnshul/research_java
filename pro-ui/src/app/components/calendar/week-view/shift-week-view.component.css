@@ -189,3 +189,10 @@
     font-size: 10px;
     padding: 2px 5px;
   }
+  .add-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  

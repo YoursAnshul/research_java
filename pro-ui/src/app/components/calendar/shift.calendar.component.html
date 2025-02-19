@@ -75,7 +75,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-month-view [monthSchedules]="monthSchedules"></app-shift-month-view>
+      <app-shift-month-view [monthSchedules] ="monthSchedules" [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange" (resetShiftSchedule)="onResetShiftSchedule()"></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>
 </div>

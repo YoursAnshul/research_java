@@ -23,10 +23,12 @@ export class ShiftScheduleComponent implements OnInit {
   currentMonth: number = new Date().getMonth() + 1;
   shiftSchedule: any[] = [];
   weekSchedules: IWeekSchedules[] = []; // Data for Week View
+  timeSlots: string[] = [];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    this.generateTimeSlots();
     this.getAuthor();
     this.getProjectInfo();
     this.currentDay = new Intl.DateTimeFormat('en-US', {
@@ -47,7 +49,33 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
     });
+
+    this.updateDayLabel(this.shiftForm.get('dayWiseDate')?.value);
+    this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+      this.updateDayLabel(date);
+    });
   }
+  updateDayLabel(date: Date | null) {
+    if (date) {
+      this.currentDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(date);
+    } else {
+      this.currentDay = ''; 
+    }
+  }
+  generateTimeSlots() {
+    const periods = ['AM', 'PM'];
+    for (const period of periods) {
+      for (let hour = 7; hour <= 12; hour++) { 
+        this.timeSlots.push(`${hour}:00 ${period}`);
+        this.timeSlots.push(`${hour}:30 ${period}`);
+      }
+      for (let hour = 1; hour <= 6; hour++) { 
+        this.timeSlots.push(`${hour}:00 ${period}`);
+        this.timeSlots.push(`${hour}:30 ${period}`);
+      }
+    }
+  }
+  
   onSubmit(): void {
     if (this.shiftForm.valid) {
       const newShift = { ...this.shiftForm.value, duration: this.duration }; // Copy form data
