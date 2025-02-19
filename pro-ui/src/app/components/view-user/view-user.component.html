@@ -214,7 +214,7 @@
       <div class="m-3 mt-4"
         *ngIf="createForm">
 
-        <div *ngIf="isEdit">
+        <div *ngIf="isEdit || authenticatedUser?.interviewer">
           <div class="font-medium tracking-wider mb-2">PROJECTS</div>
           <div class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] p-3 pt-2"
             style="border-color: #c2c2c2 !important;">
@@ -255,11 +255,10 @@
                 </div>
               }
             </div>
-
           </div>
         </div>
 
-        <div *ngIf="!isEdit">
+        <div *ngIf="!isEdit && !authenticatedUser?.interviewer">
           <app-trained-on-projects [trainedOnProjects]="trainedOnProjects"
                                     [defPro]="defPro"
                                     [notTrainedOnProjects]="notTrainedOnProjects"
