@@ -1,8 +1,16 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import {Component, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Utils } from '../../classes/utils';
-import { IAuthenticatedUser, IDropDownValue, IFormFieldVariable, IRequest, IUserMin, IWeekStartAndEnd } from '../../interfaces/interfaces';
+import {
+  IAuthenticatedUser,
+  IBlockOutDate,
+  IDropDownValue,
+  IFormFieldVariable,
+  IRequest,
+  IUserMin,
+  IWeekStartAndEnd
+} from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { GlobalsService } from '../../services/globals/globals.service';
@@ -11,29 +19,32 @@ import { UsersService } from '../../services/users/users.service';
 import * as html2pdf from 'html2pdf.js';
 import { LogsService } from '../../services/logs/logs.service';
 import {User} from "../../models/data/user";
+import {CanComponentDeactivate} from "../../guards/unsaved-changes.guard";
+import {UnsavedChangesDialogComponent} from "../../components/unsaved-changes-dialog/unsaved-changes-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-requests',
   templateUrl: './requests.component.html',
   styleUrls: ['./requests.component.css']
 })
-export class RequestsComponent implements OnInit {
+export class RequestsComponent implements OnInit,CanComponentDeactivate {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
-
     if (this.newRequest.changed || this.requestsChanged) {
       e.preventDefault();
       e.returnValue = '';
     }
-
   }
 
   errorMessage: string = '';
   noResultsMessage: string = 'Loading requests...';
   authenticatedUser!: IAuthenticatedUser;
+  showPopupMessage: boolean = false;
   requestCodeDropDown!: IDropDownValue[];
   decisionIdDropDown!: IDropDownValue[];
   requestFormFields: IFormFieldVariable[] = [];
-  allUsers: User[]= [];
+  allUsers: User[] = [];
   activeUsers: User[] = [];
   filteredUsersDv: IDropDownValue[] = [];
   interViewerRequestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes'];
@@ -73,13 +84,14 @@ export class RequestsComponent implements OnInit {
   pageSize = 10;
   pagedLength = 0;
   pagedRequests: IRequest[] = [];
-
+  public nextUrl: string | null = null;
   constructor(private globalsService: GlobalsService,
               private requestsService: RequestsService,
               private configurationService: ConfigurationService,
               private usersService: UsersService,
               private authenticationService: AuthenticationService,
-              private logsService: LogsService) {
+              private logsService: LogsService,private dialog: MatDialog,
+              private router: Router) {
 
     this.selectedDateRange = new FormGroup({
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
@@ -107,6 +119,12 @@ export class RequestsComponent implements OnInit {
       }
     );
 
+    this.globalsService.showPopupMessage.subscribe(
+      showPopupMessage => {
+        this.showPopupMessage = showPopupMessage;
+      }
+    );
+
     //get requests dropdown configurations
     this.configurationService.getFormFieldsByTable('Requests').subscribe(
       response => {
@@ -127,7 +145,8 @@ export class RequestsComponent implements OnInit {
       },
       error => {
         this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
@@ -209,7 +228,9 @@ export class RequestsComponent implements OnInit {
       this.noResultsMessage = 'Loading requests...';
     }
   }
-
+  closeModalPopup(): void {
+    this.globalsService.hidePopupMessage();
+  }
   compareSelectValues(v1: any, v2: any): boolean {
     return (v1 || '').toString() === (v2 || '').toString();
   }
@@ -217,9 +238,11 @@ export class RequestsComponent implements OnInit {
   applyFilters(): void {
     //make sure requests are sorted by date
     this.filteredRequests = this.allRequests.sort(function (x, y) {
-      if ((Utils.formatDateOnly(new Date(x.requestDate)) || new Date()) < (Utils.formatDateOnly(new Date(y.requestDate)) || new Date())) { return 1; }
-      else if ((Utils.formatDateOnly(new Date(x.requestDate)) || new Date()) > (Utils.formatDateOnly(new Date(y.requestDate)) || new Date())) { return -1; }
-      else {
+      if ((Utils.formatDateOnly(new Date(x.requestDate)) || new Date()) < (Utils.formatDateOnly(new Date(y.requestDate)) || new Date())) {
+        return 1;
+      } else if ((Utils.formatDateOnly(new Date(x.requestDate)) || new Date()) > (Utils.formatDateOnly(new Date(y.requestDate)) || new Date())) {
+        return -1;
+      } else {
         if (x.requestId < y.requestId) return 1;
         else if (x.requestId > y.requestId) return -1;
         else return 0;
@@ -361,7 +384,7 @@ export class RequestsComponent implements OnInit {
   setChanged(request: IRequest): void {
     request.changed = true;
 
-    if (request.requestId > 0)
+    if (request.requestId > -1)
       this.requestsChanged = true;
 
     this.globalsService.currentChanges.next(true);
@@ -573,4 +596,37 @@ export class RequestsComponent implements OnInit {
     }
   }
 
+  canDeactivate(nextUrl: string | null): boolean {
+
+    if(this.requestsChanged){
+      this.nextUrl = nextUrl;
+      this.openDialog({
+        dialogType: 'error',
+        isUserProfile: true
+      })
+      return false;
+    }
+
+
+    return true;
+
+  }
+
+  openDialog(data: any,): void {
+    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+      width: '300px',
+      data: {
+        ...data
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == 'discardChanges') {
+        this.requestsChanged=false;
+        if (this.nextUrl) {
+          this.router.navigateByUrl(this.nextUrl);
+        }
+      }
+    });
+  }
 }

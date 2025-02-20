@@ -4,6 +4,9 @@ import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { User } from '../../models/data/user';
+import { UsersService } from '../../services/users/users.service';
+import { Utils } from '../../classes/utils';
 
 interface Announcement {
   title: string;
@@ -13,6 +16,7 @@ interface Announcement {
   icon: string;
   isFullText?: boolean;
   projectObject?: any[];
+  projectIds?: number[];
   isAuthor: boolean;
 }
 @Component({
@@ -26,20 +30,35 @@ export class AnnouncementsComponent implements OnInit {
   maxLength = 100;
   userObj: any;
   allProjectList: any[] = [];
+  currentUser: User = new User();
+
   constructor(
     private http: HttpClient,
-    private authenticationService: AuthenticationService,private sanitizer: DomSanitizer
+    private authenticationService: AuthenticationService,
+    private sanitizer: DomSanitizer,
+    private usersService: UsersService,
   ) {}
   ngOnInit(): void {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
         this.userObj = this.authenticatedUser;
+        
+        this.usersService.getUserByNetId(this.authenticatedUser.netID).subscribe(
+          (data: any) => {
+            this.currentUser = data?.Subject ? data.Subject : new User();
+            this.setTrainedOn();
+            this.getAnnouncementList();
+          },
+          (error) => {
+            console.error('Error fetching user:', error);
+        });
       }
     );
-    this.getAnnouncementList();
     this.getProjectInfo();
+    
   }
+
   getSafeHtml(htmlString: string): SafeHtml {  
     if (!htmlString) return '';
       const updatedHtmlString = htmlString.replace(/<a\s+(.*?)href="(?!https?:\/\/)(.*?)"/g, (match, preAttributes, url) => {
@@ -48,15 +67,25 @@ export class AnnouncementsComponent implements OnInit {
   
     return this.sanitizer.bypassSecurityTrustHtml(updatedHtmlString);
   }
+
   getAnnouncementList(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/list`;
     this.http.get<any[]>(apiUrl).subscribe({
       next: (data: any) => {
+
         this.announcementsList =
           data?.Subject?.map((item: any) => ({
             ...item,
             isFullText: false,
-          })) || [];        
+          })) || [];
+          console.log(this.authenticatedUser);
+
+          if (!(this.authenticatedUser.resourceGroup
+            || this.authenticatedUser.admin)
+          ) {
+            this.announcementsList = this.announcementsList.filter((announcement) => Utils.arrayIncludesAny(this.currentUser.trainedOnArray, (announcement.projectIds || []).map(x => x.toString())));
+          }
+
       },
       error: (error: any) => {
         console.error('Error fetching announcements:', error);
@@ -109,4 +138,15 @@ export class AnnouncementsComponent implements OnInit {
       },
     });
   }
+
+  setTrainedOn(): void {
+    let trainedOnIds: string[] = [];
+    
+     if (this.currentUser?.trainedon) {
+       trainedOnIds = this.currentUser.trainedon.split('|');
+     }
+     this.currentUser.trainedOnArray = trainedOnIds;
+     
+   }
+ 
 }

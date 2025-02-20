@@ -3,6 +3,7 @@ package com.pro.api.controllers;
 import com.pro.api.models.business.SessionUserEmail;
 import com.pro.api.models.dataaccess.Request;
 import com.pro.api.models.dataaccess.repos.RequestRepository;
+import com.pro.api.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,9 @@ public class RequestsController {
 
 	@Autowired
 	private SessionUserEmail UserEmail;
+
+	@Autowired
+	private AuditService auditService;
 
 	@ModelAttribute("UserEmail")
 	public SessionUserEmail getUserEmail() {
@@ -73,6 +77,7 @@ public class RequestsController {
 			for (Request request : requests) {
 				try {
 					try {
+						auditService.updateNetId(request.getModBy());
 						Request rq = requestRepository.save(request);
 						savedRequests.add(rq);
 					} catch (Exception ex) {
@@ -114,6 +119,7 @@ public class RequestsController {
 		try {
 			for (Request request : requests) {
 				try {
+					auditService.updateNetId(request.getModBy());
 					requestRepository.delete(request);
 					deletedRequests.add(request);
 				} catch (Exception ex) {

@@ -24,7 +24,11 @@
           </mat-select>
         </mat-form-field>
       </div>
-
+      <app-modal-popup id="modal-save-popup-message"
+                       class="modal-save-popup"
+                       (closeEvent)="closeModalPopup()"
+                       *ngIf="showPopupMessage">
+      </app-modal-popup>
       <!--interviewer-->
       <div class="select-field">
         <mat-form-field appearance="outline" class="ctm">

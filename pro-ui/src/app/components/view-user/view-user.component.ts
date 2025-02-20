@@ -98,6 +98,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
   public selectedTab: string = 'scheduling';
   isLoading = false; 
 
+  public statuses: IFormFieldVariable | undefined = undefined;
+
   constructor(private fb: FormBuilder, private globalsService: GlobalsService,
     private authenticationService: AuthenticationService,
     private usersService: UsersService,
@@ -115,6 +117,15 @@ export class ViewUserComponent implements OnInit, OnChanges {
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.roles = <IFormFieldVariable>response.Subject;
+        }
+      }
+    );
+
+    //get status values
+    this.configurationService.getFormField('Status').subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.statuses = <IFormFieldVariable>response.Subject;
         }
       }
     );
@@ -1112,6 +1123,17 @@ export class ViewUserComponent implements OnInit, OnChanges {
     });
   }
 
+  getUserLanguages(): string[] {
+    if (this.selectedUser?.language) {
+      if ((this.selectedUser.languageList || []).length < 1) {
+        this.selectedUser.languageList = this.selectedUser.language.split('|');
+      }
+      return this.selectedUser.languageList;
+    } else {
+      return [];
+    }
+  }
+
   displaySchedulingLevelInfo(event: any): void {
     let htmlMessage: string = '<div class="scheduling-info">';
 
@@ -1179,6 +1201,15 @@ export class ViewUserComponent implements OnInit, OnChanges {
       "_blank",
       `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
     );
+  }
+
+  //get the display value for a status
+  public getStatusDisplay(statusId: string): string {
+    if (this.statuses?.dropDownValues) {
+      let status: IDropDownValue | undefined = this.statuses.dropDownValues.find(option => option.codeValues == (parseInt(statusId) || 0));
+      return status?.dropDownItem ? status.dropDownItem : '';
+    }
+    return '';
   }
 
 }

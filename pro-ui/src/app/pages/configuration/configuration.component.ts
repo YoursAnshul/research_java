@@ -467,8 +467,8 @@ export class ConfigurationComponent implements CanComponentDeactivate {
 
 
     getFilteredConfiguration(): IAdminOptionsVariable [] {
-    // 9 is Scheduled Lock . All we need is Scheduled Lock .
-      return this.allConfiguration?.adminOptionsVariables.filter(x=>x.adminOptionsId===9);
+    // 7 is Scheduled Lock . All we need is Scheduled Lock .
+      return this.allConfiguration?.adminOptionsVariables.filter(x=>x.formFieldId===7);
     }
 
   adminOptionsChange(): void {

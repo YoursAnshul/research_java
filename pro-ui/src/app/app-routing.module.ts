@@ -37,7 +37,7 @@ const routes: Routes = [
   { path: 'reports', component: ReportsComponent},
   { path: 'users', component: UsersComponent, canDeactivate: [UnsavedChangesGuard]},
   { path: 'forecasting', component: ForecastingComponent},
-  { path: 'requests', component: RequestsComponent },
+  { path: 'requests', component: RequestsComponent, canDeactivate: [UnsavedChangesGuard] },
   { path: 'configuration', component: ConfigurationComponent, canDeactivate: [UnsavedChangesGuard]},
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent},
   { path: 'announcement-management', component: ManageAnnouncementsComponent},

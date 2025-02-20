@@ -6,6 +6,10 @@ module.exports = {
       'white': '#ffffff',
       'black': '#000000',
       'warn-red': '#DC4A38',
+      'mid-gray': '#B5B5B5',
+      'extra-dark-blue': '#164B8B',
+      'light-accent-blue': '#0680CD',
+      'font-default': '#262626',
       'duke-blue': {
         'extra-dark': '#164B8B',
         'dark': '#001a57',

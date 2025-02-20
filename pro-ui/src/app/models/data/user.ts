@@ -35,6 +35,7 @@ export class User {
     public cubeoffice?: number | null;
     public spanish?: number | null;
     public language: string = '';
+    public languageList: string[] = [];
     public canedit?: boolean | null = undefined;
     public trainedon: string = '';
     public citidate?: Date | null;

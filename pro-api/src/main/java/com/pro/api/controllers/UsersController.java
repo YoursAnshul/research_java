@@ -670,10 +670,12 @@ public DirContext getUserDetails(String duid) {
 
 		//set the below as needed for testing locally
 		user.interviewer = false;
-		user.resourceGroup = false;
-		user.admin = true;
-		// user.resourceGroup = false;
-		// user.admin = false;
+		// user.resourceGroup = true;
+		 user.admin = true;
+//		user.resourceGroup = false;
+//		user.admin = false;
+		user.projectTeam = false;
+		user.outcomesIt = false;
 
 	}
 

@@ -49,11 +49,34 @@
         <div class="w-fit ml-1">
 
           <!-- top level -->
-          <div class="mb-[10px]">
+          <div class="flex items-center gap-1 mb-[10px]">
 
             <!-- user name -->
             <div class="text-black text-lg font-medium tracking-wider">
             {{selectedUser?.fname}} {{selectedUser?.lname}}
+            </div>
+
+            @if (selectedUser?.buddy) {
+              <mat-icon svgIcon="group" id="buddy-icon" class="ml-2"
+                style="height: 18px !important; width: 18px !important; margin-bottom: 12px;"></mat-icon>
+            }
+
+            @for (language of getUserLanguages(); track language) {
+              <app-language-icon [language]="language"></app-language-icon>
+            }
+
+            <div class="rounded-full border border-2 border-duke-gray-dark flex items-center gap-1 ml-2"
+              style="border-color: #b5b5b5 !important; padding-left: 0.25em !important; padding-right: 0.75em !important;">
+              <div class="text-[#41B200]">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                  <path d="M400-304 240-464l56-56 104 104 264-264 56 56-320 320Z"/>
+                </svg>
+              </div>
+              @if (getStatusDisplay(selectedUser.status)) {
+                <div class="text-font-default">
+                  {{ getStatusDisplay(selectedUser.status) }}
+                </div>
+              }
             </div>
 
           </div>
