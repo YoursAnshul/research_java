@@ -286,3 +286,6 @@
 ::ng-deep .mat-mdc-option.mat-mdc-option-active.mdc-list-item {
   background-color: transparent !important;
 }
+::ng-deep .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text{
+  color: black !important;
+}
