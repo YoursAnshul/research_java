@@ -40,6 +40,28 @@
           </app-shift-calendar-controls>
         </div>
       </div>
+      <div class="center-container">
+        <div>
+          <mat-form-field appearance="outline" class="custom-form-field">
+            <mat-label>User</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let user of userList" [value]="user">
+                {{ user.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="ml-3">
+          <mat-form-field appearance="outline" class="custom-form-field">
+            <mat-label>Project</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let project of projectList" [value]="project">
+                {{ project.projectName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
       <app-shift-day-view
         [shiftSchedule]="shiftSchedule"
         [selectedDate]="selectedDate"
@@ -63,6 +85,28 @@
           </app-shift-calendar-controls>
         </div>
       </div>
+      <div class="center-container mb-3">
+        <div>
+          <mat-form-field appearance="outline" class="custom-form-field">
+            <mat-label>User</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let user of userList" [value]="user">
+                {{ user.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="ml-3">
+          <mat-form-field appearance="outline" class="custom-form-field">
+            <mat-label>Project</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let project of projectList" [value]="project">
+                {{ project.projectName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
       <app-shift-week-view
         [shiftSchedule]="shiftSchedule"
         [selectedDate]="selectedDate"
@@ -83,6 +127,28 @@
             (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
           >
           </app-shift-calendar-controls>
+        </div>
+      </div>
+      <div class="center-container mb-3">
+        <div>
+          <mat-form-field appearance="outline" class="custom-form-field">
+            <mat-label>User</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let user of userList" [value]="user">
+                {{ user.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="ml-3">
+          <mat-form-field appearance="outline" class="custom-form-field">
+            <mat-label>Project</mat-label>
+            <mat-select>
+              <mat-option *ngFor="let project of projectList" [value]="project">
+                {{ project.projectName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
       <app-shift-month-view

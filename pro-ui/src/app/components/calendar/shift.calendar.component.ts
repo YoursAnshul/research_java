@@ -27,6 +27,8 @@ import { User } from '../../models/data/user';
 import { UsersService } from '../../services/users/users.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { ProjectsService } from '../../services/projects/projects.service';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-shift-calendar',
@@ -85,6 +87,8 @@ export class ShifCalendarComponent implements OnInit {
   scheduleFetchMessage: string = '';
 
   tabIndex = 0;
+  userList: any[] = [];
+  projectList: any[] = [];
   @Input() shiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
 
@@ -94,7 +98,8 @@ export class ShifCalendarComponent implements OnInit {
     private usersService: UsersService,
     private configurationService: ConfigurationService,
     private projectsService: ProjectsService,
-    private logsService: LogsService
+    private logsService: LogsService,
+    private http: HttpClient
   ) {
     //subscribe to users
     this.usersService.allUsersMin.subscribe(
@@ -157,6 +162,8 @@ export class ShifCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     //subscribe to scheduleFetchStatus
+    this.getAuthor();
+    this.getProjectInfo();
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       (scheduleFetchStatus) => {
         this.scheduleFetchStatus = scheduleFetchStatus;
@@ -738,6 +745,24 @@ export class ShifCalendarComponent implements OnInit {
   }
   onResetShiftSchedule(): void {
     console.log('Shift schedule and form reset.');
-    this.resetShiftSchedule.emit(); // Emit event to parent component
+    this.resetShiftSchedule.emit(); 
+  }
+  getAuthor(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.userList = Array.isArray(data) ? data : [];
+      },
+      error: (error) => console.error('Error fetching authors:', error),
+    });
+  }
+  getProjectInfo(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.projectList = Array.isArray(data) ? data : [];
+      },
+      error: (error) => console.error('Error fetching projects:', error),
+    });
   }
 }

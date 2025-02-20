@@ -39,7 +39,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 165px"
+          style="width: 150px"
         >
           <mat-label>Project</mat-label>
           <mat-select formControlName="projects">
@@ -84,8 +84,10 @@
                 class="time-box"
                 [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
               >
-                <span class="bold-prefix">{{ time.split(" ")[0] }}</span>
-                {{ time.substring(time.indexOf(" ") + 1) }}
+                <span class="bold-prefix">{{
+                  time.substring(time.indexOf(" ") + 1)
+                }}</span>
+                {{ time }}
               </div>
             </mat-option>
           </mat-select>
@@ -104,8 +106,10 @@
                 class="time-box"
                 [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
               >
-                <span class="bold-prefix">{{ time.split(" ")[0] }}</span>
-                {{ time.substring(time.indexOf(" ") + 1) }}
+                <span class="bold-prefix">{{
+                  time.substring(time.indexOf(" ") + 1)
+                }}</span>
+                {{ time }}
               </div>
             </mat-option>
           </mat-select>
@@ -130,6 +134,7 @@
             mat-raised-button
             color="primary"
             [disabled]="!scheduleFetchStatus"
+            style="white-space: nowrap;"
           >
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
