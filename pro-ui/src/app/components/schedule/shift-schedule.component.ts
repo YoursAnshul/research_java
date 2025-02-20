@@ -23,12 +23,51 @@ export class ShiftScheduleComponent implements OnInit {
   currentMonth: number = new Date().getMonth() + 1;
   shiftSchedule: any[] = [];
   weekSchedules: IWeekSchedules[] = []; // Data for Week View
-  timeSlots: string[] = [];
-
+  timeSlots: string[] = [
+    'AM 7:00 AM',
+    'AM 7:30 AM',
+    'AM 8:00 AM',
+    'AM 8:30 AM',
+    'AM 9:00 AM',
+    'AM 9:30 AM',
+    'AM 10:00 AM',
+    'AM 10:30 AM',
+    'AM 11:00 AM',
+    'AM 11:30 AM',
+    'AM 12:00 AM',
+    'AM 12:30 AM',
+    'PM 12:00 PM',
+    'PM 12:30 PM',
+    'PM 1:00 PM',
+    'PM 1:30 PM',
+    'PM 2:00 PM',
+    'PM 2:30 PM',
+    'PM 3:00 PM',
+    'PM 3:30 PM',
+    'PM 4:00 PM',
+    'PM 4:30 PM',
+    'PM 5:00 PM',
+    'PM 5:30 PM',
+    'PM 6:00 PM',
+    'PM 6:30 PM',
+    'PM 7:00 PM',
+    'PM 7:30 PM',
+    'PM 8:00 PM',
+    'PM 8:30 PM',
+    'PM 9:00 PM',
+    'PM 9:30 PM',
+    'PM 10:00 PM',
+    'PM 10:30 PM',
+    'PM 11:00 PM',
+    'PM 11:30 PM',
+  ];
   constructor(private http: HttpClient) {}
+  
+  getBackgroundColor(time: string): string {
+    return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
+  }
 
   ngOnInit(): void {
-    this.generateTimeSlots();
     this.getAuthor();
     this.getProjectInfo();
     this.currentDay = new Intl.DateTimeFormat('en-US', {
@@ -57,30 +96,19 @@ export class ShiftScheduleComponent implements OnInit {
   }
   updateDayLabel(date: Date | null) {
     if (date) {
-      this.currentDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(date);
+      this.currentDay = new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+      }).format(date);
     } else {
-      this.currentDay = ''; 
+      this.currentDay = '';
     }
   }
-  generateTimeSlots() {
-    const periods = ['AM', 'PM'];
-    for (const period of periods) {
-      for (let hour = 7; hour <= 12; hour++) { 
-        this.timeSlots.push(`${hour}:00 ${period}`);
-        this.timeSlots.push(`${hour}:30 ${period}`);
-      }
-      for (let hour = 1; hour <= 6; hour++) { 
-        this.timeSlots.push(`${hour}:00 ${period}`);
-        this.timeSlots.push(`${hour}:30 ${period}`);
-      }
-    }
-  }
-  
+
   onSubmit(): void {
     if (this.shiftForm.valid) {
       const newShift = { ...this.shiftForm.value, duration: this.duration }; // Copy form data
       this.shiftSchedule = [...this.shiftSchedule, newShift]; // Update array reference
-      this.weekSchedules =  [...this.shiftSchedule, newShift]; 
+      this.weekSchedules = [...this.shiftSchedule, newShift];
       console.log('Updated Shift Schedule:', this.shiftSchedule);
     }
   }
@@ -164,31 +192,31 @@ export class ShiftScheduleComponent implements OnInit {
   updateDuration(): void {
     const start = this.shiftForm.get('startTime')?.value;
     const end = this.shiftForm.get('endTime')?.value;
-  
+
     if (!start || !end) {
       this.duration = '0hr';
       return;
     }
-  
+
     const startDate = this.parseTime(start);
     const endDate = this.parseTime(end);
-  
+
     if (endDate <= startDate) {
       endDate.setDate(endDate.getDate() + 1);
     }
-  
+
     const diffMs = endDate.getTime() - startDate.getTime();
-  
+
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    this.duration  = "";
+    this.duration = '';
     if (diffMinutes >= 60) {
       this.duration = `${diffHours + 1} hr`;
     } else {
       this.duration = `${diffHours}.${diffMinutes} hr`;
     }
   }
-  
+
   parseTime(time: string): Date {
     const date = new Date();
     const [timePart, period] = time.split(' ');

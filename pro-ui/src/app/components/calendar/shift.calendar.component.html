@@ -28,7 +28,7 @@
     <mat-tab label="Day">
       <div class="calendar-wrapper">
         <div
-        [ngClass]="authenticatedUser?.interviewer ? 'wd70' : 'wd100'"
+          [ngClass]="authenticatedUser?.interviewer ? 'wd70' : 'wd100'"
           class="calendar-control-container"
         >
           <app-shift-calendar-controls
@@ -40,7 +40,12 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-day-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate"  (resetShiftSchedule)="onResetShiftSchedule()"> </app-shift-day-view>
+      <app-shift-day-view
+        [shiftSchedule]="shiftSchedule"
+        [selectedDate]="selectedDate"
+        (resetShiftSchedule)="onResetShiftSchedule()"
+      >
+      </app-shift-day-view>
     </mat-tab>
     <mat-tab label="Week">
       <div class="calendar-wrapper">
@@ -58,7 +63,12 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-week-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange" (resetShiftSchedule)="onResetShiftSchedule()"></app-shift-week-view>
+      <app-shift-week-view
+        [shiftSchedule]="shiftSchedule"
+        [selectedDate]="selectedDate"
+        [selectedDateRange]="selectedDateRange"
+        (resetShiftSchedule)="onResetShiftSchedule()"
+      ></app-shift-week-view>
     </mat-tab>
     <mat-tab label="Month">
       <div class="calendar-wrapper">
@@ -75,7 +85,13 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <app-shift-month-view [monthSchedules] ="monthSchedules" [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange" (resetShiftSchedule)="onResetShiftSchedule()"></app-shift-month-view>
+      <app-shift-month-view
+        [monthSchedules]="monthSchedules"
+        [shiftSchedule]="shiftSchedule"
+        [selectedDate]="selectedDate"
+        [selectedDateRange]="selectedDateRange"
+        (resetShiftSchedule)="onResetShiftSchedule()"
+      ></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>
 </div>

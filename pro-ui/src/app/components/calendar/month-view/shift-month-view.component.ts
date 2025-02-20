@@ -33,24 +33,23 @@ export class ShiftMonthViewComponent implements OnInit {
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
-    if (
-      !this.selectedDateRange?.value?.start ||
-      !this.selectedDateRange?.value?.end
-    ) {
+    if (!this.selectedDateRange?.value?.start || !this.selectedDateRange?.value?.end) {
       return;
     }
-
+  
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
-
+    startOfWeek.setHours(0, 0, 0, 0);
+    endOfWeek.setHours(0, 0, 0, 0);
+  
     if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
       this.monthSchedules = { weekSchedules: [] };
     }
-
+  
     let existingWeekSchedule = this.monthSchedules.weekSchedules.find(
       (week) => week.weekStart.getTime() === startOfWeek.getTime()
     );
-
+  
     if (!existingWeekSchedule) {
       existingWeekSchedule = {
         weekStart: startOfWeek,
@@ -63,18 +62,25 @@ export class ShiftMonthViewComponent implements OnInit {
         day7Schedules: [],
       };
       this.monthSchedules.weekSchedules.push(existingWeekSchedule);
+    } else {
+      for (let i = 1; i <= 7; i++) {
+        (existingWeekSchedule as any)[`day${i}Schedules`] = [];
+      }
     }
-
-    this.shiftSchedule.forEach((shift) => {
+  
+    const selectedMonth = startOfWeek.toLocaleString('default', { month: 'long' });
+  
+    for (let i = 0; i < this.shiftSchedule.length; i++) {
+      const shift = this.shiftSchedule[i];
+      console.log("shift---------", shift);
+      
       const shiftDate = new Date(shift.dayWiseDate);
       shiftDate.setHours(0, 0, 0, 0);
-      startOfWeek.setHours(0, 0, 0, 0);
-      endOfWeek.setHours(0, 0, 0, 0);
-
+  
       if (shiftDate >= startOfWeek && shiftDate <= endOfWeek) {
         const dayIndex = shiftDate.getDay();
-        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
-
+        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex; 
+  
         const schedule: ISchedule = {
           preschedulekey: shift.user.userId,
           displayName: shift.user.userName,
@@ -88,7 +94,7 @@ export class ShiftMonthViewComponent implements OnInit {
           dayOfWeek: adjustedDayIndex,
           weekStart: startOfWeek,
           weekEnd: endOfWeek,
-          month: shiftDate.toLocaleString('default', { month: 'long' }),
+          month: selectedMonth, 
           requestDetails: '',
           requestCode: '',
           userid: shift.user.userId,
@@ -103,13 +109,13 @@ export class ShiftMonthViewComponent implements OnInit {
           userName: null,
           expr1: null,
         };
-
-        (existingWeekSchedule as any)[`day${adjustedDayIndex}Schedules`].push(
-          schedule
-        );
+  
+        (existingWeekSchedule as any)[`day${adjustedDayIndex}Schedules`].push(schedule);
       }
-    });
+    }
   }
+  
+  
 
   addShift(): void {
     this.resetShiftSchedule.emit();

@@ -5,7 +5,12 @@
   <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
 
   <div class="d-flex" style="margin-left: auto">
-    <button style="height: 25px" mat-raised-button color="primary" class="submit wd90">
+    <button
+      style="height: 25px"
+      mat-raised-button
+      color="primary"
+      class="submit wd90"
+    >
       Save Calendar
     </button>
     <button style="height: 25px" class="btn-outline ml-2">Exit</button>
@@ -67,22 +72,41 @@
         </mat-form-field>
 
         <!-- Start Time Picker -->
-        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 150px"
+        >
           <mat-label>Start Time</mat-label>
           <mat-select formControlName="startTime">
             <mat-option *ngFor="let time of timeSlots" [value]="time">
-              {{ time }}
+              <div
+                class="time-box"
+                [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
+              >
+                <span class="bold-prefix">{{ time.split(" ")[0] }}</span>
+                {{ time.substring(time.indexOf(" ") + 1) }}
+              </div>
             </mat-option>
           </mat-select>
         </mat-form-field>
-        
 
         <!-- End Time Picker -->
-        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 150px"
+        >
           <mat-label>End Time</mat-label>
           <mat-select formControlName="endTime">
             <mat-option *ngFor="let time of timeSlots" [value]="time">
-              {{ time }}
+              <div
+                class="time-box"
+                [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
+              >
+                <span class="bold-prefix">{{ time.split(" ")[0] }}</span>
+                {{ time.substring(time.indexOf(" ") + 1) }}
+              </div>
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -106,8 +130,7 @@
             mat-raised-button
             color="primary"
             [disabled]="!scheduleFetchStatus"
-            >
-
+          >
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
@@ -115,6 +138,9 @@
     </div>
 
     <!-- Shift Calendar Component -->
-    <app-shift-calendar [shiftSchedule]="shiftSchedule" (resetShiftSchedule)="onResetShiftSchedule()"></app-shift-calendar>
+    <app-shift-calendar
+      [shiftSchedule]="shiftSchedule"
+      (resetShiftSchedule)="onResetShiftSchedule()"
+    ></app-shift-calendar>
   </form>
 </div>
