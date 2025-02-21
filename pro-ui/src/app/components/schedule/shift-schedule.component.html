@@ -75,7 +75,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 150px"
+          style="width: 200px"
         >
           <mat-label>Start Time</mat-label>
           <mat-select formControlName="startTime">
@@ -97,11 +97,11 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 150px"
+          style="width: 200px"
         >
           <mat-label>End Time</mat-label>
           <mat-select formControlName="endTime">
-            <mat-option *ngFor="let time of timeSlots" [value]="time">
+            <mat-option *ngFor="let time of endtimeSlots" [value]="time">
               <div
                 class="time-box"
                 [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
@@ -133,7 +133,7 @@
           <button
             mat-raised-button
             color="primary"
-            [disabled]="!scheduleFetchStatus"
+            [disabled]="true"
             style="white-space: nowrap;"
           >
             <mat-icon>add</mat-icon> Add to Calendar
