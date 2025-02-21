@@ -89,6 +89,9 @@ export class ShifCalendarComponent implements OnInit {
   tabIndex = 0;
   userList: any[] = [];
   projectList: any[] = [];
+  selectedUser: any = null;
+  selectedProject: any = null;
+
   @Input() shiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
 
@@ -209,16 +212,17 @@ export class ShifCalendarComponent implements OnInit {
 
     console.log('this.selectedDate ---', this.selectedDate);
   }
-
+  onReset(): void {
+    this.selectedDate.setValue(null);
+    this.selectedUser = null;
+    this.selectedProject = null;
+  }
   ngOnChanges(): void {
     this.checkContext();
   }
 
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    // console.log('tabChangeEvent => ', tabChangeEvent);
-    // console.log('index => ', tabChangeEvent.index);
     this.tabIndex = tabChangeEvent.index;
-    // console.log("tabIndex" + this.tabIndex);
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -745,7 +749,7 @@ export class ShifCalendarComponent implements OnInit {
   }
   onResetShiftSchedule(): void {
     console.log('Shift schedule and form reset.');
-    this.resetShiftSchedule.emit(); 
+    this.resetShiftSchedule.emit();
   }
   getAuthor(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;

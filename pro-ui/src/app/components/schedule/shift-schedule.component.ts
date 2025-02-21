@@ -4,6 +4,8 @@ import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { IWeekSchedules } from '../../interfaces/interfaces';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ShifCalendarComponent } from '../calendar/shift.calendar.component';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -87,12 +89,14 @@ export class ShiftScheduleComponent implements OnInit {
     '10:30 PM',
     '11:00 PM',
   ];
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private dialogRef: MatDialogRef<ShifCalendarComponent>) {}
   
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
-
+  onClose(): void {
+    this.dialogRef.close(); 
+  }
   ngOnInit(): void {
     this.getAuthor();
     this.getProjectInfo();

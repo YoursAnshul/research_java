@@ -44,7 +44,7 @@
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select>
+            <mat-select [(ngModel)]="selectedUser">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -54,12 +54,23 @@
         <div class="ml-3">
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>Project</mat-label>
-            <mat-select>
+            <mat-select [(ngModel)]="selectedProject">
               <mat-option *ngFor="let project of projectList" [value]="project">
                 {{ project.projectName }}
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </div>
+        <div class="ml-3">
+          <button
+            type="button"
+            style="height: 25px"
+            mat-raised-button
+            color="primary"
+            (click)="onReset()"
+          >
+            Reset
+          </button>
         </div>
       </div>
       <app-shift-day-view
@@ -89,22 +100,33 @@
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select>
+            <mat-select [(ngModel)]="selectedUser">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="ml-3">
+        <div class="ml-3" >
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>Project</mat-label>
-            <mat-select>
+            <mat-select [(ngModel)]="selectedProject">
               <mat-option *ngFor="let project of projectList" [value]="project">
                 {{ project.projectName }}
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </div>
+        <div class="ml-3">
+          <button
+            type="button"
+            style="height: 25px"
+            mat-raised-button
+            color="primary"
+            (click)="onReset()"
+          >
+            Reset
+          </button>
         </div>
       </div>
       <app-shift-week-view
@@ -133,7 +155,7 @@
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select>
+            <mat-select [(ngModel)]="selectedUser">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -143,12 +165,23 @@
         <div class="ml-3">
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>Project</mat-label>
-            <mat-select>
+            <mat-select [(ngModel)]="selectedProject">
               <mat-option *ngFor="let project of projectList" [value]="project">
                 {{ project.projectName }}
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </div>
+        <div class="ml-3">
+          <button
+            type="button"
+            style="height: 25px"
+            mat-raised-button
+            color="primary"
+            (click)="onReset()"
+          >
+            Reset
+          </button>
         </div>
       </div>
       <app-shift-month-view
