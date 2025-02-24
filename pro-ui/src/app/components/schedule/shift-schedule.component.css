@@ -295,6 +295,43 @@
 ::ng-deep .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text{
   color: black !important;
 }
-::ng-deep .mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper{
+::ng-deep .custom-form-field.mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper{
   border: none !important;
 }
+.form-container {
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+.form-container > div {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap; /* Ensure no wrapping */
+}
+
+.custom-form-field {
+  flex: 1 1 auto; /* Adjust size dynamically */
+  min-width: 100px;
+  max-width: 200px;
+}
+
+.add-to-calendar {
+  height: 50px;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .custom-form-field {
+    min-width: 80px; /* Shrink fields on small screens */
+  }
+
+  .add-to-calendar {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}
+
