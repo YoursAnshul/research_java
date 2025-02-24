@@ -28,6 +28,12 @@
   flex: 0 0 18.5em;
 }
 
+::ng-deep .week-schedules-container{
+  margin-bottom: unset !important;
+}
+::ng-deep .day-schedules-container{
+  margin-bottom: unset !important;
+}
 @keyframes spin {
   from {
     transform: rotate(0deg);

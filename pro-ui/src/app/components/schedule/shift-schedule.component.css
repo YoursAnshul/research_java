@@ -22,6 +22,12 @@
 .mat-pseudo-checkbox-full.mat-pseudo-checkbox-indeterminate {
   background-color: #0680cd !important;
 }
+::ng-deep .week-schedules-container{
+  margin-bottom: unset !important;
+}
+::ng-deep .day-schedules-container{
+  margin-bottom: unset !important;
+}
 .mat-pseudo-checkbox-full {
   border-color: #0680cd 2px solid !important;
 }

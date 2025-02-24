@@ -222,29 +222,25 @@ export class ShiftScheduleComponent implements OnInit {
   updateDuration(): void {
     const start = this.shiftForm.get('startTime')?.value;
     const end = this.shiftForm.get('endTime')?.value;
-
+  
     if (!start || !end) {
       this.duration = '0hr';
       return;
     }
-
+  
     const startDate = this.parseTime(start);
     const endDate = this.parseTime(end);
-
+  
     if (endDate <= startDate) {
       endDate.setDate(endDate.getDate() + 1);
     }
-
+  
     const diffMs = endDate.getTime() - startDate.getTime();
-
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    this.duration = '';
-    if (diffMinutes >= 60) {
-      this.duration = `${diffHours + 1} hr`;
-    } else {
-      this.duration = `${diffHours}.${diffMinutes} hr`;
-    }
+  
+    const formattedMinutes = diffMinutes / 60; // Convert minutes to decimal (30 mins = 0.5)
+    this.duration = `${(diffHours + formattedMinutes).toFixed(1)} hr`;
   }
 
   parseTime(time: string): Date {

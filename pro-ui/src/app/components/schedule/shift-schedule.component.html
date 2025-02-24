@@ -116,7 +116,7 @@
         </mat-form-field>
 
         <!-- Dynamic Duration Display -->
-        <span class="ml-2">{{ duration }}</span>
+        <span class="ml-2" style="margin-top: 8px;">{{ duration }}</span>
 
         <!-- Comments (Optional) -->
         <mat-form-field
@@ -143,7 +143,7 @@
     </div>
 
     <!-- Shift Calendar Component -->
-    <app-shift-calendar
+    <app-shift-calendar style="margin-top: -20px;"
       [shiftSchedule]="shiftSchedule"
       (resetShiftSchedule)="onResetShiftSchedule()"
     ></app-shift-calendar>
