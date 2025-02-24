@@ -187,4 +187,8 @@ export class ShiftWeekViewComponent implements OnInit {
   addShift(): void {
     this.resetShiftSchedule.emit(); // Emit event to parent component
   }
+  onResetShiftSchedule(): void {
+    console.log('Shift schedule and form reset.');
+    this.resetShiftSchedule.emit();
+  }
 }

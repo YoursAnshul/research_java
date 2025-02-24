@@ -36,9 +36,10 @@ export class ShiftMonthViewComponent implements OnInit {
     if (!this.selectedDateRange?.value?.start || !this.selectedDateRange?.value?.end) {
       return;
     }
-  
+   
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
+
     startOfWeek.setHours(0, 0, 0, 0);
     endOfWeek.setHours(0, 0, 0, 0);
   
@@ -118,6 +119,10 @@ export class ShiftMonthViewComponent implements OnInit {
   
 
   addShift(): void {
+    this.resetShiftSchedule.emit();
+  }
+  onResetShiftSchedule(): void {
+    console.log('Shift schedule and form reset.');
     this.resetShiftSchedule.emit();
   }
 }
