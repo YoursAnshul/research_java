@@ -71,8 +71,8 @@ export class ShiftDayViewComponent implements OnInit {
     const duration = endHour - startHour;
 
     return {
-      left: `${(startHour - 8) * 6.25 + 10.1}%`,
-      width: `${duration * 6.25}%`,
+      left: `${(startHour - 8) * 5.25 + 10.1}%`,
+      width: `${duration * 6.20}%`,
     };
   }
   convertTimeToSlot(time: string): number {
