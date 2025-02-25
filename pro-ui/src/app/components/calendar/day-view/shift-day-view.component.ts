@@ -66,22 +66,25 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   customScheduleCard(startTime: string, endTime: string) {
-    const startHour = this.convertTimeToSlot(startTime);
-    const endHour = this.convertTimeToSlot(endTime);
-    const duration = endHour - startHour;
-
+    const startHour = this.convertTimeToSlot(startTime); // Convert start time to a slot index
+    const endHour = this.convertTimeToSlot(endTime); // Convert end time to a slot index
+    const duration = endHour - startHour; // Calculate duration
+  
     return {
-      left: `${(startHour - 8) * 5.25 + 10.1}%`,
-      width: `${duration * 6.20}%`,
+      left: `${(startHour - 8) * 5.25 + 10.1}%`, // Adjust left positioning based on the start time
+      width: `${duration * 5.80}%`, // Width should match the hourly slot width dynamically
     };
   }
+  
   convertTimeToSlot(time: string): number {
-    const [hour, minute, period] = time.match(/(\d+):(\d+) (\w+)/)!.slice(1);
-    let hours = parseInt(hour);
-    if (period === 'PM' && hours !== 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
-    return hours;
+    const [hours, minutes] = time.split(/[: ]/);
+    let hour = parseInt(hours);
+    if (time.includes('PM') && hour !== 12) hour += 12;
+    if (time.includes('AM') && hour === 12) hour = 0;
+    const slot = hour + (minutes === '30' ? 0.5 : 0); // Adjust for half-hour slots
+    return slot;
   }
+  
   customProjectSwatch(projectColor: string, scheduledHours?: number) {
     if (projectColor.length > 7) {
       projectColor = projectColor.substring(0, 7);
