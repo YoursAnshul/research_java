@@ -25,7 +25,8 @@ export class ShiftMonthViewComponent implements OnInit {
   @Input() selectedDateRange!: FormGroup;
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Output() resetShiftSchedule = new EventEmitter<void>();
-
+  @Input() selectedUser: any = null;
+  @Input() selectedProject: any = null;
   constructor() {}
 
   ngOnInit(): void {}
@@ -36,12 +37,12 @@ export class ShiftMonthViewComponent implements OnInit {
     if (!this.selectedDateRange?.value?.start || !this.selectedDateRange?.value?.end) {
       return;
     }
-   
+  
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
-
+  
     startOfWeek.setHours(0, 0, 0, 0);
-    endOfWeek.setHours(0, 0, 0, 0);
+    endOfWeek.setHours(23, 59, 59, 999);
   
     if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
       this.monthSchedules = { weekSchedules: [] };
@@ -69,36 +70,39 @@ export class ShiftMonthViewComponent implements OnInit {
       }
     }
   
+    const selectedUserId = this.selectedUser?.userId ?? null;
+    const selectedProjectId = this.selectedProject?.projectId ?? null;
     const selectedMonth = startOfWeek.toLocaleString('default', { month: 'long' });
   
-    for (let i = 0; i < this.shiftSchedule.length; i++) {
-      const shift = this.shiftSchedule[i];
-      console.log("shift---------", shift);
-      
+    for (const shift of this.shiftSchedule) {
       const shiftDate = new Date(shift.dayWiseDate);
       shiftDate.setHours(0, 0, 0, 0);
   
-      if (shiftDate >= startOfWeek && shiftDate <= endOfWeek) {
+      const isWithinDateRange = shiftDate >= startOfWeek && shiftDate <= endOfWeek;
+      const isUserMatch = selectedUserId ? shift.user?.userId === selectedUserId : true;
+      const isProjectMatch = selectedProjectId ? shift.projects?.projectId === selectedProjectId : true;
+  
+      if (isWithinDateRange && isUserMatch && isProjectMatch) {
         const dayIndex = shiftDate.getDay();
-        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex; 
+        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
   
         const schedule: ISchedule = {
-          preschedulekey: shift.user.userId,
-          displayName: shift.user.userName,
-          projectName: shift.projects.projectName,
-          projectColor: shift.projects.projectColor,
+          preschedulekey: shift.user?.userId || '',
+          displayName: shift.user?.userName || '',
+          projectName: shift.projects?.projectName || '',
+          projectColor: shift.projects?.projectColor || '',
           scheduledate: shiftDate,
-          comments: shift.comments,
-          startTime: shift.startTime,
-          endTime: shift.endTime,
-          duration: parseFloat(shift.duration),
+          comments: shift.comments || '',
+          startTime: shift.startTime || '',
+          endTime: shift.endTime || '',
+          duration: parseFloat(shift.duration) || 0,
           dayOfWeek: adjustedDayIndex,
           weekStart: startOfWeek,
           weekEnd: endOfWeek,
-          month: selectedMonth, 
+          month: selectedMonth,
           requestDetails: '',
           requestCode: '',
-          userid: shift.user.userId,
+          userid: shift.user?.userId || '',
           trainedon: '',
           language: null,
           entryBy: null,
@@ -115,6 +119,7 @@ export class ShiftMonthViewComponent implements OnInit {
       }
     }
   }
+  
   
   
 

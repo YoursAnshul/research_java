@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import {
@@ -18,6 +25,8 @@ export class ShiftDayViewComponent implements OnInit {
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
   @Input() shiftSchedule: any[] = [];
+  @Input() selectedUser: any = null;
+  @Input() selectedProject: any = null;
 
   tooltipMessage: string = ''; // New property to store tooltip content
   showTooltip: boolean = false; // Control visibility
@@ -25,31 +34,35 @@ export class ShiftDayViewComponent implements OnInit {
 
   hoverMessage: HoverMessage = new HoverMessage();
   filteredShiftSchedule: any[] = [];
-  @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
+  @Output() resetShiftSchedule = new EventEmitter<void>();
 
   constructor(private globalsService: GlobalsService) {}
 
   ngOnInit(): void {}
+
   ngOnChanges(changes: SimpleChanges): void {
-    
-    if (this.selectedDate) {
-      const selectedDateValue = this.selectedDate?.value
-        ? new Date(this.selectedDate.value)
-        : null;
-      if (selectedDateValue) {
-        const formattedDate = selectedDateValue.toLocaleDateString('en-CA');
-        this.filteredShiftSchedule = this.shiftSchedule.filter((schedule) => {
-          const scheduleDate = new Date(
-            schedule.dayWiseDate
-          ).toLocaleDateString('en-CA');
-          return scheduleDate === formattedDate;
-        });
-      } else {
-        this.filteredShiftSchedule = [...this.shiftSchedule];
-      }
-    } else {
-      // this.filteredShiftSchedule = [...this.shiftSchedule];
-    }
+    const selectedDateValue = this.selectedDate?.value
+      ? new Date(this.selectedDate.value)
+      : null;
+
+    const selectedUserId = this.selectedUser?.userId || 0;
+    const selectedtProjectId = this.selectedProject?.projectId || 0;
+
+    this.filteredShiftSchedule = this.shiftSchedule.filter((schedule) => {
+      const scheduleDate = new Date(schedule.dayWiseDate).toLocaleDateString(
+        'en-CA'
+      );
+      const isDateMatch = selectedDateValue
+        ? scheduleDate === selectedDateValue.toLocaleDateString('en-CA')
+        : true;
+      const isUserMatch = selectedUserId
+        ? schedule.user.userId === selectedUserId
+        : true;
+      const isProjectMatch = selectedtProjectId
+        ? schedule.projects.projectId === selectedtProjectId
+        : true;
+      return isDateMatch && isUserMatch && isProjectMatch;
+    });
   }
 
   customScheduleCard(startTime: string, endTime: string) {
@@ -115,8 +128,8 @@ export class ShiftDayViewComponent implements OnInit {
     } - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
       </p>`;
 
-    if(schedule.duration){
-      htmlMessage += `<p class="bold">Comments:</p><p>${schedule.duration}</p>`;
+    if (schedule.duration) {
+      htmlMessage += `<p class="bold">Hours:</p><p>${schedule.duration}</p>`;
     }
     if (schedule.comments) {
       htmlMessage += `<p class="bold">Comments:</p><p>${schedule.comments}</p>`;
@@ -139,5 +152,4 @@ export class ShiftDayViewComponent implements OnInit {
   addShift(): void {
     this.resetShiftSchedule.emit(); // Emit event to parent component
   }
-  
 }

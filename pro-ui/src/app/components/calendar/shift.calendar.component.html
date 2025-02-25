@@ -76,6 +76,8 @@
       <app-shift-day-view
         [shiftSchedule]="shiftSchedule"
         [selectedDate]="selectedDate"
+        [selectedUser]="selectedUser"
+        [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
       >
       </app-shift-day-view>
@@ -133,6 +135,8 @@
         [shiftSchedule]="shiftSchedule"
         [selectedDate]="selectedDate"
         [selectedDateRange]="selectedDateRange"
+        [selectedUser]="selectedUser"
+        [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
       ></app-shift-week-view>
     </mat-tab>
@@ -189,6 +193,8 @@
         [shiftSchedule]="shiftSchedule"
         [selectedDate]="selectedDate"
         [selectedDateRange]="selectedDateRange"
+        [selectedUser]="selectedUser"
+        [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
       ></app-shift-month-view>
     </mat-tab>

@@ -28,7 +28,8 @@ export class ShiftWeekViewComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Input() selectedDateRange!: FormGroup;
   @Output() resetShiftSchedule = new EventEmitter<void>();
-
+  @Input() selectedUser: any = null;
+  @Input() selectedProject: any = null;
   hoverMessage: HoverMessage = new HoverMessage();
 
   constructor(private globalsService: GlobalsService) {}
@@ -38,16 +39,16 @@ export class ShiftWeekViewComponent implements OnInit {
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
-    if (
-      !this.selectedDateRange?.value?.start ||
-      !this.selectedDateRange?.value?.end
-    ) {
+    if (!this.selectedDateRange?.value?.start || !this.selectedDateRange?.value?.end) {
       return;
     }
-
+  
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
-
+  
+    startOfWeek.setHours(0, 0, 0, 0);
+    endOfWeek.setHours(23, 59, 59, 999);
+  
     this.weekSchedules = {
       weekStart: startOfWeek,
       day1Schedules: [],
@@ -58,32 +59,39 @@ export class ShiftWeekViewComponent implements OnInit {
       day6Schedules: [],
       day7Schedules: [],
     };
-
+  
+    const selectedUserId = this.selectedUser?.userId ?? null;
+    const selectedProjectId = this.selectedProject?.projectId ?? null;
+  
     this.shiftSchedule.forEach((shift) => {
       const shiftDate = new Date(shift.dayWiseDate);
       shiftDate.setHours(0, 0, 0, 0);
-      startOfWeek.setHours(0, 0, 0, 0);
-      endOfWeek.setHours(0, 0, 0, 0);
-      if (shiftDate >= startOfWeek && shiftDate <= endOfWeek) {
+  
+      const isWithinDateRange = shiftDate >= startOfWeek && shiftDate <= endOfWeek;
+      const isUserMatch = selectedUserId ? shift.user?.userId === selectedUserId : true;
+      const isProjectMatch = selectedProjectId ? shift.projects?.projectId === selectedProjectId : true;
+  
+      if (isWithinDateRange && isUserMatch && isProjectMatch) {
         const dayIndex = shiftDate.getDay();
         const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
+  
         const schedule: ISchedule = {
-          preschedulekey: shift.user.userId,
-          displayName: shift.user.userName,
-          projectName: shift.projects.projectName,
-          projectColor: shift.projects.projectColor,
+          preschedulekey: shift.user?.userId || '',
+          displayName: shift.user?.userName || '',
+          projectName: shift.projects?.projectName || '',
+          projectColor: shift.projects?.projectColor || '',
           scheduledate: shiftDate,
-          comments: shift.comments,
-          startTime: shift.startTime,
-          endTime: shift.endTime,
-          duration: parseFloat(shift.duration),
+          comments: shift.comments || '',
+          startTime: shift.startTime || '',
+          endTime: shift.endTime || '',
+          duration: parseFloat(shift.duration) || 0,
           dayOfWeek: adjustedDayIndex,
           weekStart: startOfWeek,
           weekEnd: endOfWeek,
           month: shiftDate.toLocaleString('default', { month: 'long' }),
           requestDetails: '',
           requestCode: '',
-          userid: shift.user.userId,
+          userid: shift.user?.userId || '',
           trainedon: '',
           language: null,
           entryBy: null,
@@ -95,13 +103,14 @@ export class ShiftWeekViewComponent implements OnInit {
           userName: null,
           expr1: null,
         };
-        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
-          schedule
-        );
+  
+        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(schedule);
       }
     });
-    console.log('Updated Week Schedules:', this.weekSchedules);
+  
+    console.log('Filtered Week Schedules:', this.weekSchedules);
   }
+  
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
     let workingDate: Date = new Date(weekStart || '');
