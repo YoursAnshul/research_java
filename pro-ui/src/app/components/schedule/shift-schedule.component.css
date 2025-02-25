@@ -278,7 +278,7 @@
   padding: 3px;
   border: 1px solid #ccc;
   text-align: left;
-  width: 120px; 
+  width: 110px; 
   gap: 5px;
   background-color: #FFF5BF;
 }
@@ -307,7 +307,6 @@
 
 .form-container > div {
   display: flex;
-  gap: 1rem;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap; /* Ensure no wrapping */
@@ -315,7 +314,7 @@
 
 .custom-form-field {
   flex: 1 1 auto; /* Adjust size dynamically */
-  min-width: 100px;
+  min-width: 120px;
   max-width: 200px;
 }
 

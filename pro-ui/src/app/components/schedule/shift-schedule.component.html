@@ -25,7 +25,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field"
-          style="width: 165px"
+          style="width: 185px"
         >
           <mat-label>User</mat-label>
           <mat-select formControlName="user">
@@ -39,7 +39,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 150px"
+          style="width: 185px"
         >
           <mat-label>Project</mat-label>
           <mat-select formControlName="projects">
@@ -75,7 +75,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 150px"
+          style="width: 170px"
         >
           <mat-label>Start Time</mat-label>
           <mat-select formControlName="startTime">
@@ -84,9 +84,9 @@
                 class="time-box"
                 [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
               >
-                <span class="bold-prefix">{{
+                <!-- <span class="bold-prefix">{{
                   time.substring(time.indexOf(" ") + 1)
-                }}</span>
+                }}</span> -->
                 {{ time }}
               </div>
             </mat-option>
@@ -97,7 +97,7 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 150px"
+          style="width: 170px"
         >
           <mat-label>End Time</mat-label>
           <mat-select formControlName="endTime">
@@ -106,9 +106,9 @@
                 class="time-box"
                 [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
               >
-                <span class="bold-prefix">{{
+                <!-- <span class="bold-prefix">{{
                   time.substring(time.indexOf(" ") + 1)
-                }}</span>
+                }}</span> -->
                 {{ time }}
               </div>
             </mat-option>
