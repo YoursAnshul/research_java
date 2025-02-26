@@ -15,6 +15,7 @@ import {
 } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-shift-day-view',
@@ -28,7 +29,7 @@ export class ShiftDayViewComponent implements OnInit {
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
 
-  tooltipMessage: string = ''; // New property to store tooltip content
+  tooltipMessage: SafeHtml = ''; // New property to store tooltip content
   showTooltip: boolean = false; // Control visibility
   tooltipPosition = { top: '0px', left: '0px' };
 
@@ -36,7 +37,10 @@ export class ShiftDayViewComponent implements OnInit {
   filteredShiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>();
 
-  constructor(private globalsService: GlobalsService) {}
+  constructor(
+    private globalsService: GlobalsService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {}
 
@@ -124,24 +128,23 @@ export class ShiftDayViewComponent implements OnInit {
   ): void {
     console.log('us-------', us);
 
-    // Build the tooltip message
-    this.tooltipMessage = `
-      <p class="hover-message-title">
+    this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
+      <p style="font-weight: bold;">
         ${us.user.userName}: ${schedule.startTime} – ${
       schedule.endTime
     } - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
       </p>
       ${
         schedule.duration
-          ? `<p class="bold">Hours: ${schedule.duration}</p>`
+          ? `<p><span style="font-weight: bold;">Hours:</span> ${schedule.duration}</p>`
           : ''
       }
-      ${
-        schedule.comments
-          ? `<p class="bold">Comments: ${schedule.comments}</p>`
-          : ''
-      }
-    `;
+  ${
+    schedule.comments
+      ? `<p><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
+      : ''
+  }
+    `);
 
     // Show and position tooltip
     this.showTooltip = true;

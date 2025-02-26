@@ -15,6 +15,7 @@ import {
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-shift-week-view',
@@ -31,10 +32,13 @@ export class ShiftWeekViewComponent implements OnInit {
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
   hoverMessage: HoverMessage = new HoverMessage();
-  tooltipMessage: string = '';
+  tooltipMessage: SafeHtml = ''; // New property to store tooltip content
   showTooltip: boolean = false;
   tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
-  constructor(private globalsService: GlobalsService) {}
+  constructor(
+    private globalsService: GlobalsService,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
@@ -178,16 +182,25 @@ export class ShiftWeekViewComponent implements OnInit {
   }
   displayHoverMessage(event: MouseEvent, schedule: ISchedule): void {
     if (!schedule) return;
-  
-    // Generate tooltip message
-    this.tooltipMessage = `
-      <p class="hover-message-title">
-        ${schedule.displayName} (${schedule.projectName}): ${schedule.startTime} – ${schedule.endTime}
+
+    this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
+      <p style="font-weight: bold;">
+         ${schedule.displayName} (${schedule.projectName}): ${
+      schedule.startTime
+    } – ${schedule.endTime}
       </p>
-      ${schedule.duration ? `<p class="bold">Hours: ${schedule.duration}</p>` : ''}
-      ${schedule.comments ? `<p class="bold">Comments: ${schedule.comments}</p>` : ''}
-    `;
-  
+     ${
+       schedule.duration
+         ? `<p><span style="font-weight: bold;">Hours:</span> ${schedule.duration}hr</p>`
+         : ''
+     }
+  ${
+    schedule.comments
+      ? `<p><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
+      : ''
+  }
+    `);
+
     // Position tooltip above the cursor
     this.tooltipPosition = {
       top: `${event.clientY - 150}px`, // Adjust the value to move it above the cursor
@@ -195,7 +208,6 @@ export class ShiftWeekViewComponent implements OnInit {
     };
     this.showTooltip = true;
   }
-  
 
   hideHoverMessage(): void {
     this.showTooltip = false;

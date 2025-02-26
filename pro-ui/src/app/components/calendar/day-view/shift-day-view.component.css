@@ -93,7 +93,7 @@
   min-height: 40px;
   cursor: pointer;
   user-select: none;
-  width: 10.1%;
+  width: 10.4%;
   font-size: 0.8em;
   background-color: lightgoldenrodyellow;
   border-top: 0.5px solid gray;
@@ -112,7 +112,7 @@
     0 1px 18px 0 rgb(0 0 0 / 12%);
   cursor: pointer;
   user-select: none;
-  margin-top: 3px;
+  margin-top: 0px;
   font-size: 0.75em;
 }
 
@@ -278,8 +278,8 @@
   /* Positioning at the right end of the container */
   position: absolute;
   top: 60%; /* Adjust for vertical alignment */
-  right: 0; /* Align to the right inside the parent */
-  transform: translateY(-50%); /* Center vertically */
+  right: 10px; /* Align to the right inside the parent */
+  transform: translateY(-45%); /* Center vertically */
 }
 
 .schedule-block .duration-circle {
