@@ -182,32 +182,33 @@ export class ShiftWeekViewComponent implements OnInit {
   }
   displayHoverMessage(event: MouseEvent, schedule: ISchedule): void {
     if (!schedule) return;
-
+  
     this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
-      <p style="font-weight: bold;">
-         ${schedule.displayName} (${schedule.projectName}): ${
-      schedule.startTime
-    } – ${schedule.endTime}
-      </p>
-     ${
-       schedule.duration
-         ? `<p><span style="font-weight: bold;">Hours:</span> ${schedule.duration}hr</p>`
-         : ''
-     }
-  ${
-    schedule.comments
-      ? `<p><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
-      : ''
-  }
+      <div style="width: 300px; padding: 10px; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+        <p style="font-weight: bold; margin: 0;">
+          ${schedule.displayName} (${schedule.projectName}): ${schedule.startTime} – ${schedule.endTime}
+        </p>
+        ${
+          schedule.duration
+            ? `<p style="margin: 5px 0;"><span style="font-weight: bold;">Hours:</span> ${schedule.duration}hr</p>`
+            : ''
+        }
+        ${
+          schedule.comments
+            ? `<p style="margin: 5px 0;"><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
+            : ''
+        }
+      </div>
     `);
-
+  
     // Position tooltip above the cursor
     this.tooltipPosition = {
-      top: `${event.clientY - 150}px`, // Adjust the value to move it above the cursor
+      top: `${event.clientY - 150}px`,
       left: `${event.clientX + 10}px`,
     };
     this.showTooltip = true;
   }
+  
 
   hideHoverMessage(): void {
     this.showTooltip = false;

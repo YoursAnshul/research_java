@@ -208,6 +208,7 @@
     border-radius: 5px;
     z-index: 1000;
     font-size: 14px;
-    max-width: 250px;
+    min-width: 400px;
+    max-width: 600px;
     pointer-events: none;
   }
