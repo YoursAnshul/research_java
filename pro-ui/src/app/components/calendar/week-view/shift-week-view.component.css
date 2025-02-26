@@ -184,7 +184,8 @@
   
     /* Positioning at the right end of the container */
     right: 0; /* Align to the right inside the parent */
-    transform: translateY(-90%); /* Center vertically */
+    transform: translateY(-172%); /* Center vertically */
+    margin-left: 120px;
   }
   .schedule-block .duration-circle {
     position: absolute;
