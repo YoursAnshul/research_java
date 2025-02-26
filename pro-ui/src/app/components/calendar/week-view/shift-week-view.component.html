@@ -38,10 +38,7 @@
   <div id="week-calendar-user-schedules">
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -80,10 +77,7 @@
 
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -122,10 +116,7 @@
 
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -164,10 +155,7 @@
 
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -206,10 +194,7 @@
 
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -248,10 +233,7 @@
 
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -290,10 +272,7 @@
 
     <div class="day-schedules-container">
       <div class="add-icon-container">
-        <mat-icon
-          style="cursor: pointer; color: #0078d4;"
-          (click)="addShift()"
-        >
+        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
           add
         </mat-icon>
       </div>
@@ -331,5 +310,10 @@
     </div>
   </div>
 </div>
-
+<div
+  *ngIf="showTooltip"
+  class="custom-tooltip"
+  [ngStyle]="tooltipPosition"
+  [innerHTML]="tooltipMessage"
+></div>
 <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>

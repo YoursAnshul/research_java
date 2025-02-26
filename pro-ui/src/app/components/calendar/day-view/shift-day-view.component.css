@@ -262,7 +262,7 @@
 .duration-circle {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   width: 50px;
   height: 22px;
   border-radius: 100px;
@@ -274,7 +274,14 @@
   background-color: #ffffff;
   color: #262626;
   flex-shrink: 0;
+
+  /* Positioning at the right end of the container */
+  position: absolute;
+  top: 60%; /* Adjust for vertical alignment */
+  right: 0; /* Align to the right inside the parent */
+  transform: translateY(-50%); /* Center vertically */
 }
+
 .schedule-block .duration-circle {
   position: absolute;
   bottom: 5px;

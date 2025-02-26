@@ -170,8 +170,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 7cap;
-    height: 15px;
+    width: 50px;
+    height: 22px;
     border-radius: 100px;
     border: 1px solid #b5b5b5;
     padding: 4px 8px;
@@ -181,6 +181,10 @@
     background-color: #ffffff;
     color: #262626;
     flex-shrink: 0;
+  
+    /* Positioning at the right end of the container */
+    right: 0; /* Align to the right inside the parent */
+    transform: translateY(-90%); /* Center vertically */
   }
   .schedule-block .duration-circle {
     position: absolute;
@@ -195,4 +199,15 @@
     align-items: center;
     margin-bottom: 8px;
   }
-  
+  .custom-tooltip {
+    position: fixed;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 14px;
+    max-width: 250px;
+    pointer-events: none;
+  }

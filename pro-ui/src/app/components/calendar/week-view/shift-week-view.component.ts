@@ -31,7 +31,9 @@ export class ShiftWeekViewComponent implements OnInit {
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
   hoverMessage: HoverMessage = new HoverMessage();
-
+  tooltipMessage: string = '';
+  showTooltip: boolean = false;
+  tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
   constructor(private globalsService: GlobalsService) {}
 
   ngOnInit(): void {}
@@ -39,16 +41,19 @@ export class ShiftWeekViewComponent implements OnInit {
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
-    if (!this.selectedDateRange?.value?.start || !this.selectedDateRange?.value?.end) {
+    if (
+      !this.selectedDateRange?.value?.start ||
+      !this.selectedDateRange?.value?.end
+    ) {
       return;
     }
-  
+
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
-  
+
     startOfWeek.setHours(0, 0, 0, 0);
     endOfWeek.setHours(23, 59, 59, 999);
-  
+
     this.weekSchedules = {
       weekStart: startOfWeek,
       day1Schedules: [],
@@ -59,22 +64,27 @@ export class ShiftWeekViewComponent implements OnInit {
       day6Schedules: [],
       day7Schedules: [],
     };
-  
+
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
-  
+
     this.shiftSchedule.forEach((shift) => {
       const shiftDate = new Date(shift.dayWiseDate);
       shiftDate.setHours(0, 0, 0, 0);
-  
-      const isWithinDateRange = shiftDate >= startOfWeek && shiftDate <= endOfWeek;
-      const isUserMatch = selectedUserId ? shift.user?.userId === selectedUserId : true;
-      const isProjectMatch = selectedProjectId ? shift.projects?.projectId === selectedProjectId : true;
-  
+
+      const isWithinDateRange =
+        shiftDate >= startOfWeek && shiftDate <= endOfWeek;
+      const isUserMatch = selectedUserId
+        ? shift.user?.userId === selectedUserId
+        : true;
+      const isProjectMatch = selectedProjectId
+        ? shift.projects?.projectId === selectedProjectId
+        : true;
+
       if (isWithinDateRange && isUserMatch && isProjectMatch) {
         const dayIndex = shiftDate.getDay();
         const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
-  
+
         const schedule: ISchedule = {
           preschedulekey: shift.user?.userId || '',
           displayName: shift.user?.userName || '',
@@ -103,14 +113,15 @@ export class ShiftWeekViewComponent implements OnInit {
           userName: null,
           expr1: null,
         };
-  
-        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(schedule);
+
+        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
+          schedule
+        );
       }
     });
-  
+
     console.log('Filtered Week Schedules:', this.weekSchedules);
   }
-  
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
     let workingDate: Date = new Date(weekStart || '');
@@ -165,33 +176,29 @@ export class ShiftWeekViewComponent implements OnInit {
       contextDate as Date
     );
   }
-
-  displayHoverMessage(event: any, schedule: ISchedule): void {
-    let htmlMessage: string =
-      '<p class="hover-message-title">' +
-      schedule.displayName +
-      ' (' +
-      schedule.projectName +
-      '): ' +
-      schedule.startTime +
-      ' – ' +
-      schedule.endTime +
-      ' – ' +
-      this.formatDateOnlyString(schedule.startdatetime) +
-      ' </p>';
-    if (schedule.comments) {
-      htmlMessage =
-        htmlMessage +
-        '<p class="bold">Comments:</p><p>' +
-        schedule.comments +
-        '</p>';
-    }
-
-    this.hoverMessage.setAndShow(event, htmlMessage);
+  displayHoverMessage(event: MouseEvent, schedule: ISchedule): void {
+    if (!schedule) return;
+  
+    // Generate tooltip message
+    this.tooltipMessage = `
+      <p class="hover-message-title">
+        ${schedule.displayName} (${schedule.projectName}): ${schedule.startTime} – ${schedule.endTime}
+      </p>
+      ${schedule.duration ? `<p class="bold">Hours: ${schedule.duration}</p>` : ''}
+      ${schedule.comments ? `<p class="bold">Comments: ${schedule.comments}</p>` : ''}
+    `;
+  
+    // Position tooltip above the cursor
+    this.tooltipPosition = {
+      top: `${event.clientY - 150}px`, // Adjust the value to move it above the cursor
+      left: `${event.clientX + 10}px`,
+    };
+    this.showTooltip = true;
   }
+  
 
   hideHoverMessage(): void {
-    this.hoverMessage.hide();
+    this.showTooltip = false;
   }
   addShift(): void {
     this.resetShiftSchedule.emit(); // Emit event to parent component

@@ -69,13 +69,13 @@ export class ShiftDayViewComponent implements OnInit {
     const startHour = this.convertTimeToSlot(startTime); // Convert start time to a slot index
     const endHour = this.convertTimeToSlot(endTime); // Convert end time to a slot index
     const duration = endHour - startHour; // Calculate duration
-  
+
     return {
       left: `${(startHour - 8) * 5.25 + 10.1}%`, // Adjust left positioning based on the start time
-      width: `${duration * 5.80}%`, // Width should match the hourly slot width dynamically
+      width: `${duration * 5.8}%`, // Width should match the hourly slot width dynamically
     };
   }
-  
+
   convertTimeToSlot(time: string): number {
     const [hours, minutes] = time.split(/[: ]/);
     let hour = parseInt(hours);
@@ -84,7 +84,7 @@ export class ShiftDayViewComponent implements OnInit {
     const slot = hour + (minutes === '30' ? 0.5 : 0); // Adjust for half-hour slots
     return slot;
   }
-  
+
   customProjectSwatch(projectColor: string, scheduledHours?: number) {
     if (projectColor.length > 7) {
       projectColor = projectColor.substring(0, 7);
@@ -124,25 +124,27 @@ export class ShiftDayViewComponent implements OnInit {
   ): void {
     console.log('us-------', us);
 
-    let htmlMessage: string = `
+    // Build the tooltip message
+    this.tooltipMessage = `
       <p class="hover-message-title">
-        ${us.user.userName} : ${schedule.startTime} – ${
+        ${us.user.userName}: ${schedule.startTime} – ${
       schedule.endTime
     } - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
-      </p>`;
+      </p>
+      ${
+        schedule.duration
+          ? `<p class="bold">Hours: ${schedule.duration}</p>`
+          : ''
+      }
+      ${
+        schedule.comments
+          ? `<p class="bold">Comments: ${schedule.comments}</p>`
+          : ''
+      }
+    `;
 
-    if (schedule.duration) {
-      htmlMessage += `<p class="bold">Hours:</p><p>${schedule.duration}</p>`;
-    }
-    if (schedule.comments) {
-      htmlMessage += `<p class="bold">Comments:</p><p>${schedule.comments}</p>`;
-    }
-
-    // Set tooltip content
-    this.tooltipMessage = htmlMessage;
+    // Show and position tooltip
     this.showTooltip = true;
-
-    // Position tooltip near cursor
     this.tooltipPosition = {
       top: `${event.clientY + 10}px`,
       left: `${event.clientX + 10}px`,
