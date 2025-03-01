@@ -1,0 +1,79 @@
+.dialog-container {
+    text-align: center;
+    padding: 15px;
+    width: 300px;
+    background-color: #f2f0f4;
+    border-radius: 10px;
+    position: fixed;
+    top: 10%;
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 1000; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dialog-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px; 
+  }
+  
+  .icon-warning {
+    background-color: #fce4e4;
+    color: #f44336;
+    font-size: 20px;
+    font-weight: bold;
+    width: 50px; 
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .dialog-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    line-height: 1.4;
+  }
+  
+  .dialog-message {
+    color: black;
+    font-size: 12px; 
+    margin-bottom: 16px; 
+  }
+  
+  .dialog-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    margin-top: 16px; 
+  }
+  
+  .primary-button {
+    background-color: #0680cd;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+  }
+  
+  .warn-button {
+    background-color: white;
+    color: #0680cd;
+    border: 1px solid #0680cd;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+  }
+  ::ng-deep .custom-dialog-container .mat-mdc-dialog-surface {
+    border: none !important;
+  }
+  
+  

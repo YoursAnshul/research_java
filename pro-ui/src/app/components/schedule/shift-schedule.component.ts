@@ -3,9 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { IWeekSchedules } from '../../interfaces/interfaces';
-import { MatDialogRef } from '@angular/material/dialog';
+import { IBlockOutDate, IWeekSchedules } from '../../interfaces/interfaces';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ShifCalendarComponent } from '../calendar/shift.calendar.component';
+import { ConfigurationService } from '../../services/configuration/configuration.service';
+import { BlockdateDialog } from '../calendar/calendar-controls/block.date.dialog.component';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -89,15 +91,24 @@ export class ShiftScheduleComponent implements OnInit {
     '10:30 PM',
     '11:00 PM',
   ];
-  constructor(private http: HttpClient,private dialogRef: MatDialogRef<ShifCalendarComponent>) {}
-  
+  isDuplicateSchedule = false;
+  blockOutDates: IBlockOutDate[] = [];
+  isBlockDate = false;
+  constructor(
+    private http: HttpClient,
+    private dialogRef: MatDialogRef<ShifCalendarComponent>,
+    private configurationService: ConfigurationService,
+    private dialog: MatDialog
+  ) {}
+  ngOnChanges(): void {}
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   onClose(): void {
-    this.dialogRef.close(); 
+    this.dialogRef.close();
   }
   ngOnInit(): void {
+    this.getBlockOutDates();
     this.getAuthor();
     this.getProjectInfo();
     this.currentDay = new Intl.DateTimeFormat('en-US', {
@@ -121,8 +132,59 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.updateDayLabel(this.shiftForm.get('dayWiseDate')?.value);
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      this.updateDayLabel(date);
+      if (date) {
+        this.validateBlockOutDate(new Date(date));
+        this.updateDayLabel(date);
+      }
     });
+    this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
+      this.clearValidation();
+    });
+
+    this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
+      this.clearValidation();
+    });
+
+    this.shiftForm.get('user')?.valueChanges.subscribe(() => {
+      this.clearValidation();
+    });
+  }
+  validateBlockOutDate(selectedDate: Date): void {
+    const isBlocked = this.blockOutDates.some((blockOut) => {
+      return (
+        new Date(blockOut.blockOutDay!).toDateString() ===
+        selectedDate.toDateString()
+      );
+    });
+   if (isBlocked) {
+    this.confirmationPopup();
+    this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
+    this.shiftForm.get('startTime')?.disable();
+    this.shiftForm.get('endTime')?.disable();
+  } else {
+    this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    this.shiftForm.get('startTime')?.enable();
+    this.shiftForm.get('endTime')?.enable();
+  }
+  }
+  confirmationPopup(): void {
+    const dialogRef = this.dialog.open(BlockdateDialog, {
+      panelClass: 'custom-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.closeDialog();
+      }
+    });
+  }
+  closeDialog(): void {
+    this.dialogRef?.close();
+  }
+  clearValidation(): void {
+    this.shiftForm.get('startTime')?.setErrors(null);
+    this.shiftForm.get('endTime')?.setErrors(null);
+    this.isDuplicateSchedule = false;
   }
   updateDayLabel(date: Date | null) {
     if (date) {
@@ -133,15 +195,68 @@ export class ShiftScheduleComponent implements OnInit {
       this.currentDay = '';
     }
   }
-
   onSubmit(): void {
     if (this.shiftForm.valid) {
-      const newShift = { ...this.shiftForm.value, duration: this.duration }; // Copy form data
-      this.shiftSchedule = [...this.shiftSchedule, newShift]; // Update array reference
-      this.weekSchedules = [...this.shiftSchedule, newShift];
+      const formData = this.shiftForm.value;
+      const selectedDate = formData.dayWiseDate;
+      const selectedUser = formData.user; // Assuming 'user' is a field in the form
+  
+      const newStartTime = this.combineDateAndTime(selectedDate, formData.startTime).getTime();
+      const newEndTime = this.combineDateAndTime(selectedDate, formData.endTime).getTime();
+  
+      if (newStartTime >= newEndTime) {
+        this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
+        return;
+      }
+  
+      const isOverlapping = this.shiftSchedule.some((shift) => {
+        const shiftDateMatch = new Date(shift.dayWiseDate).toDateString() === new Date(selectedDate).toDateString();
+        const shiftUserMatch = shift.user === selectedUser;
+        const shiftStartTime = this.combineDateAndTime(shift.dayWiseDate, shift.startTime).getTime();
+        const shiftEndTime = this.combineDateAndTime(shift.dayWiseDate, shift.endTime).getTime();
+  
+        console.log('Shift Date:', shiftDateMatch);
+        console.log('Shift User:', shiftUserMatch);
+        console.log('Shift Start Time:', shiftStartTime);
+        console.log('Shift End Time:', shiftEndTime);
+  
+        return shiftDateMatch && shiftUserMatch && (newStartTime < shiftEndTime && newEndTime > shiftStartTime);
+      });
+  
+      if (isOverlapping) {
+        this.shiftForm.get('startTime')?.setErrors({ overlap: true });
+        this.shiftForm.get('endTime')?.setErrors({ overlap: true });
+        return;
+      }
+  
+      const newShift = { ...formData, duration: this.duration };
+      this.shiftSchedule = [...this.shiftSchedule, newShift];
+      this.weekSchedules = [...this.shiftSchedule];
+  
       console.log('Updated Shift Schedule:', this.shiftSchedule);
+  
+      // Clear errors
+      this.shiftForm.get('startTime')?.setErrors(null);
+      this.shiftForm.get('endTime')?.setErrors(null);
     }
   }
+  
+  combineDateAndTime(date: string, time: string): Date {
+    const [timePart, period] = time.split(' ');
+    let [hours, minutes] = timePart.split(':').map(Number);
+  
+    if (period === 'PM' && hours !== 12) {
+      hours += 12;
+    } else if (period === 'AM' && hours === 12) {
+      hours = 0; // Midnight case
+    }
+  
+    const combinedDate = new Date(date);
+    combinedDate.setHours(hours, minutes, 0, 0);
+  
+    return combinedDate;
+  }
+  
 
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
@@ -222,23 +337,23 @@ export class ShiftScheduleComponent implements OnInit {
   updateDuration(): void {
     const start = this.shiftForm.get('startTime')?.value;
     const end = this.shiftForm.get('endTime')?.value;
-  
+
     if (!start || !end) {
       this.duration = '0hr';
       return;
     }
-  
+
     const startDate = this.parseTime(start);
     const endDate = this.parseTime(end);
-  
+
     if (endDate <= startDate) {
       endDate.setDate(endDate.getDate() + 1);
     }
-  
+
     const diffMs = endDate.getTime() - startDate.getTime();
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-  
+
     const formattedMinutes = diffMinutes / 60; // Convert minutes to decimal (30 mins = 0.5)
     this.duration = `${(diffHours + formattedMinutes).toFixed(1)} hr`;
   }
@@ -270,5 +385,17 @@ export class ShiftScheduleComponent implements OnInit {
       comments: '',
     });
     this.selectedDate = new FormControl<Date | null>(null, Validators.required);
+  }
+
+  getBlockOutDates(): void {
+    this.configurationService.getBlockOutDates().subscribe(
+      (response) => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.blockOutDates = <IBlockOutDate[]>response.Subject;
+          console.log('this.blockOutDates-----', this.blockOutDates);
+        }
+      },
+      (error) => {}
+    );
   }
 }

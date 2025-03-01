@@ -13,7 +13,9 @@
     >
       Save Calendar
     </button>
-    <button style="height: 25px" class="btn-outline ml-2" (click)="onClose()">Close</button>
+    <button style="height: 25px" class="btn-outline ml-2" (click)="onClose()">
+      Close
+    </button>
   </div>
 </div>
 
@@ -70,23 +72,31 @@
           ></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
-
         <!-- Start Time Picker -->
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 0px"
+          [class.error-border]="
+            shiftForm.get('startTime')?.hasError('duplicate')
+          "
+          style="width: 80px"
         >
           <mat-label>Start Time</mat-label>
-          <mat-select formControlName="startTime">
+          <mat-select
+            formControlName="startTime"
+            [disabled]="!!shiftForm.get('startTime')?.disabled"
+          >
             <mat-option *ngFor="let time of timeSlots" [value]="time">
               <div
                 class="time-box"
-                [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
+                [ngStyle]="{
+                  'background-color': shiftForm
+                    .get('startTime')
+                    ?.hasError('duplicate')
+                    ? 'rgba(255, 0, 0, 0.6)'
+                    : getBackgroundColor(time)
+                }"
               >
-                <!-- <span class="bold-prefix">{{
-                  time.substring(time.indexOf(" ") + 1)
-                }}</span> -->
                 {{ time }}
               </div>
             </mat-option>
@@ -97,18 +107,25 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          style="width: 0px"
+          [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
+          style="width: 80px"
         >
           <mat-label>End Time</mat-label>
-          <mat-select formControlName="endTime">
+          <mat-select
+            formControlName="endTime"
+            [disabled]="!!shiftForm.get('endTime')?.disabled"
+          >
             <mat-option *ngFor="let time of endtimeSlots" [value]="time">
               <div
                 class="time-box"
-                [ngStyle]="{ 'background-color': getBackgroundColor(time) }"
+                [ngStyle]="{
+                  'background-color': shiftForm
+                    .get('endTime')
+                    ?.hasError('duplicate')
+                    ? 'rgba(255, 0, 0, 0.6)'
+                    : getBackgroundColor(time)
+                }"
               >
-                <!-- <span class="bold-prefix">{{
-                  time.substring(time.indexOf(" ") + 1)
-                }}</span> -->
                 {{ time }}
               </div>
             </mat-option>
@@ -142,7 +159,8 @@
     </div>
 
     <!-- Shift Calendar Component -->
-    <app-shift-calendar style="margin-top: -20px;"
+    <app-shift-calendar
+      style="margin-top: -20px"
       [shiftSchedule]="shiftSchedule"
       (resetShiftSchedule)="onResetShiftSchedule()"
     ></app-shift-calendar>

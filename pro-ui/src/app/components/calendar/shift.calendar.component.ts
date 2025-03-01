@@ -17,6 +17,7 @@ import {
   IFormField,
   IDropDownValue,
   IProjectMin,
+  IBlockOutDate,
 } from '../../interfaces/interfaces';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -94,6 +95,7 @@ export class ShifCalendarComponent implements OnInit {
 
   @Input() shiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
+  blockOutDates: IBlockOutDate[] = [];
 
   //constructor
   constructor(
