@@ -63,7 +63,10 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
     this.id = data?.id;
     this.announcementData = data;
-    this.selectedEmoji = data.icon
+    if(data?.icon){
+      this.selectedEmoji = data?.icon
+    }
+    
     
   }
 
