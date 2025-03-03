@@ -76,7 +76,7 @@ export class ShiftDayViewComponent implements OnInit {
 
     return {
       left: `${(startHour - 8) * 5.25 + 10.1+0.3}%`, // Adjust left positioning based on the start time
-      width: `${duration * 5.8}%`, // Width should match the hourly slot width dynamically
+      width: `${duration * 5.6}%`, // Width should match the hourly slot width dynamically
     };
   }
 
