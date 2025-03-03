@@ -127,7 +127,7 @@
 }
 
 .project-time {
-  margin-left: 94%; /* Pushes it to the right */
+  margin-left: 88%; /* Pushes it to the right */
   font-style: italic;
   display: flex;
   align-items: center;
