@@ -214,16 +214,11 @@ export class ShiftScheduleComponent implements OnInit {
         const shiftUserMatch = shift.user === selectedUser;
         const shiftStartTime = this.combineDateAndTime(shift.dayWiseDate, shift.startTime).getTime();
         const shiftEndTime = this.combineDateAndTime(shift.dayWiseDate, shift.endTime).getTime();
-  
-        console.log('Shift Date:', shiftDateMatch);
-        console.log('Shift User:', shiftUserMatch);
-        console.log('Shift Start Time:', shiftStartTime);
-        console.log('Shift End Time:', shiftEndTime);
-  
         return shiftDateMatch && shiftUserMatch && (newStartTime < shiftEndTime && newEndTime > shiftStartTime);
       });
   
       if (isOverlapping) {
+        this.scheduleFetchStatus = false;
         this.shiftForm.get('startTime')?.setErrors({ overlap: true });
         this.shiftForm.get('endTime')?.setErrors({ overlap: true });
         return;

@@ -127,9 +127,10 @@
 }
 
 .project-time {
-  margin-left: 5px;
+  margin-left: 94%; /* Pushes it to the right */
   font-style: italic;
-  display: inline-block;
+  display: flex;
+  align-items: center;
 }
 #day-calendar-time-header {
   display: flex;
@@ -261,26 +262,22 @@
   pointer-events: none;
 }
 .duration-circle {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 50px;
-  height: 22px;
   border-radius: 100px;
   border: 1px solid #b5b5b5;
-  padding: 4px 8px;
   font-size: 10px;
   font-weight: bold;
   text-align: center;
   background-color: #ffffff;
   color: #262626;
   flex-shrink: 0;
-
-  /* Positioning at the right end of the container */
   position: absolute;
-  top: 60%; /* Adjust for vertical alignment */
-  right: 10px; /* Align to the right inside the parent */
-  transform: translateY(-45%); /* Center vertically */
+  top: 60%;
+  transform: translateY(-45%); 
 }
 
 .schedule-block .duration-circle {
