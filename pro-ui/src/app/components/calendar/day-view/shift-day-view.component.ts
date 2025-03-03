@@ -70,15 +70,19 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   customScheduleCard(startTime: string, endTime: string) {
-    const startHour = this.convertTimeToSlot(startTime); // Convert start time to a slot index
-    const endHour = this.convertTimeToSlot(endTime); // Convert end time to a slot index
-    const duration = endHour - startHour; // Calculate duration
-
+    const startHour = this.convertTimeToSlot(startTime); // Converts time to slot index (8 = 8 AM, 9 = 9 AM, etc.)
+    const endHour = this.convertTimeToSlot(endTime); // Converts end time to slot index
+    const duration = endHour - startHour; // Calculate event duration in hours
+  
+    const totalHours = 16; // From 08:00 AM to 11:00 PM = 16 hours
+    const slotWidth = (100 - 15.1) / totalHours; // Adjusting for the 15.1% left offset
+  
     return {
-      left: `${(startHour - 8) * 5.25 + 10.1+0.3}%`, // Adjust left positioning based on the start time
-      width: `${duration * 5.6}%`, // Width should match the hourly slot width dynamically
+      left: `${15.1 + (startHour - 8) * slotWidth}%`, // 15.1% for initial offset, then dynamic shift
+      width: `${duration * slotWidth}%`, // Width scales based on the number of hours spanned
     };
   }
+  
 
   convertTimeToSlot(time: string): number {
     const [hours, minutes] = time.split(/[: ]/);
@@ -110,6 +114,7 @@ export class ShiftDayViewComponent implements OnInit {
   getTime(dateToFormat: Date): string | null {
     return Utils.formatDateToTimeString(dateToFormat, true);
   }
+
   openUserSchedule(netId: string, projectName: string | null = null): void {
     this.globalsService.showContextualPopup(
       1,

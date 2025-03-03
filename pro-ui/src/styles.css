@@ -378,3 +378,800 @@ html {
   'GRAD' 0,
   'opsz' 24
 }
+
+/* new  */
+
+#day-calendar {
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  #day-calendar-time-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .hour-header {
+    width: 5.25%;
+    text-align: center;
+    font-weight: bold;
+    border-right: 1px solid #ccc;
+    padding: 5px 0;
+  }
+  
+  .hour-header.total {
+    background: #0078d4;
+    color: white;
+    font-weight: bold;
+  }
+  /* 
+    #day-calendar-user-schedules {
+      margin-top: 10px;
+    } */
+  
+  .user-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+    /* padding: 5px 0; */
+  }
+  
+  .user-card {
+    width: 10%;
+    font-weight: bold;
+  }
+  
+  .schedule-block {
+    position: absolute;
+    height: 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 5px;
+    background-color: #66aeff;
+    padding: 0 5px;
+    white-space: nowrap;
+  }
+  
+  .schedule-text {
+    padding: 2px 5px;
+  }
+  
+  .total-hour-input {
+    width: 5%;
+    text-align: center;
+    margin-left: auto;
+    border: none;
+    font-weight: bold;
+    background: #f0f0f0;
+  }
+  #day-calendar-time-header {
+    width: 100%;
+  }
+  
+  #day-calendar-time-header > div {
+    border: 1px solid gray;
+    text-align: center;
+    font-size: 0.9em;
+    border: 1.5px solid #0078d4;
+    color: #0078d4;
+    background-color: lightgoldenrodyellow;
+    font-weight: 500;
+    cursor: default;
+  }
+  
+  #day-calendar-user-schedules {
+    /*height: 600px;*/
+    /*overflow-y: auto;*/
+  }
+  
+  #day-calendar-user-schedules .user-card {
+    padding: 5px;
+    padding-left: 10px;
+    display: inline-table;
+    overflow: hidden;
+    min-height: 40px;
+    cursor: pointer;
+    user-select: none;
+    width: 15.4%;
+    font-size: 0.8em;
+    background-color: lightgoldenrodyellow;
+    border-top: 0.5px solid gray;
+    border-right: 0.5px solid gray;
+  }
+  
+  #day-calendar-user-schedules .schedule-card {
+    padding: 5px;
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+    background-color: white;
+    white-space: nowrap;
+    border: 0.5px solid #66aeff;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+      0 1px 18px 0 rgb(0 0 0 / 12%);
+    cursor: pointer;
+    user-select: none;
+    margin-top: 0px;
+    font-size: 0.75em;
+  }
+  
+  #day-calendar-user-schedules .user-schedule-row {
+    min-height: 40px;
+  }
+  
+  .center-align-container {
+    align-items: center;
+    height: 100%;
+  }
+  
+  @media only screen and (max-width: 1300px) {
+    #day-calendar-time-header .hour-header {
+      font-size: 0.75em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #day-calendar-time-header .hour-header {
+      font-size: 0.5em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #day-calendar-time-header .hour-header {
+      font-size: 0.5em;
+    }
+  }
+  
+  @media only screen and (max-width: 1260px) {
+    #day-calendar-user-schedules .user-card {
+      font-size: 0.8em;
+    }
+  }
+  
+  @media only screen and (max-width: 1150px) {
+    #day-calendar-user-schedules .user-card {
+      font-size: 0.7em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #day-calendar-user-schedules .user-card {
+      font-size: 0.6em;
+    }
+  }
+  
+  .no-results {
+    padding: 15px;
+    display: inline-block;
+    height: 50px;
+    vertical-align: top;
+  }
+  .add-icon {
+    font-size: 24px;
+    text-align: center;
+    flex: 1;
+    color: #0078d4;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+  
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .no-spinner::-ms-clear {
+    display: none;
+  }
+  .hour-input {
+    width: 60px;
+    text-align: right;
+    -moz-appearance: textfield;
+    border: 2px solid #58595b;
+  }
+  
+  .hour-input::-webkit-inner-spin-button,
+  .hour-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .hour-input::placeholder {
+    color: #58595b; /* Placeholder color */
+    opacity: 1;
+  }
+  .hour-input:-ms-input-placeholder {
+    /* Edge */
+    color: #58595b;
+  }
+  
+  .hour-input::-ms-input-placeholder {
+    /* IE */
+    color: #58595b;
+  }
+  
+  .custom-tooltip {
+    position: fixed;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 14px;
+    min-width: 400px;
+    max-width: 600px;
+    pointer-events: none;
+  }
+  .project-time {
+    font-style: italic;
+    display: inline-block;
+  }
+  .duration-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    border-radius: 100px;
+    border: 1px solid #b5b5b5;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #ffffff;
+    color: #262626;
+    flex-shrink: 0;
+    top: 60%;
+    transform: translateY(-45%);
+  }
+  
+  .schedule-block .duration-circle {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+  #week-calendar-time-header {
+    width: 100%;
+    display: flex;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+      0 1px 18px 0 rgb(0 0 0 / 12%);
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  #week-calendar-time-header > div {
+    border: 1.5px solid #0078d4;
+    color: #0078d4;
+    background-color: lightgoldenrodyellow;
+    font-weight: 500;
+    text-align: center;
+    padding: 5px;
+  }
+  #week-calendar-add-icons {
+    display: flex;
+    width: 100%;
+    padding-top: 5px;
+  }
+  #week-calendar-user-schedules {
+    /*height: 600px;*/
+    /*overflow-y: auto;*/
+  }
+  
+  #week-calendar-user-schedules .user-card {
+    padding: 5px;
+    padding-left: 10px;
+    display: inline-block;
+    overflow: hidden;
+    height: 55px;
+    cursor: pointer;
+    width: 9.5%;
+    font-size: 0.9em;
+    background-color: lightgoldenrodyellow;
+    border-top: 0.5px solid gray;
+    border-right: 0.5px solid gray;
+  }
+  
+  #week-calendar-user-schedules .schedule-card {
+    padding: 5px;
+    display: block;
+    overflow: hidden;
+    height: 55px;
+    background-color: white;
+    /*white-space: nowrap;*/
+    border: 0.5px solid #66aeff;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+      0 1px 18px 0 rgb(0 0 0 / 12%);
+    cursor: pointer;
+    user-select: none;
+    margin-top: 5px;
+    font-size: 0.75em;
+  }
+  
+  #week-calendar-user-schedules .user-schedule-row {
+    height: 55px;
+  }
+  
+  .center-align-container > div {
+    display: inline-block;
+  }
+
+
+  .day-schedules-container {
+    display: inline-table;
+    width: 14.25%;
+    vertical-align: top;
+    margin-bottom: 25px;
+    align-items: center; /* Centers items horizontally */
+    justify-content: center; /* Centers items vertically */
+  }
+  
+  .day-schedules-container mat-icon {
+    cursor: pointer;
+    color: #0078d4;
+    text-align: center;
+    margin-top: 10px; /* Add space above the icon */
+    font-size: 24px; /* Adjust icon size */
+    display: table-footer-group;
+  }
+  .bold {
+    font-weight: bold;
+  }
+  
+  @media only screen and (max-width: 1100px) {
+    #week-calendar-time-header > div {
+      font-size: 0.8em;
+    }
+  }
+  
+  @media only screen and (max-width: 950px) {
+    #week-calendar-time-header > div {
+      font-size: 0.7em;
+    }
+  }
+  
+  @media only screen and (max-width: 850px) {
+    #week-calendar-time-header > div {
+      font-size: 0.6em;
+    }
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+  
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .no-spinner::-ms-clear {
+    display: none;
+  }
+  .hour-input {
+    width: 60px;
+    text-align: right;
+    -moz-appearance: textfield;
+    border: 2px solid #58595b;
+  }
+  
+  .hour-input::-webkit-inner-spin-button,
+  .hour-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .hour-input::placeholder {
+    color: #58595b; /* Placeholder color */
+    opacity: 1;
+  }
+  .hour-input:-ms-input-placeholder {
+    /* Edge */
+    color: #58595b;
+  }
+  
+  .hour-input::-ms-input-placeholder {
+    /* IE */
+    color: #58595b;
+  }
+  
+  .add-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .custom-tooltip {
+    position: fixed;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 14px;
+    min-width: 400px;
+    max-width: 600px;
+    pointer-events: none;
+  }
+  #month-calendar-time-header {
+    width: 100%;
+  }
+  
+  .week-schedules-container {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 25px;
+  }
+  
+  #month-calendar-time-header > div {
+    display: inline-block;
+    border: 1px solid gray;
+    text-align: center;
+    font-size: 0.9em;
+    border: 1.5px solid #0078d4;
+    color: #0078d4;
+    background-color: lightgoldenrodyellow;
+    font-weight: 500;
+    cursor: default;
+  }
+  
+  #month-calendar-user-schedules {
+    /*height: 600px;*/
+    /*overflow-y: auto;*/
+  }
+  
+  #month-calendar-user-schedules .user-card {
+    padding: 5px;
+    padding-left: 10px;
+    display: inline-table;
+    overflow: hidden;
+    min-height: 40px;
+    cursor: pointer;
+    user-select: none;
+    width: 14.1%;
+    font-size: 0.8em;
+    background-color: lightgoldenrodyellow;
+    border-top: 0.5px solid gray;
+    border-right: 0.5px solid gray;
+  }
+  
+  #month-calendar-user-schedules .schedule-card {
+    padding: 5px;
+    display: inline-block;
+    position: absolute;
+    overflow: hidden;
+    /*min-height: 50px;*/
+    background-color: white;
+    white-space: nowrap;
+    border: 0.5px solid #66aeff;
+    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+      0 1px 18px 0 rgb(0 0 0 / 12%);
+    cursor: pointer;
+    user-select: none;
+    margin-top: 3px;
+    font-size: 0.75em;
+  }
+  
+  #month-calendar-user-schedules .user-schedule-row {
+    min-height: 40px;
+  }
+  
+  @media only screen and (max-width: 1300px) {
+    #month-calendar-time-header .hour-header {
+      font-size: 0.75em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #month-calendar-time-header .hour-header {
+      font-size: 0.5em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #month-calendar-time-header .hour-header {
+      font-size: 0.5em;
+    }
+  }
+  
+  @media only screen and (max-width: 1260px) {
+    #month-calendar-user-schedules .user-card {
+      font-size: 0.8em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #month-calendar-user-schedules .user-card {
+      font-size: 0.6em;
+    }
+  }
+  
+
+  /* shift */
+  .tag {
+    font-size: 10px;
+    padding: 0px 5px;
+    border-radius: 12px;
+    background-color: white;
+    color: #333;
+    border: 1px solid #b5b5b5;
+    display: inline-flex;
+    align-items: center;
+    margin: 2px;
+    height: 18px;
+  }
+  
+  .tag::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    background-color: var(--tag-color);
+  }
+  ::ng-deep .mat-pseudo-checkbox-full.mat-pseudo-checkbox-checked,
+  .mat-pseudo-checkbox-full.mat-pseudo-checkbox-indeterminate {
+    background-color: #0680cd !important;
+  }
+  ::ng-deep .week-schedules-container{
+    margin-bottom: unset !important;
+  }
+  ::ng-deep .day-schedules-container{
+    margin-bottom: unset !important;
+  }
+  .mat-pseudo-checkbox-full {
+    border-color: #0680cd 2px solid !important;
+  }
+  .custom-checkbox-container {
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    user-select: none;
+    margin-bottom: 10px;
+  }
+  
+  .custom-checkbox input {
+    display: none;
+  }
+  
+  .custom-checkbox .checkmark {
+    width: 17px;
+    height: 17px;
+    border: 2px solid rgba(0, 0, 0, 0.54);
+    margin-right: 16px;
+    position: relative;
+    display: inline-block;
+    transition: all 0.2s ease;
+    margin-left: 16px;
+  }
+  
+  .custom-checkbox input:checked + .checkmark {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .custom-checkbox .checkmark::after {
+    content: "";
+    display: none;
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 6px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .custom-checkbox input:checked + .checkmark::after {
+    display: block;
+  }
+  
+  .custom-checkbox .checkmark.indeterminate::after {
+    content: "";
+    width: 12px;
+    height: 2px;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  ::ng-deep .custom-form-field .mat-mdc-text-field-wrapper {
+    height: 35px !important;
+    display: flex;
+    align-items: center;
+  }
+  
+  ::ng-deep .custom-form-field .mat-mdc-input-element {
+    padding: 0 8px !important;
+    height: 100%;
+    font-size: 14px !important;
+    line-height: normal !important;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  
+  ::ng-deep .custom-form-field .mdc-floating-label {
+    top: 50% !important;
+    transform: translateY(-50%) scale(1) !important;
+    font-size: 14px !important;
+    transition: transform 0.2s ease, top 0.2s ease !important;
+  }
+  ::ng-deep .custom-form-field .mdc-floating-label--float-above {
+    top: -8px !important;
+    transform: translateY(0) scale(0.75) !important;
+    font-size: 12px !important;
+    transition: transform 0.2s ease, top 0.2s ease !important;
+  }
+  
+  #day-calendar-time-header {
+    width: 100%;
+  }
+  
+  #day-calendar-time-header > div {
+    display: inline-block;
+    border: 1px solid gray;
+    text-align: center;
+    font-size: 0.9em;
+    border: 1.5px solid #0078d4;
+    color: #0078d4;
+    background-color: lightgoldenrodyellow;
+    font-weight: 500;
+    cursor: default;
+  }
+  
+  .project-time {
+    margin-left: 5px;
+    font-style: italic;
+    display: inline-block;
+  }
+  
+  @media only screen and (max-width: 1300px) {
+    #day-calendar-time-header .hour-header {
+      font-size: 0.75em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #day-calendar-time-header .hour-header {
+      font-size: 0.5em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #day-calendar-time-header .hour-header {
+      font-size: 0.5em;
+    }
+  }
+  
+  @media only screen and (max-width: 1260px) {
+    #day-calendar-user-schedules .user-card {
+      font-size: 0.8em;
+    }
+  }
+  
+  @media only screen and (max-width: 1150px) {
+    #day-calendar-user-schedules .user-card {
+      font-size: 0.7em;
+    }
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    #day-calendar-user-schedules .user-card {
+      font-size: 0.6em;
+    }
+  }
+
+  .box-container {
+    border: 1px solid #58595b;
+    background-color: #fff;
+  }
+  .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs
+    > .mat-mdc-tab-header
+    .mat-mdc-tab {
+    flex-grow: 0 !important;
+  }
+  
+  .mat-form-field {
+    position: relative;
+    z-index: 10001; /* Ensures input is above modal */
+  }
+  ::ng-deep .timepicker-overlay {
+    z-index: 10000000 !important;
+  }
+  
+  ::ng-deep .timepicker-backdrop-overlay {
+    z-index: 10000000 !important;
+  }
+  
+  .btn-outline {
+    display: inline-block;
+    padding: 0px 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #dc4a38;
+    /* Primary blue color */
+    border: 2px solid #dc4a38;
+    /* Border color matches text */
+    background-color: transparent;
+    /* Transparent background */
+    border-radius: 4px;
+    /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    width: 75px;
+  }
+  
+  .time-box {
+    padding: 3px;
+    border: 1px solid #ccc;
+    text-align: left;
+    width: 110px; 
+    gap: 5px;
+    background-color: #FFF5BF;
+  }
+  .bold-prefix {
+    font-weight: 599;
+    margin-right: 5px;
+  }
+  ::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+    background-color: transparent !important;
+  }
+  ::ng-deep .mat-mdc-option.mat-mdc-option-active.mdc-list-item {
+    background-color: transparent !important;
+  }
+  ::ng-deep .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text{
+    color: black !important;
+  }
+  .custom-form-field.mat-mdc-form-field-has-icon-suffix .mat-mdc-text-field-wrapper{
+    border: none !important;
+  }
+  .form-container {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent scrollbars */
+  }
+  
+  .form-container > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap; /* Ensure no wrapping */
+  }
+  
+  .custom-form-field {
+    flex: 1 1 auto; /* Adjust size dynamically */
+    min-width: 120px;
+    max-width: 200px;
+  }
+  
+  .add-to-calendar {
+    height: 50px;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 768px) {
+    .custom-form-field {
+      min-width: 80px; /* Shrink fields on small screens */
+    }
+  
+    .add-to-calendar {
+      font-size: 0.9rem;
+      padding: 0.5rem;
+    }
+  }
+  
