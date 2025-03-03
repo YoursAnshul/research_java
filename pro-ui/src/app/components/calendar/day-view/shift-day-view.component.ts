@@ -126,26 +126,31 @@ export class ShiftDayViewComponent implements OnInit {
     schedule: ISchedule,
     us: IUserSchedule
   ): void {
-    console.log('us-------', us);
-
+    console.log('User Schedule:', us);
+  
+    const userName = us?.user?.userName ?? 'Unknown User';
+    const startTime = schedule?.startTime ?? 'N/A';
+    const endTime = schedule?.endTime ?? 'N/A';
+    const date = Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
+    const duration = schedule?.duration ? `<p><strong>Hours:</strong> ${schedule.duration}</p>` : '';
+    const comments = schedule?.comments ? `<p><strong>Comments:</strong> ${schedule.comments}</p>` : '';
+  
     this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
-      <p style="font-weight: bold;">
-        ${us.user.userName}: ${schedule.startTime} – ${
-      schedule.endTime
-    } - ${Utils.formatDateOnlyToStringUTC(schedule.dayWiseDate)}
-      </p>
-      ${
-        schedule.duration
-          ? `<p><span style="font-weight: bold;">Hours:</span> ${schedule.duration}</p>`
-          : ''
-      }
-  ${
-    schedule.comments
-      ? `<p><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
-      : ''
-  }
+      <div style="
+        padding: 20px;
+        min-width: 250px;
+        min-height: 80px;
+        font-size: 1rem;
+        line-height: 1.5;
+      ">
+        <p style="font-weight: bold;">
+          ${userName}: ${startTime} – ${endTime} - ${date}
+        </p>
+        ${duration}
+        ${comments}
+      </div>
     `);
-
+  
     // Show and position tooltip
     this.showTooltip = true;
     this.tooltipPosition = {
@@ -153,6 +158,7 @@ export class ShiftDayViewComponent implements OnInit {
       left: `${event.clientX + 10}px`,
     };
   }
+  
 
   hideHoverMessage(): void {
     this.showTooltip = false;
