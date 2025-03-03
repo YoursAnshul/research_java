@@ -126,10 +126,10 @@
   height: 100%;
 }
 
-.project-time {
-  margin-left: 88%; /* Pushes it to the right */
+.project-time{
+  margin-left: 1%;
   font-style: italic;
-  display: flex;
+  display: inline-block;
   align-items: center;
 }
 #day-calendar-time-header {
