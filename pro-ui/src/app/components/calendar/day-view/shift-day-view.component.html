@@ -1,7 +1,12 @@
 <div id="day-calendar">
   <div id="day-calendar-header"></div>
   <div id="day-calendar-time-header">
-    <div style="width: 15.1%; border: none"></div>
+    <div
+      [ngStyle]="{
+        width: authenticatedUser?.interviewer ? '13.1%' : '15.4%',
+        border: 'none'
+      }"
+    ></div>
     <div class="hour-header">08:00 AM</div>
     <div class="hour-header">09:00 AM</div>
     <div class="hour-header">10:00 AM</div>
@@ -18,11 +23,19 @@
     <div class="hour-header">09:00 PM</div>
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
+    <div class="total-hour-header" style="background: #0078d4; color: white">
+      Total
+    </div>
   </div>
   <div id="day-calendar-user-schedules">
     @for (us of filteredShiftSchedule; track us) {
     <div class="user-schedule-row">
-      <div class="user-card">
+      <div
+        class="user-card"
+        [ngStyle]="{
+          width: authenticatedUser?.interviewer ? '13.1%' : '15.4%'
+        }"
+      >
         {{ us.user.userName }}
       </div>
 
@@ -50,6 +63,13 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="input-container">
+        <input
+          type="text"
+          [value]="schedule.duration"
+          class="right-aligned-input"
+        />
       </div>
       }
     </div>

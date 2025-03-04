@@ -399,16 +399,16 @@ html {
   padding: 5px 0;
 }
 
-.hour-header.total {
+.total-hour-header {
+  width: 5.25%;
+  text-align: center;
+  font-weight: bold;
+  border-right: 1px solid #0078d4;
+  padding: 5px 0;
   background: #0078d4;
   color: white;
   font-weight: bold;
 }
-/* 
-  #day-calendar-user-schedules {
-    margin-top: 10px;
-  } */
-
 .user-row {
   display: flex;
   align-items: center;
@@ -482,6 +482,7 @@ html {
   border-top: 0.5px solid gray;
   border-right: 0.5px solid gray;
 }
+
 
 #day-calendar-user-schedules .schedule-card {
   padding: 5px;
@@ -1134,4 +1135,17 @@ html {
     font-size: 0.9rem;
     padding: 0.5rem;
   }
+}
+.input-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.right-aligned-input {
+  padding: 3px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  width: 63px;
+  border: 1px solid #0078d4
 }
