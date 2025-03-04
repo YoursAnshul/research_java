@@ -36,7 +36,7 @@
   .mdc-list-item__primary-text {
   color: black !important;
 }
-.custom-form-field.mat-mdc-form-field-has-icon-suffix
+::ng-deep.custom-form-field.mat-mdc-form-field-has-icon-suffix
   .mat-mdc-text-field-wrapper {
   border: none !important;
 }

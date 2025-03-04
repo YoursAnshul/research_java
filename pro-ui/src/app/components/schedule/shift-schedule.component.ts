@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { IBlockOutDate, IWeekSchedules } from '../../interfaces/interfaces';
+import { IAuthenticatedUser, IBlockOutDate, IWeekSchedules } from '../../interfaces/interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ShifCalendarComponent } from '../calendar/shift.calendar.component';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { BlockdateDialog } from '../calendar/calendar-controls/block.date.dialog.component';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -94,12 +95,22 @@ export class ShiftScheduleComponent implements OnInit {
   isDuplicateSchedule = false;
   blockOutDates: IBlockOutDate[] = [];
   isBlockDate = false;
+  authenticatedUser!: IAuthenticatedUser;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
     private configurationService: ConfigurationService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private authenticationService: AuthenticationService
+    
+  ) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+
+  }
   ngOnChanges(): void {}
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
@@ -156,7 +167,7 @@ export class ShiftScheduleComponent implements OnInit {
         selectedDate.toDateString()
       );
     });
-   if (isBlocked) {
+   if (isBlocked && this.authenticatedUser?.interviewer) {
     this.confirmationPopup();
     this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
     this.shiftForm.get('startTime')?.disable();

@@ -30,6 +30,7 @@ import { ConfigurationService } from '../../services/configuration/configuration
 import { ProjectsService } from '../../services/projects/projects.service';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-shift-calendar',
@@ -104,7 +105,8 @@ export class ShifCalendarComponent implements OnInit {
     private configurationService: ConfigurationService,
     private projectsService: ProjectsService,
     private logsService: LogsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private authenticationService: AuthenticationService
   ) {
     //subscribe to users
     this.usersService.allUsersMin.subscribe(
@@ -125,7 +127,7 @@ export class ShifCalendarComponent implements OnInit {
       (userSchedules) => {
         // console.log(userSchedules)
         this.userSchedulesMonth = userSchedules.filter((x) => !x.addInitial);
-
+ 
         this.syncData(this.userSchedulesMonth);
         //set filtered lists
 
@@ -136,6 +138,12 @@ export class ShifCalendarComponent implements OnInit {
         this.errorMessage = <string>error.message;
         this.logsService.logError(this.errorMessage);
         console.log(this.errorMessage);
+      }
+    );
+    
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
       }
     );
 
@@ -234,7 +242,6 @@ export class ShifCalendarComponent implements OnInit {
         this.filteredUserSchedulesMonth = this.userSchedulesMonth.filter(
           (x) => x.dempoid == this.contextUser.dempoid
         );
-
         if (applyFilters) {
           this.applyFilters();
         }

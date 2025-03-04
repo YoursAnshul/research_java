@@ -40,8 +40,8 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div class="center-container">
-        <div>
+      <div class="center-container" *ngIf="!authenticatedUser?.interviewer">
+        <div> 
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
             <mat-select [(ngModel)]="selectedUser">
@@ -98,7 +98,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div class="center-container mb-3">
+      <div class="center-container mb-3" *ngIf="!authenticatedUser?.interviewer">
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
@@ -155,7 +155,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div class="center-container mb-3">
+      <div class="center-container mb-3" *ngIf="!authenticatedUser?.interviewer">
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>

@@ -9,6 +9,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import {
+  IAuthenticatedUser,
   ILegend,
   ISchedule,
   IUserSchedule,
@@ -16,6 +17,7 @@ import {
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-shift-day-view',
@@ -36,13 +38,24 @@ export class ShiftDayViewComponent implements OnInit {
   hoverMessage: HoverMessage = new HoverMessage();
   filteredShiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>();
+  authenticatedUser!: IAuthenticatedUser;
 
   constructor(
     private globalsService: GlobalsService,
-    private sanitizer: DomSanitizer
-  ) {}
+    private sanitizer: DomSanitizer,
+    private authenticationService: AuthenticationService
+  ) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log("this.authenticatedUser---",this.authenticatedUser);
+    
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     const selectedDateValue = this.selectedDate?.value
@@ -73,16 +86,15 @@ export class ShiftDayViewComponent implements OnInit {
     const startHour = this.convertTimeToSlot(startTime); // Converts time to slot index (8 = 8 AM, 9 = 9 AM, etc.)
     const endHour = this.convertTimeToSlot(endTime); // Converts end time to slot index
     const duration = endHour - startHour; // Calculate event duration in hours
-  
+
     const totalHours = 16; // From 08:00 AM to 11:00 PM = 16 hours
     const slotWidth = (100 - 15.1) / totalHours; // Adjusting for the 15.1% left offset
-  
+
     return {
       left: `${15.1 + (startHour - 8) * slotWidth}%`, // 15.1% for initial offset, then dynamic shift
       width: `${duration * slotWidth}%`, // Width scales based on the number of hours spanned
     };
   }
-  
 
   convertTimeToSlot(time: string): number {
     const [hours, minutes] = time.split(/[: ]/);
@@ -132,14 +144,19 @@ export class ShiftDayViewComponent implements OnInit {
     us: IUserSchedule
   ): void {
     console.log('User Schedule:', us);
-  
+
     const userName = us?.user?.userName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
-    const date = Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
-    const duration = schedule?.duration ? `<p><strong>Hours:</strong> ${schedule.duration}</p>` : '';
-    const comments = schedule?.comments ? `<p><strong>Comments:</strong> ${schedule.comments}</p>` : '';
-  
+    const date =
+      Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
+    const duration = schedule?.duration
+      ? `<p><strong>Hours:</strong> ${schedule.duration}</p>`
+      : '';
+    const comments = schedule?.comments
+      ? `<p><strong>Comments:</strong> ${schedule.comments}</p>`
+      : '';
+
     this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
       <div style="
         padding: 20px;
@@ -155,7 +172,7 @@ export class ShiftDayViewComponent implements OnInit {
         ${comments}
       </div>
     `);
-  
+
     // Show and position tooltip
     this.showTooltip = true;
     this.tooltipPosition = {
@@ -163,7 +180,6 @@ export class ShiftDayViewComponent implements OnInit {
       left: `${event.clientX + 10}px`,
     };
   }
-  
 
   hideHoverMessage(): void {
     this.showTooltip = false;
