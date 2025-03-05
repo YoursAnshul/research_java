@@ -1,312 +1,129 @@
 <div id="week-calendar" style="background-color: #f2f2f2 !important">
   <div id="week-calendar-header"></div>
+
   <div id="week-calendar-time-header" class="week-calendar-time-header">
     <div
-      *ngFor="let day of [1, 2, 3, 4, 5, 6, 7]; let i = index"
-      style="width: 14.25%"
+      *ngFor="
+        let day of [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+          'Total'
+        ];
+        let i = index
+      "
+      [ngStyle]="{
+        width: day === 'Total' ? '7%' : '14.14%',
+        'background-color':
+          day === 'Total' ? '#0078d4' : 'lightgoldenrodyellow',
+        color: day === 'Total' ? 'white' : 'black'
+      }"
       (dblclick)="
-        openUserSchedule(
-          null,
-          null,
-          GetDaysDateAsDate(weekSchedules?.weekStart, day),
-          1
-        )
+        day !== 'Total'
+          ? openUserSchedule(
+              null,
+              null,
+              GetDaysDateAsDate(weekSchedules?.weekStart, i + 1),
+              1
+            )
+          : null
       "
     >
-      {{
-        [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday"
-        ][i]
-      }}
-      {{ GetDaysDate(weekSchedules?.weekStart, day) }}
+      {{ day }}
+      {{ day !== "Total" ? GetDaysDate(weekSchedules?.weekStart, i + 1) : "" }}
     </div>
   </div>
 
   <div id="week-calendar-add-icons" class="week-calendar-add-icons">
     <div
-      *ngFor="let day of [1, 2, 3, 4, 5, 6, 7]; let i = index"
-      style="width: 14.25%; text-align: center"
-    ></div>
+      *ngFor="
+        let day of [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+          'Total'
+        ];
+        let i = index
+      "
+      [ngStyle]="{
+        width: day === 'Total' ? '7%' : '14.14%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8px'
+      }"
+    >
+      <mat-icon
+        *ngIf="day !== 'Total'"
+        style="cursor: pointer; color: #0078d4"
+        (click)="addShift()"
+      >
+        add
+      </mat-icon>
+
+      <input 
+        *ngIf="day === 'Total'"
+        type="text"
+        [value]="calculateTotalDuration()"
+        class="right-aligned-input"
+        style="width: 80px;"
+      />
+    </div>
   </div>
 
   <div id="week-calendar-user-schedules">
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day1Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
+    <div
+      *ngFor="
+        let daySchedules of [
+          weekSchedules?.day1Schedules,
+          weekSchedules?.day2Schedules,
+          weekSchedules?.day3Schedules,
+          weekSchedules?.day4Schedules,
+          weekSchedules?.day5Schedules,
+          weekSchedules?.day6Schedules,
+          weekSchedules?.day7Schedules
+        ];
+        let dayIndex = index
+      "
+      class="day-schedules-container"
+    >
+      <ng-container *ngFor="let schedule of daySchedules">
+        <div
+          class="schedule-card"
+          (dblclick)="
+            openUserSchedule(
+              schedule.dempoid,
+              schedule.projectName,
+              schedule.startdatetime
+            )
+          "
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()"
+        >
+          <div class="center-align-container">
+            <app-project-swatch
+              [projectColor]="schedule.projectColor"
+            ></app-project-swatch>
+            <div>
+              <div class="bold">{{ schedule.displayName }}:</div>
+              <div class="project-time">
+                {{ schedule.startTime }} - {{ schedule.endTime }}
+              </div>
+              <div class="project-time">
+                <div class="duration-circle">{{ schedule.duration }} hr</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      }
-    </div>
-
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day2Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day3Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day4Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day5Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day6Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-    </div>
-
-    <div class="day-schedules-container">
-      <div class="add-icon-container">
-        <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
-          add
-        </mat-icon>
-      </div>
-      @for (schedule of weekSchedules?.day7Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (dblclick)="
-          openUserSchedule(
-            schedule.dempoid,
-            schedule.projectName,
-            schedule.startdatetime
-          )
-        "
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
-        <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
-          <div>
-            <div class="bold">{{ schedule.displayName }}:</div>
-            <div class="project-time">
-              {{ schedule.startTime }} - {{ schedule.endTime }}
-            </div>
-            <div class="project-time">
-              <div class="duration-circle">
-                {{ schedule.duration }} hr
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
+      </ng-container>
     </div>
   </div>
 </div>

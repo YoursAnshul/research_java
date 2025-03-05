@@ -190,4 +190,5 @@ export class ShiftDayViewComponent implements OnInit {
     this.resetShiftSchedule.emit(); // Emit event to parent component
   }
   
+  
 }

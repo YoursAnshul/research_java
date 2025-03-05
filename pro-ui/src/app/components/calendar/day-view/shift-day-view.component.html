@@ -74,12 +74,12 @@
       }
     </div>
     }
-    <div class="user-schedule-row">
-      <div class="user-row">
-        <!-- <div class="user-card"></div> -->
-        <mat-icon style="cursor: pointer" class="add-icon" (click)="addShift()"
-          >add</mat-icon
-        >
+    <div class="icon-input-container">
+      <div class="add-icon">
+        <mat-icon style="cursor: pointer" (click)="addShift()">add</mat-icon>
+      </div>
+      <div class="input-container">
+        <input type="text" [value]="0" class="right-aligned-input" />
       </div>
     </div>
   </div>

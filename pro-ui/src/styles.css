@@ -485,6 +485,7 @@ html {
 
 
 #day-calendar-user-schedules .schedule-card {
+  flex-grow: 1;
   padding: 5px;
   display: inline-block;
   position: absolute;
@@ -498,6 +499,13 @@ html {
   user-select: none;
   margin-top: 0px;
   font-size: 0.75em;
+}
+.user-schedule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  position: relative; 
 }
 
 #day-calendar-user-schedules .user-schedule-row {
@@ -1137,15 +1145,21 @@ html {
   }
 }
 .input-container {
+  padding: 5px;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  justify-content: flex-end; /* Align input to the right */
+  align-items: center;
 }
 
 .right-aligned-input {
   padding: 3px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #0078d4;
   width: 63px;
-  border: 1px solid #0078d4
+  text-align: center;
+}
+.icon-input-container {
+  display: flex;
+  align-items: center; /* Vertically center items */
+  gap: 10px; /* Add space between icon and input */
 }
