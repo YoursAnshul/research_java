@@ -53,8 +53,7 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("this.authenticatedUser---",this.authenticatedUser);
-    
+    console.log('this.authenticatedUser---', this.authenticatedUser);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,6 +77,7 @@ export class ShiftDayViewComponent implements OnInit {
       const isProjectMatch = selectedtProjectId
         ? schedule.projects.projectId === selectedtProjectId
         : true;
+      schedule.duration = parseFloat(schedule.duration) || 0;
       return isDateMatch && isUserMatch && isProjectMatch;
     });
   }
@@ -86,17 +86,16 @@ export class ShiftDayViewComponent implements OnInit {
     const startHour = this.convertTimeToSlot(startTime); // Converts time to slot index (8 = 8 AM, 9 = 9 AM, etc.)
     const endHour = this.convertTimeToSlot(endTime); // Converts end time to slot index
     const duration = endHour - startHour; // Calculate event duration in hours
-  
+
     const leftOffset = this.authenticatedUser?.interviewer ? 13.1 : 15.4; // Adjust offset based on role
-    const totalHours = this.authenticatedUser?.interviewer ? 17: 16; // From 08:00 AM to 11:00 PM = 16 hours
+    const totalHours = this.authenticatedUser?.interviewer ? 17 : 16; // From 08:00 AM to 11:00 PM = 16 hours
     const slotWidth = (100 - leftOffset) / totalHours; // Remaining width for time slots
-  
+
     return {
       left: `${leftOffset + (startHour - 8) * slotWidth}%`, // Calculate dynamic left position
       width: `${duration * slotWidth}%`, // Calculate dynamic width based on duration
     };
   }
-  
 
   convertTimeToSlot(time: string): number {
     const [hours, minutes] = time.split(/[: ]/);
@@ -153,7 +152,7 @@ export class ShiftDayViewComponent implements OnInit {
     const date =
       Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
     const duration = schedule?.duration
-      ? `<p><strong>Hours:</strong> ${schedule.duration}</p>`
+      ? `<p><strong>Hours:</strong> ${schedule.duration} hr</p>`
       : '';
     const comments = schedule?.comments
       ? `<p><strong>Comments:</strong> ${schedule.comments}</p>`
@@ -189,6 +188,4 @@ export class ShiftDayViewComponent implements OnInit {
   addShift(): void {
     this.resetShiftSchedule.emit(); // Emit event to parent component
   }
-  
-  
 }

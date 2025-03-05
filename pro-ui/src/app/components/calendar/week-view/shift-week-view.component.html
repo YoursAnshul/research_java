@@ -21,7 +21,14 @@
         'background-color': 'lightgoldenrodyellow',
         color: 'black'
       }"
-      (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, i + 1), 1)"
+      (dblclick)="
+        openUserSchedule(
+          null,
+          null,
+          GetDaysDateAsDate(weekSchedules?.weekStart, i + 1),
+          1
+        )
+      "
     >
       {{ day }}
       {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
@@ -62,10 +69,7 @@
         gap: '8px'
       }"
     >
-      <mat-icon
-        style="cursor: pointer; color: #0078d4"
-        (click)="addShift()"
-      >
+      <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
         add
       </mat-icon>
     </div>
@@ -74,16 +78,18 @@
       *ngIf="authenticatedUser?.interviewer"
       [ngStyle]="{
         width: '7%',
-        display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        height: '30px'
       }"
     >
       <input
+        id="week-calendar-user-schedules"
         type="text"
         [value]="calculateTotalDuration()"
         class="right-aligned-input"
-        style="width: 80px;"
+        style="width: 80px"
+        [style.height]="inputHeight"
       />
     </div>
   </div>
@@ -103,7 +109,10 @@
         ];
         let dayIndex = index
       "
-      class="day-schedules-container"
+      [ngClass]="{
+        'day-schedules-container': !authenticatedUser?.interviewer,
+        'day-schedules-container-interviewer': authenticatedUser?.interviewer
+      }"
     >
       <ng-container *ngFor="let schedule of daySchedules">
         <div

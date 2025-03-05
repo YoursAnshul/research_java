@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -41,7 +42,8 @@ export class ShiftWeekViewComponent implements OnInit {
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private cdr: ChangeDetectorRef
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -230,24 +232,43 @@ export class ShiftWeekViewComponent implements OnInit {
     this.resetShiftSchedule.emit();
   }
   calculateTotalDuration(): number {
-  if (!this.weekSchedules) return 0;
+    if (!this.weekSchedules) return 0;
 
-  const days = [
-    this.weekSchedules.day1Schedules,
-    this.weekSchedules.day2Schedules,
-    this.weekSchedules.day3Schedules,
-    this.weekSchedules.day4Schedules,
-    this.weekSchedules.day5Schedules,
-    this.weekSchedules.day6Schedules,
-    this.weekSchedules.day7Schedules
-  ];
+    const days = [
+      this.weekSchedules.day1Schedules,
+      this.weekSchedules.day2Schedules,
+      this.weekSchedules.day3Schedules,
+      this.weekSchedules.day4Schedules,
+      this.weekSchedules.day5Schedules,
+      this.weekSchedules.day6Schedules,
+      this.weekSchedules.day7Schedules,
+    ];
 
-  return days.reduce((total, schedules) => {
-    if (schedules) {
-      total += schedules.reduce((sum, schedule) => sum + (schedule.duration || 0), 0);
-    }
-    return total;
-  }, 0);
-}
+    return days.reduce((total, schedules) => {
+      if (schedules) {
+        total += schedules.reduce(
+          (sum, schedule) => sum + (schedule.duration || 0),
+          0
+        );
+      }
+      this.calculateInputHeight()
+      return total;
+    }, 0);
+  }
+  calculateInputHeight(): string {
+    setTimeout(() => {
+      const scheduleCards = document.querySelectorAll(
+        '#week-calendar-user-schedules .schedule-card'
+      ).length;
+      
+      console.log("scheduleCards:", scheduleCards);
+  
+      this.inputHeight = `${30 + scheduleCards * 60}px`;
+      this.cdr.detectChanges(); 
+    });
+  
+    return this.inputHeight || '30px';
+  }
+  inputHeight: string = '30px';
 
 }

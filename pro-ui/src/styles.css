@@ -729,15 +729,23 @@ html {
 }
 
 
-.day-schedules-container {
+.day-schedules-container{
   display: inline-table;
-  width: 14.25%;
+  width: 13.4%;
   vertical-align: top;
   margin-bottom: 25px;
   align-items: center; /* Centers items horizontally */
   justify-content: center; /* Centers items vertically */
 }
 
+.day-schedules-container-interviewer{
+  display: inline-table;
+  width: 14.2%;
+  vertical-align: top;
+  margin-bottom: 25px;
+  align-items: center; /* Centers items horizontally */
+  justify-content: center; /* Centers items vertically */
+}
 .day-schedules-container mat-icon {
   cursor: pointer;
   color: #0078d4;
