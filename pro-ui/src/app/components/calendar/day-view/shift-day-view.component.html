@@ -23,7 +23,11 @@
     <div class="hour-header">09:00 PM</div>
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
-    <div class="total-hour-header" style="background: #0078d4; color: white">
+    <div
+      *ngIf="authenticatedUser?.interviewer"
+      class="total-hour-header"
+      style="background: #0078d4; color: white"
+    >
       Total
     </div>
   </div>
@@ -64,7 +68,7 @@
           </div>
         </div>
       </div>
-      <div class="input-container">
+      <div class="input-container" *ngIf="authenticatedUser?.interviewer">
         <input
           type="text"
           [value]="schedule.duration"
@@ -78,7 +82,7 @@
       <div class="add-icon">
         <mat-icon style="cursor: pointer" (click)="addShift()">add</mat-icon>
       </div>
-      <div class="input-container">
+      <div class="input-container" *ngIf="authenticatedUser?.interviewer">
         <input type="text" [value]="0" class="right-aligned-input" />
       </div>
     </div>

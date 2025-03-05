@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { Utils } from '../../../classes/utils';
 import {
+  IAuthenticatedUser,
   ILegend,
   ISchedule,
   IWeekSchedules,
@@ -16,6 +17,7 @@ import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-shift-week-view',
@@ -31,14 +33,22 @@ export class ShiftWeekViewComponent implements OnInit {
   @Output() resetShiftSchedule = new EventEmitter<void>();
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
+  authenticatedUser!: IAuthenticatedUser;
   hoverMessage: HoverMessage = new HoverMessage();
   tooltipMessage: SafeHtml = ''; // New property to store tooltip content
   showTooltip: boolean = false;
   tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
   constructor(
     private globalsService: GlobalsService,
-    private sanitizer: DomSanitizer
-  ) {}
+    private sanitizer: DomSanitizer,
+    private authenticationService: AuthenticationService
+  ) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+  }
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
