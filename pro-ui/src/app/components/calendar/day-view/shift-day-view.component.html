@@ -62,7 +62,7 @@
             <span>{{ schedule.startTime }} - {{ schedule.endTime }}</span>
             <div class="project-time">
               <div class="duration-circle-day">
-                {{ schedule.duration }}
+                {{ schedule.duration }} hr
               </div>
             </div>
           </div>
@@ -71,10 +71,13 @@
       <div class="input-container" *ngIf="authenticatedUser?.interviewer">
         <input
           type="text"
-          [value]="schedule.duration"
+          [value]="schedule?.duration"
           class="right-aligned-input"
+          [readonly]="true"
+          disabled="true"
         />
       </div>
+
       }
     </div>
     }
@@ -83,7 +86,13 @@
         <mat-icon style="cursor: pointer" (click)="addShift()">add</mat-icon>
       </div>
       <div class="input-container" *ngIf="authenticatedUser?.interviewer">
-        <input type="text" [value]="0" class="right-aligned-input" />
+        <input
+          type="text"
+          [value]="0"
+          class="right-aligned-input"
+          [readonly]="true"
+          disabled="true"
+        />
       </div>
     </div>
   </div>

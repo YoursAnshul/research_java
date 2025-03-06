@@ -731,7 +731,7 @@ html {
 
 .day-schedules-container{
   display: inline-table;
-  width: 13.4%;
+  width: 14.2%;
   vertical-align: top;
   margin-bottom: 25px;
   align-items: center; /* Centers items horizontally */
@@ -740,11 +740,12 @@ html {
 
 .day-schedules-container-interviewer{
   display: inline-table;
-  width: 14.2%;
+  width: 14.1%;
   vertical-align: top;
   margin-bottom: 25px;
   align-items: center; /* Centers items horizontally */
   justify-content: center; /* Centers items vertically */
+  margin-right: -10px;
 }
 .day-schedules-container mat-icon {
   cursor: pointer;
@@ -1170,4 +1171,10 @@ html {
   display: flex;
   align-items: center; /* Vertically center items */
   gap: 10px; /* Add space between icon and input */
+}
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust height as needed */
 }

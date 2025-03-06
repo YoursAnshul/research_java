@@ -90,6 +90,8 @@
         class="right-aligned-input"
         style="width: 80px"
         [style.height]="inputHeight"
+        [readonly]="true"
+        disabled="true"
       />
     </div>
   </div>
@@ -109,10 +111,11 @@
         ];
         let dayIndex = index
       "
-      [ngClass]="{
-        'day-schedules-container': !authenticatedUser?.interviewer,
-        'day-schedules-container-interviewer': authenticatedUser?.interviewer
-      }"
+      [ngClass]="
+        authenticatedUser?.interviewer
+          ? 'day-schedules-container-interviewer'
+          : 'day-schedules-container'
+      "
     >
       <ng-container *ngFor="let schedule of daySchedules">
         <div

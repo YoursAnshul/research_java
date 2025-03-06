@@ -39,6 +39,11 @@ export class ShiftWeekViewComponent implements OnInit {
   tooltipMessage: SafeHtml = ''; // New property to store tooltip content
   showTooltip: boolean = false;
   tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
+  isLoading: boolean = false;
+  private debounceTimer: any;
+  inputHeight: string = '30px';
+  totalDuration: number = 0;
+
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -54,6 +59,8 @@ export class ShiftWeekViewComponent implements OnInit {
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('authenticatedUser----', this.authenticatedUser);
+
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
@@ -244,31 +251,31 @@ export class ShiftWeekViewComponent implements OnInit {
       this.weekSchedules.day7Schedules,
     ];
 
-    return days.reduce((total, schedules) => {
-      if (schedules) {
+    let totalUserCards = 0;
+    this.totalDuration = days.reduce((total, schedules) => {
+      if (schedules?.length) {
+        totalUserCards += schedules.length; // Count user cards
         total += schedules.reduce(
           (sum, schedule) => sum + (schedule.duration || 0),
           0
-        );
+        ); // Sum of durations
       }
-      this.calculateInputHeight()
       return total;
     }, 0);
-  }
-  calculateInputHeight(): string {
-    setTimeout(() => {
-      const scheduleCards = document.querySelectorAll(
-        '#week-calendar-user-schedules .schedule-card'
-      ).length;
-      
-      console.log("scheduleCards:", scheduleCards);
-  
-      this.inputHeight = `${30 + scheduleCards * 60}px`;
-      this.cdr.detectChanges(); 
-    });
-  
-    return this.inputHeight || '30px';
-  }
-  inputHeight: string = '30px';
 
+    this.calculateInputHeight(totalUserCards);
+    return this.totalDuration;
+  }
+
+  calculateInputHeight(totalUserCards: number): void {
+    const baseHeight = 30;
+    // const userCardHeight = 62;
+
+    // const newHeight = `${baseHeight + totalUserCards * userCardHeight}px`;
+
+    // if (this.inputHeight !== newHeight) {
+    //   this.inputHeight = newHeight;
+    //   this.cdr.detectChanges();
+    // }
+  }
 }
