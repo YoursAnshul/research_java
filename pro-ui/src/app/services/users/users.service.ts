@@ -55,6 +55,10 @@ export class UsersService {
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/${netId}`);
   }
 
+  getUserImage(netId: string): Observable<IGeneralResponse> {
+    return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/image/${netId}`);
+  }
+
   setCurrentUser(netId: string): void {
 
     //get shibboleth session info and parse it out

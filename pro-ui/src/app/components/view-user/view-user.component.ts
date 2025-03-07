@@ -35,7 +35,7 @@ import { Router } from '@angular/router';
 export class ViewUserComponent implements OnInit, OnChanges {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
 
-    if (this.changed || this.createForm) {
+    if (this.changed) {
       e.preventDefault();
       e.returnValue = '';
     }
@@ -89,7 +89,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
   invalid: boolean = true;
   isUserFormInvalid: boolean = false;
   tab2Invalid: boolean = false;
-  previewUrl: string | null = null;
   errorMessageForImage: string | null = null;
   acceptedFormats = ['image/jpeg', 'image/png'];
   maxFileSizeMB = 10;
@@ -244,6 +243,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
   }
   ngOnInit(): void {
+
     this.isEdit = true;
     if (this.createForm) {
 
@@ -336,10 +336,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
     if (!this.createForm) {
 
-
       if (this.viewUser) {
         this.selectedUser = this.viewUser;
       }
+
       this.coreHours = {} as ICoreHours;
 
       //default core hours
@@ -369,6 +369,24 @@ export class ViewUserComponent implements OnInit, OnChanges {
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       }
     }
+
+    //get userImage
+    this.usersService.getUserImage(this.selectedUser.dempoid).subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.selectedUser.userImage = response.Subject;
+        } else {
+          this.logsService.logError(response.Message);
+          this.errorMessage = response.Message;
+          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+        }
+      },
+      error => {
+        this.errorMessage = <string>(error.message);
+        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      }
+    );
+
   }
 
 
@@ -459,6 +477,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   setTrainedOn(): void {
+    
    let trainedOnIds: string[] = [];
     if (this.selectedUser?.trainedon) {
       trainedOnIds = this.selectedUser.trainedon.split('|');
@@ -467,7 +486,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.defPro = [
       { defaultproject: Number(this.selectedUser.defaultproject) },
     ];
-    console.log('this.defPro---------- ', this.defPro);
+    
   }
 
   public getProjectId(item: string) {
@@ -693,7 +712,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     if (!this.tab2Invalid) {
       if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
     }
-    console.log('this.tab2Invalid : --000', this.tab2Invalid);
+    
     //tab validation
     this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
 
@@ -830,7 +849,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
     //set created metadata (if applicable)
     this.selectedUser.entryBy = this.authenticatedUser.netID;
     this.selectedUser.entryDt = new Date();
-    this.selectedUser.userImage = this.previewUrl;
     if(this.defaultproject == 0 && this.trainedOnProjects.length>0){
       this.selectedUser.defaultproject =  this.selectedUser.defaultproject;
     }else {
@@ -927,6 +945,14 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.selectedUser = su;
   }
 
+  selectFile(): void {
+    this.changed = true;
+    const profileImageFile = document.getElementById("profile-image-file");
+    if (profileImageFile) {
+      profileImageFile.click();
+    }
+  }
+
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
@@ -934,14 +960,14 @@ export class ViewUserComponent implements OnInit, OnChanges {
     // Validate file type
     if (!this.acceptedFormats.includes(file.type)) {
       this.errorMessage = 'Invalid format. Please upload a JPEG or PNG.';
-      this.previewUrl = null;
+      this.selectedUser.userImage = null;
       return;
     }
 
     // Validate file size
     if (file.size > this.maxFileSizeMB * 1024 * 1024) {
       this.errorMessage = `File size exceeds ${this.maxFileSizeMB} MB.`;
-      this.previewUrl = null;
+      this.selectedUser.userImage = null;
       return;
     }
 
@@ -949,7 +975,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.errorMessageForImage = null;
     const reader = new FileReader();
     reader.onload = () => {
-      this.previewUrl = reader.result as string;
+      this.selectedUser.userImage = reader.result as string;
     };
     reader.readAsDataURL(file);
   }

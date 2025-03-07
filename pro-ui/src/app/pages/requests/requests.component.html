@@ -47,12 +47,12 @@
         </mat-form-field>
       </div>
 
-      <!--resource team member-->
-      <mat-form-field id="resource-team-member" appearance="outline" class="ctm">
-        <mat-label>Resource Team Member</mat-label>
+      <!--project team member-->
+      <mat-form-field id="project-team-member" appearance="outline" class="ctm">
+        <mat-label>Project Team Member</mat-label>
         <input type="text" matInput
                [(ngModel)]="authenticatedUser.displayName"
-               placeholder="Resource Team Member"
+               placeholder="Project Team Member"
                [disabled]="true"
                [class.read-only]="true">
       </mat-form-field>
@@ -258,7 +258,7 @@
                           [class.invalid]="req.InvalidFields?.includes('InterviewerEmpId')"
                           name="new-interviewer">
                 <mat-option value=""></mat-option>
-                <mat-option *ngFor="let u of allUsers" value="{{u.dempoid}}">
+                <mat-option *ngFor="let u of activeUsers" value="{{u.dempoid}}">
                   {{u.displayName}}
                 </mat-option>
               </mat-select>
@@ -273,13 +273,13 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="ResourceTeamMemberName">
-        <th mat-header-cell *matHeaderCellDef>Resource Team Member</th>
+        <th mat-header-cell *matHeaderCellDef>Project Team Member</th>
         <td mat-cell *matCellDef="let req">
-          <!--resource team member-->
+          <!--project team member-->
           <div class="select-field"
                *ngIf="req?.Edit">
             <mat-form-field>
-              <mat-label [class.invalid]="req.InvalidFields?.includes('ResourceTeamMemberId')">Resource Team Member</mat-label>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('ResourceTeamMemberId')">Project Team Member</mat-label>
               <mat-select [(ngModel)]="req.resourceTeamMemberId"
                           [compareWith]="compareSelectValues"
                           (selectionChange)="validateRequirement(req)"

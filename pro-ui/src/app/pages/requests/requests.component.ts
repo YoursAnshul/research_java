@@ -113,9 +113,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     this.usersService.allUsersMin.subscribe(
       allUsers => {
         this.allUsers = allUsers;
-        this.activeUsers = allUsers;
+        this.activeUsers = allUsers.filter(x => x.status == "1");
         this.trySetRequestValues();
-        this.filteredUsersDv = Utils.convertObjectArrayToDropDownValues(this.allUsers, 'dempoid', 'displayName');
+        this.filteredUsersDv = Utils.convertObjectArrayToDropDownValues(this.activeUsers, 'dempoid', 'displayName');
       }
     );
 

@@ -74,7 +74,6 @@ export class AddUserComponent implements OnInit {
   invalid: boolean = true;
   isUserFormInvalid: boolean = false;
   tab2Invalid: boolean = false;
-  previewUrl: string | null = null;
   errorMessageForImage: string | null = null;
   acceptedFormats = ['image/jpeg', 'image/png'];
   maxFileSizeMB = 10;
@@ -890,7 +889,6 @@ export class AddUserComponent implements OnInit {
               //set created metadata (if applicable)
               this.selectedUser.entryBy = this.authenticatedUser.netID;
               this.selectedUser.entryDt = new Date();
-              this.selectedUser.userImage = this.previewUrl;
               console.log("this.defaultProject--------->",this.defaultProject);
               this.selectedUser.defaultproject = this.defaultProject;
               
@@ -985,6 +983,14 @@ export class AddUserComponent implements OnInit {
     this.selectedUser = su;
   }
 
+  selectFile(): void {
+    this.changed = true;
+    const profileImageFile = document.getElementById("profile-image-file");
+    if (profileImageFile) {
+      profileImageFile.click();
+    }
+  }
+
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
@@ -992,14 +998,14 @@ export class AddUserComponent implements OnInit {
     // Validate file type
     if (!this.acceptedFormats.includes(file.type)) {
       this.errorMessage = 'Invalid format. Please upload a JPEG or PNG.';
-      this.previewUrl = null;
+      this.selectedUser.userImage = null;
       return;
     }
 
     // Validate file size
     if (file.size > this.maxFileSizeMB * 1024 * 1024) {
       this.errorMessage = `File size exceeds ${this.maxFileSizeMB} MB.`;
-      this.previewUrl = null;
+      this.selectedUser.userImage = null;
       return;
     }
 
@@ -1007,7 +1013,7 @@ export class AddUserComponent implements OnInit {
     this.errorMessageForImage = null;
     const reader = new FileReader();
     reader.onload = () => {
-      this.previewUrl = reader.result as string;
+      this.selectedUser.userImage = reader.result as string;
     };
     reader.readAsDataURL(file);
   }

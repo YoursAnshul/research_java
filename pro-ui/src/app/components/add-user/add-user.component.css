@@ -62,6 +62,22 @@ mat-card {
   height: 60px;
 }
 
+.profile-image-container {
+  width: 60px; /* Fixed width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px; /* Optional: Rounded corners */
+  overflow: hidden; /* Ensures any overflow is trimmed */
+  position: relative;
+}
+
+.profile-image-container img {
+  width: 100%; /* Make the image fill the container */
+  height: 100%; /* Maintain full height */
+  object-fit: cover; /* Ensures the image is cropped to fill the container */
+}
+
 .upload span {
   font-family: Roboto;
   font-size: 10px;

@@ -78,12 +78,15 @@ export class AnnouncementsComponent implements OnInit {
             ...item,
             isFullText: false,
           })) || [];
-          console.log(this.authenticatedUser);
-
+          
           if (!(this.authenticatedUser.resourceGroup
             || this.authenticatedUser.admin)
           ) {
-            this.announcementsList = this.announcementsList.filter((announcement) => Utils.arrayIncludesAny(this.currentUser.trainedOnArray, (announcement.projectIds || []).map(x => x.toString())));
+            this.announcementsList = this.announcementsList.filter((announcement) =>
+              (Utils.arrayIncludesAny(this.currentUser.trainedOnArray, (announcement.projectIds || []).map(x => x.toString()))
+                || !announcement.projectIds)
+          );
+
           }
 
       },

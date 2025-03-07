@@ -92,7 +92,11 @@ public class UsersController {
 
 			response.Status = "Success";
 			response.Message = "Successfully retrieved users";
-			response.Subject = userRepository.findAll();
+			List<User> users = userRepository.findAll();
+			// for (User user : users) {
+			// 	user.setUserImage(null);
+			// }
+			response.Subject = users;
 		} catch (Exception ex) {
 			response.Status = "Failure";
 			response.Message = ex.getMessage();
@@ -165,6 +169,27 @@ public class UsersController {
 		return response;
 	}
 
+	@GetMapping("/image/{netId}")
+	public GeneralResponse getUserImage(@PathVariable String netId) {
+		GeneralResponse response = new GeneralResponse();
+		try {
+
+			response.Status = "Success";
+			response.Message = "Successfully retrieved user";
+			String userImage = jdbcTemplate.queryForObject(
+				"SELECT userImage FROM users WHERE DempoId = ?",
+				new Object[]{netId},
+				(rs, rowNum) -> rs.getString("userImage")
+			);
+			response.Subject = userImage;
+		} catch (Exception ex) {
+			response.Status = "Failure";
+			response.Message = ex.getMessage();
+		}
+
+		return response;
+	}
+
 	@GetMapping("/current/{netId}")
 	public GeneralResponse getCurrentUser(@PathVariable String netId) {
 		GeneralResponse response = new GeneralResponse();
@@ -192,6 +217,7 @@ public class UsersController {
     public GeneralResponse saveUser(HttpServletRequest request, @RequestBody User user) {
         GeneralResponse response = new GeneralResponse();
         String netId = "Unknown";
+		String userImage = user.getUserImage();
         // Retrieve NetId from session if available
         Object netIdObj = request.getSession().getAttribute("NetId");
         if (netIdObj != null) {
@@ -217,6 +243,14 @@ public class UsersController {
                 response.Message = "Successfully saved user, but the training log was not updated";
             response.Subject = user;
             System.out.println("user.getDefaultproject()---------" + user.getDefaultproject());
+			if (userImage != null) {
+				String sql = "UPDATE users SET userimage = ? WHERE userid = ?";
+				jdbcTemplate.update(sql, userImage, user.getUserid());
+			} else {
+				String sql = "UPDATE users SET userimage = NULL WHERE userid = ?";
+				jdbcTemplate.update(sql, user.getUserid());
+			}
+
             if (user.getDefaultproject() != null) {
             String sql = "Update core.users SET defaultproject ='"+user.getDefaultproject()+"'  WHERE userid     = " + user.getUserid() ;
             this.jdbcTemplate.execute(sql);
@@ -669,11 +703,11 @@ public DirContext getUserDetails(String duid) {
 		user.setDisplayName("duke");
 
 		//set the below as needed for testing locally
-		user.interviewer = true;
+		 user.interviewer = true;
 		// user.resourceGroup = true;
-		 user.admin = false;
-//		user.resourceGroup = false;
-//		user.admin = false;
+		user.admin = false;
+		user.resourceGroup = false;
+		// user.admin = false;
 		user.projectTeam = false;
 		user.outcomesIt = false;
 

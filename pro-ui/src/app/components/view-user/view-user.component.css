@@ -536,13 +536,11 @@ app-form-field {
 
 .profile-image-container {
   width: 60px; /* Fixed width */
-  height: 60px; /* Fixed height */
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px; /* Optional: Rounded corners */
   overflow: hidden; /* Ensures any overflow is trimmed */
-  cursor: pointer;
   position: relative;
 }
 
@@ -569,24 +567,6 @@ app-form-field {
   cursor: pointer;
   color: #0680cd;
   text-decoration: underline;
-}
-
-.profile-image-container {
-  width: 60px; /* Fixed width */
-  height: 60px; /* Fixed height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px; /* Optional: Rounded corners */
-  overflow: hidden; /* Ensures any overflow is trimmed */
-  cursor: pointer;
-  position: relative;
-}
-
-.profile-image-container img {
-  width: 100%; /* Make the image fill the container */
-  height: 100%; /* Maintain full height */
-  object-fit: cover; /* Ensures the image is cropped to fill the container */
 }
 
 ::ng-deep .mdc-text-field--filled.mdc-text-field--disabled {

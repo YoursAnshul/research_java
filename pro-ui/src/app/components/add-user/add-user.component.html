@@ -25,23 +25,22 @@
     
               <!-- photo -->
               <div class="w-fit">
-                <div class="text-center"
-                  (click)="fileInput.click()">
-                  <ng-container *ngIf="previewUrl; else defaultIcon">
-                    <img [src]="previewUrl" alt="Uploaded Image" class="" />
-                  </ng-container>
-                  <ng-template #defaultIcon>
+                <div class="text-center profile-image-container"
+                  (click)="selectFile()">
+                  @if (selectedUser?.userImage) {
+                    <img [src]="selectedUser?.userImage" alt="Uploaded Image" class="" />
+                  }@else {
                     <mat-icon style="width: 60px; height: 60px;" svgIcon="user-square"></mat-icon>
-                  </ng-template>
+                  }
                 </div>
     
-                <div class="flex gap-1 items-center" (click)="fileInput.click()">
+                <div class="flex gap-1 items-center" (click)="selectFile()">
                   <span class="text-xs text-[#005698] text-center underline cursor-pointer">Upload Photo</span>
                 </div>
               </div>
     
               <!-- hidden input and error message -->
-              <input #fileInput type="file" hidden accept="image/jpeg, image/png" (change)="onFileChange($event)" />
+              <input id="profile-image-file" #fileInput type="file" hidden accept="image/jpeg, image/png" (change)="onFileChange($event)" />
               <div *ngIf="errorMessageForImage" class="error-message">{{ errorMessageForImage }}</div>
     
             </div>

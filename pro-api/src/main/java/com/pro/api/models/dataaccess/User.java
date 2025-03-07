@@ -97,7 +97,8 @@ public class User {
 
 	// @Lob
 	// @Column(name = "userimage")
-	// private String userImage;
+	@Transient
+	private String userImage;
 
 	@Column(columnDefinition="text", length=10485760 ,name = "notes")
 	private String notes;
@@ -427,6 +428,14 @@ public class User {
 	// public void setUserImage(byte[] userImage) {
 	// 	this.userImage = Base64.getEncoder().encodeToString(userImage);
 	// }
+
+	public String getUserImage() {
+		return userImage;
+	}
+
+	public void setUserImage(String userImage) {
+		this.userImage = userImage;
+	}
 
 	public String getNotes() {
 		return notes;
