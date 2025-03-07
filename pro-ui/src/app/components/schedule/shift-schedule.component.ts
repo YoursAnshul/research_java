@@ -13,6 +13,8 @@ import { ShifCalendarComponent } from '../calendar/shift.calendar.component';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { BlockdateDialog } from '../calendar/calendar-controls/block.date.dialog.component';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { ScheduleCloseDialogComponent } from './schedule.close.dialog.component';
+import { CalendarSaveDialogComponent } from '../calendar/calendar-controls/calendar.save.dialog.component';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -117,6 +119,17 @@ export class ShiftScheduleComponent implements OnInit {
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
+  confirmatationClose(): void {
+    const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
+      panelClass: 'custom-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.onClose();
+      }
+    });
+  }
   onClose(): void {
     this.dialogRef.close();
   }
@@ -212,7 +225,7 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
-      const selectedUser = formData.user; // Assuming 'user' is a field in the form
+      const selectedUser = formData.user; 
 
       const newStartTime = this.combineDateAndTime(
         selectedDate,
@@ -255,16 +268,14 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.get('endTime')?.setErrors({ overlap: true });
         return;
       }
-
       const newShift = { ...formData, duration: this.duration };
       this.shiftSchedule = [...this.shiftSchedule, newShift];
       this.weekSchedules = [...this.shiftSchedule];
-
-      console.log('Updated Shift Schedule:', this.shiftSchedule);
-
-      // Clear errors
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
+      // const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
+      //   panelClass: 'custom-dialog-container',
+      // });
     }
   }
 
@@ -380,9 +391,9 @@ export class ShiftScheduleComponent implements OnInit {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
-    const formattedMinutes = diffMinutes / 60; 
+    const formattedMinutes = diffMinutes / 60;
     const total = diffHours + formattedMinutes;
-    this.duration = `${(parseFloat(String(total)) || 0)} hr`;
+    this.duration = `${parseFloat(String(total)) || 0} hr`;
   }
 
   parseTime(time: string): Date {

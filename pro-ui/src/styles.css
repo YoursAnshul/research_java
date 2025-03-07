@@ -392,19 +392,21 @@ html {
 }
 
 .hour-header {
+  height: 50px; 
   width: 5.25%;
   text-align: center;
   font-weight: bold;
   border-right: 1px solid #ccc;
-  padding: 5px 0;
+  padding: 7px;
 }
 
 .total-hour-header {
+  height: 50px; 
   width: 5.25%;
   text-align: center;
   font-weight: bold;
   border-right: 1px solid #0078d4;
-  padding: 5px 0;
+  padding: 14px;
   background: #0078d4;
   color: white;
   font-weight: bold;
@@ -481,6 +483,7 @@ html {
   background-color: lightgoldenrodyellow;
   border-top: 0.5px solid gray;
   border-right: 0.5px solid gray;
+  margin-bottom: 10px;
 }
 
 
@@ -497,7 +500,7 @@ html {
     0 1px 18px 0 rgb(0 0 0 / 12%);
   cursor: pointer;
   user-select: none;
-  margin-top: 0px;
+  margin-top: -6px;
   font-size: 0.75em;
 }
 .user-schedule-row {
@@ -685,10 +688,6 @@ html {
   width: 100%;
   padding-top: 5px;
 }
-#week-calendar-user-schedules {
-  /*height: 600px;*/
-  /*overflow-y: auto;*/
-}
 
 #week-calendar-user-schedules .user-card {
   padding: 5px;
@@ -731,7 +730,7 @@ html {
 
 .day-schedules-container{
   display: inline-table;
-  width: 14.2%;
+  width: 14.14%;
   vertical-align: top;
   margin-bottom: 25px;
   align-items: center; /* Centers items horizontally */
@@ -740,12 +739,11 @@ html {
 
 .day-schedules-container-interviewer{
   display: inline-table;
-  width: 14.1%;
+  width: 13.34%;
   vertical-align: top;
   margin-bottom: 25px;
   align-items: center; /* Centers items horizontally */
   justify-content: center; /* Centers items vertically */
-  margin-right: -10px;
 }
 .day-schedules-container mat-icon {
   cursor: pointer;
@@ -1154,17 +1152,20 @@ html {
   }
 }
 .input-container {
-  padding: 5px;
+  height: 50px;
+  width: 5.25%;
   display: flex;
-  justify-content: flex-end; /* Align input to the right */
+  justify-content: center;
   align-items: center;
+  border-right: 1px solid #ccc;
 }
 
 .right-aligned-input {
   padding: 3px;
   font-size: 14px;
   border: 1px solid #0078d4;
-  width: 63px;
+  width: 100%; 
+  height: 30px;
   text-align: center;
 }
 .icon-input-container {

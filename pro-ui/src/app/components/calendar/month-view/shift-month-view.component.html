@@ -1,11 +1,11 @@
 <div style="background-color: #f2f2f2 !important">
   @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {
   <div class="week-schedules-container">
-    <!-- <app-shift-week-view
+    <app-shift-week-view
       [weekSchedules]="weekSchedules"
       (resetShiftSchedule)="onResetShiftSchedule()"
       [monthPart]="true"
-    ></app-shift-week-view> -->
+    ></app-shift-week-view>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
   <app-shift-week-view [weekSchedules]="null"></app-shift-week-view>

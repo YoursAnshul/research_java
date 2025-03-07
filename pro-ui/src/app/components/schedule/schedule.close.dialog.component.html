@@ -1,0 +1,17 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <span class="icon-warning">!</span>
+  </div>
+  <h2 class="dialog-title">You have unsaved changes</h2>
+  <p class="dialog-message">
+    Are you sure you want to leave this page? Unsaved changes will be lost.
+  </p>
+  <div class="dialog-actions">
+    <button mat-flat-button class="w-100 primary-button" (click)="onConfirm()">
+      Yes, discard changes
+    </button>
+    <button mat-flat-button class="w-100 warn-button" (click)="onCancel()">
+      No, Go Back
+    </button>
+  </div>
+</div>

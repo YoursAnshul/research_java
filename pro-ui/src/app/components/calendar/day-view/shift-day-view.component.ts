@@ -87,7 +87,7 @@ export class ShiftDayViewComponent implements OnInit {
     const endHour = this.convertTimeToSlot(endTime); // Converts end time to slot index
     const duration = endHour - startHour; // Calculate event duration in hours
 
-    const leftOffset = this.authenticatedUser?.interviewer ? 13.1 : 15.4; // Adjust offset based on role
+    const leftOffset = this.authenticatedUser?.interviewer ? 12.85 : 15.4; // Adjust offset based on role
     const totalHours = this.authenticatedUser?.interviewer ? 17 : 16; // From 08:00 AM to 11:00 PM = 16 hours
     const slotWidth = (100 - leftOffset) / totalHours; // Remaining width for time slots
 
