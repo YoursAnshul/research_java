@@ -95,8 +95,9 @@ export class ShifCalendarComponent implements OnInit {
   selectedProject: any = null;
 
   @Input() shiftSchedule: any[] = [];
-  @Output() resetShiftSchedule = new EventEmitter<void>(); // Output event to parent component
+  @Output() resetShiftSchedule = new EventEmitter<void>(); 
   blockOutDates: IBlockOutDate[] = [];
+  @Output() addDateEvent = new EventEmitter<Date>();
 
   //constructor
   constructor(
@@ -757,7 +758,6 @@ export class ShifCalendarComponent implements OnInit {
     return true;
   }
   onResetShiftSchedule(): void {
-    console.log('Shift schedule and form reset.');
     this.resetShiftSchedule.emit();
   }
   getAuthor(): void {
@@ -765,6 +765,7 @@ export class ShifCalendarComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.userList = Array.isArray(data) ? data : [];
+        
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
@@ -778,4 +779,9 @@ export class ShifCalendarComponent implements OnInit {
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+  handleAddDate(date: Date): void {
+    console.log('Received date from child:----------', date);
+    this.addDateEvent.emit(date); 
+  }
+  
 }

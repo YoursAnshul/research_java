@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -102,6 +102,11 @@ export class ShiftScheduleComponent implements OnInit {
   blockOutDates: IBlockOutDate[] = [];
   isBlockDate = false;
   authenticatedUser!: IAuthenticatedUser;
+  userObj: any;
+  selectedUser: any = null;
+
+  @Output() addDateEvent = new EventEmitter<Date>();
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -122,6 +127,7 @@ export class ShiftScheduleComponent implements OnInit {
   confirmatationClose(): void {
     const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
       panelClass: 'custom-dialog-container',
+      
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -133,7 +139,10 @@ export class ShiftScheduleComponent implements OnInit {
   onClose(): void {
     this.dialogRef.close();
   }
+
   ngOnInit(): void {
+    console.log("---",this.authenticatedUser);
+    
     this.getBlockOutDates();
     this.getAuthor();
     this.getProjectInfo();
@@ -174,7 +183,14 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('user')?.valueChanges.subscribe(() => {
       this.clearValidation();
     });
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+        this.userObj = this.authenticatedUser;
+      }
+    );
   }
+
   validateBlockOutDate(selectedDate: Date): void {
     const isBlocked = this.blockOutDates.some((blockOut) => {
       return (
@@ -225,7 +241,7 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
-      const selectedUser = formData.user; 
+      const selectedUser = formData.user;
 
       const newStartTime = this.combineDateAndTime(
         selectedDate,
@@ -311,7 +327,9 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.userList = Array.isArray(data) ? data : [];
-        console.log('Author List:', this.userList);
+        if (this.userObj?.eppn) {
+          this.getLoginUser(this.userObj.eppn);
+        }
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
@@ -413,7 +431,6 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onResetShiftSchedule(): void {
-    console.log('Final Shift schedule and form reset.');
     this.shiftForm.reset({
       user: null,
       projects: [],
@@ -435,5 +452,35 @@ export class ShiftScheduleComponent implements OnInit {
       },
       (error) => {}
     );
+  }
+  handleAddDate(date: Date): void {
+    console.log('Received Date:', date);
+
+    if (date && date instanceof Date && !isNaN(date.getTime())) {
+      this.shiftForm.get('dayWiseDate')?.setValue(date);
+    } else {
+      console.error('Invalid Date:', date);
+    }
+  }
+  getLoginUser(email: string): void {
+    if (!email) {
+      console.error('Email is required to fetch login author');
+      return;
+    }
+
+    const params = new HttpParams().set('email', email);
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
+
+    this.http.get(apiUrl, { params }).subscribe({
+      next: (data: any) => {
+        this.selectedUser =
+          this.userList.find((user) => user?.userId === data?.userId) ||
+          null;
+        console.log('Login Author Selected:', this.selectedUser);
+      },
+      error: (error: any) => {
+        console.error('Error fetching user info:', error);
+      },
+    });
   }
 }

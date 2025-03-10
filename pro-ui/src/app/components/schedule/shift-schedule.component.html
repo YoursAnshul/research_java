@@ -28,12 +28,13 @@
           appearance="outline"
           class="custom-form-field"
           style="width: 185px"
+          [disabled]="true"
         >
           <mat-label>User</mat-label>
-          <mat-select formControlName="user">
-            <mat-option *ngFor="let user of userList" [value]="user">{{
-              user.userName
-            }}</mat-option>
+          <mat-select formControlName="user" [(value)]="selectedUser">
+            <mat-option *ngFor="let user of userList" [value]="user">
+              {{ user.userName }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -163,6 +164,7 @@
       style="margin-top: -20px"
       [shiftSchedule]="shiftSchedule"
       (resetShiftSchedule)="onResetShiftSchedule()"
+      (addDateEvent)="handleAddDate($event)"
     ></app-shift-calendar>
   </form>
 </div>

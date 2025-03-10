@@ -69,7 +69,10 @@
         gap: '8px'
       }"
     >
-      <mat-icon style="cursor: pointer; color: #0078d4" (click)="addShift()">
+      <mat-icon
+        style="cursor: pointer; color: #0078d4"
+        (click)="addShift(GetDaysDateAsDate(weekSchedules?.weekStart, i + 1))"
+      >
         add
       </mat-icon>
     </div>

@@ -43,6 +43,7 @@ export class ShiftWeekViewComponent implements OnInit {
   private debounceTimer: any;
   inputHeight: string = '30px';
   totalDuration: number = 0;
+  @Output() addDateEvent = new EventEmitter<Date>();
 
   constructor(
     private globalsService: GlobalsService,
@@ -231,11 +232,12 @@ export class ShiftWeekViewComponent implements OnInit {
   hideHoverMessage(): void {
     this.showTooltip = false;
   }
-  addShift(): void {
-    this.resetShiftSchedule.emit(); // Emit event to parent component
+  addShift(date: Date): void {
+    console.log('Add shift for date:', date);
+    this.addDateEvent.emit(date); 
+    this.resetShiftSchedule.emit(); 
   }
   onResetShiftSchedule(): void {
-    console.log('Shift schedule and form reset.');
     this.resetShiftSchedule.emit();
   }
   calculateTotalDuration(): number {
