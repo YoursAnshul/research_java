@@ -91,13 +91,16 @@ export class ShifCalendarComponent implements OnInit {
   tabIndex = 0;
   userList: any[] = [];
   projectList: any[] = [];
-  selectedUser: any = null;
-  selectedProject: any = null;
-
+  defaultUser = { userId: 0, userName: 'Any Users'};
+  defaultProject = { projectId: 0 ,projectName: 'Any Projects'};
+  selectedUser: any = this.defaultUser;
+  selectedProject: any = this.defaultProject;
   @Input() shiftSchedule: any[] = [];
-  @Output() resetShiftSchedule = new EventEmitter<void>(); 
+  @Output() resetShiftSchedule = new EventEmitter<void>();
   blockOutDates: IBlockOutDate[] = [];
   @Output() addDateEvent = new EventEmitter<Date>();
+
+
 
   //constructor
   constructor(
@@ -128,7 +131,7 @@ export class ShifCalendarComponent implements OnInit {
       (userSchedules) => {
         // console.log(userSchedules)
         this.userSchedulesMonth = userSchedules.filter((x) => !x.addInitial);
- 
+
         this.syncData(this.userSchedulesMonth);
         //set filtered lists
 
@@ -141,7 +144,7 @@ export class ShifCalendarComponent implements OnInit {
         console.log(this.errorMessage);
       }
     );
-    
+
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -764,24 +767,23 @@ export class ShifCalendarComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.userList = Array.isArray(data) ? data : [];
-        
+        this.userList = [this.defaultUser, ...(Array.isArray(data) ? data : [])];
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
   }
+  
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.projectList = Array.isArray(data) ? data : [];
+        this.projectList = [this.defaultProject, ...(Array.isArray(data) ? data : [])];
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
   handleAddDate(date: Date): void {
     console.log('Received date from child:----------', date);
-    this.addDateEvent.emit(date); 
+    this.addDateEvent.emit(date);
   }
-  
 }
