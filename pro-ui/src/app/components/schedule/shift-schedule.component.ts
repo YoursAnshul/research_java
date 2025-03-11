@@ -127,7 +127,6 @@ export class ShiftScheduleComponent implements OnInit {
   confirmatationClose(): void {
     const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
       panelClass: 'custom-dialog-container',
-      
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -141,8 +140,8 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("---",this.authenticatedUser);
-    
+    console.log('---', this.authenticatedUser);
+
     this.getBlockOutDates();
     this.getAuthor();
     this.getProjectInfo();
@@ -327,6 +326,8 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.userList = Array.isArray(data) ? data : [];
+        console.log('User List:', this.userList);
+        
         if (this.userObj?.eppn) {
           this.getLoginUser(this.userObj.eppn);
         }
@@ -474,8 +475,12 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
         this.selectedUser =
-          this.userList.find((user) => user?.userId === data?.userId) ||
-          null;
+          this.userList.find((user) => user?.userId === data?.userId) || null;
+          if (this.authenticatedUser?.interviewer) {
+            this.userList = this.userList.filter(
+              (user) => user.userId === this.selectedUser.userId
+            );
+          }
         console.log('Login Author Selected:', this.selectedUser);
       },
       error: (error: any) => {
