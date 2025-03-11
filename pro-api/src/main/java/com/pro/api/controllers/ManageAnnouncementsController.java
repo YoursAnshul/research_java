@@ -77,8 +77,8 @@ public class ManageAnnouncementsController {
 	}
 
 	@DeleteMapping("/{id}/{user}")
-	public ResponseEntity<GeneralResponse> delete(@PathVariable Integer id,@PathVariable String user) {
-		GeneralResponse res = manageAnnouncements.delete(id,user);
+	public ResponseEntity<GeneralResponse> delete(@PathVariable Integer id, @PathVariable String user) {
+		GeneralResponse res = manageAnnouncements.delete(id, user);
 		return ResponseEntity.status(HttpStatus.OK).body(res);
 	}
 
@@ -94,5 +94,12 @@ public class ManageAnnouncementsController {
 	public ResponseEntity<GeneralResponse> getAouncementList() {
 		GeneralResponse announcementList = manageAnnouncements.getAnnouncementList();
 		return ResponseEntity.status(HttpStatus.OK).body(announcementList);
+	}
+
+	@GetMapping("/interviewer-projects")
+	public ResponseEntity<List<ProjectResponse>> getInterviewerProjects(
+			@RequestParam(required = false, value = "dempo_id") String dempoId) {
+		List<ProjectResponse> allProjects = manageAnnouncements.getInterviewerProjects(dempoId);
+		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
 	}
 }
