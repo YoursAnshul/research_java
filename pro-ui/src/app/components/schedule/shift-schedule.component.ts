@@ -328,9 +328,9 @@ export class ShiftScheduleComponent implements OnInit {
         this.userList = Array.isArray(data) ? data : [];
         console.log('User List:', this.userList);
         
-        if (this.userObj?.eppn) {
-          this.getLoginUser(this.userObj.eppn);
-        }
+        // if (this.userObj?.eppn) {
+        //   this.getLoginUser(this.userObj.eppn);
+        // }
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
