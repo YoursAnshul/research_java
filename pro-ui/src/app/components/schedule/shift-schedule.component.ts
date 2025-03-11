@@ -476,11 +476,11 @@ export class ShiftScheduleComponent implements OnInit {
       next: (data: any) => {
         this.selectedUser =
           this.userList.find((user) => user?.userId === data?.userId) || null;
-          if (this.authenticatedUser?.interviewer) {
-            this.userList = this.userList.filter(
-              (user) => user.userId === this.selectedUser.userId
-            );
-          }
+          // if (this.authenticatedUser?.interviewer) {
+          //   this.userList = this.userList.filter(
+          //     (user) => user.userId === this.selectedUser.userId
+          //   );
+          // }
         console.log('Login Author Selected:', this.selectedUser);
       },
       error: (error: any) => {
