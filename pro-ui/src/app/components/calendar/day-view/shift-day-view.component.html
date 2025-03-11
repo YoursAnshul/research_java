@@ -71,7 +71,7 @@
       <div class="input-container" *ngIf="authenticatedUser?.interviewer">
         <input
           type="text"
-          [value]="schedule?.duration"
+          [value]="schedule?.duration + ' hr'"
           class="right-aligned-input"
           [readonly]="true"
           disabled="true"
