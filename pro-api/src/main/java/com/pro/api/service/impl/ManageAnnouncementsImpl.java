@@ -278,7 +278,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 
 	@Override
 	@Transactional
-	public GeneralResponse delete(Integer id,String userName) {
+	public GeneralResponse delete(Integer id, String userName) {
 		String sql = "DELETE FROM core.announcements WHERE announcementid = '" + id + "'";
 
 		this.auditService.updateNetId(userName);
@@ -354,6 +354,23 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		GeneralResponse response = new GeneralResponse();
 		response.Subject = list;
 		return response;
+	}
+
+	@Override
+	public List<ProjectResponse> getInterviewerProjects(String dempoId) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT p.projectname,p.projectid, p.projectcolor FROM core.projects p "
+				+ " JOIN core.training t ON t.projectid = p.projectid WHERE t.dempoid = '" + dempoId + "' ");
+
+		List<ProjectResponse> projects = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			ProjectResponse project = new ProjectResponse();
+			project.setProjectId(rs.getLong("projectid"));
+			project.setProjectName(rs.getString("projectname"));
+			project.setProjectColor(rs.getString("projectcolor"));
+			return project;
+		});
+
+		return projects;
 	}
 
 }

@@ -26,11 +26,13 @@ public interface ManageAnnouncements {
 
 	public AuthorResponse getLoginUser(String email);
 
-	public GeneralResponse delete(Integer id,String user);
+	public GeneralResponse delete(Integer id, String user);
 
 	public List<ProjectResponse> getProjectObject(List<Long> projectIdList);
 
 	public List<AuthorResponse> getAuthors();
 
 	public GeneralResponse getAnnouncementList();
+
+	public List<ProjectResponse> getInterviewerProjects(String dempoId);
 }

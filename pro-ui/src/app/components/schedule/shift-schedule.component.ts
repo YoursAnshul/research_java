@@ -104,7 +104,6 @@ export class ShiftScheduleComponent implements OnInit {
   authenticatedUser!: IAuthenticatedUser;
   userObj: any;
   selectedUser: any = null;
-
   @Output() addDateEvent = new EventEmitter<Date>();
 
   constructor(
@@ -144,7 +143,11 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.getBlockOutDates();
     this.getAuthor();
-    this.getProjectInfo();
+    if (this.authenticatedUser?.interviewer) {
+      this.getInterviewerProjectInfo(this.authenticatedUser?.netID);
+    } else {
+      this.getProjectInfo();
+    }
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -321,16 +324,25 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
 
+  getInterviewerProjectInfo(dempoId: string): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/interviewer-projects?dempo_id=${dempoId}`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.projectList = Array.isArray(data) ? data : [];
+      },
+      error: (error) => console.error('Error fetching projects:', error),
+    });
+  }
+
   getAuthor(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.userList = Array.isArray(data) ? data : [];
         console.log('User List:', this.userList);
-        
-        // if (this.userObj?.eppn) {
-        //   this.getLoginUser(this.userObj.eppn);
-        // }
+        if (this.userObj?.eppn) {
+          this.getLoginUser(this.userObj.eppn);
+        }
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
@@ -476,11 +488,11 @@ export class ShiftScheduleComponent implements OnInit {
       next: (data: any) => {
         this.selectedUser =
           this.userList.find((user) => user?.userId === data?.userId) || null;
-          // if (this.authenticatedUser?.interviewer) {
-          //   this.userList = this.userList.filter(
-          //     (user) => user.userId === this.selectedUser.userId
-          //   );
-          // }
+        if (this.authenticatedUser?.interviewer) {
+          this.userList = this.userList.filter(
+            (user) => user.userId === this.selectedUser.userId
+          );
+        }
         console.log('Login Author Selected:', this.selectedUser);
       },
       error: (error: any) => {
