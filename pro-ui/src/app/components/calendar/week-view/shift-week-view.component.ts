@@ -234,6 +234,7 @@ export class ShiftWeekViewComponent implements OnInit {
     this.resetShiftSchedule.emit(); 
   }
   onResetShiftSchedule(): void {
+    console.log(' sdfsdfds:');
     this.resetShiftSchedule.emit();
   }
   calculateTotalDuration(): number {

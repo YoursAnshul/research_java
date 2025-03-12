@@ -27,9 +27,13 @@ export class ShiftMonthViewComponent implements OnInit {
   @Output() resetShiftSchedule = new EventEmitter<void>();
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
+  @Output() addDateEvent = new EventEmitter<Date>();
+
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  
+  }
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
@@ -127,7 +131,6 @@ export class ShiftMonthViewComponent implements OnInit {
     this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {
-    console.log('Shift schedule and form reset.');
     this.resetShiftSchedule.emit();
   }
 }

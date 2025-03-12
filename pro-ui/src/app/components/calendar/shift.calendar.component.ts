@@ -225,9 +225,32 @@ export class ShifCalendarComponent implements OnInit {
     this.setDefaultFilters(false);
   }
   onReset(): void {
-    this.selectedDate.setValue(null);
-    this.selectedUser = null;
-    this.selectedProject = null;
+    this.selectedDate.setValue(new Date());
+    this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
+      this.selectedDate = new FormControl(selectedDate.toISOString());
+
+      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
+        new Date(this.selectedDate.value)
+      );
+
+      this.selectedDateRange = new FormGroup({
+        start: new FormControl(
+          new Date(this.selectedWeekStartAndEnd.weekStart)
+        ),
+        end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
+      });
+    });
+
+    this.userSchedulesService.selectedDate.next(new Date());
+
+    this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(new Date());
+
+    this.selectedDateRange = new FormGroup({
+      start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
+      end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
+    });
+    this.selectedUser = this.defaultUser;
+    this.selectedProject = this.defaultProject;
   }
   ngOnChanges(): void {
     this.checkContext();
