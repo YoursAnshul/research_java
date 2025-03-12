@@ -141,6 +141,7 @@ export class ShiftScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBlockOutDates();
+
     this.getAuthor();
     if (this.authenticatedUser?.interviewer) {
       this.getInterviewerProjectInfo(this.authenticatedUser?.netID);
@@ -166,13 +167,22 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+      console.log('rtrtrtr');
+
       if (date) {
         console.log('Updated Date from valueChanges:', date);
         this.validateBlockOutDate(new Date(date));
         this.updateDayLabel(date);
       }
     });
-    
+
+    const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
+    dayWiseDateControl?.setErrors(null);
+    dayWiseDateControl?.markAsTouched();
+    dayWiseDateControl?.markAsDirty();
+    this.shiftForm.get('startTime')?.enable();
+    this.shiftForm.get('endTime')?.enable();
+
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
       this.clearValidation();
     });
@@ -219,8 +229,11 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
       this.shiftForm.get('startTime')?.disable();
       this.shiftForm.get('endTime')?.disable();
-    } else {
-      this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    } else if (this.authenticatedUser?.interviewer) {
+      const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
+      dayWiseDateControl?.setErrors(null);
+      dayWiseDateControl?.markAsTouched();
+      dayWiseDateControl?.markAsDirty();
       this.shiftForm.get('startTime')?.enable();
       this.shiftForm.get('endTime')?.enable();
     }
@@ -469,7 +482,6 @@ export class ShiftScheduleComponent implements OnInit {
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.blockOutDates = <IBlockOutDate[]>response.Subject;
-          console.log('this.blockOutDates ---', this.blockOutDates);
           const initialDate: Date | null =
             this.shiftForm.get('dayWiseDate')?.value;
           if (initialDate && this.authenticatedUser?.interviewer) {
@@ -490,11 +502,11 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-  handleAddDate(date: Date): void {    
+  handleAddDate(date: Date): void {
     if (date && date instanceof Date && !isNaN(date.getTime())) {
-      console.log("date----",date);
+      console.log('date----', date);
       this.shiftForm.get('dayWiseDate')?.setValue(date);
-      this.addedDate.setValue(date); 
+      this.addedDate.setValue(date);
     } else {
       console.error('Invalid Date:', date);
     }
