@@ -25,7 +25,7 @@ export class SidebarComponent {
   menuItems = [
     [
       { id: 1, icon: 'home', label: 'Home', route: '/home' },
-      { id: 2, icon: 'calendar_clock', label: 'Scheduling', route: '/scheduling' },
+      // { id: 2, icon: 'calendar_clock', label: 'Scheduling', route: '/scheduling' },
       { id: 3, icon: 'list_alt', label: 'Assignments', route: '/assignments' },
       { id: 4, icon: 'group', label: 'Participants', route: '/participants' },
       { id: 5, icon: 'stacks', label: 'Projects', route: '/projects' },

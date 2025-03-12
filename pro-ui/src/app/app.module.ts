@@ -93,6 +93,8 @@ import { ShiftMonthViewComponent } from './components/calendar/month-view/shift-
 import { ShiftCalendarControlsComponent } from './components/calendar/calendar-controls/shift-calendar-controls.component';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
+import { DateRangePickerComponent } from './components/form-inputs/date-range-picker/date-range-picker.component';
+import { TextareaComponent } from './components/form-inputs/textarea/textarea.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -160,6 +162,8 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
     ShiftWeekViewComponent,
     ShiftMonthViewComponent,
     ShiftCalendarControlsComponent,
+    DateRangePickerComponent,
+    TextareaComponent,
   ],
   imports: [
     NgxMaterialTimepickerModule,

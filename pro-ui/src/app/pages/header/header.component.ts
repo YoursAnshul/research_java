@@ -48,7 +48,9 @@ export class HeaderComponent implements OnInit {
   roleValue = 'Role';
   escalationValue = 'Escalation #';
   voicemaillist: any[] = [];
+  voicemaillistFiltered: any[] = [];
   projectinfolist: any[] = [];
+  projectinfolistFiltered: any[] = [];
   teamContactList: any[] = [];
   filteredContacts: any[] = [];
   loading = false;
@@ -196,6 +198,9 @@ export class HeaderComponent implements OnInit {
       !this.filterEscalationContact
     ) {
       this.filteredContacts = [...this.teamContactList];
+      if (this.searchTerms.length > 0) {
+        this.filterQr(this.searchTerms);
+      }
       return;
     }
     this.filteredContacts = this.teamContactList.filter((contact) => {
@@ -206,6 +211,9 @@ export class HeaderComponent implements OnInit {
         (this.filterEscalationContact && contact.escalationphone !== null)
       );
     });
+    if (this.searchTerms.length > 0) {
+      this.filterQr(this.searchTerms);
+    }
   }
   closeMenu() {
     this.searchTerms = '';
@@ -222,6 +230,10 @@ export class HeaderComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.voicemaillist = data?.Subject;
+        this.voicemaillistFiltered = [...this.voicemaillist];
+        if (this.searchTerms.length > 0) {
+          this.filterQr(this.searchTerms);
+        }
         this.loading = false;
       },
       error: (error: any) => {
@@ -262,6 +274,10 @@ export class HeaderComponent implements OnInit {
           ...project,
           showMore: false,
         }));
+        this.projectinfolistFiltered = [...this.projectinfolist];
+        if (this.searchTerms.length > 0) {
+          this.filterQr(this.searchTerms);
+        }
         this.loading = false;
       },
       error: (error: any) => {
@@ -282,6 +298,9 @@ export class HeaderComponent implements OnInit {
       next: (data: any) => {
         this.teamContactList = data?.Subject || [];
         this.filteredContacts = [...this.teamContactList];
+        if (this.searchTerms.length > 0) {
+          this.filterQr(this.searchTerms);
+        }
         this.loading = false;
       },
       error: (error: any) => {
@@ -293,6 +312,41 @@ export class HeaderComponent implements OnInit {
 
   openUserProfile(): void  {
     this.router.navigate(['user-profile']);
+  }
+
+  public filterQrEvent(event: any): void {
+    let searchText: string = event.target.value;
+    this.filterQr(searchText);
+  }
+  public filterQr(searchText: string): void {
+    if (searchText.length > 0) {
+      this.voicemaillistFiltered = this.voicemaillist.filter((voicemail) => {
+        return (
+          (voicemail.projectName || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (voicemail.voiceMailNumber || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (voicemail.voiceMailPin || '').toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
+      this.projectinfolistFiltered = this.projectinfolist.filter((projectInfo) => {
+        return (
+          (projectInfo.projectName || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (projectInfo.tollfreenumber || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (projectInfo.studyemailaddress || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (projectInfo.projectinfo || '').toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
+      this.filteredContacts = this.filteredContacts.filter((contact) => {
+        return (
+          (contact.username || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (contact.role || '').toLowerCase().includes(searchText.toLowerCase()) ||
+          (contact.emailAddress || '').toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
+    } else {
+      this.voicemaillistFiltered = [...this.voicemaillist];
+      this.projectinfolistFiltered = [...this.projectinfolist];
+      this.filterContacts();
+    }
   }
 
 }

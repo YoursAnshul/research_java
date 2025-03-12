@@ -587,7 +587,7 @@ export interface IRequest {
   interviewerEmpId: string | null;
   resourceTeamMemberName?: string;
   resourceTeamMemberId: string | null;
-  requestDate: Date;
+  requestDate: Date | null;
   requestDetails: string;
   decision?: string;
   decisionId?: number | null;

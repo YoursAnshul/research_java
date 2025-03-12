@@ -190,3 +190,7 @@
 #date-select {
   margin-right: 15px;
 }
+
+.asterisk {
+  color: red;
+}

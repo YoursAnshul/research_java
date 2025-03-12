@@ -1,0 +1,76 @@
+<div class="max-w-md border border-gray-200 rounded-lg shadow-sm p-4">
+    <h3 class="text-lg font-medium text-gray-800 pb-3 border-b border-gray-100 mb-4">Select Date Range</h3>
+    
+    <form [formGroup]="dateRangeForm">
+      <!-- Range display -->
+      <div *ngIf="showSelectedRange" class="bg-gray-50 p-3 rounded-md mb-4">
+        <p class="text-sm text-gray-700">
+          Selected range: 
+          <span class="font-medium text-gray-900">{{ formatDate(startDate) }}</span> 
+          to 
+          <span class="font-medium text-gray-900">{{ formatDate(endDate) }}</span>
+          <span class="ml-1 text-gray-500">({{ calculateDaysDifference() }} days)</span>
+        </p>
+      </div>
+      
+      <!-- Month navigation -->
+      <div class="flex justify-between items-center mb-4">
+        <button type="button" (click)="previousMonth()" 
+                class="p-1 rounded-full hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <span class="text-sm font-medium">{{ currentMonthYear }}</span>
+        <button type="button" (click)="nextMonth()" 
+                class="p-1 rounded-full hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Calendar grid -->
+      <div class="mb-4">
+        <!-- Days of week headers -->
+        <div class="grid grid-cols-7 mb-1">
+          <div *ngFor="let day of daysOfWeek" class="text-center text-xs font-medium text-gray-500 py-1">
+            {{ day }}
+          </div>
+        </div>
+        
+        <!-- Calendar days -->
+        <div class="grid grid-cols-7 gap-1">
+          <div *ngFor="let day of calendarDays" 
+               [ngClass]="getDayClasses(day)"
+               (click)="selectDate(day)">
+            {{ day.getDate() }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick selection buttons -->
+      <div class="flex flex-wrap gap-2">
+        <button type="button" (click)="setQuickRange('today')" 
+                class="px-3 py-1.5 text-xs font-medium bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-md transition-colors">
+          Today
+        </button>
+        <button type="button" (click)="setQuickRange('week')" 
+                class="px-3 py-1.5 text-xs font-medium bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-md transition-colors">
+          This Week
+        </button>
+        <button type="button" (click)="setQuickRange('month')" 
+                class="px-3 py-1.5 text-xs font-medium bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-md transition-colors">
+          This Month
+        </button>
+        <button type="button" (click)="setQuickRange('lastWeek')" 
+                class="px-3 py-1.5 text-xs font-medium bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-md transition-colors">
+          Last Week
+        </button>
+        <button type="button" (click)="setQuickRange('lastMonth')" 
+                class="px-3 py-1.5 text-xs font-medium bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-md transition-colors">
+          Last Month
+        </button>
+      </div>
+    </form>
+  </div>

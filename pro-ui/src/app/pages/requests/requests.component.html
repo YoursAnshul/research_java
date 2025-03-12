@@ -1,6 +1,62 @@
 <div id="requests"
      *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
   <h2 class="bold">Requests</h2>
+  
+  
+  
+  
+  
+  <!-- <div class="max-w-4xl mx-auto p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Date Range Calendar Picker</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-white p-5 rounded-lg shadow">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Standard Selection</h3>
+        <p class="text-sm text-gray-600 mb-4">Click once to start selection, click again to end selection.</p>
+        
+        <app-date-range-picker
+          [weeklySelectionMode]="false"
+          (dateRangeSelected)="onDateRangeSelected($event)">
+        </app-date-range-picker>
+        
+        <div *ngIf="selectedRange" class="mt-6 p-4 bg-blue-50 rounded-md border-l-4 border-blue-500">
+          <h4 class="font-medium text-blue-800 mb-2">Selected Range</h4>
+          <p class="text-sm text-gray-700">Start Date: <span class="font-medium">{{ selectedRange.startDate }}</span></p>
+          <p class="text-sm text-gray-700">End Date: <span class="font-medium">{{ selectedRange.endDate }}</span></p>
+        </div>
+      </div>
+      
+      <div class="bg-white p-5 rounded-lg shadow">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Weekly Selection Mode</h3>
+        <p class="text-sm text-gray-600 mb-4">Click any day to select the entire week (Monday-Sunday).</p>
+        
+        <app-date-range-picker
+          [weeklySelectionMode]="true"
+          (dateRangeSelected)="onWeeklyRangeSelected($event)">
+        </app-date-range-picker>
+        
+        <div *ngIf="weeklySelectedRange" class="mt-6 p-4 bg-green-50 rounded-md border-l-4 border-green-500">
+          <h4 class="font-medium text-green-800 mb-2">Selected Week</h4>
+          <p class="text-sm text-gray-700">Monday: <span class="font-medium">{{ weeklySelectedRange.startDate }}</span></p>
+          <p class="text-sm text-gray-700">Sunday: <span class="font-medium">{{ weeklySelectedRange.endDate }}</span></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-8 p-6 bg-gray-50 rounded-lg">
+      <h3 class="text-lg font-medium text-gray-800 mb-3">Usage Information</h3>
+      <p class="text-gray-700 mb-4">
+        The standard picker allows selecting any date range by clicking two dates. The weekly picker automatically 
+        selects the full week (Monday-Sunday) containing any selected date.
+      </p>
+      <p class="text-gray-700">
+        To use the weekly selection mode, simply pass <code class="px-2 py-1 bg-gray-100 rounded text-sm">[weeklySelectionMode]="true"</code> to the component.
+      </p>
+    </div>
+  </div> -->
+
+
+
 
   <!--new request form-->
   <div id="new-request-form"
@@ -10,11 +66,10 @@
       <!--request type-->
       <div class="select-field">
         <mat-form-field appearance="outline" class="ctm">
-          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestCodeId')">Request Type</mat-label>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestCodeId')">Request Type<font class="asterisk">*</font></mat-label>
           <mat-select [(ngModel)]="newRequest.requestCodeId"
                       [compareWith]="compareSelectValues"
                       (selectionChange)="validateRequirement(newRequest)"
-                      [required]="true"
                       [class.invalid]="newRequest.invalidFields?.includes('RequestCodeId')"
                       name="new-request-type">
             <mat-option value=""></mat-option>
@@ -24,19 +79,31 @@
           </mat-select>
         </mat-form-field>
       </div>
+
+      <!-- <div class="min-w-[225px] pr-4 py-1 border-r border-r-1 border-r-button-blue">
+        <app-select id="status-filter"
+                        [fieldLabel]="'Request Type'"
+                        [dropDownValues]="requestCodeDropDown || []"
+                        [selectedValues]="[getSelectField(newRequest.requestCodeId)]"
+                        (selectedValuesChange)="log($event[0]);newRequest.requestCodeId = $event[0].value;"
+                        (selectedValuesChange)="validateRequirement(newRequest)">
+        </app-select>
+      <div> -->
+
+      <!-- save popup message -->
       <app-modal-popup id="modal-save-popup-message"
                        class="modal-save-popup"
                        (closeEvent)="closeModalPopup()"
                        *ngIf="showPopupMessage">
       </app-modal-popup>
+
       <!--interviewer-->
       <div class="select-field">
         <mat-form-field appearance="outline" class="ctm">
-          <mat-label [class.invalid]="newRequest.invalidFields?.includes('InterviewerEmpId')">Interviewer</mat-label>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('InterviewerEmpId')">Interviewer<font class="asterisk">*</font></mat-label>
           <mat-select [(ngModel)]="newRequest.interviewerEmpId"
                       [compareWith]="compareSelectValues"
                       (selectionChange)="validateRequirement(newRequest)"
-                      [required]="true"
                       [class.invalid]="newRequest.invalidFields?.includes('InterviewerEmpId')"
                       name="new-interviewer">
             <mat-option value=""></mat-option>
@@ -60,7 +127,7 @@
       <!--request date-->
       <div class="date-field">
         <mat-form-field appearance="outline" class="ctm">
-          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestDate')">Request Date</mat-label>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestDate')">Request Date<font class="asterisk">*</font></mat-label>
           <input matInput [matDatepicker]="datePicker"
                  [class.invalid]="newRequest.invalidFields?.includes('RequestDate')"
                  [(ngModel)]="newRequest.requestDate"
@@ -75,11 +142,10 @@
       <!--Decision-->
       <div class="select-field">
         <mat-form-field appearance="outline" class="ctm">
-          <mat-label [class.invalid]="newRequest.invalidFields?.includes('DecisionId')">Decision</mat-label>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('DecisionId')">Decision<font class="asterisk">*</font></mat-label>
           <mat-select [(ngModel)]="newRequest.decisionId"
                       [compareWith]="compareSelectValues"
                       (selectionChange)="validateRequirement(newRequest)"
-                      [required]="true"
                       [class.invalid]="newRequest.invalidFields?.includes('DecisionId')"
                       name="new-decision">
             <mat-option value=""></mat-option>
@@ -96,11 +162,10 @@
       <!--request details-->
       <div class="long-text-field">
         <mat-form-field style="width: 400px;height: 100px;" appearance="outline" class="ctm">
-          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestDetails')">Request Details</mat-label>
+          <mat-label [class.invalid]="newRequest.invalidFields?.includes('RequestDetails')">Request Details<font class="asterisk">*</font></mat-label>
           <textarea  matInput
                     [(ngModel)]="newRequest.requestDetails"
                     (keyup)="validateRequirement(newRequest)"
-                    [required]="true"
                     [class.invalid]="newRequest.invalidFields?.includes('RequestDetails')"
                     name="new-request-details">
           </textarea>
@@ -278,20 +343,17 @@
           <!--project team member-->
           <div class="select-field"
                *ngIf="req?.Edit">
-            <mat-form-field>
-              <mat-label [class.invalid]="req.InvalidFields?.includes('ResourceTeamMemberId')">Project Team Member</mat-label>
-              <mat-select [(ngModel)]="req.resourceTeamMemberId"
-                          [compareWith]="compareSelectValues"
-                          (selectionChange)="validateRequirement(req)"
-                          [required]="true"
-                          [class.invalid]="req.InvalidFields?.includes('ResourceTeamMemberId')"
-                          name="new-resource-team-member">
-                <mat-option value=""></mat-option>
-                <mat-option *ngFor="let u of allUsers" value="{{u.dempoid}}">
-                  {{u.displayName}}
-                </mat-option>
-              </mat-select>
+
+            <!--project team member-->
+            <mat-form-field id="project-team-member" appearance="outline" class="ctm">
+              <mat-label>Project Team Member</mat-label>
+              <input type="text" matInput
+                    [value]="getRtmDisplayName(req.resourceTeamMemberId)"
+                    placeholder="Project Team Member"
+                    [disabled]="true"
+                    [class.read-only]="true">
             </mat-form-field>
+
           </div>
 
           <!--read-only-->
@@ -308,7 +370,7 @@
           <div class="date-field"
                *ngIf="req?.Edit">
             <mat-form-field appearance="fill" class="date-picker-form-field">
-              <mat-label [class.invalid]="req.InvalidFields?.includes('RequestDate')">Request Date</mat-label>
+              <mat-label [class.invalid]="req.InvalidFields?.includes('RequestDate')">Request Date<font class="asterisk">*</font></mat-label>
               <input matInput [matDatepicker]="datePicker"
                      [class.invalid]="req.InvalidFields?.includes('RequestDate')"
                      [(ngModel)]="req.requestDate"

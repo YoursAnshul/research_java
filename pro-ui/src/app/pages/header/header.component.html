@@ -95,6 +95,7 @@
                     placeholder="Find"
                     class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     (click)="$event.stopPropagation()"
+                    (keyup)="filterQrEvent($event)"
                     [(ngModel)]="searchTerms"
                   />
                   <div
@@ -223,7 +224,7 @@
                           <!-- dynamic -->
                           <div
                             class="voice-mail-box"
-                            *ngFor="let voicemail of voicemaillist"
+                            *ngFor="let voicemail of voicemaillistFiltered"
                           >
                             <div
                               class="yellow-bar"
@@ -346,7 +347,7 @@
                         <div class="space-y-4">
                           <div
                             class="hero-box"
-                            *ngFor="let data of projectinfolist"
+                            *ngFor="let data of projectinfolistFiltered"
                           >
                             <div
                               class="yellow-bar"

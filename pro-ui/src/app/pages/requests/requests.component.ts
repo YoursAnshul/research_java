@@ -23,6 +23,7 @@ import {CanComponentDeactivate} from "../../guards/unsaved-changes.guard";
 import {UnsavedChangesDialogComponent} from "../../components/unsaved-changes-dialog/unsaved-changes-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
+import { SelectedValue } from '../../models/presentation/selected-value';
 
 @Component({
   selector: 'app-requests',
@@ -66,6 +67,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   };
   requestsChanged: boolean = false;
   requestsInvalid: boolean = false;
+  
+  selectedRange: {startDate: string, endDate: string} | null = null;
+  weeklySelectedRange: {startDate: string, endDate: string} | null = null;
 
   //filters
   requestTypeFilter: FormControl = new FormControl(['0']);
@@ -205,7 +209,7 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     request.decision = (decisionCode ? decisionCode.dropDownItem : '');
     request.interviewerEmpName = (interviewerUser ? (interviewerUser.displayName || '') : '');
     request.resourceTeamMemberName = (resourceUser ? (resourceUser.displayName || '') : '');
-    request.requestDate = new Date(request.requestDate);
+    request.requestDate = new Date(request.requestDate || '');
   }
 
   formatDateOnlyToString(dateToFormat: Date): string {
@@ -238,9 +242,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   applyFilters(): void {
     //make sure requests are sorted by date
     this.filteredRequests = this.allRequests.sort(function (x, y) {
-      if ((Utils.formatDateOnly(new Date(x.requestDate)) || new Date()) < (Utils.formatDateOnly(new Date(y.requestDate)) || new Date())) {
+      if ((Utils.formatDateOnly(new Date(x.requestDate || '')) || new Date()) < (Utils.formatDateOnly(new Date(y.requestDate || '')) || new Date())) {
         return 1;
-      } else if ((Utils.formatDateOnly(new Date(x.requestDate)) || new Date()) > (Utils.formatDateOnly(new Date(y.requestDate)) || new Date())) {
+      } else if ((Utils.formatDateOnly(new Date(x.requestDate || '')) || new Date()) > (Utils.formatDateOnly(new Date(y.requestDate || '')) || new Date())) {
         return -1;
       } else {
         if (x.requestId < y.requestId) return 1;
@@ -342,7 +346,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     }
 
     //request date
-    if (!request.requestDate) {
+    if (!request.requestDate
+      || request.requestDate.toString() == 'Invalid Date'
+    ) {
       request.invalid = true;
       request.invalidFields.push('RequestDate');
     }
@@ -596,6 +602,10 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     }
   }
 
+  getRtmDisplayName(resourceTeamMemberId: string): string {
+    return this.allUsers.find(x => x.dempoid == resourceTeamMemberId)?.displayName || '';
+  }
+
   canDeactivate(nextUrl: string | null): boolean {
 
     if(this.requestsChanged){
@@ -629,4 +639,27 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
       }
     });
   }
+
+  onDateRangeSelected(dateRange: {startDate: string, endDate: string}): void {
+    this.selectedRange = dateRange;
+    console.log('Standard date range selected:', dateRange);
+    
+    // You can make API calls or update other components with the selected range
+  }
+  
+  onWeeklyRangeSelected(dateRange: {startDate: string, endDate: string}): void {
+    this.weeklySelectedRange = dateRange;
+    console.log('Weekly date range selected:', dateRange);
+    
+    // You can make API calls or update other components with the selected range
+  }
+
+  public getSelectField(value: any): SelectedValue {
+    return new SelectedValue(value);
+  }
+
+  public log(e: any): void {
+    console.log(e);
+  }
+
 }
