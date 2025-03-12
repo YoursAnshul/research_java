@@ -60,8 +60,6 @@ export class ShiftWeekViewComponent implements OnInit {
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('authenticatedUser----', this.authenticatedUser);
-
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
@@ -143,8 +141,6 @@ export class ShiftWeekViewComponent implements OnInit {
         );
       }
     });
-
-    console.log('Filtered Week Schedules:', this.weekSchedules);
   }
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {

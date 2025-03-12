@@ -223,8 +223,6 @@ export class ShifCalendarComponent implements OnInit {
 
     //filters
     this.setDefaultFilters(false);
-
-    console.log('this.selectedDate ---', this.selectedDate);
   }
   onReset(): void {
     this.selectedDate.setValue(null);

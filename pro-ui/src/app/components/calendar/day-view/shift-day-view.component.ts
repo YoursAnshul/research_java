@@ -53,7 +53,6 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('this.authenticatedUser---', this.authenticatedUser);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

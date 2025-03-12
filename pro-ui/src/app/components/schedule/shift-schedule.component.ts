@@ -165,13 +165,6 @@ export class ShiftScheduleComponent implements OnInit {
       this.scheduleFetchStatus = this.shiftForm.valid;
     });
 
-    const initialDate: Date | null = this.shiftForm.get('dayWiseDate')?.value;
-
-    if (initialDate) {
-      this.validateBlockOutDate(new Date(initialDate));
-      this.updateDayLabel(initialDate);
-    }
-
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
       if (date) {
         console.log('Date from valueChanges:', date);
@@ -199,33 +192,27 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   validateBlockOutDate(selectedDate: Date): void {
+    if (!this.blockOutDates || this.blockOutDates.length === 0) {
+      console.log('Block out dates not loaded yet.');
+      return; 
+    }
+  
     const selectedDateOnly = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       selectedDate.getDate()
     );
-    console.log('selectedDateOnly ----', selectedDateOnly);
-    console.log('this.blockOutDates ----', this.blockOutDates);
+   
     const isBlocked = this.blockOutDates.some((blockOut) => {
-      console.log('blockOut ----', blockOut);
-      console.log('selectedDateOnly ----', selectedDateOnly);
       const blockOutDate = new Date(blockOut.blockOutDay!);
       const blockOutDateOnly = new Date(
         blockOutDate.getFullYear(),
         blockOutDate.getMonth(),
         blockOutDate.getDate()
       );
-      console.log(
-        'blockOutDateOnly.getTime() ----',
-        blockOutDateOnly.getTime()
-      );
-      console.log(
-        'selectedDateOnly.getTime() ----',
-        selectedDateOnly.getTime()
-      );
       return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
     });
-
+  
     if (isBlocked && this.authenticatedUser?.interviewer) {
       this.confirmationPopup();
       this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
@@ -237,7 +224,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('endTime')?.enable();
     }
   }
-
+  
   confirmationPopup(): void {
     const dialogRef = this.dialog.open(BlockdateDialog, {
       panelClass: 'custom-dialog-container',
@@ -481,11 +468,19 @@ export class ShiftScheduleComponent implements OnInit {
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.blockOutDates = <IBlockOutDate[]>response.Subject;
+          console.log('this.blockOutDates ---', this.blockOutDates);
+          const initialDate: Date | null = this.shiftForm.get('dayWiseDate')?.value;
+          if (initialDate) {
+            this.validateBlockOutDate(new Date(initialDate));
+          }
         }
       },
-      (error) => {}
+      (error) => {
+        console.error('Error fetching block out dates:', error);
+      }
     );
   }
+  
   handleAddDate(date: Date): void {
     if (date && date instanceof Date && !isNaN(date.getTime())) {
       this.shiftForm.get('dayWiseDate')?.setValue(date);
