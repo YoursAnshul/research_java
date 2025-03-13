@@ -319,15 +319,26 @@ export class ShiftScheduleComponent implements OnInit {
       const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
-      console.log('Submitting form data:', formData);
-      // this.http.post('YOUR_API_ENDPOINT_URL', formData).subscribe({
-      //   next: (response) => {
-      //     this.shiftForm.reset(); 
-      //   },
-      //   error: (error) => {
-      //     console.error('Error saving shift:', error);
-      //   }
-      // });
+      const scheduleDate = new Date(formData.dayWiseDate)
+        .toISOString()
+        .split('T')[0];
+      const obj = {
+        dempoId: formData.user?.dempoId || null,
+        scheduleDate: scheduleDate,
+        projectId: formData.projects?.projectId || null,
+        comments: formData.comments || '',
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+      };
+      console.log('Submitting form obj:', obj);
+      this.http.post('api/userSchedules/save-schedule', obj).subscribe({
+        next: (response) => {
+          this.shiftForm.reset();
+        },
+        error: (error) => {
+          console.error('Error saving shift:', error);
+        }
+      });
     }
   }
 

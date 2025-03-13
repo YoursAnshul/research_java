@@ -5,6 +5,7 @@ public class AuthorResponse {
 	private Long userId;
 	private String userName;
 	private Boolean isAuthor;
+	private String dempoId;
 
 	public Boolean getIsAuthor() {
 		return isAuthor;
@@ -29,4 +30,13 @@ public class AuthorResponse {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
+	public String getDempoId() {
+		return dempoId;
+	}
+
+	public void setDempoId(String dempoId) {
+		this.dempoId = dempoId;
+	}
+
 }
