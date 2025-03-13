@@ -167,10 +167,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      console.log('rtrtrtr');
-
       if (date) {
-        console.log('Updated Date from valueChanges:', date);
         this.validateBlockOutDate(new Date(date));
         this.updateDayLabel(date);
       }
@@ -319,8 +316,17 @@ export class ShiftScheduleComponent implements OnInit {
       this.weekSchedules = [...this.shiftSchedule];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
-      // const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
-      //   panelClass: 'custom-dialog-container',
+      const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
+        panelClass: 'custom-dialog-container',
+      });
+      console.log('Submitting form data:', formData);
+      // this.http.post('YOUR_API_ENDPOINT_URL', formData).subscribe({
+      //   next: (response) => {
+      //     this.shiftForm.reset(); 
+      //   },
+      //   error: (error) => {
+      //     console.error('Error saving shift:', error);
+      //   }
       // });
     }
   }

@@ -33,7 +33,8 @@ export class GlobalsService {
 
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',
-      height: '900px'
+      height: '900px',
+      disableClose: true 
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       console.log('Shift Schedule dialog was closed', result);
