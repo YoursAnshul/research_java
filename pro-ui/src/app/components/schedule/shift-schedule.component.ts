@@ -319,26 +319,6 @@ export class ShiftScheduleComponent implements OnInit {
       const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
-      const scheduleDate = new Date(formData.dayWiseDate)
-        .toISOString()
-        .split('T')[0];
-      const obj = {
-        dempoId: formData.user?.dempoId || null,
-        scheduleDate: scheduleDate,
-        projectId: formData.projects?.projectId || null,
-        comments: formData.comments || '',
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-      };
-      console.log('Submitting form obj:', obj);
-      this.http.post('api/userSchedules/save-schedule', obj).subscribe({
-        next: (response) => {
-          this.shiftForm.reset();
-        },
-        error: (error) => {
-          console.error('Error saving shift:', error);
-        }
-      });
     }
   }
 
@@ -551,5 +531,36 @@ export class ShiftScheduleComponent implements OnInit {
         console.error('Error fetching user info:', error);
       },
     });
+  }
+  saveSchedule(): void {
+    if (this.shiftForm.valid) {
+      const formData = this.shiftForm.value;
+      const scheduleDate = new Date(formData.dayWiseDate)
+        .toISOString()
+        .split('T')[0];
+      const obj = {
+        dempoId: formData.user?.dempoId || null,
+        scheduleDate: scheduleDate,
+        projectId: formData.projects?.projectId || null,
+        comments: formData.comments || '',
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+      };
+      console.log('Submitting form obj:', obj);
+      this.http
+        .post(`${environment.DataAPIUrl}/api/userSchedules/save-schedule`, obj)
+        .subscribe({
+          next: (response) => {
+            console.log('Shift saved successfully:', response);
+
+            this.shiftForm.reset();
+            this.shiftForm.markAsPristine();
+            this.shiftForm.markAsUntouched();
+          },
+          error: (error) => {
+            console.error('Error saving shift:', error);
+          },
+        });
+    }
   }
 }
