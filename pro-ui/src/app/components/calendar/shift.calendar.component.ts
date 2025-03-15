@@ -253,10 +253,6 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedProject = this.defaultProject;
   }
   ngOnChanges(): void {
-    console.log(
-      'this.s----',
-      this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate
-    );
     console.log('this.selectedDate---', this.selectedDate.value);
     const lastDate =
       this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;

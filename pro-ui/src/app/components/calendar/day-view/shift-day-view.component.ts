@@ -39,6 +39,7 @@ export class ShiftDayViewComponent implements OnInit {
   filteredShiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>();
   authenticatedUser!: IAuthenticatedUser;
+  @Output() addDateEvent = new EventEmitter<Date>();
 
   constructor(
     private globalsService: GlobalsService,
@@ -52,8 +53,7 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     const selectedDateValue = this.selectedDate?.value
@@ -185,6 +185,9 @@ export class ShiftDayViewComponent implements OnInit {
     this.showTooltip = false;
   }
   addShift(): void {
+    if (this.selectedDate?.value) {
+      this.addDateEvent.emit(new Date(this.selectedDate.value)); // Convert value to Date
+    }
     this.resetShiftSchedule.emit(); // Emit event to parent component
   }
 }

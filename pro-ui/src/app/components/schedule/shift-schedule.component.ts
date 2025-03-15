@@ -408,7 +408,63 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   // Handle tab change event
-  onTabChanged(tabChangeEvent: MatTabChangeEvent): void {}
+  onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    if (this.shiftForm.valid) {
+      const formData = this.shiftForm.value;
+      const selectedDate = formData.dayWiseDate;
+      const selectedUser = formData.user;
+
+      const newStartTime = this.combineDateAndTime(
+        selectedDate,
+        formData.startTime
+      ).getTime();
+      const newEndTime = this.combineDateAndTime(
+        selectedDate,
+        formData.endTime
+      ).getTime();
+
+      if (newStartTime >= newEndTime) {
+        this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
+        return;
+      }
+
+      const isOverlapping = this.shiftSchedule.some((shift) => {
+        const shiftDateMatch =
+          new Date(shift.dayWiseDate).toDateString() ===
+          new Date(selectedDate).toDateString();
+        const shiftUserMatch = shift.user === selectedUser;
+        const shiftStartTime = this.combineDateAndTime(
+          shift.dayWiseDate,
+          shift.startTime
+        ).getTime();
+        const shiftEndTime = this.combineDateAndTime(
+          shift.dayWiseDate,
+          shift.endTime
+        ).getTime();
+        return (
+          shiftDateMatch &&
+          shiftUserMatch &&
+          newStartTime < shiftEndTime &&
+          newEndTime > shiftStartTime
+        );
+      });
+
+      if (isOverlapping) {
+        this.scheduleFetchStatus = false;
+        this.shiftForm.get('startTime')?.setErrors({ overlap: true });
+        this.shiftForm.get('endTime')?.setErrors({ overlap: true });
+        return;
+      }
+      const newShift = { ...formData, duration: this.duration };
+      this.shiftSchedule = [...this.shiftSchedule, newShift];
+      this.weekSchedules = [...this.shiftSchedule];
+      this.shiftForm.get('startTime')?.setErrors(null);
+      this.shiftForm.get('endTime')?.setErrors(null);
+      const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
+        panelClass: 'custom-dialog-container',
+      });
+    }
+  }
 
   // Emit selected date
   emitSelectedDate(): void {}

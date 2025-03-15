@@ -67,7 +67,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	public List<ProjectResponse> getAllProjects() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT projectid, projectname, projectcolor ");
-		sql.append("FROM core.projects WHERE active = 1 AND projectType <> 4 ORDER BY projectid ");
+		sql.append("FROM core.projects WHERE active = 1 AND projectType <> 4 ORDER BY projectname ");
 
 		List<ProjectResponse> projects = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ProjectResponse project = new ProjectResponse();
