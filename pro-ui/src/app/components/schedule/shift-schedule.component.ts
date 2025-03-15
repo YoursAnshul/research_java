@@ -15,6 +15,7 @@ import { BlockdateDialog } from '../calendar/calendar-controls/block.date.dialog
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ScheduleCloseDialogComponent } from './schedule.close.dialog.component';
 import { CalendarSaveDialogComponent } from '../calendar/calendar-controls/calendar.save.dialog.component';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -106,6 +107,7 @@ export class ShiftScheduleComponent implements OnInit {
   selectedUser: any = null;
   @Output() addDateEvent = new EventEmitter<Date>();
   addedDate = new FormControl<Date | null>(new Date(), Validators.required);
+  selectedProject: any = null;
 
   constructor(
     private http: HttpClient,
@@ -141,13 +143,7 @@ export class ShiftScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBlockOutDates();
-
     this.getAuthor();
-    if (this.authenticatedUser?.interviewer) {
-      this.getInterviewerProjectInfo(this.authenticatedUser?.netID);
-    } else {
-      this.getProjectInfo();
-    }
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -167,7 +163,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (date) {
+      if (date) {        
         this.validateBlockOutDate(new Date(date));
         this.updateDayLabel(date);
       }
@@ -177,8 +173,6 @@ export class ShiftScheduleComponent implements OnInit {
     dayWiseDateControl?.setErrors(null);
     dayWiseDateControl?.markAsTouched();
     dayWiseDateControl?.markAsDirty();
-    this.shiftForm.get('startTime')?.enable();
-    this.shiftForm.get('endTime')?.enable();
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
       this.clearValidation();
@@ -338,21 +332,26 @@ export class ShiftScheduleComponent implements OnInit {
     return combinedDate;
   }
 
-  getProjectInfo(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+  getProjectInfo(dempoId: string): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user-projects?dempo_id=${dempoId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = Array.isArray(data) ? data : [];
+        console.log('projectlist:--', this.projectList);
+        this.getDefaultProjectInfo(dempoId);
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
-
-  getInterviewerProjectInfo(dempoId: string): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/interviewer-projects?dempo_id=${dempoId}`;
+  getDefaultProjectInfo(dempoId: string): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/default-projects?dempo_id=${dempoId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.projectList = Array.isArray(data) ? data : [];
+        console.log('default project:--', data);
+        this.selectedProject =
+          this.projectList.find(
+            (project) => project?.projectId === data?.projectId
+          ) || null;
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
@@ -519,12 +518,9 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
-        this.selectedUser =
-          this.userList.find((user) => user?.userId === data?.userId) || null;
         if (this.authenticatedUser?.interviewer) {
-          this.userList = this.userList.filter(
-            (user) => user.userId === this.selectedUser.userId
-          );
+          this.selectedUser =
+            this.userList.find((user) => user?.userId === data?.userId) || null;
         }
       },
       error: (error: any) => {
@@ -562,5 +558,10 @@ export class ShiftScheduleComponent implements OnInit {
           },
         });
     }
+  }
+  onUserSelectionChange(event: MatSelectChange): void {
+    const selectedUser = event.value;
+    console.log('Selected user:', selectedUser);
+    this.getProjectInfo(event.value.dempoId);
   }
 }

@@ -34,5 +34,7 @@ public interface ManageAnnouncements {
 
 	public GeneralResponse getAnnouncementList();
 
-	public List<ProjectResponse> getInterviewerProjects(String dempoId);
+	public List<ProjectResponse> getUserProjects(String dempoId);
+
+	public ProjectResponse getDefaultProjectByUser(String dempoId);
 }

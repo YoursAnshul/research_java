@@ -96,10 +96,17 @@ public class ManageAnnouncementsController {
 		return ResponseEntity.status(HttpStatus.OK).body(announcementList);
 	}
 
-	@GetMapping("/interviewer-projects")
-	public ResponseEntity<List<ProjectResponse>> getInterviewerProjects(
+	@GetMapping("/user-projects")
+	public ResponseEntity<List<ProjectResponse>> getUserProjects(
 			@RequestParam(required = false, value = "dempo_id") String dempoId) {
-		List<ProjectResponse> allProjects = manageAnnouncements.getInterviewerProjects(dempoId);
+		List<ProjectResponse> allProjects = manageAnnouncements.getUserProjects(dempoId);
 		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
+	}
+
+	@GetMapping("/default-projects")
+	public ResponseEntity<ProjectResponse> getDefaultProjectByUser(
+			@RequestParam(required = false, value = "dempo_id") String dempoId) {
+		ProjectResponse project = manageAnnouncements.getDefaultProjectByUser(dempoId);
+		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
 }

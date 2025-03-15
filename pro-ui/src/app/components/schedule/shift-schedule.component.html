@@ -31,7 +31,7 @@
           style="width: 185px"
         >
           <mat-label>User</mat-label>
-          <mat-select formControlName="user" [(value)]="selectedUser">
+          <mat-select formControlName="user" [(value)]="selectedUser" (selectionChange)="onUserSelectionChange($event)">
             <mat-option *ngFor="let user of userList" [value]="user">
               {{ user.userName }}
             </mat-option>
@@ -45,7 +45,7 @@
           style="width: 185px"
         >
           <mat-label>Project</mat-label>
-          <mat-select formControlName="projects">
+          <mat-select formControlName="projects" [(value)]="selectedProject">
             <mat-option *ngFor="let project of projectList" [value]="project">{{
               project.projectName
             }}</mat-option>
