@@ -91,16 +91,16 @@ export class ShifCalendarComponent implements OnInit {
   tabIndex = 0;
   userList: any[] = [];
   projectList: any[] = [];
-  defaultUser = { userId: 0, userName: 'Any Users'};
-  defaultProject = { projectId: 0 ,projectName: 'Any Projects'};
+  defaultUser = { userId: 0, userName: 'Any Users' };
+  defaultProject = { projectId: 0, projectName: 'Any Projects' };
   selectedUser: any = this.defaultUser;
   selectedProject: any = this.defaultProject;
   @Input() shiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>();
   blockOutDates: IBlockOutDate[] = [];
   @Output() addDateEvent = new EventEmitter<Date>();
-
-
+  tabName: string = 'Day';
+  @Output() addDate: Date | null = null;
 
   //constructor
   constructor(
@@ -253,11 +253,47 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedProject = this.defaultProject;
   }
   ngOnChanges(): void {
+    console.log(
+      'this.s----',
+      this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate
+    );
+    console.log('this.selectedDate---', this.selectedDate.value);
+    const lastDate =
+      this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+    if (lastDate && this.tabName == 'Day') {
+      this.selectedDate.setValue(new Date(lastDate));
+    } else {
+      const baseDate = lastDate
+        ? new Date(lastDate)
+        : this.selectedDate.value || new Date();
+      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+      this.selectedDateRange?.setValue({
+        start: new Date(this.selectedWeekStartAndEnd.weekStart),
+        end: new Date(this.selectedWeekStartAndEnd.weekEnd),
+      });
+      this.selectedDate.setValue(baseDate);
+    }
     this.checkContext();
   }
 
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
+    this.tabName = tabChangeEvent.tab.textLabel;
+    const lastDate =
+      this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+    if (lastDate && this.tabName == 'Day') {
+      this.selectedDate.setValue(new Date(lastDate));
+    } else {
+      const baseDate = lastDate
+        ? new Date(lastDate)
+        : this.selectedDate.value || new Date();
+      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+      this.selectedDateRange?.setValue({
+        start: new Date(this.selectedWeekStartAndEnd.weekStart),
+        end: new Date(this.selectedWeekStartAndEnd.weekEnd),
+      });
+      this.selectedDate.setValue(baseDate);
+    }
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -788,17 +824,23 @@ export class ShifCalendarComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.userList = [this.defaultUser, ...(Array.isArray(data) ? data : [])];
+        this.userList = [
+          this.defaultUser,
+          ...(Array.isArray(data) ? data : []),
+        ];
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
   }
-  
+
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.projectList = [this.defaultProject, ...(Array.isArray(data) ? data : [])];
+        this.projectList = [
+          this.defaultProject,
+          ...(Array.isArray(data) ? data : []),
+        ];
       },
       error: (error) => console.error('Error fetching projects:', error),
     });

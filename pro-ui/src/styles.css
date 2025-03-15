@@ -669,7 +669,7 @@ html {
   padding: 2px 5px;
 }
 #week-calendar-time-header {
-  width: 100%;
+  width: 101%;
   display: flex;
   box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
     0 1px 18px 0 rgb(0 0 0 / 12%);
@@ -1027,7 +1027,7 @@ html {
 
 
 #day-calendar-time-header {
-  width: 100%;
+  width: 100.6%;
 }
 
 #day-calendar-time-header > div {

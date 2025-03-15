@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -108,6 +108,7 @@ export class ShiftScheduleComponent implements OnInit {
   @Output() addDateEvent = new EventEmitter<Date>();
   addedDate = new FormControl<Date | null>(new Date(), Validators.required);
   selectedProject: any = null;
+  @Input() date!: FormControl;
 
   constructor(
     private http: HttpClient,
@@ -122,7 +123,8 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
-  ngOnChanges(): void {}
+  ngOnChanges(): void {
+  }
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }

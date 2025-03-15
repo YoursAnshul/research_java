@@ -124,12 +124,6 @@ export class ShiftMonthViewComponent implements OnInit {
     }
   }
   
-  
-  
-
-  addShift(): void {
-    this.resetShiftSchedule.emit();
-  }
   onResetShiftSchedule(): void {
     this.resetShiftSchedule.emit();
   }
