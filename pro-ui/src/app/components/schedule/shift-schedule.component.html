@@ -14,7 +14,11 @@
     >
       Save Calendar
     </button>
-    <button style="height: 25px" class="btn-outline ml-2" (click)="confirmatationClose()">
+    <button
+      style="height: 25px"
+      class="btn-outline ml-2"
+      (click)="confirmatationClose()"
+    >
       Close
     </button>
   </div>
@@ -31,7 +35,11 @@
           style="width: 185px"
         >
           <mat-label>User</mat-label>
-          <mat-select formControlName="user" [(value)]="selectedUser" (selectionChange)="onUserSelectionChange($event)">
+          <mat-select
+            formControlName="user"
+            [(value)]="selectedUser"
+            (selectionChange)="onUserSelectionChange($event)"
+          >
             <mat-option *ngFor="let user of userList" [value]="user">
               {{ user.userName }}
             </mat-option>
@@ -165,6 +173,8 @@
       [shiftSchedule]="shiftSchedule"
       (resetShiftSchedule)="onResetShiftSchedule()"
       (addDateEvent)="handleAddDate($event)"
+      (selectedUserChange)="handleUser($event)"
+      (selectedProjectChange)="handleProject($event)"
     ></app-shift-calendar>
   </form>
 </div>

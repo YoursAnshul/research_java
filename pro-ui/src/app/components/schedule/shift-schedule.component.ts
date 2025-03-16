@@ -109,7 +109,10 @@ export class ShiftScheduleComponent implements OnInit {
   addedDate = new FormControl<Date | null>(new Date(), Validators.required);
   selectedProject: any = null;
   @Input() date!: FormControl;
-
+  @Output() selectedUserChange = new EventEmitter<any>();
+  filterUser: any = null;
+  filterProject: any = null;
+  @Output() selectedProjectChange = new EventEmitter<any>();
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -567,12 +570,20 @@ export class ShiftScheduleComponent implements OnInit {
 
   handleAddDate(date: Date): void {
     if (date && date instanceof Date && !isNaN(date.getTime())) {
-      console.log('date----', date);
       this.shiftForm.get('dayWiseDate')?.setValue(date);
       this.addedDate.setValue(date);
     } else {
       console.error('Invalid Date:', date);
     }
+    this.getScheduleList();
+  }
+  handleUser(user: any): void {
+    this.filterUser = user;
+    this.getScheduleList();
+  }
+  handleProject(project: any): void {
+    this.filterProject = project;
+    this.getScheduleList();
   }
   getLoginUser(email: string): void {
     if (!email) {
@@ -601,8 +612,6 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   saveSchedule(): void {
-    console.log('this.shiftSchedule-----:', this.shiftSchedule);
-
     const shiftScheduleList: any[] = [];
     const uniqueSet = new Set<string>();
 
@@ -687,6 +696,24 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list`;
     }
+    let scheduleDate = this.shiftForm?.get('dayWiseDate')?.value || new Date();
+
+    if (!this.filterProject) {
+      this.filterProject = { projectId: 0 };
+    } else if (!this.filterProject.projectId) {
+      this.filterProject.projectId = 0;
+    }
+
+    if (!this.filterUser) {
+      this.filterUser = { dempoId: 0 };
+    } else if (!this.filterUser.dempoId) {
+      this.filterUser.dempoId = 0;
+    }
+
+    console.log('scheduleDate----', scheduleDate);
+    console.log('projectId----', this.filterProject?.projectId);
+    console.log('userId----', this.filterUser?.dempoId);
+
     // this.http.get<any[]>(url).subscribe({
     //   next: (response: any[]) => {
     //     console.log('Schedule list retrieved successfully:', response);

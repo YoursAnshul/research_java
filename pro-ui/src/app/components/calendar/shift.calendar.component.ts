@@ -101,6 +101,8 @@ export class ShifCalendarComponent implements OnInit {
   @Output() addDateEvent = new EventEmitter<Date>();
   tabName: string = 'Day';
   @Output() addDate: Date | null = null;
+  @Output() selectedUserChange = new EventEmitter<any>();
+  @Output() selectedProjectChange = new EventEmitter<any>();
 
   //constructor
   constructor(
@@ -253,7 +255,6 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedProject = this.defaultProject;
   }
   ngOnChanges(): void {
-    console.log('this.selectedDate---', this.selectedDate.value);
     const lastDate =
       this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
     if (lastDate && this.tabName == 'Day') {
@@ -842,7 +843,21 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   handleAddDate(date: Date): void {
-    console.log('Received date from child:----------', date);
     this.addDateEvent.emit(date);
+  }
+  onUserChange(user: any) {
+    this.selectedUser = user;  // Update selected user
+    this.selectedUserChange.emit(this.selectedUser); // Emit change to parent
+  }
+  onProjectChange(project: any) {
+    this.selectedProject = project;  // Update selected user
+    this.selectedProjectChange.emit(this.selectedProject); // Emit change to parent
+  }
+  
+  onSelectedUserChange(user: any) {
+    this.selectedUser = user; 
+  }
+  onSelectedProjectChange(project: any) {
+    this.selectedProject = project; // Update the selected user
   }
 }

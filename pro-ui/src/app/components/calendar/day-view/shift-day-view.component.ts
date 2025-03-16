@@ -40,6 +40,8 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() resetShiftSchedule = new EventEmitter<void>();
   authenticatedUser!: IAuthenticatedUser;
   @Output() addDateEvent = new EventEmitter<Date>();
+  @Output() selectedUserChange = new EventEmitter<any>();
+  @Output() selectedProjectChange = new EventEmitter<any>();
 
   constructor(
     private globalsService: GlobalsService,
@@ -56,6 +58,12 @@ export class ShiftDayViewComponent implements OnInit {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.selectedDate) {
+      this.addDateEvent.emit(new Date(this.selectedDate.value));
+    }
+    if(this.selectedProject){
+      this.selectedProjectChange.emit(this.selectedProject);
+    }
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;
