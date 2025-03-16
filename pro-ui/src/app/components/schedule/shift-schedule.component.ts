@@ -338,7 +338,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = Array.isArray(data) ? data : [];
-        console.log('projectlist:--', this.projectList);
         this.getDefaultProjectInfo(dempoId);
       },
       error: (error) => console.error('Error fetching projects:', error),
@@ -580,6 +579,10 @@ export class ShiftScheduleComponent implements OnInit {
         this.userList = this.userList.filter(
           (user) => user.userId === this.selectedUser?.userId
         );
+        if (this.selectedUser) {
+          this.getScheduleList();
+          this.getProjectInfo(this.selectedUser.dempoId);
+        }
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -661,10 +664,8 @@ export class ShiftScheduleComponent implements OnInit {
 
   onUserSelectionChange(event: MatSelectChange): void {
     const selectedUser = event.value;
-    console.log('Selected user:', selectedUser);
-    this.getProjectInfo(event.value.dempoId);
     if (this.selectedUser) {
-      console.log('this.selectedUser----', this.selectedUser);
+      this.getProjectInfo(event.value.dempoId);
       this.getScheduleList();
     }
   }
