@@ -44,7 +44,6 @@ export class ShiftMonthViewComponent implements OnInit {
   
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
-  
     startOfWeek.setHours(0, 0, 0, 0);
     endOfWeek.setHours(23, 59, 59, 999);
   
@@ -68,6 +67,9 @@ export class ShiftMonthViewComponent implements OnInit {
         day7Schedules: [],
       };
       this.monthSchedules.weekSchedules.push(existingWeekSchedule);
+      if (this.monthSchedules.weekSchedules.length > 6) {
+        this.monthSchedules.weekSchedules.shift(); // Remove the oldest entry
+      }        
     } else {
       for (let i = 1; i <= 7; i++) {
         (existingWeekSchedule as any)[`day${i}Schedules`] = [];

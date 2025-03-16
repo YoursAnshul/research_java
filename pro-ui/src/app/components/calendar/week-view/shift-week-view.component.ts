@@ -63,12 +63,16 @@ export class ShiftWeekViewComponent implements OnInit {
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
+    
     if (
       !this.selectedDateRange?.value?.start ||
       !this.selectedDateRange?.value?.end
     ) {
       return;
     }
+    console.log(" this.shiftSchedule------>", this.shiftSchedule);
+    console.log(" this.selectedDateRange------>", this.selectedDateRange.value.start);
+    console.log(" this.selectedDateRange------>", this.selectedDateRange.value.end);
 
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
@@ -150,7 +154,7 @@ export class ShiftWeekViewComponent implements OnInit {
       day: 'numeric',
       month: 'numeric',
     };
-
+  
     return workingDate.toLocaleString('en-US', options);
   }
 
@@ -160,7 +164,6 @@ export class ShiftWeekViewComponent implements OnInit {
   ): Date {
     let workingDate: Date = new Date(weekStart || '');
     workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
-
     return workingDate;
   }
 

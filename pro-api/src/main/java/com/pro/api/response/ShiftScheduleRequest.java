@@ -8,6 +8,15 @@ public class ShiftScheduleRequest {
 	private String comments;
 	private String startTime;
 	private String endTime;
+	private String entryby;
+
+	public String getEntryby() {
+		return entryby;
+	}
+
+	public void setEntryby(String entryby) {
+		this.entryby = entryby;
+	}
 
 	// Getters and setters
 	public String getDempoId() {

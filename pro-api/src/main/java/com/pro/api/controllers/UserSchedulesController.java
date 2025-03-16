@@ -1,26 +1,58 @@
 package com.pro.api.controllers;
 
-import com.pro.api.models.business.KeyValuePair;
-import com.pro.api.models.business.ValidationMessagePlus;
-import com.pro.api.models.dataaccess.*;
-import com.pro.api.models.dataaccess.repos.*;
-import com.pro.api.response.AnnouncementResponse;
-import com.pro.api.response.ShiftScheduleRequest;
-import com.pro.api.service.ScheduleService;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.pro.api.models.business.KeyValuePair;
+import com.pro.api.models.business.ValidationMessagePlus;
+import com.pro.api.models.dataaccess.CoreHour;
+import com.pro.api.models.dataaccess.Schedule;
+import com.pro.api.models.dataaccess.User;
+import com.pro.api.models.dataaccess.ValidationMessage;
+import com.pro.api.models.dataaccess.ViUserSchedule;
+import com.pro.api.models.dataaccess.repos.CoreHourRepository;
+import com.pro.api.models.dataaccess.repos.ScheduleRepository;
+import com.pro.api.models.dataaccess.repos.TimeCodeRepository;
+import com.pro.api.models.dataaccess.repos.UserRepository;
+import com.pro.api.models.dataaccess.repos.ValidationMessageRepository;
+import com.pro.api.models.dataaccess.repos.ValidationMessageTextRepository;
+import com.pro.api.models.dataaccess.repos.ViUserScheduleRepository;
+import com.pro.api.response.ScheduleResponse;
+import com.pro.api.response.ShiftScheduleRequest;
+import com.pro.api.service.ScheduleService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/userSchedules")
@@ -675,8 +707,22 @@ public class UserSchedulesController {
 	}
 
 	@PostMapping("/save-schedule")
-	public ResponseEntity<GeneralResponse> saveAnnouncement(@RequestBody ShiftScheduleRequest request) {
+	public ResponseEntity<GeneralResponse> saveSchedule(@RequestBody List<ShiftScheduleRequest> request) {
 		GeneralResponse response = scheduleService.saveSchedule(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
+
+	@GetMapping("/schedule-list")
+	public ResponseEntity<List<ScheduleResponse>> getScheduleList(
+			@RequestParam(required = false, value = "dempo_id") String dempoId) {
+
+		List<ScheduleResponse> response = scheduleService.getList(dempoId);
+
+		if (response == null || response.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());
+		}
+
+		return ResponseEntity.ok(response);
+	}
+
 }

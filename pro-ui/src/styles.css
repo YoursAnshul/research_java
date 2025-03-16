@@ -1166,9 +1166,10 @@ html {
   padding: 3px;
   font-size: 14px;
   border: 1px solid #0078d4;
-  width: 100%; 
+  width: 86%; 
   height: 30px;
   text-align: center;
+  margin-left: 12px
 }
 .icon-input-container {
   display: flex;

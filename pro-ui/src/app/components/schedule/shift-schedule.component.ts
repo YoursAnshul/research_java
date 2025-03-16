@@ -123,8 +123,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
-  ngOnChanges(): void {
-  }
+  ngOnChanges(): void {}
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
@@ -165,7 +164,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (date) {        
+      if (date) {
         this.validateBlockOutDate(new Date(date));
         this.updateDayLabel(date);
       }
@@ -364,7 +363,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.userList = Array.isArray(data) ? data : [];
-        if (this.userObj?.eppn) {
+        if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
           this.getLoginUser(this.userObj.eppn);
         }
       },
@@ -536,18 +535,18 @@ export class ShiftScheduleComponent implements OnInit {
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.blockOutDates = <IBlockOutDate[]>response.Subject;
-          const initialDate: Date | null =
-            this.shiftForm.get('dayWiseDate')?.value;
-          if (initialDate && this.authenticatedUser?.interviewer) {
-            this.validateBlockOutDate(new Date(initialDate));
-            this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
-            this.shiftForm.get('startTime')?.disable();
-            this.shiftForm.get('endTime')?.disable();
-          } else {
-            this.shiftForm.get('dayWiseDate')?.setErrors(null);
-            this.shiftForm.get('startTime')?.enable();
-            this.shiftForm.get('endTime')?.enable();
-          }
+          // const initialDate: Date | null =
+          //   this.shiftForm.get('dayWiseDate')?.value;
+          // if (initialDate && this.authenticatedUser?.interviewer) {
+          //   this.validateBlockOutDate(new Date(initialDate));
+          //   this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
+          //   this.shiftForm.get('startTime')?.disable();
+          //   this.shiftForm.get('endTime')?.disable();
+          // } else {
+          //   this.shiftForm.get('dayWiseDate')?.setErrors(null);
+          //   this.shiftForm.get('startTime')?.enable();
+          //   this.shiftForm.get('endTime')?.enable();
+          // }
         }
       },
       (error) => {
@@ -576,10 +575,11 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
-        if (this.authenticatedUser?.interviewer) {
-          this.selectedUser =
-            this.userList.find((user) => user?.userId === data?.userId) || null;
-        }
+        this.selectedUser =
+          this.userList.find((user) => user?.userId === data?.userId) || null;
+        this.userList = this.userList.filter(
+          (user) => user.userId === this.selectedUser?.userId
+        );
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -587,39 +587,102 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   saveSchedule(): void {
-    if (this.shiftForm.valid) {
-      const formData = this.shiftForm.value;
-      const scheduleDate = new Date(formData.dayWiseDate)
-        .toISOString()
-        .split('T')[0];
-      const obj = {
-        dempoId: formData.user?.dempoId || null,
-        scheduleDate: scheduleDate,
-        projectId: formData.projects?.projectId || null,
-        comments: formData.comments || '',
-        startTime: formData.startTime,
-        endTime: formData.endTime,
-      };
-      console.log('Submitting form obj:', obj);
-      this.http
-        .post(`${environment.DataAPIUrl}/api/userSchedules/save-schedule`, obj)
-        .subscribe({
-          next: (response) => {
-            console.log('Shift saved successfully:', response);
+    console.log('this.shiftSchedule-----:', this.shiftSchedule);
 
-            this.shiftForm.reset();
-            this.shiftForm.markAsPristine();
-            this.shiftForm.markAsUntouched();
-          },
-          error: (error) => {
-            console.error('Error saving shift:', error);
-          },
-        });
+    const shiftScheduleList: any[] = [];
+    const uniqueSet = new Set<string>();
+
+    if (Array.isArray(this.shiftSchedule) && this.shiftSchedule.length > 0) {
+      for (const shift of this.shiftSchedule) {
+        if (!shift) continue;
+
+        const date = new Date(shift.dayWiseDate);
+        const scheduleDate =
+          date.getFullYear() +
+          '-' +
+          String(date.getMonth() + 1).padStart(2, '0') +
+          '-' +
+          String(date.getDate()).padStart(2, '0');
+
+        const obj = {
+          dempoId: shift.user?.dempoId || null,
+          scheduleDate: scheduleDate,
+          projectId: shift.projects?.projectId || null,
+          comments: shift.comments || '',
+          startTime: shift.startTime || null,
+          endTime: shift.endTime || null,
+          entryby: this.authenticatedUser.netID || null,
+        };
+
+        // Create a unique key to check for duplicates
+        const key = `${obj.dempoId}-${obj.scheduleDate}-${obj.projectId}-${obj.startTime}-${obj.endTime}`;
+
+        // Check if the same schedule is already in shiftSchedule (avoid duplicate additions)
+        if (
+          !uniqueSet.has(key) &&
+          !this.shiftSchedule.some(
+            (s) =>
+              s.user?.dempoId === obj.dempoId &&
+              s.scheduleDate === obj.scheduleDate &&
+              s.projects?.projectId === obj.projectId &&
+              s.startTime === obj.startTime &&
+              s.endTime === obj.endTime
+          )
+        ) {
+          uniqueSet.add(key);
+          shiftScheduleList.push(obj);
+        }
+      }
     }
+
+    if (shiftScheduleList.length === 0) {
+      console.warn('No new shifts to save.');
+      return;
+    }
+
+    this.http
+      .post(
+        `${environment.DataAPIUrl}/api/userSchedules/save-schedule`,
+        shiftScheduleList
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Shift saved successfully:', response);
+          this.getScheduleList(); // Fetch updated schedule list after saving
+          this.shiftForm.reset();
+          this.shiftForm.markAsPristine();
+          this.shiftForm.markAsUntouched();
+        },
+        error: (error) => {
+          console.error('Error saving shift:', error);
+        },
+      });
   }
+
   onUserSelectionChange(event: MatSelectChange): void {
     const selectedUser = event.value;
     console.log('Selected user:', selectedUser);
     this.getProjectInfo(event.value.dempoId);
+    if (this.selectedUser) {
+      console.log('this.selectedUser----', this.selectedUser);
+      this.getScheduleList();
+    }
+  }
+  getScheduleList(): void {
+    this.http
+      .get<any[]>(
+        `${environment.DataAPIUrl}/api/userSchedules/schedule-list?dempo_id=${this.selectedUser.dempoId}`
+      )
+      .subscribe({
+        next: (response: any[]) => {
+          console.log('Schedule list retrieved successfully:', response);
+          this.shiftSchedule = response;
+          console.log('this.shiftSchedule--kjkjh--', this.shiftSchedule);
+        },
+        error: (error) => {
+          console.error('Error fetching schedule list:', error);
+          this.shiftSchedule = [];
+        },
+      });
   }
 }
