@@ -1,5 +1,6 @@
 package com.pro.api.service.impl;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -79,7 +80,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public List<ScheduleResponse> getList(String dempoId) {
-		String query = """
+		// Base query
+		StringBuilder query = new StringBuilder("""
 				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,
 				       p.projectid, p.projectcolor, p.projectname,
 				       s.startdatetime, s.enddatetime,
@@ -87,13 +89,19 @@ public class ScheduleServiceImpl implements ScheduleService {
 				FROM core.schedules s
 				JOIN core.projects p ON s.projectid = p.projectid
 				LEFT JOIN core.users u ON s.dempoid = u.dempoid
-				WHERE s.dempoid = COALESCE(CAST(? AS VARCHAR), s.dempoid)
-				AND p.active = 1
-				""";
+				WHERE p.active = 1
+				""");
 
-		return jdbcTemplate.query(query, (rs, rowNum) -> {
-			Date startTime = rs.getTimestamp("startdatetime");
-			Date endTime = rs.getTimestamp("enddatetime");
+		List<Object> params = new ArrayList<>();
+
+		if (dempoId != null && !dempoId.isBlank()) {
+			query.append(" AND s.dempoid = ? ");
+			params.add(dempoId);
+		}
+
+		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
+			Timestamp startTime = rs.getTimestamp("startdatetime");
+			Timestamp endTime = rs.getTimestamp("enddatetime");
 
 			double duration = calculateDuration(startTime, endTime);
 
@@ -101,7 +109,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 					rs.getDate("daywisedate"),
 					new User(rs.getString("dempoid"), rs.getInt("userid"), rs.getString("userName")),
 					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")));
-		}, dempoId);
+		}, params.toArray());
 	}
 
 	private double calculateDuration(Date start, Date end) {

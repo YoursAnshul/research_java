@@ -145,6 +145,9 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.getBlockOutDates();
     this.getAuthor();
+    if (!this.authenticatedUser.interviewer) {
+      this.getScheduleList();
+    }
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -153,8 +156,8 @@ export class ShiftScheduleComponent implements OnInit {
       user: new FormControl(null, Validators.required),
       projects: new FormControl([], Validators.required),
       dayWiseDate: new FormControl(new Date(), Validators.required),
-      startTime: new FormControl('', Validators.required),
-      endTime: new FormControl('', Validators.required),
+      startTime: new FormControl(null, Validators.required),
+      endTime: new FormControl(null, Validators.required),
       comments: new FormControl(''),
     });
 
@@ -170,10 +173,10 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
 
-    const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
-    dayWiseDateControl?.setErrors(null);
-    dayWiseDateControl?.markAsTouched();
-    dayWiseDateControl?.markAsDirty();
+    // const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
+    // dayWiseDateControl?.setErrors(null);
+    // dayWiseDateControl?.markAsTouched();
+    // dayWiseDateControl?.markAsDirty();
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
       this.clearValidation();
@@ -260,6 +263,14 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onSubmit(): void {
+    const startTime = this.shiftForm.get('startTime')?.value;
+    const endTime = this.shiftForm.get('endTime')?.value;
+    if (!startTime) {
+      this.shiftForm.get('startTime')?.setErrors({ required: true });
+    }
+    if (!endTime) {
+      this.shiftForm.get('endTime')?.setErrors({ required: true });
+    }
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
@@ -670,20 +681,22 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   getScheduleList(): void {
-    this.http
-      .get<any[]>(
-        `${environment.DataAPIUrl}/api/userSchedules/schedule-list?dempo_id=${this.selectedUser.dempoId}`
-      )
-      .subscribe({
-        next: (response: any[]) => {
-          console.log('Schedule list retrieved successfully:', response);
-          this.shiftSchedule = response;
-          console.log('this.shiftSchedule--kjkjh--', this.shiftSchedule);
-        },
-        error: (error) => {
-          console.error('Error fetching schedule list:', error);
-          this.shiftSchedule = [];
-        },
-      });
+    let url = '';
+    if (this.selectedUser) {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?dempo_id=${this.selectedUser.dempoId}`;
+    } else {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list`;
+    }
+    // this.http.get<any[]>(url).subscribe({
+    //   next: (response: any[]) => {
+    //     console.log('Schedule list retrieved successfully:', response);
+    //     this.shiftSchedule = response;
+    //     console.log('this.shiftSchedule--kjkjh--', this.shiftSchedule);
+    //   },
+    //   error: (error) => {
+    //     console.error('Error fetching schedule list:', error);
+    //     this.shiftSchedule = [];
+    //   },
+    // });
   }
 }
