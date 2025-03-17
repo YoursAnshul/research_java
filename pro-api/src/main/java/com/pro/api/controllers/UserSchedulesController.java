@@ -13,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -714,9 +715,10 @@ public class UserSchedulesController {
 
 	@GetMapping("/schedule-list")
 	public ResponseEntity<List<ScheduleResponse>> getScheduleList(
-			@RequestParam(required = false, value = "dempo_id") String dempoId) {
-
-		List<ScheduleResponse> response = scheduleService.getList(dempoId);
+			@RequestParam(required = false, value = "dempo_id") String dempoId,
+			@RequestParam(required = false, value = "project_id") Integer projecId,
+			@RequestParam(required = false, value = "schedule_date") Date scheduleDate) {
+		List<ScheduleResponse> response = scheduleService.getList(dempoId, projecId, scheduleDate);
 
 		if (response == null || response.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());

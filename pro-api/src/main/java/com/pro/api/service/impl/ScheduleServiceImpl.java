@@ -79,7 +79,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public List<ScheduleResponse> getList(String dempoId) {
+	public List<ScheduleResponse> getList(String dempoId, Integer projecId, Date scheduleDate) {
 		// Base query
 		StringBuilder query = new StringBuilder("""
 				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,

@@ -696,12 +696,6 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   getScheduleList(): void {
-    let url = '';
-    if (this.selectedUser) {
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?dempo_id=${this.selectedUser.dempoId}`;
-    } else {
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list`;
-    }
     let scheduleDate = this.shiftForm?.get('dayWiseDate')?.value || new Date();
 
     if (!this.filterProject) {
@@ -719,6 +713,10 @@ export class ShiftScheduleComponent implements OnInit {
     console.log('scheduleDate----', scheduleDate);
     console.log('projectId----', this.filterProject?.projectId);
     console.log('userId----', this.filterUser?.dempoId);
+    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${scheduleDate}`;
+    if (this.selectedUser) {
+      url += `&dempo_id=${this.selectedUser.dempoId}`;
+    }
 
     // this.http.get<any[]>(url).subscribe({
     //   next: (response: any[]) => {

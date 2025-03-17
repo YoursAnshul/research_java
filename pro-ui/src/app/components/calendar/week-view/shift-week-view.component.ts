@@ -267,11 +267,18 @@ export class ShiftWeekViewComponent implements OnInit {
   calculateInputHeight(totalUserCards: number): void {
     const baseHeight = 30;
     const userCardHeight = 62;
-    const maxHeight = 100;
 
-    let newHeight = baseHeight + totalUserCards * userCardHeight;
-    newHeight = Math.min(newHeight, maxHeight); 
+    // Calculate desired height based on the number of user cards
+    const desiredHeight = baseHeight + totalUserCards * userCardHeight;
 
+    // Get the viewport height
+    const viewportHeight = window.innerHeight;
+
+    // Define the height of other fixed elements (e.g., header, footer)
+    const headerHeight = 50; // Example value; adjust as needed
+    const footerHeight = 50; // Example value; adjust as needed
+    const availableHeight = viewportHeight - headerHeight - footerHeight;
+    const newHeight = Math.min(desiredHeight, availableHeight);
     const heightString = `${newHeight}px`;
 
     if (this.inputHeight !== heightString) {

@@ -1,5 +1,6 @@
 package com.pro.api.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,5 +13,5 @@ import com.pro.api.response.ShiftScheduleRequest;
 public interface ScheduleService {
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> request);
 
-	public List<ScheduleResponse> getList(String dempoId);
+	public List<ScheduleResponse> getList(String dempoId, Integer projecId, Date scheduleDate);
 }
