@@ -16,6 +16,11 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { ScheduleCloseDialogComponent } from './schedule.close.dialog.component';
 import { CalendarSaveDialogComponent } from '../calendar/calendar-controls/calendar.save.dialog.component';
 import { MatSelectChange } from '@angular/material/select';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -118,7 +123,8 @@ export class ShiftScheduleComponent implements OnInit {
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
     private configurationService: ConfigurationService,
     private dialog: MatDialog,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private snackBar: MatSnackBar
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -670,7 +676,7 @@ export class ShiftScheduleComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log('Shift saved successfully:', response);
+          this.showToastMessage('Shift saved successfully!', 'success');
           this.getScheduleList(); // Fetch updated schedule list after saving
           this.shiftForm.reset();
           this.shiftForm.markAsPristine();
@@ -725,5 +731,21 @@ export class ShiftScheduleComponent implements OnInit {
     //     this.shiftSchedule = [];
     //   },
     // });
+  }
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+    });
   }
 }

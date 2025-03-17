@@ -151,11 +151,10 @@ export class ShiftDayViewComponent implements OnInit {
     schedule: ISchedule,
     us: IUserSchedule
   ): void {
-    console.log('User Schedule:', us);
-
     const userName = us?.user?.userName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
+    const projectName = schedule?.projects?.projectName ?? 'N/A';    
     const date =
       Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
     const duration = schedule?.duration
@@ -174,7 +173,7 @@ export class ShiftDayViewComponent implements OnInit {
         line-height: 1.5;
       ">
         <p style="font-weight: bold;">
-          ${userName}: ${startTime} – ${endTime} - ${date}
+          ${userName} (${projectName}) : ${startTime} – ${endTime} - ${date}
         </p>
         ${duration}
         ${comments}

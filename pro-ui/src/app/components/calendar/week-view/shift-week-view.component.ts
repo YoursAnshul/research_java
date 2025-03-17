@@ -267,11 +267,15 @@ export class ShiftWeekViewComponent implements OnInit {
   calculateInputHeight(totalUserCards: number): void {
     const baseHeight = 30;
     const userCardHeight = 62;
+    const maxHeight = 100;
 
-    const newHeight = `${baseHeight + totalUserCards * userCardHeight}px`;
+    let newHeight = baseHeight + totalUserCards * userCardHeight;
+    newHeight = Math.min(newHeight, maxHeight); 
 
-    if (this.inputHeight !== newHeight) {
-      this.inputHeight = newHeight;
+    const heightString = `${newHeight}px`;
+
+    if (this.inputHeight !== heightString) {
+      this.inputHeight = heightString;
       this.cdr.detectChanges();
     }
   }

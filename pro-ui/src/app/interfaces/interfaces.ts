@@ -216,6 +216,7 @@ export interface ILegend {
 }
 
 export interface ISchedule {
+  projects?: any;
   preschedulekey: number;
   dempoid: string | null;
   fname: string | null;
