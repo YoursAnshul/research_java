@@ -91,8 +91,8 @@ export class ShifCalendarComponent implements OnInit {
   tabIndex = 0;
   userList: any[] = [];
   projectList: any[] = [];
-  defaultUser = { userId: 0, userName: 'Any Users' };
-  defaultProject = { projectId: 0, projectName: 'Any Projects' };
+  defaultUser = { userId: 0, userName: 'Any Active Users' };
+  defaultProject = { projectId: 0, projectName: 'Any Active Projects' };
   selectedUser: any = this.defaultUser;
   selectedProject: any = this.defaultProject;
   @Input() shiftSchedule: any[] = [];
@@ -278,8 +278,9 @@ export class ShifCalendarComponent implements OnInit {
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
-    const lastDate =
-      this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+    const lastDate = this.shiftSchedule?.length
+      ? this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate
+      : null;
     if (lastDate && this.tabName == 'Day') {
       this.selectedDate.setValue(new Date(lastDate));
     } else {
@@ -845,13 +846,17 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   handleAddDate(date: Date): void {
+
     this.addDateEvent.emit(date);
   }
   onUserChange(user: any) {
+    console.log('user--->', user);
+
     this.selectedUser = user; // Update selected user
     this.selectedUserChange.emit(this.selectedUser); // Emit change to parent
   }
   onProjectChange(project: any) {
+    console.log('project--->', project);
     this.selectedProject = project; // Update selected user
     this.selectedProjectChange.emit(this.selectedProject); // Emit change to parent
   }

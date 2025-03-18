@@ -173,7 +173,7 @@ export class ShiftDayViewComponent implements OnInit {
         line-height: 1.5;
       ">
         <p style="font-weight: bold;">
-          ${userName} (${projectName}) : ${startTime} – ${endTime} - ${date}
+          ${userName} (${projectName}) : ${startTime} - ${endTime} <br> ${date}
         </p>
         ${duration}
         ${comments}

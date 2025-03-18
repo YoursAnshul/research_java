@@ -196,12 +196,19 @@ export class ShiftWeekViewComponent implements OnInit {
   }
   displayHoverMessage(event: MouseEvent, schedule: ISchedule): void {
     if (!schedule) return;
-
+    const formattedDate = new Date(schedule.scheduledate).toLocaleDateString(
+      'en-US',
+      {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+      }
+    );
     this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
       <p style="font-weight: bold;">
          ${schedule.displayName} (${schedule.projectName}): ${
       schedule.startTime
-    } – ${schedule.endTime}
+    } – ${schedule.endTime} <br> ${formattedDate}
       </p>
      ${
        schedule.duration
@@ -265,14 +272,14 @@ export class ShiftWeekViewComponent implements OnInit {
   }
 
   calculateInputHeight(): void {
-    const baseHeight = 30; 
+    const baseHeight = 30;
     const userCardHeight = 62;
-  
+
     if (!this.weekSchedules) {
       this.inputHeight = `${baseHeight}px`;
       return;
     }
-  
+
     const days = [
       this.weekSchedules.day1Schedules,
       this.weekSchedules.day2Schedules,
@@ -282,25 +289,24 @@ export class ShiftWeekViewComponent implements OnInit {
       this.weekSchedules.day6Schedules,
       this.weekSchedules.day7Schedules,
     ];
-  
+
     let maxSchedulesPerDay = Math.max(
       ...days.map((schedules) => (schedules ? schedules.length : 0))
     );
-  
+
     const newHeight = `${baseHeight + maxSchedulesPerDay * userCardHeight}px`;
-  
+
     if (this.inputHeight !== newHeight) {
       this.inputHeight = newHeight;
       this.updateWeekCalendarHeight(newHeight);
       this.cdr.detectChanges();
     }
   }
-  
+
   updateWeekCalendarHeight(height: string): void {
-    const weekCalendar = document.getElementById("week-calendar");
+    const weekCalendar = document.getElementById('week-calendar');
     if (weekCalendar) {
       weekCalendar.style.height = height;
     }
   }
-
-  }
+}
