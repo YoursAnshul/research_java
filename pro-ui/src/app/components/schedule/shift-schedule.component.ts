@@ -283,7 +283,6 @@ export class ShiftScheduleComponent implements OnInit {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
       const selectedUser = formData.user;
-
       const newStartTime = this.combineDateAndTime(
         selectedDate,
         formData.startTime
