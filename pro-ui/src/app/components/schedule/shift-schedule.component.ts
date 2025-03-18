@@ -156,9 +156,6 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.getBlockOutDates();
     this.getAuthor();
-    if (!this.authenticatedUser.interviewer) {
-      this.getScheduleList();
-    }
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -301,7 +298,7 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
 
-      const isOverlapping = this.shiftSchedule.some((shift) => {
+      const isOverlapping = this.shiftSchedule?.some((shift) => {
         const shiftDateMatch =
           new Date(shift.dayWiseDate).toDateString() ===
           new Date(selectedDate).toDateString();
@@ -329,7 +326,7 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
       const newShift = { ...formData, duration: this.duration };
-      this.shiftSchedule = [...this.shiftSchedule, newShift];
+      this.shiftSchedule = this.shiftSchedule ? [...this.shiftSchedule, newShift] : [newShift];
       this.weekSchedules = [...this.shiftSchedule];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
@@ -448,7 +445,7 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
 
-      const isOverlapping = this.shiftSchedule.some((shift) => {
+      const isOverlapping = this.shiftSchedule?.some((shift) => {
         const shiftDateMatch =
           new Date(shift.dayWiseDate).toDateString() ===
           new Date(selectedDate).toDateString();
@@ -581,7 +578,6 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('dayWiseDate')?.setValue(date, { emitEvent: false });
       const formattedDate = date.toISOString().split('T')[0];
       if (formattedDate !== this.lastCalledDate) {
-        this.getScheduleList();
         this.lastCalledDate = formattedDate;
       }
     } else {
@@ -654,7 +650,7 @@ export class ShiftScheduleComponent implements OnInit {
         // Check if the same schedule is already in shiftSchedule (avoid duplicate additions)
         if (
           !uniqueSet.has(key) &&
-          !this.shiftSchedule.some(
+          !this.shiftSchedule?.some(
             (s) =>
               s.user?.dempoId === obj.dempoId &&
               s.scheduleDate === obj.scheduleDate &&
@@ -697,7 +693,6 @@ export class ShiftScheduleComponent implements OnInit {
     const selectedUser = event.value;
     if (this.selectedUser) {
       this.getProjectInfo(event.value.dempoId);
-      // this.getScheduleList();
     }
   }
   getScheduleList(): void {
@@ -711,9 +706,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.filterUser.dempoId ||= '';
 
     let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}`;
-    if (this.selectedUser) {
-      url += `&dempo_id=${this.selectedUser.dempoId}`;
-    }
     if (this.filterUser) {
       url += `&dempo_id=${this.filterUser.dempoId}`;
     }

@@ -159,7 +159,11 @@
           <button
             mat-raised-button
             color="primary"
-            [disabled]="!scheduleFetchStatus"
+            [disabled]="
+              !scheduleFetchStatus ||
+              !this.shiftForm.get('startTime')?.value ||
+              !this.shiftForm.get('endTime')?.value
+            "
           >
             <mat-icon>add</mat-icon> Add to Calendar
           </button>

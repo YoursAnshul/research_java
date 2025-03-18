@@ -71,7 +71,7 @@ export class ShiftDayViewComponent implements OnInit {
     const selectedUserId = this.selectedUser?.userId || 0;
     const selectedtProjectId = this.selectedProject?.projectId || 0;
 
-    this.filteredShiftSchedule = this.shiftSchedule.filter((schedule) => {
+    this.filteredShiftSchedule = this.shiftSchedule?.filter((schedule) => {
       const scheduleDate = new Date(schedule.dayWiseDate).toLocaleDateString(
         'en-CA'
       );

@@ -31,30 +31,31 @@ export class ShiftMonthViewComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-  
-  }
+  ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
-    if (!this.selectedDateRange?.value?.start || !this.selectedDateRange?.value?.end) {
+    if (
+      !this.selectedDateRange?.value?.start ||
+      !this.selectedDateRange?.value?.end
+    ) {
       return;
     }
-  
+
     const startOfWeek = new Date(this.selectedDateRange.value.start);
     const endOfWeek = new Date(this.selectedDateRange.value.end);
     startOfWeek.setHours(0, 0, 0, 0);
     endOfWeek.setHours(23, 59, 59, 999);
-  
+
     if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
       this.monthSchedules = { weekSchedules: [] };
     }
-  
+
     let existingWeekSchedule = this.monthSchedules.weekSchedules.find(
       (week) => week.weekStart.getTime() === startOfWeek.getTime()
     );
-  
+
     if (!existingWeekSchedule) {
       existingWeekSchedule = {
         weekStart: startOfWeek,
@@ -69,63 +70,74 @@ export class ShiftMonthViewComponent implements OnInit {
       this.monthSchedules.weekSchedules.push(existingWeekSchedule);
       if (this.monthSchedules.weekSchedules.length > 6) {
         this.monthSchedules.weekSchedules.shift(); // Remove the oldest entry
-      }        
+      }
     } else {
       for (let i = 1; i <= 7; i++) {
         (existingWeekSchedule as any)[`day${i}Schedules`] = [];
       }
     }
-  
+
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
-    const selectedMonth = startOfWeek.toLocaleString('default', { month: 'long' });
-  
-    for (const shift of this.shiftSchedule) {
-      const shiftDate = new Date(shift.dayWiseDate);
-      shiftDate.setHours(0, 0, 0, 0);
-  
-      const isWithinDateRange = shiftDate >= startOfWeek && shiftDate <= endOfWeek;
-      const isUserMatch = selectedUserId ? shift.user?.userId === selectedUserId : true;
-      const isProjectMatch = selectedProjectId ? shift.projects?.projectId === selectedProjectId : true;
-  
-      if (isWithinDateRange && isUserMatch && isProjectMatch) {
-        const dayIndex = shiftDate.getDay();
-        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
-  
-        const schedule: ISchedule = {
-          preschedulekey: shift.user?.userId || '',
-          displayName: shift.user?.userName || '',
-          projectName: shift.projects?.projectName || '',
-          projectColor: shift.projects?.projectColor || '',
-          scheduledate: shiftDate,
-          comments: shift.comments || '',
-          startTime: shift.startTime || '',
-          endTime: shift.endTime || '',
-          duration: parseFloat(shift.duration) || 0,
-          dayOfWeek: adjustedDayIndex,
-          weekStart: startOfWeek,
-          weekEnd: endOfWeek,
-          month: selectedMonth,
-          requestDetails: '',
-          requestCode: '',
-          userid: shift.user?.userId || '',
-          trainedon: '',
-          language: null,
-          entryBy: null,
-          dempoid: null,
-          fname: null,
-          lname: null,
-          preferredfname: null,
-          preferredlname: null,
-          userName: null,
-          expr1: null,
-        };
-  
-        (existingWeekSchedule as any)[`day${adjustedDayIndex}Schedules`].push(schedule);
+    const selectedMonth = startOfWeek.toLocaleString('default', {
+      month: 'long',
+    });
+
+    if (this.shiftSchedule) {
+      for (const shift of this.shiftSchedule) {
+        const shiftDate = new Date(shift.dayWiseDate);
+        shiftDate.setHours(0, 0, 0, 0);
+
+        const isWithinDateRange =
+          shiftDate >= startOfWeek && shiftDate <= endOfWeek;
+        const isUserMatch = selectedUserId
+          ? shift.user?.userId === selectedUserId
+          : true;
+        const isProjectMatch = selectedProjectId
+          ? shift.projects?.projectId === selectedProjectId
+          : true;
+
+        if (isWithinDateRange && isUserMatch && isProjectMatch) {
+          const dayIndex = shiftDate.getDay();
+          const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
+
+          const schedule: ISchedule = {
+            preschedulekey: shift.user?.userId || '',
+            displayName: shift.user?.userName || '',
+            projectName: shift.projects?.projectName || '',
+            projectColor: shift.projects?.projectColor || '',
+            scheduledate: shiftDate,
+            comments: shift.comments || '',
+            startTime: shift.startTime || '',
+            endTime: shift.endTime || '',
+            duration: parseFloat(shift.duration) || 0,
+            dayOfWeek: adjustedDayIndex,
+            weekStart: startOfWeek,
+            weekEnd: endOfWeek,
+            month: selectedMonth,
+            requestDetails: '',
+            requestCode: '',
+            userid: shift.user?.userId || '',
+            trainedon: '',
+            language: null,
+            entryBy: null,
+            dempoid: null,
+            fname: null,
+            lname: null,
+            preferredfname: null,
+            preferredlname: null,
+            userName: null,
+            expr1: null,
+          };
+
+          (existingWeekSchedule as any)[`day${adjustedDayIndex}Schedules`].push(
+            schedule
+          );
+        }
       }
     }
   }
-  
+
   onResetShiftSchedule(): void {
     this.resetShiftSchedule.emit();
   }

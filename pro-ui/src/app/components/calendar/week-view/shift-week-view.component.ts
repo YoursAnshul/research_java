@@ -89,7 +89,7 @@ export class ShiftWeekViewComponent implements OnInit {
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
 
-    this.shiftSchedule.forEach((shift) => {
+    this.shiftSchedule?.forEach((shift) => {
       const shiftDate = new Date(shift.dayWiseDate);
       shiftDate.setHours(0, 0, 0, 0);
 
@@ -260,30 +260,47 @@ export class ShiftWeekViewComponent implements OnInit {
       return total;
     }, 0);
 
-    this.calculateInputHeight(totalUserCards);
+    this.calculateInputHeight();
     return this.totalDuration;
   }
 
-  calculateInputHeight(totalUserCards: number): void {
-    const baseHeight = 30;
+  calculateInputHeight(): void {
+    const baseHeight = 30; 
     const userCardHeight = 62;
-
-    // Calculate desired height based on the number of user cards
-    const desiredHeight = baseHeight + totalUserCards * userCardHeight;
-
-    // Get the viewport height
-    const viewportHeight = window.innerHeight;
-
-    // Define the height of other fixed elements (e.g., header, footer)
-    const headerHeight = 50; // Example value; adjust as needed
-    const footerHeight = 50; // Example value; adjust as needed
-    const availableHeight = viewportHeight - headerHeight - footerHeight;
-    const newHeight = Math.min(desiredHeight, availableHeight);
-    const heightString = `${newHeight}px`;
-
-    if (this.inputHeight !== heightString) {
-      this.inputHeight = heightString;
+  
+    if (!this.weekSchedules) {
+      this.inputHeight = `${baseHeight}px`;
+      return;
+    }
+  
+    const days = [
+      this.weekSchedules.day1Schedules,
+      this.weekSchedules.day2Schedules,
+      this.weekSchedules.day3Schedules,
+      this.weekSchedules.day4Schedules,
+      this.weekSchedules.day5Schedules,
+      this.weekSchedules.day6Schedules,
+      this.weekSchedules.day7Schedules,
+    ];
+  
+    let maxSchedulesPerDay = Math.max(
+      ...days.map((schedules) => (schedules ? schedules.length : 0))
+    );
+  
+    const newHeight = `${baseHeight + maxSchedulesPerDay * userCardHeight}px`;
+  
+    if (this.inputHeight !== newHeight) {
+      this.inputHeight = newHeight;
+      this.updateWeekCalendarHeight(newHeight);
       this.cdr.detectChanges();
     }
   }
-}
+  
+  updateWeekCalendarHeight(height: string): void {
+    const weekCalendar = document.getElementById("week-calendar");
+    if (weekCalendar) {
+      weekCalendar.style.height = height;
+    }
+  }
+
+  }
