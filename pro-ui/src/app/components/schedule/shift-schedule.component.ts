@@ -118,6 +118,8 @@ export class ShiftScheduleComponent implements OnInit {
   filterUser: any = null;
   filterProject: any = null;
   @Output() selectedProjectChange = new EventEmitter<any>();
+  private lastCalledDate: string | null = null; // Track last called date
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -576,12 +578,15 @@ export class ShiftScheduleComponent implements OnInit {
 
   handleAddDate(date: Date): void {
     if (date && date instanceof Date && !isNaN(date.getTime())) {
-      this.shiftForm.get('dayWiseDate')?.setValue(date);
-      this.addedDate.setValue(date);
+      this.shiftForm.get('dayWiseDate')?.setValue(date, { emitEvent: false });
+      const formattedDate = date.toISOString().split('T')[0];
+      if (formattedDate !== this.lastCalledDate) {
+        this.getScheduleList();
+        this.lastCalledDate = formattedDate;
+      }
     } else {
       console.error('Invalid Date:', date);
     }
-    this.getScheduleList();
   }
   handleUser(user: any): void {
     this.filterUser = user;
@@ -692,44 +697,39 @@ export class ShiftScheduleComponent implements OnInit {
     const selectedUser = event.value;
     if (this.selectedUser) {
       this.getProjectInfo(event.value.dempoId);
-      this.getScheduleList();
+      // this.getScheduleList();
     }
   }
   getScheduleList(): void {
     let scheduleDate = this.shiftForm?.get('dayWiseDate')?.value || new Date();
+    let formattedDate = new Date(scheduleDate).toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD'
 
-    if (!this.filterProject) {
-      this.filterProject = { projectId: 0 };
-    } else if (!this.filterProject.projectId) {
-      this.filterProject.projectId = 0;
-    }
+    this.filterProject = this.filterProject || { projectId: 0 };
+    this.filterProject.projectId ||= 0;
 
-    if (!this.filterUser) {
-      this.filterUser = { dempoId: 0 };
-    } else if (!this.filterUser.dempoId) {
-      this.filterUser.dempoId = 0;
-    }
+    this.filterUser = this.filterUser || { dempoId: 0 };
+    this.filterUser.dempoId ||= 0;
 
-    console.log('scheduleDate----', scheduleDate);
-    console.log('projectId----', this.filterProject?.projectId);
-    console.log('userId----', this.filterUser?.dempoId);
-    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${scheduleDate}`;
+    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}`;
     if (this.selectedUser) {
       url += `&dempo_id=${this.selectedUser.dempoId}`;
     }
+    if (this.filterUser) {
+      url += `&dempo_id=${this.filterUser.dempoId}`;
+    }
 
-    // this.http.get<any[]>(url).subscribe({
-    //   next: (response: any[]) => {
-    //     console.log('Schedule list retrieved successfully:', response);
-    //     this.shiftSchedule = response;
-    //     console.log('this.shiftSchedule--kjkjh--', this.shiftSchedule);
-    //   },
-    //   error: (error) => {
-    //     console.error('Error fetching schedule list:', error);
-    //     this.shiftSchedule = [];
-    //   },
-    // });
+    this.http.get<any[]>(url).subscribe({
+      next: (response) => {
+        console.log('Schedule list retrieved successfully:', response);
+        this.shiftSchedule = response;
+      },
+      error: (error) => {
+        console.error('Error fetching schedule list:', error);
+        this.shiftSchedule = [];
+      },
+    });
   }
+
   showToastMessage(message: string, type: string): void {
     let snackBarClass = 'success-snackbar';
     if (type === 'error') {

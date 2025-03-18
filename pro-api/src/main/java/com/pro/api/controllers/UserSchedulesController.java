@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -716,9 +716,13 @@ public class UserSchedulesController {
 	@GetMapping("/schedule-list")
 	public ResponseEntity<List<ScheduleResponse>> getScheduleList(
 			@RequestParam(required = false, value = "dempo_id") String dempoId,
-			@RequestParam(required = false, value = "project_id") Integer projecId,
-			@RequestParam(required = false, value = "schedule_date") Date scheduleDate) {
-		List<ScheduleResponse> response = scheduleService.getList(dempoId, projecId, scheduleDate);
+			@RequestParam(required = false, value = "project_id") Integer projectId,
+			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate) {
+		System.out.println("Received project_id: " + projectId);
+		System.out.println("Received schedule_date: " + scheduleDate);
+		System.out.println("Received dempo_id: " + dempoId);
+
+		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate);
 
 		if (response == null || response.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());

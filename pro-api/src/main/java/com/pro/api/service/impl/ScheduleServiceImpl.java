@@ -79,8 +79,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public List<ScheduleResponse> getList(String dempoId, Integer projecId, Date scheduleDate) {
-		// Base query
+	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate) {
 		StringBuilder query = new StringBuilder("""
 				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,
 				       p.projectid, p.projectcolor, p.projectname,
@@ -97,6 +96,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 		if (dempoId != null && !dempoId.isBlank()) {
 			query.append(" AND s.dempoid = ? ");
 			params.add(dempoId);
+		}
+
+		if (projectId != null && projectId > 0) {
+			query.append(" AND p.projectid = ? ");
+			params.add(projectId);
+		}
+		if (scheduleDate != null) {
+			String formattedDate = scheduleDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			System.out.println("formattedDate--->" + formattedDate);
+			query.append(" AND s.scheduleDate = '").append(formattedDate).append("' ");
 		}
 
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
