@@ -707,8 +707,8 @@ export class ShiftScheduleComponent implements OnInit {
     this.filterProject = this.filterProject || { projectId: 0 };
     this.filterProject.projectId ||= 0;
 
-    this.filterUser = this.filterUser || { dempoId: 0 };
-    this.filterUser.dempoId ||= 0;
+    this.filterUser = this.filterUser || { dempoId: '' };
+    this.filterUser.dempoId ||= '';
 
     let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}`;
     if (this.selectedUser) {
