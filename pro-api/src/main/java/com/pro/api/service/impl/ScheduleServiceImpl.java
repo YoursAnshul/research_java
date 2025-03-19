@@ -32,8 +32,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		GeneralResponse response = new GeneralResponse();
 		List<String> errorMessages = new ArrayList<>();
 		int successCount = 0;
+		int duplicateCount = 0;
 
-		String query = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
+		String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? AND startDateTime = ? AND endDateTime = ?";
+
+		String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		for (ShiftScheduleRequest request : list) {
@@ -53,10 +56,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 				LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
 				LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
 
-				System.out.println("Start DateTime: " + startDateTime);
-				System.out.println("End DateTime: " + endDateTime);
+				int existingCount = this.jdbcTemplate.queryForObject(checkQuery,
+						new Object[] { request.getDempoId(), scheduleDate, startDateTime, endDateTime }, Integer.class);
 
-				this.jdbcTemplate.update(query, request.getDempoId(), scheduleDate, request.getProjectId(),
+				if (existingCount > 0) {
+					duplicateCount++;
+					continue;
+				}
+
+				this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
 						request.getComments(), startDateTime, endDateTime, "0", request.getEntryby(), new Date(), "NA");
 
 				successCount++;
@@ -69,8 +77,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		if (successCount > 0) {
-			response.Message = "schedules saved successfully!";
+			response.Message = "Schedules saved successfully!";
+		} else {
+			response.Message = "No new schedules were saved.";
 		}
+
 		if (!errorMessages.isEmpty()) {
 			response.Message += " Some errors occurred: " + String.join("; ", errorMessages);
 		}
@@ -79,7 +90,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate) {
+	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue) {
 		StringBuilder query = new StringBuilder("""
 				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,
 				       p.projectid, p.projectcolor, p.projectname,
@@ -102,10 +113,23 @@ public class ScheduleServiceImpl implements ScheduleService {
 			query.append(" AND p.projectid = ? ");
 			params.add(projectId);
 		}
-		if (scheduleDate != null) {
-			String formattedDate = scheduleDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-			System.out.println("formattedDate--->" + formattedDate);
-			query.append(" AND s.scheduleDate = '").append(formattedDate).append("' ");
+
+		// Filter based on tabValue
+		if ("Day".equalsIgnoreCase(tabValue) && scheduleDate != null) {
+			query.append(" AND s.scheduleDate = ? ");
+			params.add(scheduleDate);
+		} else if ("Week".equalsIgnoreCase(tabValue) && scheduleDate != null) {
+			LocalDate weekStart = scheduleDate; // Start of the week
+			LocalDate weekEnd = weekStart.plusDays(6); // End of the week
+			query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+			params.add(weekStart);
+			params.add(weekEnd);
+		} else if ("Month".equalsIgnoreCase(tabValue) && scheduleDate != null) {
+			LocalDate monthStart = scheduleDate; // Current week start date
+			LocalDate monthEnd = monthStart.plusWeeks(5); // End of 6th week
+			query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+			params.add(monthStart);
+			params.add(monthEnd);
 		}
 
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {

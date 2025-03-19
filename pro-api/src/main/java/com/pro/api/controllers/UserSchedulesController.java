@@ -717,12 +717,10 @@ public class UserSchedulesController {
 	public ResponseEntity<List<ScheduleResponse>> getScheduleList(
 			@RequestParam(required = false, value = "dempo_id") String dempoId,
 			@RequestParam(required = false, value = "project_id") Integer projectId,
-			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate) {
-		System.out.println("Received project_id: " + projectId);
-		System.out.println("Received schedule_date: " + scheduleDate);
-		System.out.println("Received dempo_id: " + dempoId);
+			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate,
+			@RequestParam(required = false, value = "tab_value") String tabValue) {
 
-		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate);
+		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate,tabValue);
 
 		if (response == null || response.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());

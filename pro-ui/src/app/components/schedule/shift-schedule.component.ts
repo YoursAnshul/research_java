@@ -119,7 +119,10 @@ export class ShiftScheduleComponent implements OnInit {
   filterProject: any = null;
   @Output() selectedProjectChange = new EventEmitter<any>();
   private lastCalledDate: string | null = null; // Track last called date
-
+  @Output() selectedDateRangeValue = new EventEmitter<any>();
+  dateRange: any;
+  tabValue: string = '';
+  dateValue: Date | null = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -204,7 +207,10 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
-
+  onDateRangeReceived(dateRange: any): void {
+    this.dateRange = dateRange;
+    console.log('dateRange---', this.dateRange);
+  }
   validateBlockOutDate(selectedDate: Date): void {
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
@@ -563,18 +569,6 @@ export class ShiftScheduleComponent implements OnInit {
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.blockOutDates = <IBlockOutDate[]>response.Subject;
-          // const initialDate: Date | null =
-          //   this.shiftForm.get('dayWiseDate')?.value;
-          // if (initialDate && this.authenticatedUser?.interviewer) {
-          //   this.validateBlockOutDate(new Date(initialDate));
-          //   this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
-          //   this.shiftForm.get('startTime')?.disable();
-          //   this.shiftForm.get('endTime')?.disable();
-          // } else {
-          //   this.shiftForm.get('dayWiseDate')?.setErrors(null);
-          //   this.shiftForm.get('startTime')?.enable();
-          //   this.shiftForm.get('endTime')?.enable();
-          // }
         }
       },
       (error) => {
@@ -584,15 +578,16 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   handleAddDate(date: Date): void {
+    this.dateValue = date;
     if (date && date instanceof Date && !isNaN(date.getTime())) {
-      this.shiftForm.get('dayWiseDate')?.setValue(date, { emitEvent: false });
+      if (this.tabValue == 'Day') {
+        this.shiftForm.get('dayWiseDate')?.setValue(date, { emitEvent: false });
+      }
       const formattedDate = date.toISOString().split('T')[0];
       if (formattedDate !== this.lastCalledDate) {
         this.getScheduleList();
         this.lastCalledDate = formattedDate;
       }
-    } else {
-      console.error('Invalid Date:', date);
     }
   }
   handleUser(user: any): void {
@@ -620,9 +615,9 @@ export class ShiftScheduleComponent implements OnInit {
           (user) => user.userId === this.selectedUser?.userId
         );
         if (this.selectedUser) {
-          this.getScheduleList();
           this.getProjectInfo(this.selectedUser.dempoId);
         }
+        this.getScheduleList();
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -631,71 +626,48 @@ export class ShiftScheduleComponent implements OnInit {
   }
   saveSchedule(): void {
     const shiftScheduleList: any[] = [];
-    const uniqueSet = new Set<string>();
+    const startTime = this.shiftForm.get('startTime')?.value;
+    const endTime = this.shiftForm.get('endTime')?.value;
+    if (!startTime) {
+      this.shiftForm.get('startTime')?.setErrors({ required: true });
+      this.showToastMessage('Start time required.', 'warning');
+    }
+    if (!endTime) {
+      this.showToastMessage('End time required.', 'warning');
+      this.shiftForm.get('endTime')?.setErrors({ required: true });
+    }
 
     if (Array.isArray(this.shiftSchedule) && this.shiftSchedule.length > 0) {
       for (const shift of this.shiftSchedule) {
         if (!shift) continue;
-
         const date = new Date(shift.dayWiseDate);
-        const scheduleDate =
-          date.getFullYear() +
-          '-' +
-          String(date.getMonth() + 1).padStart(2, '0') +
-          '-' +
-          String(date.getDate()).padStart(2, '0');
-
+        const scheduleDate = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         const obj = {
           dempoId: shift.user?.dempoId || null,
-          scheduleDate: scheduleDate,
+          scheduleDate,
           projectId: shift.projects?.projectId || null,
           comments: shift.comments || '',
           startTime: shift.startTime || null,
           endTime: shift.endTime || null,
           entryby: this.authenticatedUser.netID || null,
         };
-
-        // Create a unique key to check for duplicates
-        const key = `${obj.dempoId}-${obj.scheduleDate}-${obj.projectId}-${obj.startTime}-${obj.endTime}`;
-
-        // Check if the same schedule is already in shiftSchedule (avoid duplicate additions)
-        if (
-          !uniqueSet.has(key) &&
-          !this.shiftSchedule?.some(
-            (s) =>
-              s.user?.dempoId === obj.dempoId &&
-              s.scheduleDate === obj.scheduleDate &&
-              s.projects?.projectId === obj.projectId &&
-              s.startTime === obj.startTime &&
-              s.endTime === obj.endTime
-          )
-        ) {
-          uniqueSet.add(key);
-          shiftScheduleList.push(obj);
-        }
+        shiftScheduleList.push(obj);
       }
     }
-
-    if (shiftScheduleList.length === 0) {
-      console.warn('No new shifts to save.');
-      return;
-    }
-
     this.http
       .post(
         `${environment.DataAPIUrl}/api/userSchedules/save-schedule`,
         shiftScheduleList
       )
       .subscribe({
-        next: (response) => {
-          this.showToastMessage('Shift saved successfully!', 'success');
-          this.getScheduleList(); // Fetch updated schedule list after saving
-          this.shiftForm.reset();
-          this.shiftForm.markAsPristine();
-          this.shiftForm.markAsUntouched();
+        next: (res: any) => {
+          this.showToastMessage(res.Message, 'success');
+          this.getScheduleList();
         },
         error: (error) => {
-          console.error('Error saving shift:', error);
+          console.error('Error saving shifts:', error);
         },
       });
   }
@@ -707,18 +679,37 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   getScheduleList(): void {
-    let scheduleDate = this.shiftForm?.get('dayWiseDate')?.value || new Date();
-    let formattedDate = new Date(scheduleDate).toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD'
-
+    let formattedDate = '';
+    let startDateFormat = '';
+    let endDateFormat = '';
+    if (this.tabValue == 'Week') {
+      let startDate = this.dateRange?.value?.start;
+      let endDate = this.dateRange?.value?.end;
+      startDateFormat = new Date(startDate).toLocaleDateString('en-CA');
+      endDateFormat = new Date(endDate).toLocaleDateString('en-CA');
+    } else {
+      let scheduleDate = this.dateValue || new Date();
+      formattedDate = new Date(scheduleDate).toLocaleDateString('en-CA');
+    }
     this.filterProject = this.filterProject || { projectId: 0 };
     this.filterProject.projectId ||= 0;
 
-    this.filterUser = this.filterUser || { dempoId: '' };
-    this.filterUser.dempoId ||= '';
-
-    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}`;
-    if (this.filterUser) {
-      url += `&dempo_id=${this.filterUser.dempoId}`;
+    if (this.authenticatedUser?.admin) {
+      this.filterUser = this.filterUser || { dempoId: '' };
+      this.filterUser.dempoId ||= '';
+    } else {
+      this.selectedUser = this.selectedUser || { dempoId: '' };
+      this.selectedUser.dempoId ||= '';
+    }
+    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}&tab_value=${this.tabValue}`;
+    if (this.authenticatedUser?.admin) {
+      if (this.filterUser) {
+        url += `&dempo_id=${this.filterUser.dempoId}`;
+      }
+    } else {
+      if (this.selectedUser) {
+        url += `&dempo_id=${this.selectedUser?.dempoId}`;
+      }
     }
 
     this.http.get<any[]>(url).subscribe({
@@ -749,4 +740,10 @@ export class ShiftScheduleComponent implements OnInit {
       verticalPosition: verticalPosition,
     });
   }
+  onTabValueReceived(tab: any): void {
+    this.tabValue = tab;
+  }
+}
+function selectedDateChange(dateRange: any, any: any) {
+  throw new Error('Function not implemented.');
 }

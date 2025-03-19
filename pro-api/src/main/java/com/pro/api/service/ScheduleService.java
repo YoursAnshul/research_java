@@ -13,5 +13,5 @@ import com.pro.api.response.ShiftScheduleRequest;
 public interface ScheduleService {
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> request);
 
-	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate);
+	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate,String tabValue);
 }

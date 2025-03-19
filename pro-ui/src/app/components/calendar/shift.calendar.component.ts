@@ -103,6 +103,8 @@ export class ShifCalendarComponent implements OnInit {
   @Output() addDate: Date | null = null;
   @Output() selectedUserChange = new EventEmitter<any>();
   @Output() selectedProjectChange = new EventEmitter<any>();
+  @Output() selectedDateRangeValue = new EventEmitter<any>();
+  @Output() tabValue = new EventEmitter<any>();
 
   //constructor
   constructor(
@@ -201,6 +203,7 @@ export class ShifCalendarComponent implements OnInit {
     //set default date and filter values
     this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
       this.selectedDate = new FormControl(selectedDate.toISOString());
+      this.addDateEvent.emit(this.selectedDate.value);
 
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
         new Date(this.selectedDate.value)
@@ -222,8 +225,8 @@ export class ShifCalendarComponent implements OnInit {
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
     });
-
-    //filters
+    this.selectedDateRangeValue.emit(this.selectedDateRange.value);
+    this.tabValue.emit("Day");
     this.setDefaultFilters(false);
   }
   onReset(): void {
@@ -294,6 +297,7 @@ export class ShifCalendarComponent implements OnInit {
       });
       this.selectedDate.setValue(baseDate);
     }
+    this.tabValue.emit(this.tabName);
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -343,6 +347,8 @@ export class ShifCalendarComponent implements OnInit {
     this.userSchedulesService.setAllUserSchedulesByAnchorDate(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
+    this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
+    this.addDateEvent.emit(this.selectedDate.value);
   }
 
   //sync data from the month down to the week and day (month becomes our master data set and is what we ultimately pull from the database when the anchor date changes)
