@@ -718,9 +718,12 @@ public class UserSchedulesController {
 			@RequestParam(required = false, value = "dempo_id") String dempoId,
 			@RequestParam(required = false, value = "project_id") Integer projectId,
 			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate,
-			@RequestParam(required = false, value = "tab_value") String tabValue) {
+			@RequestParam(required = false, value = "tab_value") String tabValue,
+			@RequestParam(required = false, value = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+			@RequestParam(required = false, value = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
-		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate,tabValue);
+		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate, tabValue, startDate,
+				endDate);
 
 		if (response == null || response.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());

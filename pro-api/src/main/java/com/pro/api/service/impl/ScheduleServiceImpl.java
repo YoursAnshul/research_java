@@ -90,7 +90,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue) {
+	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
+			LocalDate startDate, LocalDate endDate) {
 		StringBuilder query = new StringBuilder("""
 				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,
 				       p.projectid, p.projectcolor, p.projectname,
@@ -114,22 +115,27 @@ public class ScheduleServiceImpl implements ScheduleService {
 			params.add(projectId);
 		}
 
-		// Filter based on tabValue
 		if ("Day".equalsIgnoreCase(tabValue) && scheduleDate != null) {
 			query.append(" AND s.scheduleDate = ? ");
+			System.out.println("scheduleDate---->" + scheduleDate);
 			params.add(scheduleDate);
-		} else if ("Week".equalsIgnoreCase(tabValue) && scheduleDate != null) {
-			LocalDate weekStart = scheduleDate; // Start of the week
-			LocalDate weekEnd = weekStart.plusDays(6); // End of the week
+		} else if ("Week".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
+			LocalDate weekStart = startDate;
+			LocalDate weekEnd = endDate;
 			query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+			System.out.println("weekStart---->" + weekStart);
+			System.out.println("weekEnd---->" + weekEnd);
 			params.add(weekStart);
 			params.add(weekEnd);
-		} else if ("Month".equalsIgnoreCase(tabValue) && scheduleDate != null) {
-			LocalDate monthStart = scheduleDate; // Current week start date
-			LocalDate monthEnd = monthStart.plusWeeks(5); // End of 6th week
+		} else if ("Month".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
+			LocalDate monthStart = startDate;
+			LocalDate monthEnd = endDate;
+			LocalDate fiveWeeksLater = monthEnd.plusWeeks(5);
 			query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+			System.out.println("weekStart---->" + monthStart);
+			System.out.println("weekEnd---->" + fiveWeeksLater);
 			params.add(monthStart);
-			params.add(monthEnd);
+			params.add(fiveWeeksLater);
 		}
 
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {

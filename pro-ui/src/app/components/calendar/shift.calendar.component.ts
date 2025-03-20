@@ -298,6 +298,7 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedDate.setValue(baseDate);
     }
     this.tabValue.emit(this.tabName);
+    this.selectedDateRangeValue.emit(this.selectedDateRange.value);
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -852,7 +853,6 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   handleAddDate(date: Date): void {
-
     this.addDateEvent.emit(date);
   }
   onUserChange(user: any) {

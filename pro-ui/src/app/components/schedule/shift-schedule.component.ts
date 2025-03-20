@@ -208,8 +208,8 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   onDateRangeReceived(dateRange: any): void {
-    this.dateRange = dateRange;
     console.log('dateRange---', this.dateRange);
+    this.dateRange = dateRange;
   }
   validateBlockOutDate(selectedDate: Date): void {
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
@@ -679,21 +679,46 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   getScheduleList(): void {
+    console.log("this.dateRange------->",this.dateRange);
+    console.log("this.dateRange------->",this.dateRange.start);
     let formattedDate = '';
     let startDateFormat = '';
     let endDateFormat = '';
-    if (this.tabValue == 'Week') {
-      let startDate = this.dateRange?.value?.start;
-      let endDate = this.dateRange?.value?.end;
-      startDateFormat = new Date(startDate).toLocaleDateString('en-CA');
-      endDateFormat = new Date(endDate).toLocaleDateString('en-CA');
+    if ((this.tabValue === 'Week' || this.tabValue === 'Month') && this.dateRange) {
+      const startDate = this.dateRange.start
+        ? new Date(this.dateRange.start)
+        : null;        
+      const endDate = this.dateRange.end
+        ? new Date(this.dateRange.end)
+        : null;
+      if (startDate && !isNaN(startDate.getTime())) {
+        startDateFormat = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      } else {
+        console.warn('Invalid startDate:', startDate);
+      }
+
+      if (endDate && !isNaN(endDate.getTime())) {
+        endDateFormat = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      } else {
+        console.warn('Invalid endDate:', endDate);
+      }
     } else {
-      let scheduleDate = this.dateValue || new Date();
-      formattedDate = new Date(scheduleDate).toLocaleDateString('en-CA');
+      const scheduleDate = this.dateValue
+        ? new Date(this.dateValue)
+        : new Date();
+
+      if (!isNaN(scheduleDate.getTime())) {
+        formattedDate = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      } else {
+        console.warn('Invalid scheduleDate:', scheduleDate);
+      }
     }
+
+    // Ensure filterProject is valid
     this.filterProject = this.filterProject || { projectId: 0 };
     this.filterProject.projectId ||= 0;
 
+    // Ensure correct user filtering based on authentication
     if (this.authenticatedUser?.admin) {
       this.filterUser = this.filterUser || { dempoId: '' };
       this.filterUser.dempoId ||= '';
@@ -701,17 +726,24 @@ export class ShiftScheduleComponent implements OnInit {
       this.selectedUser = this.selectedUser || { dempoId: '' };
       this.selectedUser.dempoId ||= '';
     }
+
+    // Construct the API URL properly
     let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}&tab_value=${this.tabValue}`;
-    if (this.authenticatedUser?.admin) {
-      if (this.filterUser) {
-        url += `&dempo_id=${this.filterUser.dempoId}`;
-      }
-    } else {
-      if (this.selectedUser) {
-        url += `&dempo_id=${this.selectedUser?.dempoId}`;
-      }
+
+    // Append week start and end dates if available
+    if ((this.tabValue === 'Week' ||this.tabValue === 'Month') && startDateFormat && endDateFormat) {
+      url += `&start_date=${startDateFormat}&end_date=${endDateFormat}`;
     }
 
+    if (this.authenticatedUser?.admin && this.filterUser) {
+      url += `&dempo_id=${this.filterUser.dempoId}`;
+    } else if (this.selectedUser) {
+      url += `&dempo_id=${this.selectedUser.dempoId}`;
+    }
+
+    console.log('Final API URL:', url);
+
+    // Make the API call
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
@@ -744,6 +776,4 @@ export class ShiftScheduleComponent implements OnInit {
     this.tabValue = tab;
   }
 }
-function selectedDateChange(dateRange: any, any: any) {
-  throw new Error('Function not implemented.');
-}
+
