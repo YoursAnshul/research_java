@@ -98,13 +98,13 @@ export class ShifCalendarComponent implements OnInit {
   @Input() shiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>();
   blockOutDates: IBlockOutDate[] = [];
-  @Output() addDateEvent = new EventEmitter<Date>();
   tabName: string = 'Day';
   @Output() addDate: Date | null = null;
   @Output() selectedUserChange = new EventEmitter<any>();
   @Output() selectedProjectChange = new EventEmitter<any>();
   @Output() selectedDateRangeValue = new EventEmitter<any>();
   @Output() tabValue = new EventEmitter<any>();
+  @Output() seletedDayDate = new EventEmitter<any>();
 
   //constructor
   constructor(
@@ -203,8 +203,6 @@ export class ShifCalendarComponent implements OnInit {
     //set default date and filter values
     this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
       this.selectedDate = new FormControl(selectedDate.toISOString());
-      this.addDateEvent.emit(this.selectedDate.value);
-
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
         new Date(this.selectedDate.value)
       );
@@ -224,7 +222,8 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedDateRange = new FormGroup({
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
-    });
+    });    
+    this.seletedDayDate.emit(this.selectedDate.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
     this.tabValue.emit("Day");
     this.setDefaultFilters(false);
@@ -274,7 +273,7 @@ export class ShifCalendarComponent implements OnInit {
         end: new Date(this.selectedWeekStartAndEnd.weekEnd),
       });
       this.selectedDate.setValue(baseDate);
-    }
+    }  
     this.checkContext();
   }
 
@@ -348,8 +347,8 @@ export class ShifCalendarComponent implements OnInit {
     this.userSchedulesService.setAllUserSchedulesByAnchorDate(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
+    this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
-    this.addDateEvent.emit(this.selectedDate.value);
   }
 
   //sync data from the month down to the week and day (month becomes our master data set and is what we ultimately pull from the database when the anchor date changes)
@@ -852,25 +851,21 @@ export class ShifCalendarComponent implements OnInit {
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
-  handleAddDate(date: Date): void {
-    this.addDateEvent.emit(date);
-  }
+  
   onUserChange(user: any) {
-    console.log('user--->', user);
-
-    this.selectedUser = user; // Update selected user
-    this.selectedUserChange.emit(this.selectedUser); // Emit change to parent
+    this.selectedUser = user;
+    this.selectedUserChange.emit(this.selectedUser);
   }
   onProjectChange(project: any) {
     console.log('project--->', project);
-    this.selectedProject = project; // Update selected user
-    this.selectedProjectChange.emit(this.selectedProject); // Emit change to parent
+    this.selectedProject = project; 
+    this.selectedProjectChange.emit(this.selectedProject); 
   }
 
   onSelectedUserChange(user: any) {
     this.selectedUser = user;
   }
   onSelectedProjectChange(project: any) {
-    this.selectedProject = project; // Update the selected user
+    this.selectedProject = project;
   }
 }

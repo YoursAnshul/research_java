@@ -110,7 +110,6 @@ export class ShiftScheduleComponent implements OnInit {
   authenticatedUser!: IAuthenticatedUser;
   userObj: any;
   selectedUser: any = null;
-  @Output() addDateEvent = new EventEmitter<Date>();
   addedDate = new FormControl<Date | null>(new Date(), Validators.required);
   selectedProject: any = null;
   @Input() date!: FormControl;
@@ -121,8 +120,8 @@ export class ShiftScheduleComponent implements OnInit {
   private lastCalledDate: string | null = null; // Track last called date
   @Output() selectedDateRangeValue = new EventEmitter<any>();
   dateRange: any;
-  tabValue: string = '';
-  dateValue: Date | null = null;
+  tabValue: string = 'Day';
+  selectedDayDate: Date | null = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -137,7 +136,9 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
-  ngOnChanges(): void {}
+  ngOnChanges(): void {
+    this.getScheduleList();
+  }
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
@@ -208,8 +209,12 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   onDateRangeReceived(dateRange: any): void {
-    console.log('dateRange---', this.dateRange);
-    this.dateRange = dateRange;
+    if (this.tabValue != 'Day') {
+      this.selectedDayDate = null;
+      this.dateRange = dateRange;
+      console.log(' this.dateRange------>', this.dateRange);
+      this.getScheduleList();
+    }
   }
   validateBlockOutDate(selectedDate: Date): void {
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
@@ -577,19 +582,6 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-  handleAddDate(date: Date): void {
-    this.dateValue = date;
-    if (date && date instanceof Date && !isNaN(date.getTime())) {
-      if (this.tabValue == 'Day') {
-        this.shiftForm.get('dayWiseDate')?.setValue(date, { emitEvent: false });
-      }
-      const formattedDate = date.toISOString().split('T')[0];
-      if (formattedDate !== this.lastCalledDate) {
-        this.getScheduleList();
-        this.lastCalledDate = formattedDate;
-      }
-    }
-  }
   handleUser(user: any): void {
     this.filterUser = user;
     this.getScheduleList();
@@ -679,18 +671,36 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   getScheduleList(): void {
-    console.log("this.dateRange------->",this.dateRange);
-    console.log("this.dateRange------->",this.dateRange.start);
     let formattedDate = '';
     let startDateFormat = '';
     let endDateFormat = '';
-    if ((this.tabValue === 'Week' || this.tabValue === 'Month') && this.dateRange) {
+
+    // Handle filtering based on the tab value
+    if (this.tabValue === 'Day' && this.selectedDayDate) {
+      // Single day selection
+      startDateFormat = '';
+      endDateFormat = '';
+      const scheduleDate = new Date(this.selectedDayDate);
+      if (!isNaN(scheduleDate.getTime())) {
+        formattedDate = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      } else {
+        console.warn('Invalid scheduleDate:', scheduleDate);
+      }
+    } else if (
+      (this.tabValue === 'Week' || this.tabValue === 'Month') &&
+      this.dateRange
+    ) {
+      // Range selection
+      formattedDate = '';
+      startDateFormat = '';
+      endDateFormat = '';
+      console.log('this.dateRange----------', this.dateRange);
+
       const startDate = this.dateRange.start
         ? new Date(this.dateRange.start)
-        : null;        
-      const endDate = this.dateRange.end
-        ? new Date(this.dateRange.end)
         : null;
+      const endDate = this.dateRange.end ? new Date(this.dateRange.end) : null;
+
       if (startDate && !isNaN(startDate.getTime())) {
         startDateFormat = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
       } else {
@@ -702,43 +712,23 @@ export class ShiftScheduleComponent implements OnInit {
       } else {
         console.warn('Invalid endDate:', endDate);
       }
-    } else {
-      const scheduleDate = this.dateValue
-        ? new Date(this.dateValue)
-        : new Date();
-
-      if (!isNaN(scheduleDate.getTime())) {
-        formattedDate = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
-      } else {
-        console.warn('Invalid scheduleDate:', scheduleDate);
-      }
     }
-
-    // Ensure filterProject is valid
-    this.filterProject = this.filterProject || { projectId: 0 };
-    this.filterProject.projectId ||= 0;
-
-    // Ensure correct user filtering based on authentication
-    if (this.authenticatedUser?.admin) {
-      this.filterUser = this.filterUser || { dempoId: '' };
-      this.filterUser.dempoId ||= '';
-    } else {
-      this.selectedUser = this.selectedUser || { dempoId: '' };
-      this.selectedUser.dempoId ||= '';
-    }
-
+  
     // Construct the API URL properly
-    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?project_id=${this.filterProject.projectId}&schedule_date=${formattedDate}&tab_value=${this.tabValue}`;
-
-    // Append week start and end dates if available
-    if ((this.tabValue === 'Week' ||this.tabValue === 'Month') && startDateFormat && endDateFormat) {
+    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?tab_value=${this.tabValue}`;
+    if(this.filterProject){
+      url += `&project_id=${this.filterProject.projectId}`;
+    }
+    if (formattedDate) {
+      url += `&schedule_date=${formattedDate}`;
+    }
+    if (startDateFormat && endDateFormat) {
       url += `&start_date=${startDateFormat}&end_date=${endDateFormat}`;
     }
-
     if (this.authenticatedUser?.admin && this.filterUser) {
-      url += `&dempo_id=${this.filterUser.dempoId}`;
-    } else if (this.selectedUser) {
-      url += `&dempo_id=${this.selectedUser.dempoId}`;
+      url += `&demId=${this.filterUser?.dempoId}`;
+    } else if (this.selectedUser && this.selectedUser?.dempoId) {
+      url += `&demId=${this.selectedUser?.dempoId}`;
     }
 
     console.log('Final API URL:', url);
@@ -773,7 +763,17 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   onTabValueReceived(tab: any): void {
+    console.log('------------');
+
     this.tabValue = tab;
+    this.getScheduleList();
+  }
+  onSeletedDayDate(day: any): void {
+    if (this.tabValue == 'Day') {
+      console.log('day--->', day);
+      this.dateRange = null;
+      this.selectedDayDate = day;
+      this.getScheduleList();
+    }
   }
 }
-

@@ -43,7 +43,6 @@ export class ShiftWeekViewComponent implements OnInit {
   private debounceTimer: any;
   inputHeight: string = '30px';
   totalDuration: number = 0;
-  @Output() addDateEvent = new EventEmitter<Date>();
 
   constructor(
     private globalsService: GlobalsService,
@@ -234,8 +233,6 @@ export class ShiftWeekViewComponent implements OnInit {
     this.showTooltip = false;
   }
   addShift(date: Date): void {
-    console.log('Add shift for date:', date);
-    this.addDateEvent.emit(date);
     this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {

@@ -889,7 +889,6 @@ export class AddUserComponent implements OnInit {
               //set created metadata (if applicable)
               this.selectedUser.entryBy = this.authenticatedUser.netID;
               this.selectedUser.entryDt = new Date();
-              console.log("this.defaultProject--------->",this.defaultProject);
               this.selectedUser.defaultproject = this.defaultProject;
               
               //pass to save user api to save

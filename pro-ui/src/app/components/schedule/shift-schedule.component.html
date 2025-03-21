@@ -168,11 +168,12 @@
       style="margin-top: -20px"
       [shiftSchedule]="shiftSchedule"
       (resetShiftSchedule)="onResetShiftSchedule()"
-      (addDateEvent)="handleAddDate($event)"
       (selectedUserChange)="handleUser($event)"
       (selectedProjectChange)="handleProject($event)"
       (selectedDateRangeValue)="onDateRangeReceived($event)"
-      (tabValue)="onTabValueReceived($event)">
+      (tabValue)="onTabValueReceived($event)"
+      (seletedDayDate)="onSeletedDayDate($event)">
+      >
     ></app-shift-calendar>
   </form>
 </div>

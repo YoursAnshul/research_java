@@ -715,7 +715,7 @@ public class UserSchedulesController {
 
 	@GetMapping("/schedule-list")
 	public ResponseEntity<List<ScheduleResponse>> getScheduleList(
-			@RequestParam(required = false, value = "dempo_id") String dempoId,
+			@RequestParam(required = false, value = "demId") String dempoId,
 			@RequestParam(required = false, value = "project_id") Integer projectId,
 			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate,
 			@RequestParam(required = false, value = "tab_value") String tabValue,
