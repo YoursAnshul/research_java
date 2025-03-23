@@ -210,10 +210,9 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onDateRangeReceived(dateRange: any): void {
     if (this.tabValue != 'Day') {
-      this.selectedDayDate = null;
       this.dateRange = dateRange;
       console.log(' this.dateRange------>', this.dateRange);
-      this.getScheduleList();
+      // this.getScheduleList();
     }
   }
   validateBlockOutDate(selectedDate: Date): void {
@@ -715,15 +714,9 @@ export class ShiftScheduleComponent implements OnInit {
     }
   
     // Construct the API URL properly
-    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list?tab_value=${this.tabValue}`;
+    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${this.selectedDayDate}?tab_value=${this.tabValue}`;
     if(this.filterProject){
       url += `&project_id=${this.filterProject.projectId}`;
-    }
-    if (formattedDate) {
-      url += `&schedule_date=${formattedDate}`;
-    }
-    if (startDateFormat && endDateFormat) {
-      url += `&start_date=${startDateFormat}&end_date=${endDateFormat}`;
     }
     if (this.authenticatedUser?.admin && this.filterUser) {
       url += `&demId=${this.filterUser?.dempoId}`;
@@ -773,7 +766,7 @@ export class ShiftScheduleComponent implements OnInit {
       console.log('day--->', day);
       this.dateRange = null;
       this.selectedDayDate = day;
-      this.getScheduleList();
+      // this.getScheduleList();
     }
   }
 }

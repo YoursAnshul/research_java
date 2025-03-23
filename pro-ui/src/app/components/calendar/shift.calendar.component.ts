@@ -29,7 +29,7 @@ import { UsersService } from '../../services/users/users.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { ProjectsService } from '../../services/projects/projects.service';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient ,HttpParams} from '@angular/common/http';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
@@ -87,7 +87,7 @@ export class ShifCalendarComponent implements OnInit {
 
   scheduleFetchStatus!: boolean;
   scheduleFetchMessage: string = '';
-
+  userObj: any;
   tabIndex = 0;
   userList: any[] = [];
   projectList: any[] = [];
@@ -95,7 +95,8 @@ export class ShifCalendarComponent implements OnInit {
   defaultProject = { projectId: 0, projectName: 'Any Active Projects' };
   selectedUser: any = this.defaultUser;
   selectedProject: any = this.defaultProject;
-  @Input() shiftSchedule: any[] = [];
+  @Input() shiftSchedule1: any[] = [];
+  shiftSchedule: any[] = [];
   @Output() resetShiftSchedule = new EventEmitter<void>();
   blockOutDates: IBlockOutDate[] = [];
   tabName: string = 'Day';
@@ -105,7 +106,7 @@ export class ShifCalendarComponent implements OnInit {
   @Output() selectedDateRangeValue = new EventEmitter<any>();
   @Output() tabValue = new EventEmitter<any>();
   @Output() seletedDayDate = new EventEmitter<any>();
-
+  selectedUser1: any = null;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -181,10 +182,12 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+    // this.getScheduleList()
     //subscribe to scheduleFetchStatus
     this.getAuthor();
     this.getProjectInfo();
+    this.getAuthor1();
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       (scheduleFetchStatus) => {
         this.scheduleFetchStatus = scheduleFetchStatus;
@@ -206,7 +209,8 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
         new Date(this.selectedDate.value)
       );
-
+      console.log("this.selectedWeekStartAndEnd --------- ",this.selectedWeekStartAndEnd );
+      
       this.selectedDateRange = new FormGroup({
         start: new FormControl(
           new Date(this.selectedWeekStartAndEnd.weekStart)
@@ -227,6 +231,12 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
     this.tabValue.emit("Day");
     this.setDefaultFilters(false);
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+        this.userObj = this.authenticatedUser;
+      }
+    );
   }
   onReset(): void {
     this.selectedDate.setValue(new Date());
@@ -256,6 +266,30 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
   }
+
+  getLoginUser(email: string): void {
+      if (!email) {
+        console.error('Email is required to fetch login author');
+        return;
+      }
+  
+      const params = new HttpParams().set('email', email);
+      const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
+  
+      this.http.get(apiUrl, { params }).subscribe({
+        next: (data: any) => {
+          this.selectedUser1 =
+            this.userList.find((user) => user?.userId === data?.userId) || null;
+          this.userList = this.userList.filter(
+            (user) => user.userId === this.selectedUser1?.userId
+          );
+          
+        },
+        error: (error: any) => {
+          console.error('Error fetching user info:', error);
+        },
+      });
+    }
   ngOnChanges(): void {
     let lastDate = null;
     if (this.shiftSchedule) {
@@ -298,6 +332,7 @@ export class ShifCalendarComponent implements OnInit {
     }
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
+    this.getScheduleList(Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true));
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -344,9 +379,10 @@ export class ShifCalendarComponent implements OnInit {
     //----------------------------------------------------
     // set user schedules
     //----------------------------------------------------
-    this.userSchedulesService.setAllUserSchedulesByAnchorDate(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
+    // this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // );
+    this.getScheduleList(Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true));
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -839,6 +875,19 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
 
+  getAuthor1(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.userList = Array.isArray(data) ? data : [];
+        if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+          this.getLoginUser(this.userObj.eppn);
+        }
+      },
+      error: (error) => console.error('Error fetching authors:', error),
+    });
+  }
+
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
     this.http.get(apiUrl).subscribe({
@@ -851,6 +900,8 @@ export class ShifCalendarComponent implements OnInit {
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+
+  
   
   onUserChange(user: any) {
     this.selectedUser = user;
@@ -867,5 +918,26 @@ export class ShifCalendarComponent implements OnInit {
   }
   onSelectedProjectChange(project: any) {
     this.selectedProject = project;
+  }
+
+  getScheduleList(anchorDate: string | null): void {
+
+    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+   if (this.selectedUser1 && this.selectedUser1?.dempoId) {
+      url += `?demId=${this.selectedUser1?.dempoId}`;
+    }
+    console.log('Final API URL:', url);
+
+    // Make the API call
+    this.http.get<any[]>(url).subscribe({
+      next: (response) => {
+        console.log('Schedule list retrieved successfully:', response);
+        this.shiftSchedule = response;
+      },
+      error: (error) => {
+        console.error('Error fetching schedule list:', error);
+        this.shiftSchedule = [];
+      },
+    });
   }
 }

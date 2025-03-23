@@ -12,10 +12,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.pro.api.controllers.GeneralResponse;
+import com.pro.api.models.dataaccess.ViUserSchedule;
 import com.pro.api.response.Projects;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
@@ -91,7 +94,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
-			LocalDate startDate, LocalDate endDate) {
+			LocalDate startDate, LocalDate endDate,int year, int month) {
 		StringBuilder query = new StringBuilder("""
 				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,
 				       p.projectid, p.projectcolor, p.projectname,
@@ -100,10 +103,20 @@ public class ScheduleServiceImpl implements ScheduleService {
 				FROM core.schedules s
 				JOIN core.projects p ON s.projectid = p.projectid
 				LEFT JOIN core.users u ON s.dempoid = u.dempoid
-				WHERE p.active = 1
+				WHERE p.active = 1 
 				""");
 
 		List<Object> params = new ArrayList<>();
+
+		query.append("AND (EXTRACT(YEAR FROM s.startdatetime)=? OR EXTRACT(YEAR FROM s.startdatetime) = ? ");
+		params.add(year);
+		params.add(year);
+		query.append("OR EXTRACT(YEAR FROM s.startdatetime) = ?) AND (EXTRACT(MONTH FROM s.startdatetime) = ? ");
+		params.add(year);
+		params.add(month);
+		query.append("OR EXTRACT(MONTH FROM s.startdatetime) = ? OR EXTRACT(MONTH FROM s.startdatetime) = ?) ");
+		params.add(month);
+		params.add(month);
 
 		if (dempoId != null && !dempoId.isBlank()) {
 			query.append(" AND s.dempoid = ? ");
@@ -115,29 +128,29 @@ public class ScheduleServiceImpl implements ScheduleService {
 			params.add(projectId);
 		}
 
-		if ("Day".equalsIgnoreCase(tabValue) && scheduleDate != null) {
-			query.append(" AND s.scheduleDate = ? ");
-			System.out.println("scheduleDate---->" + scheduleDate);
-			params.add(scheduleDate);
-		} else if ("Week".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
-			LocalDate weekStart = startDate;
-			LocalDate weekEnd = endDate;
-			query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
-			System.out.println("weekStart---->" + weekStart);
-			System.out.println("weekEnd---->" + weekEnd);
-			params.add(weekStart);
-			params.add(weekEnd);
-		} else if ("Month".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
-			LocalDate monthStart = startDate;
-			LocalDate monthEnd = endDate;
-			LocalDate fiveWeeksLater = monthEnd.plusWeeks(5);
-			query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
-			System.out.println("weekStart---->" + monthStart);
-			System.out.println("weekEnd---->" + fiveWeeksLater);
-			params.add(monthStart);
-			params.add(fiveWeeksLater);
-		}
-
+		// if ("Day".equalsIgnoreCase(tabValue) && scheduleDate != null) {
+		// 	query.append(" AND s.scheduleDate = ? ");
+		// 	System.out.println("scheduleDate---->" + scheduleDate);
+		// 	params.add(scheduleDate);
+		// } else if ("Week".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
+		// 	LocalDate weekStart = startDate;
+		// 	LocalDate weekEnd = endDate;
+		// 	query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+		// 	System.out.println("weekStart---->" + weekStart);
+		// 	System.out.println("weekEnd---->" + weekEnd);
+		// 	params.add(weekStart);
+		// 	params.add(weekEnd);
+		// } else if ("Month".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
+		// 	LocalDate monthStart = startDate;
+		// 	LocalDate monthEnd = endDate;
+		// 	LocalDate fiveWeeksLater = monthEnd.plusWeeks(5);
+		// 	query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+		// 	System.out.println("weekStart---->" + monthStart);
+		// 	System.out.println("weekEnd---->" + fiveWeeksLater);
+		// 	params.add(monthStart);
+		// 	params.add(fiveWeeksLater);
+		// }
+		System.out.println("query.toString()------"+query.toString());
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");

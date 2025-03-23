@@ -14,5 +14,5 @@ public interface ScheduleService {
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> request);
 
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
-			LocalDate startDate, LocalDate endDate);
+			LocalDate startDate, LocalDate endDate,int year, int month);
 }
