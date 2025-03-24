@@ -95,17 +95,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
 			LocalDate startDate, LocalDate endDate,int year, int month) {
-		StringBuilder query = new StringBuilder("""
-				SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName,
-				       p.projectid, p.projectcolor, p.projectname,
-				       s.startdatetime, s.enddatetime,
-				       s.comments, s.scheduleDate AS daywisedate
-				FROM core.schedules s
-				JOIN core.projects p ON s.projectid = p.projectid
-				LEFT JOIN core.users u ON s.dempoid = u.dempoid
-				WHERE p.active = 1 
-				""");
-
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
+		query.append("p.projectid, p.projectcolor, p.projectname, ");
+		query.append("s.startdatetime, s.enddatetime, ");
+		query.append("s.comments, s.scheduleDate AS daywisedate ");
+		query.append("FROM core.schedules s ");
+		query.append("JOIN core.projects p ON s.projectid = p.projectid ");
+		query.append("LEFT JOIN core.users u ON s.dempoid = u.dempoid ");
+		query.append("WHERE p.active = 1  ");
 		List<Object> params = new ArrayList<>();
 
 		query.append("AND (EXTRACT(YEAR FROM s.startdatetime)=? OR EXTRACT(YEAR FROM s.startdatetime) = ? ");
