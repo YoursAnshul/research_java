@@ -346,7 +346,8 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftSchedule = this.shiftSchedule
         ? [...this.shiftSchedule, newShift]
         : [newShift];
-
+      console.log("this.shiftSchedule --->",this.shiftSchedule );
+      
       this.weekSchedules = [...this.shiftSchedule];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
@@ -354,6 +355,7 @@ export class ShiftScheduleComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       });
     }
+    console.log("this.shiftSchedule --->",this.shiftSchedule);
   }
 
   combineDateAndTime(date: string, time: string): Date {
@@ -756,17 +758,18 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   onTabValueReceived(tab: any): void {
-    console.log('------------');
-
     this.tabValue = tab;
     this.getScheduleList();
   }
-  onSeletedDayDate(day: any): void {
+  onSeletedDayDate(day: any): void {    
     if (this.tabValue == 'Day') {
-      console.log('day--->', day);
       this.dateRange = null;
       this.selectedDayDate = day;
       // this.getScheduleList();
     }
+  }
+  
+  handleDate(date: FormControl) {
+    console.log("Date value:", date.value);
   }
 }

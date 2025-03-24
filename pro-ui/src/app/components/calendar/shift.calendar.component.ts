@@ -107,6 +107,8 @@ export class ShifCalendarComponent implements OnInit {
   @Output() tabValue = new EventEmitter<any>();
   @Output() seletedDayDate = new EventEmitter<any>();
   selectedUser1: any = null;
+  @Output() sendDate = new EventEmitter<FormControl>();
+
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -924,7 +926,6 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-
     let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
    if (this.selectedUser1 && this.selectedUser1?.dempoId) {
       url += `?demId=${this.selectedUser1?.dempoId}`;
@@ -943,4 +944,8 @@ export class ShifCalendarComponent implements OnInit {
       },
     });
   }
+  handleDate(date: FormControl) {
+    this.sendDate.emit(date);  
+  }
+  
 }

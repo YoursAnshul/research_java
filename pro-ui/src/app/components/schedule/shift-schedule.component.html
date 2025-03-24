@@ -124,7 +124,7 @@
               <div
                 class="time-box"
                 [ngStyle]="{
-                  'background-color':getBackgroundColor(time)
+                  'background-color': getBackgroundColor(time)
                 }"
               >
                 {{ time }}
@@ -171,8 +171,10 @@
       (selectedProjectChange)="handleProject($event)"
       (selectedDateRangeValue)="onDateRangeReceived($event)"
       (tabValue)="onTabValueReceived($event)"
-      (seletedDayDate)="onSeletedDayDate($event)">
-      >
-    ></app-shift-calendar>
+      (seletedDayDate)="onSeletedDayDate($event)"
+      (sendDate)="handleDate($event)"
+    >
+      > ></app-shift-calendar
+    >
   </form>
 </div>

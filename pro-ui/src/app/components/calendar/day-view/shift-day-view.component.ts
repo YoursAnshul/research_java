@@ -41,6 +41,7 @@ export class ShiftDayViewComponent implements OnInit {
   authenticatedUser!: IAuthenticatedUser;
   @Output() selectedUserChange = new EventEmitter<any>();
   @Output() selectedProjectChange = new EventEmitter<any>();
+  @Output() sendDate = new EventEmitter<FormControl>();
 
   constructor(
     private globalsService: GlobalsService,
@@ -188,6 +189,7 @@ export class ShiftDayViewComponent implements OnInit {
     this.showTooltip = false;
   }
   addShift(): void {
+    this.sendDate.emit(this.selectedDate);  
     this.resetShiftSchedule.emit();
   }
 }
