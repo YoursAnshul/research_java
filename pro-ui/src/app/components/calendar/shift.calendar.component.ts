@@ -879,10 +879,13 @@ export class ShifCalendarComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.userList = Array.isArray(data) ? data : [];
-        if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
-          this.getLoginUser(this.userObj.eppn);
+        if(this.authenticatedUser?.interviewer){
+          this.userList = Array.isArray(data) ? data : [];
+          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+            this.getLoginUser(this.userObj.eppn);
+          }
         }
+        
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
