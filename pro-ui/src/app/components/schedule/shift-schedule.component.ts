@@ -1,5 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -347,8 +354,8 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftSchedule = this.shiftSchedule
         ? [...this.shiftSchedule, newShift]
         : [newShift];
-      console.log("this.shiftSchedule --->",this.shiftSchedule );
-      
+      console.log('this.shiftSchedule --->', this.shiftSchedule);
+
       this.weekSchedules = [...this.shiftSchedule];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
@@ -356,7 +363,7 @@ export class ShiftScheduleComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       });
     }
-    console.log("this.shiftSchedule --->",this.shiftSchedule);
+    console.log('this.shiftSchedule --->', this.shiftSchedule);
   }
 
   combineDateAndTime(date: string, time: string): Date {
@@ -618,13 +625,13 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
-  
+
   saveSchedule(): void {
     const shiftScheduleList: any[] = [];
-  
+
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
-  
+
     if (!startTime) {
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.showToastMessage('Start time required.', 'warning');
@@ -633,14 +640,16 @@ export class ShiftScheduleComponent implements OnInit {
       this.showToastMessage('End time required.', 'warning');
       this.shiftForm.get('endTime')?.setErrors({ required: true });
     }
-  
+
     if (Array.isArray(this.shiftSchedule) && this.shiftSchedule.length > 0) {
       for (const shift of this.shiftSchedule) {
         if (!shift) continue;
-  
+
         const date = new Date(shift.dayWiseDate);
-        const scheduleDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  
+        const scheduleDate = `${date.getFullYear()}-${String(
+          date.getMonth() + 1
+        ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
         const obj = {
           dempoId: shift.user?.dempoId || null,
           scheduleDate,
@@ -650,22 +659,18 @@ export class ShiftScheduleComponent implements OnInit {
           endTime: shift.endTime || null,
           entryby: this.authenticatedUser.netID || null,
         };
-  
+
         shiftScheduleList.push(obj);
       }
     }
-  
-    // ✅ Remove duplicates before saving
     const uniqueScheduleList = Array.from(
       new Map(
-        shiftScheduleList.map((item) => 
-          [`${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`, item]
-        )
+        shiftScheduleList.map((item) => [
+          `${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`,
+          item,
+        ])
       ).values()
     );
-  
-    console.log('Unique schedule list:', uniqueScheduleList);
-  
     this.http
       .post(
         `${environment.DataAPIUrl}/api/userSchedules/save-schedule`,
@@ -681,7 +686,6 @@ export class ShiftScheduleComponent implements OnInit {
         },
       });
   }
-  
 
   onUserSelectionChange(event: MatSelectChange): void {
     const selectedUser = event.value;
@@ -732,10 +736,10 @@ export class ShiftScheduleComponent implements OnInit {
         console.warn('Invalid endDate:', endDate);
       }
     }
-  
+
     // Construct the API URL properly
     let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${this.selectedDayDate}?tab_value=${this.tabValue}`;
-    if(this.filterProject){
+    if (this.filterProject) {
       url += `&project_id=${this.filterProject.projectId}`;
     }
     if (this.authenticatedUser?.admin && this.filterUser) {
@@ -779,35 +783,35 @@ export class ShiftScheduleComponent implements OnInit {
     this.tabValue = tab;
     this.getScheduleList();
   }
-  onSeletedDayDate(day: any): void {    
+  onSeletedDayDate(day: any): void {
     if (this.tabValue == 'Day') {
       this.dateRange = null;
       this.selectedDayDate = day;
       // this.getScheduleList();
     }
   }
-  
+
   handleDate(dateEvent: any) {
-    console.log("dateEvent--------<>", dateEvent);
-    
+    console.log('dateEvent--------<>', dateEvent);
+
     const selectedDate = dateEvent?.value ? new Date(dateEvent.value) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
       });
     } else {
-      console.error("Invalid Date Selected:", dateEvent?.value);
+      console.error('Invalid Date Selected:', dateEvent?.value);
     }
   }
-  handleWeekDate(date:any){
-    console.log("date--------<>", date);
+  handleWeekDate(date: any) {
+    console.log('date--------<>', date);
     const selectedDate = date ? new Date(date) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
       });
     } else {
-      console.error("Invalid Date Selected:", date);
+      console.error('Invalid Date Selected:', date);
     }
   }
 }

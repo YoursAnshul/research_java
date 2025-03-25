@@ -291,7 +291,7 @@ export class ShifCalendarComponent implements OnInit {
         },
       });
     }
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.shiftSchedule=this.shiftSchedule1;
     // let lastDate = null;
     // if (this.shiftSchedule) {
@@ -310,9 +310,9 @@ export class ShifCalendarComponent implements OnInit {
     //     end: new Date(this.selectedWeekStartAndEnd.weekEnd),
     //   });
     //   this.selectedDate.setValue(baseDate);
-    // }  
+    // }      
     let baseDate = this.selectedDate?.value || null;
-
+   
     if (!baseDate && this.shiftSchedule?.length) {
       const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
       baseDate = lastDate ? new Date(lastDate) : new Date();
@@ -978,8 +978,7 @@ export class ShifCalendarComponent implements OnInit {
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
         this.shiftSchedule = response;
-      
-        
+        this.shiftSchedule=this.shiftSchedule1;
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
