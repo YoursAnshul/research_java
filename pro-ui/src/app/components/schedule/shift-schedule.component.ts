@@ -618,10 +618,13 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
+  
   saveSchedule(): void {
     const shiftScheduleList: any[] = [];
+  
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
+  
     if (!startTime) {
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.showToastMessage('Start time required.', 'warning');
@@ -630,14 +633,14 @@ export class ShiftScheduleComponent implements OnInit {
       this.showToastMessage('End time required.', 'warning');
       this.shiftForm.get('endTime')?.setErrors({ required: true });
     }
-
+  
     if (Array.isArray(this.shiftSchedule) && this.shiftSchedule.length > 0) {
       for (const shift of this.shiftSchedule) {
         if (!shift) continue;
+  
         const date = new Date(shift.dayWiseDate);
-        const scheduleDate = `${date.getFullYear()}-${String(
-          date.getMonth() + 1
-        ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const scheduleDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  
         const obj = {
           dempoId: shift.user?.dempoId || null,
           scheduleDate,
@@ -647,13 +650,26 @@ export class ShiftScheduleComponent implements OnInit {
           endTime: shift.endTime || null,
           entryby: this.authenticatedUser.netID || null,
         };
+  
         shiftScheduleList.push(obj);
       }
     }
+  
+    // ✅ Remove duplicates before saving
+    const uniqueScheduleList = Array.from(
+      new Map(
+        shiftScheduleList.map((item) => 
+          [`${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`, item]
+        )
+      ).values()
+    );
+  
+    console.log('Unique schedule list:', uniqueScheduleList);
+  
     this.http
       .post(
         `${environment.DataAPIUrl}/api/userSchedules/save-schedule`,
-        shiftScheduleList
+        uniqueScheduleList
       )
       .subscribe({
         next: (res: any) => {
@@ -665,6 +681,7 @@ export class ShiftScheduleComponent implements OnInit {
         },
       });
   }
+  
 
   onUserSelectionChange(event: MatSelectChange): void {
     const selectedUser = event.value;

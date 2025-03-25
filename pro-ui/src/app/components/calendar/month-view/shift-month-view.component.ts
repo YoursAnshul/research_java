@@ -28,6 +28,7 @@ export class ShiftMonthViewComponent implements OnInit {
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
   @Output() addDateEvent = new EventEmitter<Date>();
+  @Output() monthDate = new EventEmitter<Date>();
 
   constructor() {}
 

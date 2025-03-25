@@ -211,9 +211,7 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedDate = new FormControl(selectedDate.toISOString());
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
         new Date(this.selectedDate.value)
-      );
-      console.log("this.selectedWeekStartAndEnd --------- ",this.selectedWeekStartAndEnd );
-      
+      );      
       this.selectedDateRange = new FormGroup({
         start: new FormControl(
           new Date(this.selectedWeekStartAndEnd.weekStart)
@@ -295,43 +293,84 @@ export class ShifCalendarComponent implements OnInit {
     }
   ngOnChanges(): void {
     this.shiftSchedule=this.shiftSchedule1;
-    let lastDate = null;
-    if (this.shiftSchedule) {
-      lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+    // let lastDate = null;
+    // if (this.shiftSchedule) {
+    //   lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+    // }
+    // if (lastDate && this.tabName == 'Day') {
+    //   this.selectedDate.setValue(new Date(lastDate));
+    //   console.log(" this.selectedDate------->", this.selectedDate.value);
+    // } else {
+    //   const baseDate = lastDate
+    //     ? new Date(lastDate)
+    //     : this.selectedDate.value || new Date();
+    //   this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+    //   this.selectedDateRange?.setValue({
+    //     start: new Date(this.selectedWeekStartAndEnd.weekStart),
+    //     end: new Date(this.selectedWeekStartAndEnd.weekEnd),
+    //   });
+    //   this.selectedDate.setValue(baseDate);
+    // }  
+    let baseDate = this.selectedDate?.value || null;
+
+    if (!baseDate && this.shiftSchedule?.length) {
+      const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+      baseDate = lastDate ? new Date(lastDate) : new Date();
     }
-    if (lastDate && this.tabName == 'Day') {
-      this.selectedDate.setValue(new Date(lastDate));
+  
+    if (this.tabName === 'Day') {
+      this.selectedDate.setValue(baseDate);
+      console.log("Selected Date:", this.selectedDate.value);
     } else {
-      const baseDate = lastDate
-        ? new Date(lastDate)
-        : this.selectedDate.value || new Date();
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+  
       this.selectedDateRange?.setValue({
         start: new Date(this.selectedWeekStartAndEnd.weekStart),
         end: new Date(this.selectedWeekStartAndEnd.weekEnd),
       });
+  
       this.selectedDate.setValue(baseDate);
-    }  
+    }
     this.checkContext();
   }
 
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
-    const lastDate = this.shiftSchedule?.length
-      ? this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate
-      : null;
-    if (lastDate && this.tabName == 'Day') {
-      this.selectedDate.setValue(new Date(lastDate));
+    // const lastDate = this.shiftSchedule?.length
+    //   ? this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate
+    //   : null;
+    // if (lastDate && this.tabName == 'Day') {
+    //   this.selectedDate.setValue(new Date(lastDate));
+    // } else {
+    //   const baseDate = lastDate
+    //     ? new Date(lastDate)
+    //     : this.selectedDate.value || new Date();
+    //   this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+    //   this.selectedDateRange?.setValue({
+    //     start: new Date(this.selectedWeekStartAndEnd.weekStart),
+    //     end: new Date(this.selectedWeekStartAndEnd.weekEnd),
+    //   });
+    //   this.selectedDate.setValue(baseDate);
+    // }
+    let baseDate = this.selectedDate?.value || null;
+
+    if (!baseDate && this.shiftSchedule?.length) {
+      const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+      baseDate = lastDate ? new Date(lastDate) : new Date();
+    }
+  
+    if (this.tabName === 'Day') {
+      this.selectedDate.setValue(baseDate);
+      console.log("Selected Date:", this.selectedDate.value);
     } else {
-      const baseDate = lastDate
-        ? new Date(lastDate)
-        : this.selectedDate.value || new Date();
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+  
       this.selectedDateRange?.setValue({
         start: new Date(this.selectedWeekStartAndEnd.weekStart),
         end: new Date(this.selectedWeekStartAndEnd.weekEnd),
       });
+  
       this.selectedDate.setValue(baseDate);
     }
     this.tabValue.emit(this.tabName);
