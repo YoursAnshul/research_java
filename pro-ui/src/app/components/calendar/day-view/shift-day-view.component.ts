@@ -58,6 +58,8 @@ export class ShiftDayViewComponent implements OnInit {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log("this.shiftSchedule====================",this.shiftSchedule);
+    
     if(this.selectedProject){
       this.selectedProjectChange.emit(this.selectedProject);
     }

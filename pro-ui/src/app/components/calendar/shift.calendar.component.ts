@@ -294,6 +294,7 @@ export class ShifCalendarComponent implements OnInit {
       });
     }
   ngOnChanges(): void {
+    this.shiftSchedule=this.shiftSchedule1;
     let lastDate = null;
     if (this.shiftSchedule) {
       lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
@@ -938,6 +939,8 @@ export class ShifCalendarComponent implements OnInit {
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
         this.shiftSchedule = response;
+      
+        
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
