@@ -28,10 +28,10 @@
       class="total-hour-header"
       style="background: #0078d4; color: white"
     >
-    Total
+      Total
     </div>
   </div>
-  <div id="day-calendar-user-schedules" style="margin-top: 4px;">
+  <div id="day-calendar-user-schedules" style="margin-top: 4px">
     @for (us of filteredShiftSchedule; track us) {
     <div class="user-schedule-row">
       <div
@@ -46,9 +46,6 @@
       @for (schedule of [us]; track schedule) {
       <div
         class="schedule-card"
-        (dblclick)="
-          openUserSchedule(schedule.user.userId, schedule.projects.projectName)
-        "
         (mouseenter)="displayHoverMessage($event, schedule, us)"
         (mouseleave)="hideHoverMessage()"
         [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"
@@ -61,9 +58,7 @@
             <span class="bold">{{ schedule.user.userName }}:</span>
             <span>{{ schedule.startTime }} - {{ schedule.endTime }}</span>
             <div class="project-time">
-              <div class="duration-circle-day">
-                {{ schedule.duration }} hr
-              </div>
+              <div class="duration-circle-day">{{ schedule.duration }} hr</div>
             </div>
           </div>
         </div>
@@ -81,19 +76,13 @@
       }
     </div>
     }
+    <div *ngIf="filteredShiftSchedule.length == 0" class="no-results bold italic" style="margin-left: 156px">
+      No schedules found for this day...
+    </div>
     <div class="icon-input-container">
       <div class="add-icon">
         <mat-icon style="cursor: pointer" (click)="addShift()">add</mat-icon>
       </div>
-      <!-- <div class="input-container" *ngIf="authenticatedUser?.interviewer">
-        <input
-          type="text"
-          [value]="0"
-          class="right-aligned-input"
-          [readonly]="true"
-          disabled="true"
-        />
-      </div> -->
     </div>
   </div>
   <div

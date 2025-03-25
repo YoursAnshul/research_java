@@ -4,34 +4,15 @@
   <!-- Time Header -->
   <div id="week-calendar-time-header" class="week-calendar-time-header">
     <div
-      *ngFor="
-        let day of [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-          'Sunday'
-        ];
-        let i = index
-      "
+      *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
       [ngStyle]="{
         width: '14.14%',
         'background-color': 'lightgoldenrodyellow',
         color: 'black'
       }"
-      (dblclick)="
-        openUserSchedule(
-          null,
-          null,
-          GetDaysDateAsDate(weekSchedules?.weekStart, i + 1),
-          1
-        )
-      "
+      (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, i + 1), 1)"
     >
-      {{ day }}
-      {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
+      {{ day }} {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
     </div>
 
     <div
@@ -49,18 +30,7 @@
   <!-- Add Icons and Hour Inputs -->
   <div id="week-calendar-add-icons" class="week-calendar-add-icons">
     <div
-      *ngFor="
-        let day of [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-          'Sunday'
-        ];
-        let i = index
-      "
+      *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
       [ngStyle]="{
         width: '14.14%',
         display: 'flex',
@@ -89,7 +59,7 @@
       <input
         id="week-calendar-user-schedules"
         type="text"
-        [value]="calculateTotalDuration()+' hr'"
+        [value]="calculateTotalDuration() + ' hr'"
         class="right-aligned-input"
         [style.height]="inputHeight"
         [readonly]="true"
@@ -99,43 +69,27 @@
   </div>
 
   <!-- User Schedules -->
-  <div id="week-calendar-user-schedules">
+  <div *ngIf="hasSchedules(); else noSchedules" id="week-calendar-user-schedules">
     <div
-      *ngFor="
-        let daySchedules of [
-          weekSchedules?.day1Schedules,
-          weekSchedules?.day2Schedules,
-          weekSchedules?.day3Schedules,
-          weekSchedules?.day4Schedules,
-          weekSchedules?.day5Schedules,
-          weekSchedules?.day6Schedules,
-          weekSchedules?.day7Schedules
-        ];
-        let dayIndex = index
-      "
-      [ngClass]="
-        authenticatedUser?.interviewer
-          ? 'day-schedules-container-interviewer'
-          : 'day-schedules-container'
-      "
+      *ngFor="let daySchedules of [
+        weekSchedules?.day1Schedules,
+        weekSchedules?.day2Schedules,
+        weekSchedules?.day3Schedules,
+        weekSchedules?.day4Schedules,
+        weekSchedules?.day5Schedules,
+        weekSchedules?.day6Schedules,
+        weekSchedules?.day7Schedules
+      ]; let dayIndex = index"
+      [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'"
     >
       <ng-container *ngFor="let schedule of daySchedules">
         <div
           class="schedule-card"
-          (dblclick)="
-            openUserSchedule(
-              schedule.dempoid,
-              schedule.projectName,
-              schedule.startdatetime
-            )
-          "
           (mouseenter)="displayHoverMessage($event, schedule)"
           (mouseleave)="hideHoverMessage()"
         >
           <div class="center-align-container">
-            <app-project-swatch
-              [projectColor]="schedule.projectColor"
-            ></app-project-swatch>
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
             <div>
               <div class="bold">{{ schedule.displayName }}:</div>
               <div class="project-time">
@@ -150,6 +104,15 @@
       </ng-container>
     </div>
   </div>
+
+  <!-- Display "No schedules found" message if no schedules -->
+  <ng-template #noSchedules>
+    <div class="user-schedule-row no-results bold italic" 
+         style="text-align: center; padding: 10px; ">
+      No schedules found for this date range...
+    </div>
+  </ng-template>
+
 </div>
 
 <div

@@ -62,6 +62,22 @@ export class ShiftWeekViewComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
+  hasSchedules(): boolean {
+    if (!this.weekSchedules) return false;
+  
+    const schedules = [
+      ...this.weekSchedules.day1Schedules || [],
+      ...this.weekSchedules.day2Schedules || [],
+      ...this.weekSchedules.day3Schedules || [],
+      ...this.weekSchedules.day4Schedules || [],
+      ...this.weekSchedules.day5Schedules || [],
+      ...this.weekSchedules.day6Schedules || [],
+      ...this.weekSchedules.day7Schedules || []
+    ];
+  
+    return schedules.length > 0;
+  }
+  
   processShiftSchedules(): void {
     if (
       !this.selectedDateRange?.value?.start ||
