@@ -108,6 +108,7 @@ export class ShifCalendarComponent implements OnInit {
   @Output() seletedDayDate = new EventEmitter<any>();
   selectedUser1: any = null;
   @Output() sendDate = new EventEmitter<FormControl>();
+  @Output() sendWeekDate = new EventEmitter<FormControl>();
 
   //constructor
   constructor(
@@ -947,5 +948,7 @@ export class ShifCalendarComponent implements OnInit {
   handleDate(date: FormControl) {
     this.sendDate.emit(date);  
   }
-  
+  handleWeekDate(date: FormControl) {
+    this.sendWeekDate.emit(date);
+  }
 }

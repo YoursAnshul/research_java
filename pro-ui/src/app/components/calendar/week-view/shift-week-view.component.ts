@@ -43,6 +43,7 @@ export class ShiftWeekViewComponent implements OnInit {
   private debounceTimer: any;
   inputHeight: string = '30px';
   totalDuration: number = 0;
+  @Output() sendWeekDate = new EventEmitter<FormControl>();
 
   constructor(
     private globalsService: GlobalsService,
@@ -232,7 +233,8 @@ export class ShiftWeekViewComponent implements OnInit {
   hideHoverMessage(): void {
     this.showTooltip = false;
   }
-  addShift(date: Date): void {
+  addShift(date: any): void {    
+    this.sendWeekDate.emit(date);  
     this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {

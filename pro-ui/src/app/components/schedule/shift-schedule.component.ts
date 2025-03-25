@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -128,7 +128,8 @@ export class ShiftScheduleComponent implements OnInit {
     private configurationService: ConfigurationService,
     private dialog: MatDialog,
     private authenticationService: AuthenticationService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -769,7 +770,27 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   
-  handleDate(date: FormControl) {
-    console.log("Date value:", date.value);
+  handleDate(dateEvent: any) {
+    console.log("dateEvent--------<>", dateEvent);
+    
+    const selectedDate = dateEvent?.value ? new Date(dateEvent.value) : null;
+    if (selectedDate && !isNaN(selectedDate.getTime())) {
+      setTimeout(() => {
+        this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
+      });
+    } else {
+      console.error("Invalid Date Selected:", dateEvent?.value);
+    }
+  }
+  handleWeekDate(date:any){
+    console.log("date--------<>", date);
+    const selectedDate = date ? new Date(date) : null;
+    if (selectedDate && !isNaN(selectedDate.getTime())) {
+      setTimeout(() => {
+        this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
+      });
+    } else {
+      console.error("Invalid Date Selected:", date);
+    }
   }
 }
