@@ -287,6 +287,7 @@ export class CalendarComponent implements OnInit {
     //-------------------------------
     // day view
     //-------------------------------
+    // code not to be push
     var tempUserSchedulesDay: IUserSchedule[] = [];
     console.log("this.filteredUserSchedulesMonth----------",this.filteredUserSchedulesMonth);
 
