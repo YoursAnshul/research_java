@@ -288,8 +288,19 @@ export class CalendarComponent implements OnInit {
     // day view
     //-------------------------------
     var tempUserSchedulesDay: IUserSchedule[] = [];
+    console.log("this.filteredUserSchedulesMonth----------",this.filteredUserSchedulesMonth);
 
-    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
+    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => {
+      let formattedStartDate = Utils.formatDateOnlyToStringUTC(x.startdatetime);
+      let formattedSelectedDate = Utils.formatDateOnlyToStringUTC(this.selectedDate.value);
+      
+      console.log("Start Date (formatted):", formattedStartDate);
+      console.log("Selected Date (formatted):", formattedSelectedDate);
+      
+      return formattedStartDate === formattedSelectedDate;
+  });
+
+    // var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
 
     //get user schedules for the selected day
     this.allUsers.forEach(function (user) {

@@ -18,7 +18,8 @@ public interface UserRepository extends JpaRepository<User, Short> {
 	// 		+ "FROM User u " + "ORDER BY "
 	// 		+ "CASE WHEN u.preferredfname IS NOT NULL AND u.preferredfname != '' THEN u.preferredfname ELSE u.fname END ASC, "
 	// 		+ "CASE WHEN u.preferredlname IS NOT NULL AND u.preferredlname != '' THEN u.preferredlname ELSE u.lname END ASC")
-	@Query("SELECT u FROM User u WHERE u.active = true ORDER BY u.fname, u.lname")
+	// code not to be push
+	@Query("SELECT u FROM User u ORDER BY u.fname, u.lname")
 	List<UserMin> findAllUserMinsOrderedByName();
 
 	@Query("SELECT u FROM User u WHERE u.active = true ORDER BY u.fname, u.lname")
