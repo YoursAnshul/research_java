@@ -573,15 +573,17 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onResetShiftSchedule(): void {
-    this.shiftForm.reset({
-      user: null,
-      projects: [],
-      dayWiseDate: this.addedDate.value,
-      startTime: '',
-      endTime: '',
-      comments: '',
-    });
-    this.selectedDate = new FormControl<Date | null>(null, Validators.required);
+    if(this.authenticatedUser?.admin){
+      this.shiftForm.reset({
+        user: null,
+        projects: [],
+        dayWiseDate: this.addedDate.value,
+        startTime: '',
+        endTime: '',
+        comments: '',
+      });
+      this.selectedDate = new FormControl<Date | null>(null, Validators.required);
+    }
   }
 
   getBlockOutDates(): void {
