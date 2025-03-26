@@ -355,12 +355,30 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
         return;
       }
+      
       const newShift = { ...formData, duration: this.duration };
       this.shiftSchedule1 = this.shiftSchedule1
         ? [...this.shiftSchedule1, newShift]
         : [newShift];
       console.log('this.shiftSchedule --->', this.shiftSchedule1);
 
+      const formatDate = (date: any) => {
+        if (typeof date === 'string') {
+          return date; 
+        }
+        return new Date(date).toISOString().split('T')[0]; 
+      };
+
+      const uniqueNewShifts = this.shiftSchedule1?.filter(newShift =>
+        !this.shiftSchedule.some(shift =>
+          formatDate(shift.dayWiseDate) === formatDate(newShift.dayWiseDate) &&  
+          shift.startTime.trim().toLowerCase() === newShift.startTime.trim().toLowerCase() &&
+          shift.endTime.trim().toLowerCase() === newShift.endTime.trim().toLowerCase() &&
+          shift.user.dempoId === newShift.user.dempoId
+        )
+      );
+      
+      this.shiftSchedule = [...this.shiftSchedule, ...uniqueNewShifts];
       this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
@@ -372,9 +390,10 @@ export class ShiftScheduleComponent implements OnInit {
     console.log("this.shiftSchedule1--ff-----",this.shiftSchedule1);
     
     
-    this.shiftSchedule =this.shiftSchedule1
+    // this.shiftSchedule =this.shiftSchedule1
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
+  
 
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');

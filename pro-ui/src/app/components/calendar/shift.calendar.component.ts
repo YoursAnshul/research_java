@@ -1004,20 +1004,27 @@ export class ShifCalendarComponent implements OnInit {
     // Make the API call
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        // console.log('Schedule list retrieved successfully:', response);
-        this.shiftSchedule = response;
-        // console.log("this.shiftSchedule========== ",this.shiftSchedule);
-        // console.log("this.shiftSchedule1========== ",this.shiftSchedule1);
-        const missingSchedules = this.shiftSchedule1.filter(item1 => 
-          !this.shiftSchedule.some(item2 => 
+        console.log('Schedule list retrieved successfully:', response);
+        
+        // Ensure this.shiftSchedule is always an array
+        this.shiftSchedule = response ?? [];
+
+        console.log("this.shiftSchedule========== ", this.shiftSchedule);
+        console.log("this.shiftSchedule1========== ", this.shiftSchedule1);
+
+        // Check for missing schedules and merge them
+        const missingSchedules = this.shiftSchedule1?.filter(item1 => 
+          !this.shiftSchedule?.some(item2 => 
             item1.startTime === item2.startTime && 
             item1.endTime === item2.endTime && 
             item1.duration === item2.duration
           )
-        );
-        console.log("missingSchedules---5ffg -----",missingSchedules);
-        console.log("this.shiftSchedule---5ffg -----",this.shiftSchedule);
-        
+        ) || [];
+
+        console.log("missingSchedules---5ffg -----", missingSchedules);
+        console.log("this.shiftSchedule---5ffg -----", this.shiftSchedule);
+
+        // Ensure `this.shiftSchedule` is not null before pushing items
         this.shiftSchedule.push(...missingSchedules);    
       },
       error: (error) => {
@@ -1025,7 +1032,8 @@ export class ShifCalendarComponent implements OnInit {
         this.shiftSchedule = [];
       },
     });
-  }
+}
+
   handleDate(date: FormControl) {
     this.sendDate.emit(date);
   }
