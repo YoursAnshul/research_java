@@ -368,6 +368,10 @@ export class ShiftScheduleComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       });
     }
+    console.log("this.shiftSchedule--ff-------",this.shiftSchedule);
+    console.log("this.shiftSchedule1--ff-----",this.shiftSchedule1);
+    
+    
     this.shiftSchedule =this.shiftSchedule1
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }

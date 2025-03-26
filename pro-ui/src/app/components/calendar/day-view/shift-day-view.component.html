@@ -76,7 +76,10 @@
       }
     </div>
     }
-    <div *ngIf="filteredShiftSchedule?.length == 0" class="no-results bold italic" style="margin-left: 156px">
+    <div *ngIf="filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer" class="no-results bold italic" style="margin-left: 205px">
+      No schedules found for this day...
+    </div>
+    <div *ngIf="filteredShiftSchedule?.length == 0 && !authenticatedUser?.interviewer" class="no-results bold italic" style="margin-left: 255px">
       No schedules found for this day...
     </div>
     <div class="icon-input-container">
