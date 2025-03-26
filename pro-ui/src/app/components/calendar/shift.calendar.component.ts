@@ -296,9 +296,9 @@ export class ShifCalendarComponent implements OnInit {
     console.log('Previous Value Length--->', changes['shiftSchedule1']?.previousValue?.length);
     let isValid: boolean = false
     if(this.authenticatedUser?.admin){
-      isValid = changes['shiftSchedule1']?.previousValue.length == 0;
+      isValid = changes['shiftSchedule1']?.previousValue?.length == 0 || changes['shiftSchedule1']?.previousValue?.length > 0 ;
      } else if(this.authenticatedUser?.interviewer){
-      isValid = changes['shiftSchedule1']?.previousValue.length > 0;
+      isValid = changes['shiftSchedule1']?.previousValue?.length > 0;
      }
     if (isValid)
      {
