@@ -1,7 +1,6 @@
 <div id="week-calendar" style="background-color: #f2f2f2 !important; height: 150px;">
   <div id="week-calendar-header"></div>
 
-  <!-- Time Header -->
   <div id="week-calendar-time-header" class="week-calendar-time-header">
     <div
       *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
@@ -10,7 +9,6 @@
         'background-color': 'lightgoldenrodyellow',
         color: 'black'
       }"
-      (dblclick)="openUserSchedule(null, null, GetDaysDateAsDate(weekSchedules?.weekStart, i + 1), 1)"
     >
       {{ day }} {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
     </div>
@@ -67,42 +65,131 @@
       />
     </div>
   </div>
+  @if ((weekSchedules?.day1Schedules || []).length < 1
+    && (weekSchedules?.day2Schedules || []).length < 1
+    && (weekSchedules?.day3Schedules || []).length < 1
+    && (weekSchedules?.day4Schedules || []).length < 1
+    && (weekSchedules?.day5Schedules || []).length < 1
+    && (weekSchedules?.day6Schedules || []).length < 1
+    && (weekSchedules?.day7Schedules || []).length < 1) {
+    <div class="no-results bold italic"
+      >
+      No schedules found for this date range...
+    </div>
+  }
+
+
+  <!-- Add Icons and Hour Inputs -->
+  
 
   <!-- User Schedules -->
-  <div *ngIf="hasSchedules(); else noSchedules" id="week-calendar-user-schedules">
-    <div
-      *ngFor="let daySchedules of [
-        weekSchedules?.day1Schedules,
-        weekSchedules?.day2Schedules,
-        weekSchedules?.day3Schedules,
-        weekSchedules?.day4Schedules,
-        weekSchedules?.day5Schedules,
-        weekSchedules?.day6Schedules,
-        weekSchedules?.day7Schedules
-      ]; let dayIndex = index"
-      [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'"
-    >
-      <ng-container *ngFor="let schedule of daySchedules">
-        <div
-          class="schedule-card"
+  <div id="week-calendar-user-schedules">
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day1Schedules; track schedule) {
+        <div class="schedule-card"
           (mouseenter)="displayHoverMessage($event, schedule)"
-          (mouseleave)="hideHoverMessage()"
-        >
+          (mouseleave)="hideHoverMessage()">
           <div class="center-align-container">
             <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
             <div>
-              <div class="bold">{{ schedule.displayName }}:</div>
-              <div class="project-time">
-                {{ schedule.startTime }} - {{ schedule.endTime }}
-              </div>
-              <div class="project-time">
-                <div class="duration-circle">{{ schedule.duration }} hr</div>
-              </div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
             </div>
           </div>
         </div>
-      </ng-container>
+      }
     </div>
+    
+
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day2Schedules; track schedule) {
+        <div class="schedule-card"
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day3Schedules; track schedule) {
+        <div class="schedule-card"
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day4Schedules; track schedule) {
+        <div class="schedule-card"
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day5Schedules; track schedule) {
+        <div class="schedule-card"
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day6Schedules; track schedule) {
+        <div class="schedule-card"
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      @for (schedule of weekSchedules?.day7Schedules; track schedule) {
+        <div class="schedule-card"
+          (mouseenter)="displayHoverMessage($event, schedule)"
+          (mouseleave)="hideHoverMessage()">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <div>
+              <div class="bold">{{schedule.displayName}}:</div> <div class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
   </div>
 
   <!-- Display "No schedules found" message if no schedules -->
