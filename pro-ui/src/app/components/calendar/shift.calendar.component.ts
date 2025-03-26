@@ -189,7 +189,7 @@ export class ShifCalendarComponent implements OnInit {
     // this.getScheduleList()
     //subscribe to scheduleFetchStatus
     this.getAuthor();
-    this.getProjectInfo();
+    this.getProjectInfo('');
     this.getAuthor1();
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       (scheduleFetchStatus) => {
@@ -964,8 +964,9 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
 
-  getProjectInfo(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+  getProjectInfo(user: any): void {
+    // const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user-projects?dempo_id=${user?.dempoId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = [
@@ -979,6 +980,7 @@ export class ShifCalendarComponent implements OnInit {
 
   onUserChange(user: any) {
     this.selectedUser = user;
+    this.getProjectInfo(user);
     this.selectedUserChange.emit(this.selectedUser);
   }
   onProjectChange(project: any) {
