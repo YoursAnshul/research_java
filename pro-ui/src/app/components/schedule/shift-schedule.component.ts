@@ -130,6 +130,7 @@ export class ShiftScheduleComponent implements OnInit {
   dateRange: any;
   tabValue: string = 'Day';
   selectedDayDate: Date | null = null;
+  isModified: boolean = false;  
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -152,15 +153,20 @@ export class ShiftScheduleComponent implements OnInit {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   confirmatationClose(): void {
-    const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
-      panelClass: 'custom-dialog-container',
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.onClose();
-      }
-    });
+    if(this.isModified){
+      const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
+        panelClass: 'custom-dialog-container',
+      });
+  
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.onClose();
+        }
+      });
+    } else {
+      this.onClose();
+    }
+    
   }
   onClose(): void {
     this.dialogRef.close();
@@ -183,6 +189,9 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
+      if(this.authenticatedUser.admin){
+        this.isModified = true;
+      }
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
     });
@@ -200,10 +209,12 @@ export class ShiftScheduleComponent implements OnInit {
     // dayWiseDateControl?.markAsDirty();
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
+      this.isModified = true;
       this.clearValidation();
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
+      this.isModified = true;
       this.clearValidation();
     });
 
