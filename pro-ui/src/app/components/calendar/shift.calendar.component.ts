@@ -290,11 +290,13 @@ export class ShifCalendarComponent implements OnInit {
       },
     });
   }
-  ngOnChanges(changes: SimpleChanges): void {  
-    console.log("changes--->", changes);
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('changes--->', changes);
+    console.log('Current Value Length--->', changes['shiftSchedule1']?.currentValue?.length);
+    console.log('Previous Value Length--->', changes['shiftSchedule1']?.previousValue?.length);
   
     if (
-      changes['shiftSchedule1']?.currentValue?.length &&
+      changes['shiftSchedule1']?.currentValue?.length &&  changes['shiftSchedule1']?.previousValue?.length !== 0 &&
       (!changes['shiftSchedule1']?.previousValue || 
         changes['shiftSchedule1']?.currentValue.length > changes['shiftSchedule1']?.previousValue.length)
     ) {
@@ -302,8 +304,8 @@ export class ShifCalendarComponent implements OnInit {
   
       let lastDate = null;
   
+      // Get the last date from the schedule
       if (this.shiftSchedule?.length) {
-        // Get the last date in the schedule
         lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
       }
   
@@ -313,8 +315,9 @@ export class ShifCalendarComponent implements OnInit {
         if (this.tabName === 'Day') {
           // Set the selected date to the last date
           this.selectedDate.setValue(baseDate);
+          console.log('Selected Date----------:', this.selectedDate.value);
         } else {
-          // Use the last date as the base date for the week range
+          // Set the week range based on the last date
           this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
   
           this.selectedDateRange?.setValue({
@@ -329,12 +332,11 @@ export class ShifCalendarComponent implements OnInit {
         }
       }
     } else {
-      this.shiftSchedule = changes['shiftSchedule1']?.currentValue || [];
-  
       let baseDate = this.selectedDate?.value || null;
-  
+
       if (!baseDate && this.shiftSchedule?.length) {
-        const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+        const lastDate =
+          this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
         baseDate = lastDate ? new Date(lastDate) : new Date();
       }
   
@@ -350,17 +352,12 @@ export class ShifCalendarComponent implements OnInit {
         });
   
         this.selectedDate.setValue(baseDate);
-  
-        console.log('Week Start:', this.selectedWeekStartAndEnd.weekStart);
-        console.log('Week End:', this.selectedWeekStartAndEnd.weekEnd);
       }
     }
   
     this.checkContext();
   }
   
-  
-
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
