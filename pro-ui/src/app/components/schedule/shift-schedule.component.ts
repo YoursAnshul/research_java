@@ -145,7 +145,7 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   ngOnChanges(): void {
-    this.getScheduleList();
+    // this.getScheduleList();
   }
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
@@ -317,6 +317,8 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
         return;
       }
+      console.log("this.shiftSchedule--test->",this.shiftSchedule);
+      
       const isDuplicate = this.shiftSchedule?.some((shift) => {
         const shiftDateMatch =
           new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
@@ -344,6 +346,8 @@ export class ShiftScheduleComponent implements OnInit {
           newEndTime > shiftStartTime;
         return isSameShift || isOverlapping;
       });
+      console.log("isDuplicate--->",isDuplicate);
+      
       if (isDuplicate) {
         this.scheduleFetchStatus = false;
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
@@ -754,7 +758,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
-        this.shiftSchedule = response;
+        // this.shiftSchedule = response;
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
@@ -781,7 +785,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onTabValueReceived(tab: any): void {
     this.tabValue = tab;
-    this.getScheduleList();
+    // this.getScheduleList();
   }
   onSeletedDayDate(day: any): void {
     if (this.tabValue == 'Day') {

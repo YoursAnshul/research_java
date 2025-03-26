@@ -9,16 +9,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.pro.api.controllers.GeneralResponse;
-import com.pro.api.models.dataaccess.ViUserSchedule;
 import com.pro.api.response.Projects;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
@@ -32,65 +31,75 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private JdbcTemplate jdbcTemplate;
 
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
-		GeneralResponse response = new GeneralResponse();
-		List<String> errorMessages = new ArrayList<>();
-		int successCount = 0;
-		int duplicateCount = 0;
+	    GeneralResponse response = new GeneralResponse();
+	    Set<String> errorMessages = new LinkedHashSet<>();
+	    int successCount = 0;
+	    int duplicateCount = 0;
 
-		String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? AND startDateTime = ? AND endDateTime = ?";
+	    String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? " +
+	            "AND ((startDateTime <= ? AND endDateTime > ?) " +
+	            "OR (startDateTime < ? AND endDateTime >= ?) " +
+	            "OR (startDateTime >= ? AND endDateTime <= ?))";
 
-		String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	    String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		for (ShiftScheduleRequest request : list) {
-			try {
-				if (request.getScheduleDate() == null || request.getStartTime() == null
-						|| request.getEndTime() == null) {
-					errorMessages.add("Missing required fields for request: " + request);
-					continue;
-				}
+	    for (ShiftScheduleRequest request : list) {
+	        try {
+	            if (request.getScheduleDate() == null || request.getStartTime() == null || request.getEndTime() == null) {
+	                errorMessages.add("Missing required fields for DempoId: " + request.getDempoId());
+	                continue;
+	            }
 
-				LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
-				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+	            LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
+	            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
 
-				LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
-				LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
+	            LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
+	            LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
-				LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
-				LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
+	            LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
+	            LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
 
-				int existingCount = this.jdbcTemplate.queryForObject(checkQuery,
-						new Object[] { request.getDempoId(), scheduleDate, startDateTime, endDateTime }, Integer.class);
+	            Integer existingCount = this.jdbcTemplate.queryForObject(checkQuery, Integer.class, 
+	                request.getDempoId(), scheduleDate, startDateTime, endDateTime, 
+	                startDateTime, endDateTime, startDateTime, endDateTime);
 
-				if (existingCount > 0) {
-					duplicateCount++;
-					continue;
-				}
+	            if (existingCount != null && existingCount > 0) {
+	                duplicateCount++;
+	                errorMessages.add("Schedule already exists for DempoId: " + request.getDempoId() + 
+	                        ", Date: " + scheduleDate + 
+	                        ", Time: " + request.getStartTime() + " - " + request.getEndTime());
+	                continue;
+	            }
 
-				this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
-						request.getComments(), startDateTime, endDateTime, "0", request.getEntryby(), new Date(), "NA");
+	            this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
+	                    request.getComments(), startDateTime, endDateTime, "0", request.getEntryby(), new Date(), "NA");
 
-				successCount++;
+	            successCount++;
 
-			} catch (DateTimeParseException e) {
-				errorMessages.add("Invalid date/time format for request: " + request + " -> " + e.getMessage());
-			} catch (Exception e) {
-				errorMessages.add("Error processing request: " + request + " -> " + e.getMessage());
-			}
-		}
+	        } catch (DateTimeParseException e) {
+	            errorMessages.add("Invalid date/time format for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
+	        } catch (Exception e) {
+	            errorMessages.add("Error processing request for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
+	        }
+	    }
 
-		if (successCount > 0) {
-			response.Message = "Schedules saved successfully!";
-		} else {
-			response.Message = "No new schedules were saved.";
-		}
+	    if (duplicateCount > 0 && successCount == 0) {
+	        response.Message = "Schedule already exists for the given day, time, and DempoId.";
+	    } else if (successCount > 0) {
+	        response.Message = "Schedules saved successfully!";
+	    }
 
-		if (!errorMessages.isEmpty()) {
-			response.Message += " Some errors occurred: " + String.join("; ", errorMessages);
-		}
+	    if (!errorMessages.isEmpty()) {
+	        response.Message += " Some errors occurred: " + String.join("; ", errorMessages);
+	    }
 
-		return response;
+	    return response;
 	}
+
+
+
+
 
 	@Override
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,

@@ -1002,9 +1002,21 @@ export class ShifCalendarComponent implements OnInit {
     // Make the API call
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        console.log('Schedule list retrieved successfully:', response);
+        // console.log('Schedule list retrieved successfully:', response);
         this.shiftSchedule = response;
-        this.shiftSchedule = this.shiftSchedule1;
+        // console.log("this.shiftSchedule========== ",this.shiftSchedule);
+        // console.log("this.shiftSchedule1========== ",this.shiftSchedule1);
+        const missingSchedules = this.shiftSchedule1.filter(item1 => 
+          !this.shiftSchedule.some(item2 => 
+            item1.startTime === item2.startTime && 
+            item1.endTime === item2.endTime && 
+            item1.duration === item2.duration
+          )
+        );
+        console.log("missingSchedules---5ffg -----",missingSchedules);
+        console.log("this.shiftSchedule---5ffg -----",this.shiftSchedule);
+        
+        this.shiftSchedule.push(...missingSchedules);    
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
