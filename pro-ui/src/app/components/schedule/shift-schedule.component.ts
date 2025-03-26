@@ -46,6 +46,7 @@ export class ShiftScheduleComponent implements OnInit {
   currentYear: number = new Date().getFullYear();
   currentMonth: number = new Date().getMonth() + 1;
   shiftSchedule: any[] = [];
+  shiftSchedule1: any[] = [];
   weekSchedules: IWeekSchedules[] = []; // Data for Week View
   timeSlots: string[] = [
     '8:00 AM',
@@ -355,19 +356,20 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
       const newShift = { ...formData, duration: this.duration };
-      this.shiftSchedule = this.shiftSchedule
-        ? [...this.shiftSchedule, newShift]
+      this.shiftSchedule1 = this.shiftSchedule1
+        ? [...this.shiftSchedule1, newShift]
         : [newShift];
-      console.log('this.shiftSchedule --->', this.shiftSchedule);
+      console.log('this.shiftSchedule --->', this.shiftSchedule1);
 
-      this.weekSchedules = [...this.shiftSchedule];
+      this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
       const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
     }
-    console.log('this.shiftSchedule --->', this.shiftSchedule);
+    this.shiftSchedule =this.shiftSchedule1
+    console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
 
   combineDateAndTime(date: string, time: string): Date {
@@ -507,8 +509,8 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
       const newShift = { ...formData, duration: this.duration };
-      this.shiftSchedule = [...this.shiftSchedule, newShift];
-      this.weekSchedules = [...this.shiftSchedule];
+      this.shiftSchedule1 = [...this.shiftSchedule1, newShift];
+      this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
       const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
@@ -645,8 +647,8 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('endTime')?.setErrors({ required: true });
     }
 
-    if (Array.isArray(this.shiftSchedule) && this.shiftSchedule.length > 0) {
-      for (const shift of this.shiftSchedule) {
+    if (Array.isArray(this.shiftSchedule1) && this.shiftSchedule1.length > 0) {
+      for (const shift of this.shiftSchedule1) {
         if (!shift) continue;
 
         const date = new Date(shift.dayWiseDate);
@@ -758,7 +760,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
-        // this.shiftSchedule = response;
+        this.shiftSchedule = response;
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
