@@ -29,7 +29,7 @@ import { UsersService } from '../../services/users/users.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { ProjectsService } from '../../services/projects/projects.service';
 import { environment } from '../../../environments/environment';
-import { HttpClient ,HttpParams} from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
@@ -185,7 +185,7 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     // this.getScheduleList()
     //subscribe to scheduleFetchStatus
     this.getAuthor();
@@ -211,7 +211,7 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedDate = new FormControl(selectedDate.toISOString());
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
         new Date(this.selectedDate.value)
-      );      
+      );
       this.selectedDateRange = new FormGroup({
         start: new FormControl(
           new Date(this.selectedWeekStartAndEnd.weekStart)
@@ -227,10 +227,10 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedDateRange = new FormGroup({
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
-    });    
+    });
     this.seletedDayDate.emit(this.selectedDate.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
-    this.tabValue.emit("Day");
+    this.tabValue.emit('Day');
     this.setDefaultFilters(false);
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -269,70 +269,97 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getLoginUser(email: string): void {
-      if (!email) {
-        console.error('Email is required to fetch login author');
-        return;
+    if (!email) {
+      console.error('Email is required to fetch login author');
+      return;
+    }
+
+    const params = new HttpParams().set('email', email);
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
+
+    this.http.get(apiUrl, { params }).subscribe({
+      next: (data: any) => {
+        this.selectedUser1 =
+          this.userList.find((user) => user?.userId === data?.userId) || null;
+        this.userList = this.userList.filter(
+          (user) => user.userId === this.selectedUser1?.userId
+        );
+      },
+      error: (error: any) => {
+        console.error('Error fetching user info:', error);
+      },
+    });
+  }
+  ngOnChanges(changes: SimpleChanges): void {  
+    console.log("changes--->", changes);
+  
+    if (
+      changes['shiftSchedule1']?.currentValue?.length &&
+      (!changes['shiftSchedule1']?.previousValue || 
+        changes['shiftSchedule1']?.currentValue.length > changes['shiftSchedule1']?.previousValue.length)
+    ) {
+      this.shiftSchedule = changes['shiftSchedule1']?.currentValue || [];
+  
+      let lastDate = null;
+  
+      if (this.shiftSchedule?.length) {
+        // Get the last date in the schedule
+        lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
       }
   
-      const params = new HttpParams().set('email', email);
-      const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
+      if (lastDate) {
+        const baseDate = new Date(lastDate);
   
-      this.http.get(apiUrl, { params }).subscribe({
-        next: (data: any) => {
-          this.selectedUser1 =
-            this.userList.find((user) => user?.userId === data?.userId) || null;
-          this.userList = this.userList.filter(
-            (user) => user.userId === this.selectedUser1?.userId
-          );
-          
-        },
-        error: (error: any) => {
-          console.error('Error fetching user info:', error);
-        },
-      });
-    }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.shiftSchedule=this.shiftSchedule1;
-    // let lastDate = null;
-    // if (this.shiftSchedule) {
-    //   lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
-    // }
-    // if (lastDate && this.tabName == 'Day') {
-    //   this.selectedDate.setValue(new Date(lastDate));
-    //   console.log(" this.selectedDate------->", this.selectedDate.value);
-    // } else {
-    //   const baseDate = lastDate
-    //     ? new Date(lastDate)
-    //     : this.selectedDate.value || new Date();
-    //   this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
-    //   this.selectedDateRange?.setValue({
-    //     start: new Date(this.selectedWeekStartAndEnd.weekStart),
-    //     end: new Date(this.selectedWeekStartAndEnd.weekEnd),
-    //   });
-    //   this.selectedDate.setValue(baseDate);
-    // }      
-    let baseDate = this.selectedDate?.value || null;
-   
-    if (!baseDate && this.shiftSchedule?.length) {
-      const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
-      baseDate = lastDate ? new Date(lastDate) : new Date();
-    }
+        if (this.tabName === 'Day') {
+          // Set the selected date to the last date
+          this.selectedDate.setValue(baseDate);
+        } else {
+          // Use the last date as the base date for the week range
+          this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
   
-    if (this.tabName === 'Day') {
-      this.selectedDate.setValue(baseDate);
-      console.log("Selected Date:", this.selectedDate.value);
+          this.selectedDateRange?.setValue({
+            start: new Date(this.selectedWeekStartAndEnd.weekStart),
+            end: new Date(this.selectedWeekStartAndEnd.weekEnd),
+          });
+  
+          this.selectedDate.setValue(baseDate);
+  
+          console.log('Week Start:', this.selectedWeekStartAndEnd.weekStart);
+          console.log('Week End:', this.selectedWeekStartAndEnd.weekEnd);
+        }
+      }
     } else {
-      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+      this.shiftSchedule = changes['shiftSchedule1']?.currentValue || [];
   
-      this.selectedDateRange?.setValue({
-        start: new Date(this.selectedWeekStartAndEnd.weekStart),
-        end: new Date(this.selectedWeekStartAndEnd.weekEnd),
-      });
+      let baseDate = this.selectedDate?.value || null;
   
-      this.selectedDate.setValue(baseDate);
+      if (!baseDate && this.shiftSchedule?.length) {
+        const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+        baseDate = lastDate ? new Date(lastDate) : new Date();
+      }
+  
+      if (this.tabName === 'Day') {
+        this.selectedDate.setValue(baseDate);
+        console.log('Selected Date:', this.selectedDate.value);
+      } else {
+        this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
+  
+        this.selectedDateRange?.setValue({
+          start: new Date(this.selectedWeekStartAndEnd.weekStart),
+          end: new Date(this.selectedWeekStartAndEnd.weekEnd),
+        });
+  
+        this.selectedDate.setValue(baseDate);
+  
+        console.log('Week Start:', this.selectedWeekStartAndEnd.weekStart);
+        console.log('Week End:', this.selectedWeekStartAndEnd.weekEnd);
+      }
     }
+  
     this.checkContext();
   }
+  
+  
 
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
@@ -356,26 +383,29 @@ export class ShifCalendarComponent implements OnInit {
     let baseDate = this.selectedDate?.value || null;
 
     if (!baseDate && this.shiftSchedule?.length) {
-      const lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+      const lastDate =
+        this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
       baseDate = lastDate ? new Date(lastDate) : new Date();
     }
-  
+
     if (this.tabName === 'Day') {
       this.selectedDate.setValue(baseDate);
-      console.log("Selected Date:", this.selectedDate.value);
+      console.log('Selected Date:', this.selectedDate.value);
     } else {
       this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
-  
+
       this.selectedDateRange?.setValue({
         start: new Date(this.selectedWeekStartAndEnd.weekStart),
         end: new Date(this.selectedWeekStartAndEnd.weekEnd),
       });
-  
+
       this.selectedDate.setValue(baseDate);
     }
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
-    this.getScheduleList(Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true));
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -425,7 +455,9 @@ export class ShifCalendarComponent implements OnInit {
     // this.userSchedulesService.setAllUserSchedulesByAnchorDate(
     //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     // );
-    this.getScheduleList(Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true));
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -922,13 +954,12 @@ export class ShifCalendarComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        if(this.authenticatedUser?.interviewer){
+        if (this.authenticatedUser?.interviewer) {
           this.userList = Array.isArray(data) ? data : [];
           if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
             this.getLoginUser(this.userObj.eppn);
           }
         }
-        
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
@@ -947,16 +978,14 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
 
-  
-  
   onUserChange(user: any) {
     this.selectedUser = user;
     this.selectedUserChange.emit(this.selectedUser);
   }
   onProjectChange(project: any) {
     console.log('project--->', project);
-    this.selectedProject = project; 
-    this.selectedProjectChange.emit(this.selectedProject); 
+    this.selectedProject = project;
+    this.selectedProjectChange.emit(this.selectedProject);
   }
 
   onSelectedUserChange(user: any) {
@@ -968,7 +997,7 @@ export class ShifCalendarComponent implements OnInit {
 
   getScheduleList(anchorDate: string | null): void {
     let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-   if (this.selectedUser1 && this.selectedUser1?.dempoId) {
+    if (this.selectedUser1 && this.selectedUser1?.dempoId) {
       url += `?demId=${this.selectedUser1?.dempoId}`;
     }
     console.log('Final API URL:', url);
@@ -978,7 +1007,7 @@ export class ShifCalendarComponent implements OnInit {
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
         this.shiftSchedule = response;
-        this.shiftSchedule=this.shiftSchedule1;
+        this.shiftSchedule = this.shiftSchedule1;
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
@@ -987,7 +1016,7 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   handleDate(date: FormControl) {
-    this.sendDate.emit(date);  
+    this.sendDate.emit(date);
   }
   handleWeekDate(date: FormControl) {
     this.sendWeekDate.emit(date);

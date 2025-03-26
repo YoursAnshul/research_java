@@ -793,7 +793,6 @@ export class ShiftScheduleComponent implements OnInit {
 
   handleDate(dateEvent: any) {
     console.log('dateEvent--------<>', dateEvent);
-
     const selectedDate = dateEvent?.value ? new Date(dateEvent.value) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
