@@ -997,12 +997,16 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-    let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-    if (this.selectedUser1 && this.selectedUser1?.dempoId) {
-      url += `?demId=${this.selectedUser1?.dempoId}`;
+    let url = '';
+    if(this.authenticatedUser?.interviewer && this.selectedUser?.dempoId){
+       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
+    } else {
+       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+       if (this.selectedUser1 && this.selectedUser1?.dempoId) {
+        url += `?demId=${this.selectedUser1?.dempoId}`;
+      }
     }
-    console.log('Final API URL:', url);
-
+   
     // Make the API call
     this.http.get<any[]>(url).subscribe({
       next: (response) => {

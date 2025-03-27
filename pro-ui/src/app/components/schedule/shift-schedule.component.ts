@@ -426,13 +426,9 @@ export class ShiftScheduleComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/api/projects/user-project-min?dempo_id=${dempoId}`;
     
     this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        console.log("data-------->", data);
-  
+      next: (data: any) => {  
         const allProjects = Array.isArray(data.Subject) ? data.Subject : [];
-  
-        // Filter and group projects
-        this.adminProjects = allProjects
+          this.adminProjects = allProjects
           .filter((project: { active: any; projectType: string; }) => project.active && project.projectType === 'Administrative');
   
         this.otherProjects = allProjects
