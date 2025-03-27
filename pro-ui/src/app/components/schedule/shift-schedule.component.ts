@@ -147,6 +147,7 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   ngOnChanges(): void {
+    
     // this.getScheduleList();
   }
   getBackgroundColor(time: string): string {
@@ -845,7 +846,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   handleWeekDate(date: any) {
-    console.log('date--------<>', date);
+    console.log('date shift--------<>', date);
     const selectedDate = date ? new Date(date) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {

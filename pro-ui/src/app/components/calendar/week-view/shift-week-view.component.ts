@@ -250,6 +250,8 @@ export class ShiftWeekViewComponent implements OnInit {
     this.showTooltip = false;
   }
   addShift(date: any): void {    
+    console.log('Date:--------->', date);
+    
     this.sendWeekDate.emit(date);  
     this.resetShiftSchedule.emit();
   }

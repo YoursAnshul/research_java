@@ -1040,6 +1040,8 @@ export class ShifCalendarComponent implements OnInit {
     this.sendDate.emit(date);
   }
   handleWeekDate(date: FormControl) {
+    console.log("date000000>-=======>",date);
+    
     this.sendWeekDate.emit(date);
   }
 }

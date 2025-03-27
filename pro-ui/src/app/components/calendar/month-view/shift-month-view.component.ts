@@ -35,6 +35,8 @@ export class ShiftMonthViewComponent implements OnInit {
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
+    console.log("fdjmfdknfdk");
+    
     this.processShiftSchedules();
   }
   processShiftSchedules(): void {
