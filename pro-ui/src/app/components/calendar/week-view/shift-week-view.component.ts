@@ -323,7 +323,19 @@ export class ShiftWeekViewComponent implements OnInit {
   updateWeekCalendarHeight(height: string): void {
     const weekCalendar = document.getElementById('week-calendar');
     if (weekCalendar) {
-      weekCalendar.style.height = height;
+      
+      if(this.monthPart==false){
+        weekCalendar.style.height = "500px";
+      }else{
+        if(weekCalendar.style.height=="500px"){
+
+        }else{
+          weekCalendar.style.height = height;
+        }
+        
+      }
+      console.log("weekCalendar.style.height----------- ",weekCalendar.style.height,this.monthPart);
+      
     }
   }
 }
