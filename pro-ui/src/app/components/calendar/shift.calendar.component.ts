@@ -266,6 +266,9 @@ export class ShifCalendarComponent implements OnInit {
     });
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
   }
 
   getLoginUser(email: string): void {
