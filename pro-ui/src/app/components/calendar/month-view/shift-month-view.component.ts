@@ -45,26 +45,31 @@ export class ShiftMonthViewComponent implements OnInit {
   
     console.log('Selected Date:', this.selectedDate.value);
   
-    const startOfWeek = new Date(this.selectedDateRange.value?.start || new Date());
-    const endOfWeek = new Date(this.selectedDateRange.value?.end || new Date());
+    const referenceDate = new Date(this.selectedDate.value);
+    const startOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+    const endOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 0);
   
-    startOfWeek.setHours(0, 0, 0, 0);
-    endOfWeek.setHours(23, 59, 59, 999);
+    startOfMonth.setHours(0, 0, 0, 0);
+    endOfMonth.setHours(23, 59, 59, 999);
   
-    // Always display 6 weeks
-    let weekStarts = this.getWeekStarts(new Date(this.selectedDate.value));
+    // Always display 5 weeks starting from the first Monday
+    let weekStarts = this.getWeekStarts(startOfMonth);
   
     if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
       this.monthSchedules = { weekSchedules: [] };
     }
     this.monthSchedules.weekSchedules = [];
   
-    // Group shifts by week start date for easier lookup
+    // Group shifts by week start date
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
   
     for (const shift of this.shiftSchedule) {
       const shiftDate = new Date(shift.dayWiseDate);
       shiftDate.setHours(0, 0, 0, 0);
+  
+      if (shiftDate < startOfMonth || shiftDate > endOfMonth) {
+        continue; // Skip shifts outside the current month
+      }
   
       const weekStart = this.getWeekStart(shiftDate);
   
@@ -80,7 +85,7 @@ export class ShiftMonthViewComponent implements OnInit {
         duration: parseFloat(shift.duration) || 0,
         dayOfWeek: shiftDate.getDay() === 0 ? 7 : shiftDate.getDay(),
         weekStart: weekStart,
-        weekEnd: endOfWeek,
+        weekEnd: endOfMonth,
         month: weekStart.toLocaleString('default', { month: 'long' }),
         requestDetails: '',
         requestCode: '',
@@ -104,7 +109,7 @@ export class ShiftMonthViewComponent implements OnInit {
       shiftsByWeek.get(key)?.push(schedule);
     }
   
-    // Display all 6 weeks, populate only matching ones with data
+    // Display all 5 weeks and populate matching ones with data
     for (const weekStart of weekStarts) {
       let weekSchedule: IWeekSchedules = {
         weekStart: weekStart,
@@ -131,33 +136,27 @@ export class ShiftMonthViewComponent implements OnInit {
     }
   }
   
-  getWeekStarts(referenceDateTime: Date): Date[] {
-    let referenceDate: Date = Utils.formatDateOnly(referenceDateTime) as Date;
-    let weekStarts: Date[] = [];
+  getWeekStarts(referenceDate: Date): Date[] {
+    const weekStarts: Date[] = [];
   
-    let firstOfMonth: Date = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth(),
-      1
-    );
+    // Ensure the first Monday before or on the 1st of the month
+    const firstDayOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+    const dayOfWeek = firstDayOfMonth.getDay();
+    const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   
-    let mondayDifference: number =
-      1 - (firstOfMonth.getDay() === 0 ? 7 : firstOfMonth.getDay());
-    let firstMonday: Date = new Date(
-      firstOfMonth.getFullYear(),
-      firstOfMonth.getMonth(),
-      firstOfMonth.getDate() + mondayDifference
-    );
+    const firstMonday = new Date(firstDayOfMonth);
+    firstMonday.setDate(firstDayOfMonth.getDate() + daysToMonday);
   
-    for (let i = 0; i < 6; i++) {
-      let currentMonday: Date = new Date(firstMonday);
+    for (let i = 0; i < 5; i++) {  // Always generate 5 weeks
+      const currentMonday = new Date(firstMonday);
       currentMonday.setDate(firstMonday.getDate() + i * 7);
       weekStarts.push(currentMonday);
     }
   
     return weekStarts;
   }
-    getWeekStart(date: Date): Date {
+  
+  getWeekStart(date: Date): Date {
     const day = date.getDay();
     const diff = day === 0 ? -6 : 1 - day;  
     const weekStart = new Date(date);
@@ -165,6 +164,7 @@ export class ShiftMonthViewComponent implements OnInit {
     weekStart.setHours(0, 0, 0, 0);
     return weekStart;
   }
+  
   onResetShiftSchedule(): void {
     this.resetShiftSchedule.emit();
   }
