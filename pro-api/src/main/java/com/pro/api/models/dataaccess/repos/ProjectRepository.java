@@ -18,4 +18,7 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
 
 	@Query("SELECT p.projectId FROM Project p WHERE p.active = 1 ORDER BY p.projectId")
 	List<Integer> findSortedActiveProjectIds();
+	
+	List<Project> findByEntryByOrderByProjectName(String dempoId);
+
 }

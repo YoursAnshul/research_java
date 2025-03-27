@@ -131,6 +131,8 @@ export class ShiftScheduleComponent implements OnInit {
   tabValue: string = 'Day';
   selectedDayDate: Date | null = null;
   isModified: boolean = false;  
+  adminProjects: any[] = [];   
+  otherProjects: any[] = [];   
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -330,13 +332,15 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
         return;
       }
-      console.log("this.shiftSchedule--test->",this.shiftSchedule);
+      console.log("this.shiftSchedule--------->",this.shiftSchedule);
       
       const isDuplicate = this.shiftSchedule?.some((shift) => {
         const shiftDateMatch =
           new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
           new Date(selectedDate).toISOString().split('T')[0];
+        console.log("shiftDateMatch--------->",shiftDateMatch);
         const shiftUserMatch = shift.user.dempoId === selectedUser.dempoId;
+        console.log("shiftDateMatch--------->",shiftDateMatch);
         const shiftStartTime = this.combineDateAndTime(
           shift.dayWiseDate,
           shift.startTime
@@ -419,15 +423,25 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   getProjectInfo(dempoId: string): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user-projects?dempo_id=${dempoId}`;
+    const apiUrl = `${environment.DataAPIUrl}/api/projects/user-project-min?dempo_id=${dempoId}`;
+    
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.projectList = Array.isArray(data) ? data : [];
-        this.getDefaultProjectInfo(dempoId);
+        console.log("data-------->", data);
+  
+        const allProjects = Array.isArray(data.Subject) ? data.Subject : [];
+  
+        // Filter and group projects
+        this.adminProjects = allProjects
+          .filter((project: { active: any; projectType: string; }) => project.active && project.projectType === 'Administrative');
+  
+        this.otherProjects = allProjects
+          .filter((project: { active: any; projectType: string; }) => project.active && project.projectType !== 'Administrative');
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+  
 
   getDefaultProjectInfo(dempoId: string): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/default-projects?dempo_id=${dempoId}`;
@@ -737,6 +751,7 @@ export class ShiftScheduleComponent implements OnInit {
     let formattedDate = '';
     let startDateFormat = '';
     let endDateFormat = '';
+    console.log('this.dateRange----------', this.dateRange);
 
     // Handle filtering based on the tab value
     if (this.tabValue === 'Day' && this.selectedDayDate) {

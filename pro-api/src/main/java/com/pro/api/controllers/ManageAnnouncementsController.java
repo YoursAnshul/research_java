@@ -109,4 +109,5 @@ public class ManageAnnouncementsController {
 		ProjectResponse project = manageAnnouncements.getDefaultProjectByUser(dempoId);
 		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
+	
 }

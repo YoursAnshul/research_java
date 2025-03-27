@@ -69,8 +69,9 @@ public class ProjectsController {
 						.findByTableNameAndColumnName("Projects", "ProjectDisplayID");
 				List<Project> projects = projectRepository.findAllByOrderByProjectName();
 				for (Project project : projects) {
-					Optional<DropDownValue> projectTypeDD = dropDownValueRepository.findByFormFieldId(6).stream().filter(s->s.getCodeValues() == project.getProjectType()).findFirst();
-					DropDownValue projectType  = projectTypeDD.orElseGet(DropDownValue::new);
+					Optional<DropDownValue> projectTypeDD = dropDownValueRepository.findByFormFieldId(6).stream()
+							.filter(s -> s.getCodeValues() == project.getProjectType()).findFirst();
+					DropDownValue projectType = projectTypeDD.orElseGet(DropDownValue::new);
 					minProjects.add(new ProjectMin(project.getProjectId(), project.getProjectName(),
 							project.getProjectAbbr(), project.getProjectDisplayId(), "", project.getActive(),
 							project.getProjectStatus(), project.getProjectColor(), projectType.getDropDownItem()));
@@ -149,16 +150,18 @@ public class ProjectsController {
 			OffsetDateTime weekStart = weekStartParam.atStartOfDay().atOffset(ZoneOffset.UTC);
 			OffsetDateTime weekEnd = weekEndParam.atStartOfDay().atOffset(ZoneOffset.UTC);
 			ProjectTotalsReport projectTotalsReport = new ProjectTotalsReport();
-			List<ViProjectTotal> projectTotals = viProjectTotalRepository.findProjectTotalsByWeekRange(weekStart, weekEnd);
+			List<ViProjectTotal> projectTotals = viProjectTotalRepository.findProjectTotalsByWeekRange(weekStart,
+					weekEnd);
 			weekEnd = weekEnd.plusDays(1);
 			List<ViProjectTotalsSummed> projectTotalsSummed = viProjectTotalsSummedRepository
-					.findProjectTotalsSummedByWeekRange(weekStart.toLocalDate().atStartOfDay().atOffset(weekStart.getOffset()),
-					weekEnd.toLocalDate().atStartOfDay().atOffset(weekEnd.getOffset()));
+					.findProjectTotalsSummedByWeekRange(
+							weekStart.toLocalDate().atStartOfDay().atOffset(weekStart.getOffset()),
+							weekEnd.toLocalDate().atStartOfDay().atOffset(weekEnd.getOffset()));
 			projectTotalsReport.setProjectTotals(projectTotals);
 			projectTotalsReport.setProjectTotalsSummed(projectTotalsSummed);
 			response.Status = "Success";
-            response.Message = "Successfully retrieved project totals report info";
-            response.Subject = projectTotalsReport;
+			response.Message = "Successfully retrieved project totals report info";
+			response.Subject = projectTotalsReport;
 		} catch (Exception ex) {
 			response.Status = "Failure";
 			response.Message = ex.getMessage();
@@ -571,4 +574,43 @@ public class ProjectsController {
 				currentMonthStart.plusMonths(10), currentMonthStart.plusMonths(11), currentMonthStart.plusMonths(12),
 				"SYSTEM", LocalDate.now(), "SYSTEM", LocalDate.now());
 	}
+
+	@GetMapping("/user-project-min")
+	public GeneralResponse getUserProjectsMin(@RequestParam(required = false, value = "dempo_id") String dempoId) {
+		GeneralResponse response = new GeneralResponse();
+		List<ProjectMin> minProjects = new ArrayList<ProjectMin>();
+		try {
+			try {
+				List<DropDownValue> projectTypes = dropDownValueRepository.findByTableNameAndColumnName("Projects",
+						"ProjectType");
+				List<DropDownValue> displayedInOptions = dropDownValueRepository
+						.findByTableNameAndColumnName("Projects", "ProjectDisplayID");
+				List<Project> projects = projectRepository.findByEntryByOrderByProjectName(dempoId);
+				for (Project project : projects) {
+					Optional<DropDownValue> projectTypeDD = dropDownValueRepository.findByFormFieldId(6).stream()
+							.filter(s -> s.getCodeValues() == project.getProjectType()).findFirst();
+					DropDownValue projectType = projectTypeDD.orElseGet(DropDownValue::new);
+					minProjects.add(new ProjectMin(project.getProjectId(), project.getProjectName(),
+							project.getProjectAbbr(), project.getProjectDisplayId(), "", project.getActive(),
+							project.getProjectStatus(), project.getProjectColor(), projectType.getDropDownItem()));
+
+				}
+			} catch (Exception ex) {
+				minProjects.add(new ProjectMin() {
+					{
+						setProjectName("A database or network issue occurred and no projects could be retrieved.");
+					}
+				});
+			}
+			response.Status = "Success";
+			response.Message = "Successfully retrieved projects";
+			response.Subject = minProjects;
+		} catch (Exception ex) {
+			response.Status = "Failure";
+			response.Message = ex.getMessage();
+		}
+
+		return response;
+	}
+
 }
