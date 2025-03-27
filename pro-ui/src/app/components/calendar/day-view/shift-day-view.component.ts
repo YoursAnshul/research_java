@@ -153,32 +153,32 @@ export class ShiftDayViewComponent implements OnInit {
     const userName = us?.user?.userName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
-    const projectName = schedule?.projects?.projectName ?? 'N/A';    
-    const date =
-      Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
+    const projectName = schedule?.projects?.projectName ?? 'N/A';
+    const date = Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
+    
     const duration = schedule?.duration
-      ? `<p><strong>Hours:</strong> ${schedule.duration} hr</p>`
+      ? `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`
       : '';
+    
     const comments = schedule?.comments
-      ? `<p><strong>Comments:</strong> ${schedule.comments}</p>`
+      ? `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`
       : '';
-
+  
     this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
       <div style="
-        padding: 20px;
+        padding: 10px;
         min-width: 250px;
-        min-height: 80px;
-        font-size: 1rem;
-        line-height: 1.5;
+        font-size: 0.9rem;
+        line-height: 1.2;
       ">
-        <p style="font-weight: bold;">
-          ${userName} (${projectName}) : ${startTime} - ${endTime} <br> ${date}
+        <p style="font-weight: bold; margin-bottom: 2px;">
+          ${userName} (${projectName}) : ${startTime} - ${endTime} ${date}
         </p>
         ${duration}
         ${comments}
       </div>
     `);
-
+  
     // Show and position tooltip
     this.showTooltip = true;
     this.tooltipPosition = {
@@ -186,6 +186,7 @@ export class ShiftDayViewComponent implements OnInit {
       left: `${event.clientX + 10}px`,
     };
   }
+  
 
   hideHoverMessage(): void {
     this.showTooltip = false;

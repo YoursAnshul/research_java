@@ -221,30 +221,29 @@ export class ShiftWeekViewComponent implements OnInit {
       }
     );
     this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
-      <p style="font-weight: bold;">
-         ${schedule.displayName} (${schedule.projectName}): ${
-      schedule.startTime
-    } – ${schedule.endTime} <br> ${formattedDate}
+      <p style="font-weight: bold; margin-bottom: 2px;">
+        ${schedule.displayName} (${schedule.projectName}): ${schedule.startTime} – ${schedule.endTime} ${formattedDate}
       </p>
-     ${
-       schedule.duration
-         ? `<p><span style="font-weight: bold;">Hours:</span> ${schedule.duration}hr</p>`
-         : ''
-     }
-  ${
-    schedule.comments
-      ? `<p><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
-      : ''
-  }
+      ${
+        schedule.duration
+          ? `<p style="margin: 2px 0;"><span style="font-weight: bold;">Hours:</span> ${schedule.duration}hr</p>`
+          : ''
+      }
+      ${
+        schedule.comments
+          ? `<p style="margin: 2px 0;"><span style="font-weight: bold;">Comments:</span> ${schedule.comments}</p>`
+          : ''
+      }
     `);
-
+  
     // Position tooltip above the cursor
     this.tooltipPosition = {
-      top: `${event.clientY - 150}px`, // Adjust the value to move it above the cursor
+      top: `${event.clientY - 150}px`,
       left: `${event.clientX + 10}px`,
     };
     this.showTooltip = true;
   }
+  
 
   hideHoverMessage(): void {
     this.showTooltip = false;
