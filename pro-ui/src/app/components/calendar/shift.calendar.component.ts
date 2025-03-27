@@ -109,7 +109,8 @@ export class ShifCalendarComponent implements OnInit {
   selectedUser1: any = null;
   @Output() sendDate = new EventEmitter<FormControl>();
   @Output() sendWeekDate = new EventEmitter<FormControl>();
-
+  @Output() shiftScheduleChange = new EventEmitter<any[]>();
+  @Input() changeDate!: Date | null;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -131,12 +132,11 @@ export class ShifCalendarComponent implements OnInit {
       (allUsers) => {
         this.allUsers = allUsers;
 
-        if(this.authenticatedUser?.interviewer){
-          this.getAuthor1()
-        }else{
-          this.getAllUserSchedulesByAnchorDate()
+        if (this.authenticatedUser?.interviewer) {
+          this.getAuthor1();
+        } else {
+          this.getAllUserSchedulesByAnchorDate();
         }
-        
       },
       (error) => {
         this.errorMessage = <string>error.message;
@@ -164,7 +164,6 @@ export class ShifCalendarComponent implements OnInit {
       }
     );
 
-   
     //subscribe to languages
     this.configurationService.languages.subscribe(
       (languages) => {
@@ -300,44 +299,52 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes--->', changes);
-    console.log('Current Value Length--->', changes['shiftSchedule1']?.currentValue?.length);
-    console.log('Previous Value Length--->', changes['shiftSchedule1']?.previousValue?.length);
-    let isValid: boolean = false
-    if(this.authenticatedUser?.admin){
-      isValid = changes['shiftSchedule1']?.previousValue?.length == 0 || changes['shiftSchedule1']?.previousValue?.length > 0 ;
-     } else if(this.authenticatedUser?.interviewer){
+    if (changes['changeDate'] && this.changeDate) {
+      console.log('------------>', this.changeDate);
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
+      );
+      console.log('this.shiftSchedule--------tff-0', this.shiftSchedule);
+      this.shiftScheduleChange.emit(this.shiftSchedule);
+    }
+    let isValid: boolean = false;
+    if (this.authenticatedUser?.admin) {
+      isValid =
+        changes['shiftSchedule1']?.previousValue?.length == 0 ||
+        changes['shiftSchedule1']?.previousValue?.length > 0;
+    } else if (this.authenticatedUser?.interviewer) {
       isValid = changes['shiftSchedule1']?.previousValue?.length > 0;
-     }
-    if (isValid)
-     {
+    }
+    if (isValid) {
       this.shiftSchedule = changes['shiftSchedule1']?.currentValue || [];
-  
+
       let lastDate = null;
-  
+
       // Get the last date from the schedule
       if (this.shiftSchedule?.length) {
-        lastDate = this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
+        lastDate =
+          this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
       }
-  
+
       if (lastDate) {
         const baseDate = new Date(lastDate);
-  
+
         if (this.tabName === 'Day') {
           // Set the selected date to the last date
           this.selectedDate.setValue(baseDate);
           console.log('Selected Date----------:', this.selectedDate.value);
         } else {
           // Set the week range based on the last date
-          this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
-  
+          this.selectedWeekStartAndEnd =
+            Utils.setSelectedWeekStartAndEnd(baseDate);
+
           this.selectedDateRange?.setValue({
             start: new Date(this.selectedWeekStartAndEnd.weekStart),
             end: new Date(this.selectedWeekStartAndEnd.weekEnd),
           });
-  
+
           this.selectedDate.setValue(baseDate);
-  
+
           console.log('Week Start:', this.selectedWeekStartAndEnd.weekStart);
           console.log('Week End:', this.selectedWeekStartAndEnd.weekEnd);
         }
@@ -350,25 +357,26 @@ export class ShifCalendarComponent implements OnInit {
           this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
         baseDate = lastDate ? new Date(lastDate) : new Date();
       }
-  
+
       if (this.tabName === 'Day') {
         this.selectedDate.setValue(baseDate);
         console.log('Selected Date:', this.selectedDate.value);
       } else {
-        this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(baseDate);
-  
+        this.selectedWeekStartAndEnd =
+          Utils.setSelectedWeekStartAndEnd(baseDate);
+
         this.selectedDateRange?.setValue({
           start: new Date(this.selectedWeekStartAndEnd.weekStart),
           end: new Date(this.selectedWeekStartAndEnd.weekEnd),
         });
-  
+
         this.selectedDate.setValue(baseDate);
       }
     }
-  
+
     this.checkContext();
   }
-  
+
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
@@ -453,7 +461,7 @@ export class ShifCalendarComponent implements OnInit {
     //----------------------------------------------------
     // get the first and last days of the selected week
     //----------------------------------------------------
-    
+
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
@@ -464,8 +472,8 @@ export class ShifCalendarComponent implements OnInit {
     // this.userSchedulesService.setAllUserSchedulesByAnchorDate(
     //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     // );
-    console.log("this.selectedDate------------",this.selectedDate);
-    
+    console.log('this.selectedDate------------', this.selectedDate);
+
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
@@ -1009,57 +1017,63 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-    console.log("this.selectedUser1?.dempoId--------",this.selectedUser1?.dempoId);
+    console.log(
+      'this.selectedUser1?.dempoId--------',
+      this.selectedUser1?.dempoId
+    );
 
     let url = '';
-    if(this.authenticatedUser?.interviewer && this.selectedUser1?.dempoId){
-       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
+    if (this.authenticatedUser?.interviewer && this.selectedUser1?.dempoId) {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
     } else {
-       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-       if (this.selectedUser && this.selectedUser?.dempoId) {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+      if (this.selectedUser && this.selectedUser?.dempoId) {
         url += `?demId=${this.selectedUser?.dempoId}`;
       }
     }
-   
+
     // Make the API call
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
         console.log('Schedule list retrieved successfully:', response);
-        
+
         // Ensure this.shiftSchedule is always an array
         this.shiftSchedule = response ?? [];
 
-        console.log("this.shiftSchedule========== ", this.shiftSchedule);
-        console.log("this.shiftSchedule1========== ", this.shiftSchedule1);
+        console.log('this.shiftSchedule========== ', this.shiftSchedule);
+        console.log('this.shiftSchedule1========== ', this.shiftSchedule1);
 
         // Check for missing schedules and merge them
-        const missingSchedules = this.shiftSchedule1?.filter(item1 => 
-          !this.shiftSchedule?.some(item2 => 
-            item1.startTime === item2.startTime && 
-            item1.endTime === item2.endTime && 
-            item1.duration === item2.duration
-          )
-        ) || [];
+        const missingSchedules =
+          this.shiftSchedule1?.filter(
+            (item1) =>
+              !this.shiftSchedule?.some(
+                (item2) =>
+                  item1.startTime === item2.startTime &&
+                  item1.endTime === item2.endTime &&
+                  item1.duration === item2.duration
+              )
+          ) || [];
 
-        console.log("missingSchedules---5ffg -----", missingSchedules);
-        console.log("this.shiftSchedule---5ffg -----", this.shiftSchedule);
+        console.log('missingSchedules---5ffg -----', missingSchedules);
+        console.log('this.shiftSchedule---5ffg -----', this.shiftSchedule);
 
         // Ensure `this.shiftSchedule` is not null before pushing items
-        this.shiftSchedule.push(...missingSchedules);    
+        this.shiftSchedule.push(...missingSchedules);
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
         this.shiftSchedule = [];
       },
     });
-}
+  }
 
   handleDate(date: FormControl) {
     this.sendDate.emit(date);
   }
   handleWeekDate(date: FormControl) {
-    console.log("date000000>-=======>",date);
-    
+    console.log('date000000>-=======>', date);
+
     this.sendWeekDate.emit(date);
   }
 }
