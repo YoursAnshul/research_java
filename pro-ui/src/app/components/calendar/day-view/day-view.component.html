@@ -29,10 +29,23 @@
       <div class="user-schedule-row">
         <app-user-card class="user-card"
           [user]="us.user"
-        (dblclick)="openUserSchedule(us.user.dempoid)"></app-user-card>
+        ></app-user-card>
         @for (schedule of us.schedules; track schedule) {
-          <div class="schedule-card"
+          <!-- <div class="schedule-card"
             (dblclick)="openUserSchedule(us.user.dempoid, schedule.projectName)"
+            (mouseenter)="displayHoverMessage($event, schedule, us)"
+            (mouseleave)="hideHoverMessage()"
+            [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
+            <div class="center-align-container">
+              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+              <div
+                [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
+                <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</span>
+              </div>
+             
+          </div>
+        </div> -->
+        <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule, us)"
             (mouseleave)="hideHoverMessage()"
             [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
