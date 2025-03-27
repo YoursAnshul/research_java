@@ -33,7 +33,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	public List<AuthorResponse> getAllAuthors() {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName, dempoid ");
-		sql.append(" FROM core.users WHERE  CONCAT(fname, ' ', lname) is not null ");
+		sql.append(" FROM core.users WHERE active = true AND CONCAT(fname, ' ', lname) is not null ");
 		sql.append(" ORDER BY userName ASC ");
 		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AuthorResponse obj = new AuthorResponse();
@@ -50,7 +50,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName, dispauthor  ");
 		sql.append(
-				" FROM core.users u LEFT JOIN core.announcements a ON CAST(a.author AS smallint) = u.userid  WHERE emailaddr = '"
+				" FROM core.users u LEFT JOIN core.announcements a ON CAST(a.author AS smallint) = u.userid  WHERE active = true AND emailaddr = '"
 						+ email + "' ");
 		sql.append(" ORDER BY userName ASC ");
 		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
