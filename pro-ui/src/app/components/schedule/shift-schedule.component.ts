@@ -376,7 +376,7 @@ export class ShiftScheduleComponent implements OnInit {
 
       const formatDate = (date: any) => {
         if (typeof date === 'string') {
-          return date; 
+            return date; 
         }
         return new Date(date).toISOString().split('T')[0]; 
       };
@@ -400,13 +400,10 @@ export class ShiftScheduleComponent implements OnInit {
     }
     console.log("this.shiftSchedule--ff-------",this.shiftSchedule);
     console.log("this.shiftSchedule1--ff-----",this.shiftSchedule1);
-    
-    
     // this.shiftSchedule =this.shiftSchedule1
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
   
-
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');
     let [hours, minutes] = timePart.split(':').map(Number);
@@ -416,10 +413,8 @@ export class ShiftScheduleComponent implements OnInit {
     } else if (period === 'AM' && hours === 12) {
       hours = 0; // Midnight case
     }
-
     const combinedDate = new Date(date);
     combinedDate.setHours(hours, minutes, 0, 0);
-
     return combinedDate;
   }
 
@@ -433,6 +428,7 @@ export class ShiftScheduleComponent implements OnInit {
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+
   getDefaultProjectInfo(dempoId: string): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/default-projects?dempo_id=${dempoId}`;
     this.http.get(apiUrl).subscribe({
@@ -566,6 +562,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.selectedDate.setValue(selectedDt);
     this.emitSelectedDate();
   }
+  
   updateDuration(): void {
     const start = this.shiftForm.get('startTime')?.value;
     const end = this.shiftForm.get('endTime')?.value;
