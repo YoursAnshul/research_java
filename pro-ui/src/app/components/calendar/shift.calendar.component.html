@@ -105,7 +105,7 @@
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select [(ngModel)]="selectedUser">
+            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -163,7 +163,7 @@
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select [(ngModel)]="selectedUser">
+            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
