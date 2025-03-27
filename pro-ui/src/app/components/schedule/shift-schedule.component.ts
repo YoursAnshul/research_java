@@ -703,7 +703,7 @@ export class ShiftScheduleComponent implements OnInit {
         const obj = {
           dempoId: shift.user?.dempoId || null,
           scheduleDate,
-          projectId: shift.projects?.projectId || null,
+          projectId: shift.projects?.projectID || null,
           comments: shift.comments || '',
           startTime: shift.startTime || null,
           endTime: shift.endTime || null,
