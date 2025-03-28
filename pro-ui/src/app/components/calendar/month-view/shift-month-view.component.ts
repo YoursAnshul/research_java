@@ -13,6 +13,7 @@ import {
 } from '../../../interfaces/interfaces';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
+import moment from 'moment';
 
 @Component({
   selector: 'app-shift-month-view',
@@ -45,14 +46,16 @@ export class ShiftMonthViewComponent implements OnInit {
   
     console.log('Selected Date:', this.selectedDate.value);
   
-    const referenceDate = new Date(this.selectedDate.value);
-    const startOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
-    const endOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 0);
-  
+    const referenceDate = moment(this.selectedDate.value).tz('America/New_York').startOf('day');
+
+    console.log('Selected Date (ET):', referenceDate.format('YYYY-MM-DD'));
+
+    const startOfMonth = referenceDate.clone().startOf('month').toDate();
+    const endOfMonth = referenceDate.clone().endOf('month').toDate();
+
     startOfMonth.setHours(0, 0, 0, 0);
     endOfMonth.setHours(23, 59, 59, 999);
   
-    // Always display 5 weeks starting from the first Monday
     let weekStarts = this.getWeekStarts(startOfMonth);
   
     if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
@@ -60,15 +63,17 @@ export class ShiftMonthViewComponent implements OnInit {
     }
     this.monthSchedules.weekSchedules = [];
   
-    // Group shifts by week start date
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
   
     for (const shift of this.shiftSchedule) {
-      const shiftDate = new Date(shift.dayWiseDate);
+      const shiftDate = moment(shift.dayWiseDate)
+              .tz('America/New_York')
+              .startOf('day')
+              .toDate();
       shiftDate.setHours(0, 0, 0, 0);
   
       if (shiftDate < startOfMonth || shiftDate > endOfMonth) {
-        continue; // Skip shifts outside the current month
+        continue;
       }
   
       const weekStart = this.getWeekStart(shiftDate);
@@ -86,7 +91,7 @@ export class ShiftMonthViewComponent implements OnInit {
         dayOfWeek: shiftDate.getDay() === 0 ? 7 : shiftDate.getDay(),
         weekStart: weekStart,
         weekEnd: endOfMonth,
-        month: weekStart.toLocaleString('default', { month: 'long' }),
+        month: moment(shiftDate).format('MMMM'),
         requestDetails: '',
         requestCode: '',
         userid: shift.user?.userId || '',
@@ -109,7 +114,6 @@ export class ShiftMonthViewComponent implements OnInit {
       shiftsByWeek.get(key)?.push(schedule);
     }
   
-    // Display all 5 weeks and populate matching ones with data
     for (const weekStart of weekStarts) {
       let weekSchedule: IWeekSchedules = {
         weekStart: weekStart,
@@ -138,8 +142,12 @@ export class ShiftMonthViewComponent implements OnInit {
   
   getWeekStarts(referenceDate: Date): Date[] {
     const weekStarts: Date[] = [];
+    
+    // Determine number of weeks (6 for March & June, else 5)
+    const month = referenceDate.getMonth() + 1; // getMonth() is 0-based
+    const numberOfWeeks = (month === 3 || month === 6) ? 6 : 5;
   
-    // Ensure the first Monday before or on the 1st of the month
+    // Find the first Monday before or on the 1st of the month
     const firstDayOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
     const dayOfWeek = firstDayOfMonth.getDay();
     const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
@@ -147,7 +155,7 @@ export class ShiftMonthViewComponent implements OnInit {
     const firstMonday = new Date(firstDayOfMonth);
     firstMonday.setDate(firstDayOfMonth.getDate() + daysToMonday);
   
-    for (let i = 0; i < 5; i++) {  // Always generate 5 weeks
+    for (let i = 0; i < numberOfWeeks; i++) {
       const currentMonday = new Date(firstMonday);
       currentMonday.setDate(firstMonday.getDate() + i * 7);
       weekStarts.push(currentMonday);
@@ -155,6 +163,7 @@ export class ShiftMonthViewComponent implements OnInit {
   
     return weekStarts;
   }
+  
   
   getWeekStart(date: Date): Date {
     const day = date.getDay();

@@ -386,13 +386,13 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftSchedule1 = this.shiftSchedule1
         ? [...this.shiftSchedule1, newShift]
         : [newShift];
-        
-        const formatDate = (date: any) => {
-          if (typeof date === 'string') {
+
+      const formatDate = (date: any) => {
+        if (typeof date === 'string') {
             return date; 
-          }
-          return new Date(date).toLocaleDateString('en-CA'); // 'YYYY-MM-DD' format
-        };
+        }
+        return new Date(date).toISOString().split('T')[0]; 
+      };
 
       const uniqueNewShifts = this.shiftSchedule1?.filter(newShift =>
         !this.shiftSchedule.some(shift =>

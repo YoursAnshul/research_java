@@ -19,6 +19,7 @@ import { HoverMessage } from '../../../models/presentation/hover-message';
 import { FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import moment from 'moment-timezone';
 
 @Component({
   selector: 'app-shift-week-view',
@@ -85,8 +86,14 @@ export class ShiftWeekViewComponent implements OnInit {
     ) {
       return;
     }
-    const startOfWeek = new Date(this.selectedDateRange.value.start);
-    const endOfWeek = new Date(this.selectedDateRange.value.end);
+    const startOfWeek = moment(this.selectedDateRange.value.start)
+      .tz('America/New_York')
+      .startOf('day')
+      .toDate();
+      const endOfWeek = moment(this.selectedDateRange.value.end)
+      .tz('America/New_York')
+      .endOf('day')
+      .toDate();
 
     startOfWeek.setHours(0, 0, 0, 0);
     endOfWeek.setHours(23, 59, 59, 999);
@@ -106,7 +113,10 @@ export class ShiftWeekViewComponent implements OnInit {
     const selectedProjectId = this.selectedProject?.projectId ?? null;
 
     this.shiftSchedule?.forEach((shift) => {
-      const shiftDate = new Date(shift.dayWiseDate);
+      const shiftDate = moment(shift.dayWiseDate)
+        .tz('America/New_York')
+        .startOf('day')
+        .toDate();
       shiftDate.setHours(0, 0, 0, 0);
 
       const isWithinDateRange =
@@ -135,7 +145,7 @@ export class ShiftWeekViewComponent implements OnInit {
           dayOfWeek: adjustedDayIndex,
           weekStart: startOfWeek,
           weekEnd: endOfWeek,
-          month: shiftDate.toLocaleString('default', { month: 'long' }),
+          month: moment(shiftDate).format('MMMM'),
           requestDetails: '',
           requestCode: '',
           userid: shift.user?.userId || '',

@@ -58,32 +58,40 @@ export class ShiftDayViewComponent implements OnInit {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("this.shiftSchedule====================",this.shiftSchedule);
-    
-    if(this.selectedProject){
+    console.log("this.shiftSchedule====================", this.shiftSchedule);
+  
+    if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
+  
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;
-
+  
     const selectedUserId = this.selectedUser?.userId || 0;
-    const selectedtProjectId = this.selectedProject?.projectId || 0;
-
+    const selectedProjectId = this.selectedProject?.projectId || 0;
+  
     this.filteredShiftSchedule = this.shiftSchedule?.filter((schedule) => {
-      const scheduleDate = new Date(schedule.dayWiseDate).toLocaleDateString(
-        'en-CA'
+      const scheduleDateUTC = new Date(schedule.dayWiseDate);
+  
+      const scheduleDateET = new Date(
+        scheduleDateUTC.toLocaleString('en-US', { timeZone: 'America/New_York' })
       );
-      const isDateMatch = selectedDateValue
-        ? scheduleDate === selectedDateValue.toLocaleDateString('en-CA')
-        : true;
-      const isUserMatch = selectedUserId
-        ? schedule.user.userId === selectedUserId
-        : true;
-      const isProjectMatch = selectedtProjectId
-        ? schedule.projects.projectId === selectedtProjectId
-        : true;
+  
+      const formattedScheduleDate = scheduleDateET.toISOString().split('T')[0];
+  
+      const selectedDateET = selectedDateValue
+        ? new Date(
+            selectedDateValue.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          ).toISOString().split('T')[0]
+        : null;
+  
+      const isDateMatch = selectedDateET ? formattedScheduleDate === selectedDateET : true;
+      const isUserMatch = selectedUserId ? schedule.user.userId === selectedUserId : true;
+      const isProjectMatch = selectedProjectId ? schedule.projects.projectId === selectedProjectId : true;
+      
       schedule.duration = parseFloat(schedule.duration) || 0;
+  
       return isDateMatch && isUserMatch && isProjectMatch;
     });
   }
