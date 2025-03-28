@@ -90,7 +90,6 @@ export class ShifCalendarComponent implements OnInit {
   userObj: any;
   tabIndex = 0;
   userList: any[] = [];
-  projectList: any[] = [];
   defaultUser = { userId: 0, userName: 'Any Active Users' };
   defaultProject = { projectId: 0, projectName: 'Any Active Projects' };
   selectedUser: any = this.defaultUser;
@@ -111,6 +110,8 @@ export class ShifCalendarComponent implements OnInit {
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() shiftScheduleChange = new EventEmitter<any[]>();
   @Input() changeDate!: Date | null;
+  adminProjects: any[] = [];   
+  otherProjects: any[] = [];   
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -273,6 +274,8 @@ export class ShifCalendarComponent implements OnInit {
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
+    this.getAuthor();
+    this.getProjectInfo('');
   }
 
   getLoginUser(email: string): void {
@@ -916,23 +919,26 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
 
-  getProjectInfo(user: any): void {
-    // const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/user-projects?dempo_id=${user?.dempoId}`;
+  getProjectInfo(dempoId: string): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
+    
     this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        this.projectList = [
-          this.defaultProject,
-          ...(Array.isArray(data) ? data : []),
-        ];
+      next: (data: any) => {  
+        const allProjects = Array.isArray(data) ? data : [];
+          this.adminProjects = allProjects
+          .filter((project: {projectType: number; }) => project.projectType === 4);
+  
+        this.otherProjects = allProjects
+          .filter((project: {projectType: number; }) => project.projectType == 2);
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+  
 
   onUserChange(user: any) {
     this.selectedUser = user;
-    this.getProjectInfo(user);
+    this.getProjectInfo(user?.dempoId);
     this.selectedUserChange.emit(this.selectedUser);
   }
   onProjectChange(project: any) {

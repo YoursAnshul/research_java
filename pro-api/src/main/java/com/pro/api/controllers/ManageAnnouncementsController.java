@@ -34,8 +34,9 @@ public class ManageAnnouncementsController {
 	}
 
 	@GetMapping("/projects")
-	public ResponseEntity<List<ProjectResponse>> getProjects() {
-		List<ProjectResponse> allProjects = manageAnnouncements.getAllProjects();
+	public ResponseEntity<List<ProjectResponse>> getProjects(
+			@RequestParam(required = false, value = "dempo_id") String dempoId) {
+		List<ProjectResponse> allProjects = manageAnnouncements.getAllProjects(dempoId);
 		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
 	}
 
@@ -109,5 +110,5 @@ public class ManageAnnouncementsController {
 		ProjectResponse project = manageAnnouncements.getDefaultProjectByUser(dempoId);
 		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
-	
+
 }

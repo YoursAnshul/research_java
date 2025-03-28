@@ -15,7 +15,7 @@ public interface ManageAnnouncements {
 
 	public List<AuthorResponse> getAllAuthors();
 
-	public List<ProjectResponse> getAllProjects();
+	public List<ProjectResponse> getAllProjects(String dempoId);
 
 	public GeneralResponse saveAnnouncement(AnnouncementResponse request);
 

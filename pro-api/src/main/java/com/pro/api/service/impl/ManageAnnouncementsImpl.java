@@ -64,16 +64,25 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	}
 
 	@Override
-	public List<ProjectResponse> getAllProjects() {
+	public List<ProjectResponse> getAllProjects(String dempoId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT projectid, projectname, projectcolor ");
-		sql.append("FROM core.projects WHERE active = 1 AND projectType <> 4 ORDER BY projectname ");
-
+		sql.append("SELECT p.projectid, p.projectname,p.projecttype,p.projectcolor "
+				+ "FROM core.users u JOIN  core.training t ON u.dempoid = t.dempoid "
+				+ "JOIN core.projects p ON t.projectid = p.projectid " + "WHERE  p.active = 1 AND p.projecttype = 2  ");
+		if (dempoId != null && !dempoId.isEmpty()) {
+			sql.append(" and u.dempoid = '" + dempoId + "' ");
+		}
+		sql.append(" GROUP BY p.projectid, p.projectname, p.projecttype ");
+		sql.append(" UNION  SELECT p.projectid, p.projectname,p.projecttype,null as projectcolor "
+				+ "FROM core.projects p WHERE p.active = 1 AND p.projecttype = 4 ");
+		sql.append(" GROUP BY p.projectid, p.projectname, p.projecttype ");
+		System.out.println(sql.toString());
 		List<ProjectResponse> projects = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ProjectResponse project = new ProjectResponse();
 			project.setProjectId(rs.getLong("projectid"));
 			project.setProjectName(rs.getString("projectname"));
 			project.setProjectColor(rs.getString("projectcolor"));
+			project.setProjectType(rs.getInt("projecttype"));
 			return project;
 		});
 

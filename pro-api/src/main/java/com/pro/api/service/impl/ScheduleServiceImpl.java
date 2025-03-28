@@ -31,79 +31,76 @@ public class ScheduleServiceImpl implements ScheduleService {
 	private JdbcTemplate jdbcTemplate;
 
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
-	    GeneralResponse response = new GeneralResponse();
-	    Set<String> errorMessages = new LinkedHashSet<>();
-	    int successCount = 0;
-	    int duplicateCount = 0;
+		GeneralResponse response = new GeneralResponse();
+		Set<String> errorMessages = new LinkedHashSet<>();
+		int successCount = 0;
+		int duplicateCount = 0;
 
-	    String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? " +
-	            "AND ((startDateTime <= ? AND endDateTime > ?) " +
-	            "OR (startDateTime < ? AND endDateTime >= ?) " +
-	            "OR (startDateTime >= ? AND endDateTime <= ?))";
+		String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? "
+				+ "AND ((startDateTime <= ? AND endDateTime > ?) " + "OR (startDateTime < ? AND endDateTime >= ?) "
+				+ "OR (startDateTime >= ? AND endDateTime <= ?))";
 
-	    String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
-	            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	    for (ShiftScheduleRequest request : list) {
-	        try {
-	            if (request.getScheduleDate() == null || request.getStartTime() == null || request.getEndTime() == null) {
-	                errorMessages.add("Missing required fields for DempoId: " + request.getDempoId());
-	                continue;
-	            }
+		for (ShiftScheduleRequest request : list) {
+			try {
+				if (request.getScheduleDate() == null || request.getStartTime() == null
+						|| request.getEndTime() == null) {
+					errorMessages.add("Missing required fields for DempoId: " + request.getDempoId());
+					continue;
+				}
 
-	            LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
-	            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+				LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
+				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
 
-	            LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
-	            LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
+				LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
+				LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
-	            LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
-	            LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
+				LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
+				LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
 
-	            Integer existingCount = this.jdbcTemplate.queryForObject(checkQuery, Integer.class, 
-	                request.getDempoId(), scheduleDate, startDateTime, endDateTime, 
-	                startDateTime, endDateTime, startDateTime, endDateTime);
+				Integer existingCount = this.jdbcTemplate.queryForObject(checkQuery, Integer.class,
+						request.getDempoId(), scheduleDate, startDateTime, endDateTime, startDateTime, endDateTime,
+						startDateTime, endDateTime);
 
-	            if (existingCount != null && existingCount > 0) {
-	                duplicateCount++;
-	                errorMessages.add("Schedule already exists for DempoId: " + request.getDempoId() + 
-	                        ", Date: " + scheduleDate + 
-	                        ", Time: " + request.getStartTime() + " - " + request.getEndTime());
-	                continue;
-	            }
+				if (existingCount != null && existingCount > 0) {
+					duplicateCount++;
+					errorMessages.add("Schedule already exists for DempoId: " + request.getDempoId() + ", Date: "
+							+ scheduleDate + ", Time: " + request.getStartTime() + " - " + request.getEndTime());
+					continue;
+				}
 
-	            this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
-	                    request.getComments(), startDateTime, endDateTime, "0", request.getEntryby(), new Date(), "NA");
+				this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
+						request.getComments(), startDateTime, endDateTime, "0", request.getEntryby(), new Date(), "NA");
 
-	            successCount++;
+				successCount++;
 
-	        } catch (DateTimeParseException e) {
-	            errorMessages.add("Invalid date/time format for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
-	        } catch (Exception e) {
-	            errorMessages.add("Error processing request for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
-	        }
-	    }
+			} catch (DateTimeParseException e) {
+				errorMessages
+						.add("Invalid date/time format for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
+			} catch (Exception e) {
+				errorMessages
+						.add("Error processing request for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
+			}
+		}
 
-	    if (duplicateCount > 0 && successCount == 0) {
-	        response.Message = "Schedule already exists for the given day, time, and DempoId.";
-	    } else if (successCount > 0) {
-	        response.Message = "Schedules saved successfully!";
-	    }
+		if (duplicateCount > 0 && successCount == 0) {
+			response.Message = "Schedule already exists for the given day, time, and DempoId.";
+		} else if (successCount > 0) {
+			response.Message = "Schedules saved successfully!";
+		}
 
-	    if (!errorMessages.isEmpty()) {
-	        response.Message += " Some errors occurred: " + String.join("; ", errorMessages);
-	    }
+		if (!errorMessages.isEmpty()) {
+			response.Message += " Some errors occurred: " + String.join("; ", errorMessages);
+		}
 
-	    return response;
+		return response;
 	}
-
-
-
-
 
 	@Override
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
-			LocalDate startDate, LocalDate endDate,int year, int month) {
+			LocalDate startDate, LocalDate endDate, int year, int month) {
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
 		query.append("p.projectid, p.projectcolor, p.projectname, ");
@@ -136,28 +133,29 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		// if ("Day".equalsIgnoreCase(tabValue) && scheduleDate != null) {
-		// 	query.append(" AND s.scheduleDate = ? ");
-		// 	System.out.println("scheduleDate---->" + scheduleDate);
-		// 	params.add(scheduleDate);
-		// } else if ("Week".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
-		// 	LocalDate weekStart = startDate;
-		// 	LocalDate weekEnd = endDate;
-		// 	query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
-		// 	System.out.println("weekStart---->" + weekStart);
-		// 	System.out.println("weekEnd---->" + weekEnd);
-		// 	params.add(weekStart);
-		// 	params.add(weekEnd);
-		// } else if ("Month".equalsIgnoreCase(tabValue) && startDate != null && endDate != null) {
-		// 	LocalDate monthStart = startDate;
-		// 	LocalDate monthEnd = endDate;
-		// 	LocalDate fiveWeeksLater = monthEnd.plusWeeks(5);
-		// 	query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
-		// 	System.out.println("weekStart---->" + monthStart);
-		// 	System.out.println("weekEnd---->" + fiveWeeksLater);
-		// 	params.add(monthStart);
-		// 	params.add(fiveWeeksLater);
+		// query.append(" AND s.scheduleDate = ? ");
+		// System.out.println("scheduleDate---->" + scheduleDate);
+		// params.add(scheduleDate);
+		// } else if ("Week".equalsIgnoreCase(tabValue) && startDate != null && endDate
+		// != null) {
+		// LocalDate weekStart = startDate;
+		// LocalDate weekEnd = endDate;
+		// query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+		// System.out.println("weekStart---->" + weekStart);
+		// System.out.println("weekEnd---->" + weekEnd);
+		// params.add(weekStart);
+		// params.add(weekEnd);
+		// } else if ("Month".equalsIgnoreCase(tabValue) && startDate != null && endDate
+		// != null) {
+		// LocalDate monthStart = startDate;
+		// LocalDate monthEnd = endDate;
+		// LocalDate fiveWeeksLater = monthEnd.plusWeeks(5);
+		// query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
+		// System.out.println("weekStart---->" + monthStart);
+		// System.out.println("weekEnd---->" + fiveWeeksLater);
+		// params.add(monthStart);
+		// params.add(fiveWeeksLater);
 		// }
-		System.out.println("query.toString()------"+query.toString());
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");

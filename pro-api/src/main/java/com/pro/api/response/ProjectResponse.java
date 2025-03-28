@@ -5,6 +5,16 @@ public class ProjectResponse {
 	private Long projectId;
 	private String projectColor;
 	private String projectName;
+	private Integer projectType;
+	private Boolean active;
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 
 	public Long getProjectId() {
 		return projectId;
@@ -28,6 +38,14 @@ public class ProjectResponse {
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public Integer getProjectType() {
+		return projectType;
+	}
+
+	public void setProjectType(Integer projectType) {
+		this.projectType = projectType;
 	}
 
 }

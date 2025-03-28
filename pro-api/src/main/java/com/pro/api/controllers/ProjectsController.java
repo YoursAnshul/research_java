@@ -585,7 +585,7 @@ public class ProjectsController {
 						"ProjectType");
 				List<DropDownValue> displayedInOptions = dropDownValueRepository
 						.findByTableNameAndColumnName("Projects", "ProjectDisplayID");
-				List<Project> projects = projectRepository.findByEntryByOrderByProjectName(dempoId);
+				List<Project> projects = projectRepository.findAllByActiveOrderByProjectName(1);
 				for (Project project : projects) {
 					Optional<DropDownValue> projectTypeDD = dropDownValueRepository.findByFormFieldId(6).stream()
 							.filter(s -> s.getCodeValues() == project.getProjectType()).findFirst();

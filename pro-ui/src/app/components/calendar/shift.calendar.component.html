@@ -41,10 +41,13 @@
         </div>
       </div>
       <div class="center-container" *ngIf="!authenticatedUser?.interviewer">
-        <div> 
+        <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
+            <mat-select
+              [(ngModel)]="selectedUser"
+              (selectionChange)="onUserChange($event.value)"
+            >
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -52,12 +55,32 @@
           </mat-form-field>
         </div>
         <div class="ml-3">
-          <mat-form-field appearance="outline" class="custom-form-field">
+          <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
-            <mat-select [(ngModel)]="selectedProject" (selectionChange)="onProjectChange($event.value)">
-              <mat-option *ngFor="let project of projectList" [value]="project">
-                {{ project.projectName }}
-              </mat-option>
+            <mat-select
+              formControlName="projects"
+              [(value)]="selectedProject"
+              (selectionChange)="onProjectChange($event.value)"
+            >
+              <!-- Other Projects -->
+              <mat-optgroup label="Projects">
+                <mat-option
+                  *ngFor="let project of otherProjects"
+                  [value]="project"
+                >
+                  {{ project.projectName }}
+                </mat-option>
+              </mat-optgroup>
+
+              <!-- Admin Projects -->
+              <mat-optgroup label="Admin">
+                <mat-option
+                  *ngFor="let project of adminProjects"
+                  [value]="project"
+                >
+                  {{ project.projectName }}
+                </mat-option>
+              </mat-optgroup>
             </mat-select>
           </mat-form-field>
         </div>
@@ -101,24 +124,50 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div class="center-container mb-3" *ngIf="!authenticatedUser?.interviewer">
+      <div
+        class="center-container mb-3"
+        *ngIf="!authenticatedUser?.interviewer"
+      >
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
+            <mat-select
+              [(ngModel)]="selectedUser"
+              (selectionChange)="onUserChange($event.value)"
+            >
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="ml-3" >
-          <mat-form-field appearance="outline" class="custom-form-field">
+        <div class="ml-3">
+          <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
-            <mat-select [(ngModel)]="selectedProject">
-              <mat-option *ngFor="let project of projectList" [value]="project">
-                {{ project.projectName }}
-              </mat-option>
+            <mat-select
+              formControlName="projects"
+              [(value)]="selectedProject"
+              (selectionChange)="onProjectChange($event.value)"
+            >
+              <!-- Other Projects -->
+              <mat-optgroup label="Projects">
+                <mat-option
+                  *ngFor="let project of otherProjects"
+                  [value]="project"
+                >
+                  {{ project.projectName }}
+                </mat-option>
+              </mat-optgroup>
+
+              <!-- Admin Projects -->
+              <mat-optgroup label="Admin">
+                <mat-option
+                  *ngFor="let project of adminProjects"
+                  [value]="project"
+                >
+                  {{ project.projectName }}
+                </mat-option>
+              </mat-optgroup>
             </mat-select>
           </mat-form-field>
         </div>
@@ -159,11 +208,17 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div class="center-container mb-3" *ngIf="!authenticatedUser?.interviewer">
+      <div
+        class="center-container mb-3"
+        *ngIf="!authenticatedUser?.interviewer"
+      >
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
+            <mat-select
+              [(ngModel)]="selectedUser"
+              (selectionChange)="onUserChange($event.value)"
+            >
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -171,12 +226,32 @@
           </mat-form-field>
         </div>
         <div class="ml-3">
-          <mat-form-field appearance="outline" class="custom-form-field">
+          <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
-            <mat-select [(ngModel)]="selectedProject">
-              <mat-option *ngFor="let project of projectList" [value]="project">
-                {{ project.projectName }}
-              </mat-option>
+            <mat-select
+              formControlName="projects"
+              [(value)]="selectedProject"
+              (selectionChange)="onProjectChange($event.value)"
+            >
+              <!-- Other Projects -->
+              <mat-optgroup label="Projects">
+                <mat-option
+                  *ngFor="let project of otherProjects"
+                  [value]="project"
+                >
+                  {{ project.projectName }}
+                </mat-option>
+              </mat-optgroup>
+
+              <!-- Admin Projects -->
+              <mat-optgroup label="Admin">
+                <mat-option
+                  *ngFor="let project of adminProjects"
+                  [value]="project"
+                >
+                  {{ project.projectName }}
+                </mat-option>
+              </mat-optgroup>
             </mat-select>
           </mat-form-field>
         </div>

@@ -36,7 +36,6 @@ import {
 })
 export class ShiftScheduleComponent implements OnInit {
   userList: any[] = [];
-  projectList: any[] = [];
   selectedProjects: any[] = []; // Added to track selected projects
   shiftForm!: FormGroup;
   currentDay: string = '';
@@ -130,9 +129,9 @@ export class ShiftScheduleComponent implements OnInit {
   dateRange: any;
   tabValue: string = 'Day';
   selectedDayDate: Date | null = null;
-  isModified: boolean = false;  
-  adminProjects: any[] = [];   
-  otherProjects: any[] = [];   
+  isModified: boolean = false;
+  adminProjects: any[] = [];
+  otherProjects: any[] = [];
   changeDate: Date | null = null;
 
   constructor(
@@ -151,18 +150,17 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   ngOnChanges(): void {
-    
     // this.getScheduleList();
   }
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   confirmatationClose(): void {
-    if(this.isModified){
+    if (this.isModified) {
       const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
-  
+
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           this.onClose();
@@ -171,7 +169,6 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       this.onClose();
     }
-    
   }
   onClose(): void {
     this.dialogRef.close();
@@ -180,6 +177,7 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.getBlockOutDates();
     this.getAuthor();
+    this.getProjectInfo('');
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -194,14 +192,14 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
-      if(this.authenticatedUser.admin){
+      if (this.authenticatedUser.admin) {
         this.isModified = true;
       }
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
       this.clearValidation();
-      this.shiftForm.markAsPristine(); 
-      this.shiftForm.markAsUntouched(); 
+      this.shiftForm.markAsPristine();
+      this.shiftForm.markAsUntouched();
       this.shiftForm.updateValueAndValidity({ emitEvent: false });
     });
 
@@ -313,14 +311,14 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
-      console.log("selectedDate----------------", selectedDate);
+      console.log('selectedDate----------------', selectedDate);
       this.changeDate = new Date(selectedDate);
     }
     const storedSchedule = localStorage.getItem('shiftSchedule');
-    if(!this.shiftSchedule || this.shiftSchedule.length === 0){
+    if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
       this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
-    }    
-    console.log("storedSchedule----------------",  this.shiftSchedule);
+    }
+    console.log('storedSchedule----------------', this.shiftSchedule);
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
 
@@ -348,7 +346,7 @@ export class ShiftScheduleComponent implements OnInit {
       if (newStartTime >= newEndTime) {
         this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
         return;
-      }      
+      }
       const isDuplicate = this.shiftSchedule?.some((shift) => {
         const shiftDateMatch =
           new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
@@ -374,14 +372,14 @@ export class ShiftScheduleComponent implements OnInit {
           newStartTime < shiftEndTime &&
           newEndTime > shiftStartTime;
         return isSameShift || isOverlapping;
-      });      
+      });
       if (isDuplicate) {
         this.scheduleFetchStatus = false;
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
         this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
         return;
       }
-      
+
       const newShift = { ...formData, duration: this.duration };
       this.shiftSchedule1 = this.shiftSchedule1
         ? [...this.shiftSchedule1, newShift]
@@ -389,20 +387,25 @@ export class ShiftScheduleComponent implements OnInit {
 
       const formatDate = (date: any) => {
         if (typeof date === 'string') {
-            return date; 
+          return date;
         }
-        return new Date(date).toISOString().split('T')[0]; 
+        return new Date(date).toISOString().split('T')[0];
       };
 
-      const uniqueNewShifts = this.shiftSchedule1?.filter(newShift =>
-        !this.shiftSchedule.some(shift =>
-          formatDate(shift.dayWiseDate) === formatDate(newShift.dayWiseDate) &&  
-          shift.startTime.trim().toLowerCase() === newShift.startTime.trim().toLowerCase() &&
-          shift.endTime.trim().toLowerCase() === newShift.endTime.trim().toLowerCase() &&
-          shift.user.dempoId === newShift.user.dempoId
-        )
+      const uniqueNewShifts = this.shiftSchedule1?.filter(
+        (newShift) =>
+          !this.shiftSchedule.some(
+            (shift) =>
+              formatDate(shift.dayWiseDate) ===
+                formatDate(newShift.dayWiseDate) &&
+              shift.startTime.trim().toLowerCase() ===
+                newShift.startTime.trim().toLowerCase() &&
+              shift.endTime.trim().toLowerCase() ===
+                newShift.endTime.trim().toLowerCase() &&
+              shift.user.dempoId === newShift.user.dempoId
+          )
       );
-      
+
       this.shiftSchedule = [...this.shiftSchedule, ...uniqueNewShifts];
       this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
@@ -411,11 +414,10 @@ export class ShiftScheduleComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       });
     }
-    console.log("this.shiftSchedule---------",this.shiftSchedule);
+    console.log('this.shiftSchedule---------', this.shiftSchedule);
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
-  
-  
+
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');
     let [hours, minutes] = timePart.split(':').map(Number);
@@ -431,31 +433,37 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   getProjectInfo(dempoId: string): void {
-    const apiUrl = `${environment.DataAPIUrl}/api/projects/user-project-min?dempo_id=${dempoId}`;
-    
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
+
     this.http.get(apiUrl).subscribe({
-      next: (data: any) => {  
-        const allProjects = Array.isArray(data.Subject) ? data.Subject : [];
-          this.adminProjects = allProjects
-          .filter((project: { active: any; projectType: string; }) => project.active && project.projectType === 'Administrative');
-  
-        this.otherProjects = allProjects
-          .filter((project: { active: any; projectType: string; }) => project.active && project.projectType !== 'Administrative');
+      next: (data: any) => {
+        const allProjects = Array.isArray(data) ? data : [];
+        this.adminProjects = allProjects.filter(
+          (project: { projectType: number }) => project.projectType === 4
+        );
+
+        this.otherProjects = allProjects.filter(
+          (project: { projectType: number }) => project.projectType == 2
+        );
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
-  
 
   getDefaultProjectInfo(dempoId: string): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/default-projects?dempo_id=${dempoId}`;
+
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        console.log('default project:--', data);
-        this.selectedProject =
-          this.projectList.find(
-            (project) => project?.projectId === data?.projectId
-          ) || null;
+        let project = this.adminProjects.find(
+          (p) => p?.projectId === data?.projectId
+        );
+        if (!project) {
+          project = this.otherProjects.find(
+            (p) => p?.projectId === data?.projectId
+          );
+        }
+        this.selectedProject = project || null;
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
@@ -472,25 +480,6 @@ export class ShiftScheduleComponent implements OnInit {
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
-  }
-
-  // Check if all projects are selected
-  isAllSelected(): boolean {
-    return this.selectedProjects.length === this.projectList.length;
-  }
-
-  // Handle project selection checkbox change
-  onCheckboxChange(event: any): void {
-    const isChecked = event.target.checked;
-    this.selectedProjects = isChecked ? [...this.projectList] : [];
-  }
-
-  // Determine if checkbox should be indeterminate
-  isIndeterminate(): boolean {
-    return (
-      this.selectedProjects.length > 0 &&
-      this.selectedProjects.length < this.projectList.length
-    );
   }
 
   // Get dates for the current month
@@ -580,7 +569,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.selectedDate.setValue(selectedDt);
     this.emitSelectedDate();
   }
-  
+
   updateDuration(): void {
     const start = this.shiftForm.get('startTime')?.value;
     const end = this.shiftForm.get('endTime')?.value;
@@ -623,7 +612,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onResetShiftSchedule(): void {
-    if(this.authenticatedUser?.admin){
+    if (this.authenticatedUser?.admin) {
       this.shiftForm.reset({
         user: null,
         projects: [],
@@ -632,7 +621,10 @@ export class ShiftScheduleComponent implements OnInit {
         endTime: '',
         comments: '',
       });
-      this.selectedDate = new FormControl<Date | null>(null, Validators.required);
+      this.selectedDate = new FormControl<Date | null>(
+        null,
+        Validators.required
+      );
     }
   }
 
@@ -674,7 +666,7 @@ export class ShiftScheduleComponent implements OnInit {
           (user) => user.userId === this.selectedUser?.userId
         );
         if (this.selectedUser) {
-          this.getProjectInfo(this.selectedUser.dempoId);
+          this.getDefaultProjectInfo(this.selectedUser.dempoId);
         }
         this.getScheduleList();
       },
@@ -738,13 +730,13 @@ export class ShiftScheduleComponent implements OnInit {
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
           this.getScheduleList();
-          this.shiftSchedule1 = []; 
-          this.shiftSchedule = []; 
+          this.shiftSchedule1 = [];
+          this.shiftSchedule = [];
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
-          this.shiftSchedule1 = []; 
-          this.shiftSchedule = []; 
+          this.shiftSchedule1 = [];
+          this.shiftSchedule = [];
         },
       });
   }
@@ -753,6 +745,7 @@ export class ShiftScheduleComponent implements OnInit {
     const selectedUser = event.value;
     if (this.selectedUser) {
       this.getProjectInfo(event.value.dempoId);
+      this.getDefaultProjectInfo(event.value.dempoId);
     }
   }
   getScheduleList(): void {
@@ -760,7 +753,6 @@ export class ShiftScheduleComponent implements OnInit {
     // let startDateFormat = '';
     // let endDateFormat = '';
     // console.log('this.dateRange----------', this.dateRange);
-
     // // Handle filtering based on the tab value
     // if (this.tabValue === 'Day' && this.selectedDayDate) {
     //   // Single day selection
@@ -781,25 +773,21 @@ export class ShiftScheduleComponent implements OnInit {
     //   startDateFormat = '';
     //   endDateFormat = '';
     //   console.log('this.dateRange----------', this.dateRange);
-
     //   const startDate = this.dateRange.start
     //     ? new Date(this.dateRange.start)
     //     : null;
     //   const endDate = this.dateRange.end ? new Date(this.dateRange.end) : null;
-
     //   if (startDate && !isNaN(startDate.getTime())) {
     //     startDateFormat = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
     //   } else {
     //     console.warn('Invalid startDate:', startDate);
     //   }
-
     //   if (endDate && !isNaN(endDate.getTime())) {
     //     endDateFormat = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
     //   } else {
     //     console.warn('Invalid endDate:', endDate);
     //   }
     // }
-
     // // Construct the API URL properly
     // let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${this.selectedDayDate}?tab_value=${this.tabValue}`;
     // if (this.filterProject) {
@@ -810,9 +798,7 @@ export class ShiftScheduleComponent implements OnInit {
     // } else if (this.selectedUser && this.selectedUser?.dempoId) {
     //   url += `&demId=${this.selectedUser?.dempoId}`;
     // }
-
     // console.log('Final API URL:', url);
-
     // // Make the API call
     // this.http.get<any[]>(url).subscribe({
     //   next: (response) => {
@@ -877,7 +863,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   handleShiftScheduleChange(data: any[]): void {
-    this.shiftSchedule = data;  
+    this.shiftSchedule = data;
     console.log('Received shift schedule:', this.shiftSchedule);
   }
 }

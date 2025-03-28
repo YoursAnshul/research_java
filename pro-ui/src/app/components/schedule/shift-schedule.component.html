@@ -47,27 +47,35 @@
         </mat-form-field>
 
         <!-- Project Multi-select -->
-        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 185px">
+        <mat-form-field
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 185px"
+        >
           <mat-label>Project</mat-label>
           <mat-select formControlName="projects" [(value)]="selectedProject">
             
-            <!-- Admin Projects -->
-            <mat-optgroup label="Admin">
-              <mat-option *ngFor="let project of adminProjects" [value]="project">
-                {{ project.projectName }}
-              </mat-option>
-            </mat-optgroup>
-        
             <!-- Other Projects -->
             <mat-optgroup label="Projects">
-              <mat-option *ngFor="let project of otherProjects" [value]="project">
+              <mat-option
+                *ngFor="let project of otherProjects"
+                [value]="project"
+              >
                 {{ project.projectName }}
               </mat-option>
             </mat-optgroup>
-        
+
+            <!-- Admin Projects -->
+            <mat-optgroup label="Admin">
+              <mat-option
+                *ngFor="let project of adminProjects"
+                [value]="project"
+              >
+                {{ project.projectName }}
+              </mat-option>
+            </mat-optgroup>
           </mat-select>
         </mat-form-field>
-        
 
         <!-- Current Day Display -->
         <span class="ml-2">{{ currentDay }}</span>
@@ -185,7 +193,6 @@
       (sendWeekDate)="handleWeekDate($event)"
       [shiftSchedule1]="shiftSchedule"
       [changeDate]="changeDate"
-
     >
       > ></app-shift-calendar
     >
