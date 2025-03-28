@@ -118,12 +118,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 		query.append("AND (EXTRACT(YEAR FROM s.startdatetime)=? OR EXTRACT(YEAR FROM s.startdatetime) = ? ");
 		params.add(year);
 		params.add(year);
-		query.append("OR EXTRACT(YEAR FROM s.startdatetime) = ?) AND (EXTRACT(MONTH FROM s.startdatetime) = ? ");
+		query.append("OR EXTRACT(YEAR FROM s.startdatetime) = ?) ");
 		params.add(year);
-		params.add(month);
-		query.append("OR EXTRACT(MONTH FROM s.startdatetime) = ? OR EXTRACT(MONTH FROM s.startdatetime) = ?) ");
-		params.add(month);
-		params.add(month);
+//		params.add(month);
+//		query.append("OR EXTRACT(MONTH FROM s.startdatetime) = ? OR EXTRACT(MONTH FROM s.startdatetime) = ?) ");
+//		params.add(month);
+//		params.add(month);
 
 		if (dempoId != null && !dempoId.isBlank()) {
 			query.append(" AND s.dempoid = ? ");
