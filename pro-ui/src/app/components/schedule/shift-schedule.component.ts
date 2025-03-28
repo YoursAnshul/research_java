@@ -199,11 +199,15 @@ export class ShiftScheduleComponent implements OnInit {
       }
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
+      this.clearValidation();
+      this.shiftForm.markAsPristine(); 
+      this.shiftForm.markAsUntouched(); 
+      this.shiftForm.updateValueAndValidity({ emitEvent: false });
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
       if (date) {
-        this.changeDate = new Date(date);
+        // this.changeDate = new Date(date);
         this.updateDayLabel(date);
       }
     });
@@ -306,6 +310,12 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onSubmit(): void {
+    if (this.shiftForm.valid) {
+      const formData = this.shiftForm.value;
+      const selectedDate = formData.dayWiseDate;
+      console.log("selectedDate----------------", selectedDate);
+      this.changeDate = new Date(selectedDate);
+    }
     const storedSchedule = localStorage.getItem('shiftSchedule');
     if(!this.shiftSchedule || this.shiftSchedule.length === 0){
       this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
