@@ -46,16 +46,14 @@ export class ShiftMonthViewComponent implements OnInit {
   
     console.log('Selected Date:', this.selectedDate.value);
   
-    const referenceDate = moment(this.selectedDate.value).tz('America/New_York').startOf('day');
-
-    console.log('Selected Date (ET):', referenceDate.format('YYYY-MM-DD'));
-
-    const startOfMonth = referenceDate.clone().startOf('month').toDate();
-    const endOfMonth = referenceDate.clone().endOf('month').toDate();
-
+    const referenceDate = new Date(this.selectedDate.value);
+    const startOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+    const endOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 0);
+  
     startOfMonth.setHours(0, 0, 0, 0);
     endOfMonth.setHours(23, 59, 59, 999);
   
+    // Always display 5 weeks starting from the first Monday
     let weekStarts = this.getWeekStarts(startOfMonth);
   
     if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
@@ -63,6 +61,7 @@ export class ShiftMonthViewComponent implements OnInit {
     }
     this.monthSchedules.weekSchedules = [];
   
+    // Group shifts by week start date
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
   
     for (const shift of this.shiftSchedule) {
@@ -73,7 +72,7 @@ export class ShiftMonthViewComponent implements OnInit {
       shiftDate.setHours(0, 0, 0, 0);
   
       if (shiftDate < startOfMonth || shiftDate > endOfMonth) {
-        continue;
+        continue; // Skip shifts outside the current month
       }
   
       const weekStart = this.getWeekStart(shiftDate);
@@ -114,6 +113,7 @@ export class ShiftMonthViewComponent implements OnInit {
       shiftsByWeek.get(key)?.push(schedule);
     }
   
+    // Display all 5 weeks and populate matching ones with data
     for (const weekStart of weekStarts) {
       let weekSchedule: IWeekSchedules = {
         weekStart: weekStart,
@@ -143,11 +143,9 @@ export class ShiftMonthViewComponent implements OnInit {
   getWeekStarts(referenceDate: Date): Date[] {
     const weekStarts: Date[] = [];
     
-    // Determine number of weeks (6 for March & June, else 5)
-    const month = referenceDate.getMonth() + 1; // getMonth() is 0-based
+    const month = referenceDate.getMonth() + 1;
     const numberOfWeeks = (month === 3 || month === 6) ? 6 : 5;
   
-    // Find the first Monday before or on the 1st of the month
     const firstDayOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
     const dayOfWeek = firstDayOfMonth.getDay();
     const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
