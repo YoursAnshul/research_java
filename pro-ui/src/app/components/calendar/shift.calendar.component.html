@@ -183,7 +183,7 @@
           </button>
         </div>
       </div>
-      <app-shift-week-view
+      <app-shift-week-view-v2
         [shiftSchedule]="shiftSchedule"
         [selectedDate]="selectedDate"
         [selectedDateRange]="selectedDateRange"
@@ -191,7 +191,7 @@
         [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
         (sendWeekDate)="handleWeekDate($event)"
-      ></app-shift-week-view>
+      ></app-shift-week-view-v2>
     </mat-tab>
     <mat-tab label="Month">
       <div class="calendar-wrapper">

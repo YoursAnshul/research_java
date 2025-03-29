@@ -22,11 +22,11 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import moment from 'moment-timezone';
 
 @Component({
-  selector: 'app-shift-week-view',
-  templateUrl: './shift-week-view.component.html',
+  selector: 'app-shift-week-view-v2',
+  templateUrl: './shift-week-view.componentV2.html',
   styleUrls: ['./shift-week-view.component.css'],
 })
-export class ShiftWeekViewComponent implements OnInit {
+export class ShiftWeekViewComponentV2 implements OnInit {
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Input() monthPart: boolean = false;
   @Input() shiftSchedule: any[] = [];
@@ -220,33 +220,34 @@ export class ShiftWeekViewComponent implements OnInit {
       contextDate as Date
     );
   }
-  displayHoverMessage(event: MouseEvent,
-    schedule: ISchedule): void {
 
-      const userName = schedule?.displayName ?? 'Unknown User';
-    const startTime = schedule?.startTime ?? 'N/A';
-    const endTime = schedule?.endTime ?? 'N/A';
-    const projectName = schedule.projectName ?? 'N/A';
-    const date = Utils.formatDateOnlyToStringUTC(schedule.scheduledate) ?? 'N/A';
-    
-    let htmlMessage: string = '<p class="hover-message-title">' + userName + ' (' + projectName + '): ' + ' - ' + startTime + ' – '  + endTime + ' - ' + date + '<p>';
-
-    //comments
-    if (schedule?.duration) {
-      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
-    }
-    if (schedule?.comments) {
-      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
-    }
-
-    this.hoverMessage.setAndShow(event, htmlMessage);
-
-  }
+   displayHoverMessage(event: MouseEvent,
+      schedule: ISchedule): void {
   
-
-  hideHoverMessage(): void {
-    this.hoverMessage.hide();
-  }
+        const userName = schedule?.displayName ?? 'Unknown User';
+      const startTime = schedule?.startTime ?? 'N/A';
+      const endTime = schedule?.endTime ?? 'N/A';
+      const projectName = schedule.projectName ?? 'N/A';
+      const date = Utils.formatDateOnlyToStringUTC(schedule.scheduledate) ?? 'N/A';
+      
+      let htmlMessage: string = '<p class="hover-message-title">' + userName + ' (' + projectName + '): ' + ' - ' + startTime + ' – '  + endTime + ' - ' + date + '<p>';
+  
+      //comments
+      if (schedule?.duration) {
+        htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
+      }
+      if (schedule?.comments) {
+        htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
+      }
+  
+      this.hoverMessage.setAndShow(event, htmlMessage);
+  
+    }
+    
+  
+    hideHoverMessage(): void {
+      this.hoverMessage.hide();
+    }
   addShift(date: any): void {    
     console.log('Date:--------->', date);
     
@@ -319,9 +320,13 @@ export class ShiftWeekViewComponent implements OnInit {
   }
 
   updateWeekCalendarHeight(height: string): void {
-    const weekCalendar = document.getElementById('week-calendar');
+    
+    const weekCalendar = document.getElementById('week-calendar1');
     if (weekCalendar) {
-      weekCalendar.style.height = height;      
+      
+        weekCalendar.style.height = "800px";
+      console.log("weekCalendar.style.height----------- ",weekCalendar.style.height,this.monthPart);
+      
     }
   }
 }

@@ -153,51 +153,33 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  displayHoverMessage(
-    event: MouseEvent,
+  displayHoverMessage(event: MouseEvent,
     schedule: ISchedule,
-    us: IUserSchedule
-  ): void {
-    const userName = us?.user?.userName ?? 'Unknown User';
+    us: IUserSchedule): void {
+
+      const userName = us?.user?.userName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
     const projectName = schedule?.projects?.projectName ?? 'N/A';
     const date = Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
     
-    const duration = schedule?.duration
-      ? `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`
-      : '';
-    
-    const comments = schedule?.comments
-      ? `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`
-      : '';
-  
-    this.tooltipMessage = this.sanitizer.bypassSecurityTrustHtml(`
-      <div style="
-        padding: 10px;
-        min-width: 250px;
-        font-size: 0.9rem;
-        line-height: 1.2;
-      ">
-        <p style="font-weight: bold; margin-bottom: 2px;">
-          ${userName} (${projectName}) : ${startTime} - ${endTime} ${date}
-        </p>
-        ${duration}
-        ${comments}
-      </div>
-    `);
-  
-    // Show and position tooltip
-    this.showTooltip = true;
-    this.tooltipPosition = {
-      top: `${event.clientY + 10}px`,
-      left: `${event.clientX + 10}px`,
-    };
+    let htmlMessage: string = '<p class="hover-message-title">' + userName + ' (' + projectName + '): ' + ' - ' + startTime + ' – '  + endTime + ' - ' + date + '<p>';
+
+    //comments
+    if (schedule?.duration) {
+      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
+    }
+    if (schedule?.comments) {
+      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
+    }
+
+    this.hoverMessage.setAndShow(event, htmlMessage);
+
   }
   
 
   hideHoverMessage(): void {
-    this.showTooltip = false;
+    this.hoverMessage.hide();
   }
   addShift(): void {
     this.sendDate.emit(this.selectedDate);  
