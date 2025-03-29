@@ -274,6 +274,8 @@ export class ShifCalendarComponent implements OnInit {
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
     });
+    this.defaultUser = { userId: 0, userName: 'Any Active Users' };
+    this.defaultProject = { projectId: 0, projectName: 'Any Active Projects' };
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
     this.getScheduleList(
@@ -311,15 +313,21 @@ export class ShifCalendarComponent implements OnInit {
     console.log("this.homeUser----->",this.homeUser);
     console.log("this.homeSelectedDate------>",this.homeSelectedDate);
     console.log("this.homeSelectedProject------->",this.homeSelectedProject);
+    
     if(this.homeSelectedDate){
       this.selectedDate.setValue(this.homeSelectedDate)
     }
    if (this.homeUser) {
       this.selectedUser = this.homeUser;
+      this.defaultUser =this.homeUser
     }
     if (this.homeSelectedProject) {
-      this.selectedProject = this.homeSelectedProject;
+      this.selectedProject = null;
     }
+    console.log("this.selectedProject---------",this.selectedProject);
+    
+    this.getAuthor();
+    this.getProjectInfo('');
     if(this.changeDate){
       console.log("this.changeDate-------",this.changeDate);
       this.selectedDate.setValue(this.changeDate);
@@ -330,6 +338,16 @@ export class ShifCalendarComponent implements OnInit {
     this.checkContext();
   }
 
+  findProjectInLists(projectToFind: any): any {
+    return (
+      this.otherProjects.find(p => p.projectId === projectToFind.projectId) ||
+      this.adminProjects.find(p => p.projectId === projectToFind.projectId) ||
+      null
+    );
+  }
+  compareProjects(project1: any, project2: any): boolean {
+    return project1 && project2 ? project1.projectId === project2.projectId : project1 === project2;
+  }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
@@ -940,21 +958,33 @@ export class ShifCalendarComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
     
     this.http.get(apiUrl).subscribe({
-      next: (data: any) => {  
+      next: (data: any) => {
         this.allProjects = Array.isArray(data) ? data : [];
-          this.adminProjects = this.allProjects
-          .filter((project: {projectType: number; }) => project.projectType === 4);        
+  
+        this.adminProjects = this.allProjects.filter(
+          (project: { projectType: number }) => project.projectType === 4
+        );
+  
         const uniqueProjects = new Map();
         this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
           if (project.projectType === 2 && !uniqueProjects.has(project.projectId)) {
             uniqueProjects.set(project.projectId, project);
           }
         });
+  
         this.otherProjects = Array.from(uniqueProjects.values());
+  
+        console.log("Projects loaded:", this.otherProjects, this.adminProjects);
+  
+        if (this.homeSelectedProject) {
+          this.selectedProject = this.findProjectInLists(this.homeSelectedProject);
+          console.log("Selected Project Set:", this.selectedProject);
+        }
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+  
   
 
   onUserChange(user: any) {

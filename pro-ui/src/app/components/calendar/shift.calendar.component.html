@@ -59,26 +59,20 @@
           <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
             <mat-select
-              formControlName="projects"
-              [(value)]="selectedProject"
+              [(ngModel)]="selectedProject"
               (selectionChange)="onProjectChange($event.value)"
+              [compareWith]="compareProjects"
             >
               <!-- Other Projects -->
               <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of otherProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
-
+          
               <!-- Admin Projects -->
               <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of adminProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
