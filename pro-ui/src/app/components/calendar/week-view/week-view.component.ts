@@ -3,6 +3,9 @@ import { Utils } from '../../../classes/utils';
 import {ILegend, ISchedule, IWeekSchedules} from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
+import { ScheduleService } from '../../schedule/schedule.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 
 @Component({
   selector: 'app-week-view',
@@ -17,7 +20,7 @@ export class WeekViewComponent implements OnInit {
   
   hoverMessage: HoverMessage = new HoverMessage();
 
-  constructor(private globalsService: GlobalsService) { }
+  constructor(private globalsService: GlobalsService, private scheduleService: ScheduleService,  private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -78,4 +81,18 @@ export class WeekViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
 
+  openScheduleData(schedule: any): void {
+      schedule.tab = "Week";
+      console.log('Clicked Week schedule------->:', schedule);
+      this.scheduleService.setSchedule(schedule);
+      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+        width: '1900px',
+        height: '900px',
+        disableClose: true,
+      });
+      dialogRef.afterClosed().subscribe((result: any) => {
+        console.log('Shift Schedule dialog was closed', result);
+        this.scheduleService.clearSchedule();
+      });
+  }
 }
