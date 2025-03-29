@@ -36,5 +36,4 @@ public interface ManageAnnouncements {
 
 	public List<ProjectResponse> getUserProjects(String dempoId);
 
-	public ProjectResponse getDefaultProjectByUser(String dempoId);
 }

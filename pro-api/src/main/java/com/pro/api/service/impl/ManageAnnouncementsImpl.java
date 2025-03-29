@@ -66,16 +66,15 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	@Override
 	public List<ProjectResponse> getAllProjects(String dempoId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT p.projectid, p.projectname,p.projecttype,p.projectcolor "
+		sql.append("SELECT p.projectid, p.projectname,p.projecttype,p.projectcolor, u.defaultproject, u.dempoid "
 				+ "FROM core.users u JOIN  core.training t ON u.dempoid = t.dempoid "
 				+ "JOIN core.projects p ON t.projectid = p.projectid " + "WHERE  p.active = 1 AND p.projecttype = 2  ");
 		if (dempoId != null && !dempoId.isEmpty()) {
 			sql.append(" and u.dempoid = '" + dempoId + "' ");
 		}
-		sql.append(" GROUP BY p.projectid, p.projectname, p.projecttype ");
-		sql.append(" UNION  SELECT p.projectid, p.projectname,p.projecttype,null as projectcolor "
-				+ "FROM core.projects p WHERE p.active = 1 AND p.projecttype = 4 ");
-		sql.append(" GROUP BY p.projectid, p.projectname, p.projecttype ");
+		sql.append(
+				" UNION  SELECT p.projectid, p.projectname,p.projecttype,null as projectcolor, null as defaultproject, null as dempoid "
+						+ "FROM core.projects p WHERE p.active = 1 AND p.projecttype = 4 ");
 		System.out.println(sql.toString());
 		List<ProjectResponse> projects = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ProjectResponse project = new ProjectResponse();
@@ -83,6 +82,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			project.setProjectName(rs.getString("projectname"));
 			project.setProjectColor(rs.getString("projectcolor"));
 			project.setProjectType(rs.getInt("projecttype"));
+			project.setDefualtProject(rs.getLong("defaultproject"));
+			project.setDempoId(rs.getString("dempoid"));
 			return project;
 		});
 
@@ -386,26 +387,6 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		});
 
 		return projects;
-	}
-
-	@Override
-	public ProjectResponse getDefaultProjectByUser(String dempoId) {
-		String sql = "SELECT u.defaultproject, p.projectname, p.projectcolor " + "FROM core.users u "
-				+ "INNER JOIN core.projects p ON u.defaultproject = p.projectid ";
-
-		if (dempoId != null && !dempoId.isEmpty()) {
-			sql += " WHERE u.dempoid = '" + dempoId + "' ";
-		}
-		sql += " ORDER BY p.projectname ASC ";
-		List<ProjectResponse> results = jdbcTemplate.query(sql, (rs, rowNum) -> {
-			ProjectResponse response = new ProjectResponse();
-			response.setProjectId(rs.getLong("defaultproject"));
-			response.setProjectName(rs.getString("projectname"));
-			response.setProjectColor(rs.getString("projectcolor"));
-			return response;
-		});
-
-		return results.isEmpty() ? null : results.get(0);
 	}
 
 }

@@ -177,7 +177,6 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.getBlockOutDates();
     this.getAuthor();
-    this.getProjectInfo('');
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -433,6 +432,9 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   getProjectInfo(dempoId: string): void {
+    if (this.selectedUser) {
+      dempoId = this.selectedUser.dempoId;
+    }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
 
     this.http.get(apiUrl).subscribe({
@@ -445,25 +447,20 @@ export class ShiftScheduleComponent implements OnInit {
         this.otherProjects = allProjects.filter(
           (project: { projectType: number }) => project.projectType == 2
         );
-      },
-      error: (error) => console.error('Error fetching projects:', error),
-    });
-  }
-
-  getDefaultProjectInfo(dempoId: string): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/default-projects?dempo_id=${dempoId}`;
-
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        let project = this.adminProjects.find(
-          (p) => p?.projectId === data?.projectId
-        );
-        if (!project) {
-          project = this.otherProjects.find(
-            (p) => p?.projectId === data?.projectId
-          );
+        if (this.selectedUser) {
+          let defaultProjectId = 0;
+          for (let obj of allProjects) {
+            if (obj.defualtProject && obj.defualtProject > 0) {
+              defaultProjectId = obj.defualtProject;
+              break;
+            }
+          }
+          this.selectedProject =
+            allProjects.find(
+              (project: { projectId: number }) =>
+                project.projectId === defaultProjectId
+            ) || null;
         }
-        this.selectedProject = project || null;
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
@@ -476,6 +473,8 @@ export class ShiftScheduleComponent implements OnInit {
         this.userList = Array.isArray(data) ? data : [];
         if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
           this.getLoginUser(this.userObj.eppn);
+        } else {
+          this.getProjectInfo('');
         }
       },
       error: (error) => console.error('Error fetching authors:', error),
@@ -666,7 +665,7 @@ export class ShiftScheduleComponent implements OnInit {
           (user) => user.userId === this.selectedUser?.userId
         );
         if (this.selectedUser) {
-          this.getDefaultProjectInfo(this.selectedUser.dempoId);
+          this.getProjectInfo(this.selectedUser.dempoId);
         }
         this.getScheduleList();
       },
@@ -745,7 +744,6 @@ export class ShiftScheduleComponent implements OnInit {
     const selectedUser = event.value;
     if (this.selectedUser) {
       this.getProjectInfo(event.value.dempoId);
-      this.getDefaultProjectInfo(event.value.dempoId);
     }
   }
   getScheduleList(): void {

@@ -7,6 +7,24 @@ public class ProjectResponse {
 	private String projectName;
 	private Integer projectType;
 	private Boolean active;
+	private Long defualtProject;
+	private String dempoId;
+
+	public String getDempoId() {
+		return dempoId;
+	}
+
+	public void setDempoId(String dempoId) {
+		this.dempoId = dempoId;
+	}
+
+	public Long getDefualtProject() {
+		return defualtProject;
+	}
+
+	public void setDefualtProject(Long defualtProject) {
+		this.defualtProject = defualtProject;
+	}
 
 	public Boolean getActive() {
 		return active;
