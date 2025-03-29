@@ -183,6 +183,11 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.getBlockOutDates();
     this.getAuthor('');
+    if (this.selectedUser) {
+      this.getProjectInfo(this.selectedUser.dempoId);
+    } else {
+      this.getProjectInfo('');
+    }
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -243,9 +248,13 @@ export class ShiftScheduleComponent implements OnInit {
         const selectedUser =
           this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;
+        console.log(" this.allProjects--->", this.allProjects);
+        console.log(" data?.projectid--->", data?.projectid);
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.projectid) ||
           null;
+        console.log("selectedProject--->",selectedProject);
+        
         this.homeSelectedProject = selectedProject;
         this.homeSelectedDate = new Date(data.scheduledate); 
         setTimeout(() => {
@@ -494,6 +503,7 @@ export class ShiftScheduleComponent implements OnInit {
               (project: { projectId: number }) =>
                 project.projectId === defaultProjectId
             ) || null;
+            
         }
       },
       error: (error) => console.error('Error fetching projects:', error),
@@ -507,8 +517,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.userList = Array.isArray(data) ? data : [];
         if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
           this.getLoginUser(this.userObj.eppn);
-        } else {
-          this.getProjectInfo('');
         }
       },
       error: (error) => console.error('Error fetching authors:', error),
@@ -698,9 +706,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.userList = this.userList.filter(
           (user) => user.userId === this.selectedUser?.userId
         );
-        if (this.selectedUser) {
-          this.getProjectInfo(this.selectedUser.dempoId);
-        }
         this.getScheduleList();
       },
       error: (error: any) => {
