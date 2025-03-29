@@ -516,10 +516,20 @@
           style="border-color: #c2c2c2 !important;"></div>
 
         <div *ngIf="createForm">
-          <div class="font-medium tracking-wider mb-2">SHIFT SCHEDULE</div>
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="font-medium tracking-wider">SHIFT SCHEDULE</div>
+            <button
+              style="height: 30px"
+              mat-raised-button
+              color="primary"
+              class="submit wd90"
+              (click)="openUserSchedule()"
+            >
+              Add Shift
+            </button>
+          </div>
           <app-calendar [authenticatedUser]="authenticatedUser" [contextUser]="selectedUser"></app-calendar>
         </div>
-      </div>
     </div>
 
   </div>

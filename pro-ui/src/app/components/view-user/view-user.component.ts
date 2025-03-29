@@ -26,6 +26,8 @@ import {
 } from '@angular/material/snack-bar';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { ScheduleService } from '../schedule/schedule.service';
+import { ShiftScheduleComponent } from '../schedule/shift-schedule.component';
 
 @Component({
   selector: 'app-view-user',
@@ -106,7 +108,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     private projectsService: ProjectsService,
     private requestsService: RequestsService,
     private logsService: LogsService, private dialog: MatDialog,
-    private snackBar: MatSnackBar,private router: Router) {
+    private snackBar: MatSnackBar,private router: Router, private scheduleService: ScheduleService) {
     if (this.viewUser) {
       this.selectedUser = this.viewUser;
       this.trainedOn =this.selectedUser.trainedon;
@@ -1237,5 +1239,17 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
     return '';
   }
-
+  openUserSchedule(){
+    this.scheduleService.setUser(this.selectedUser);
+    const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      width: '1900px',
+      height: '900px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Shift Schedule dialog was closed', result);
+      this.scheduleService.clearSchedule();
+      this.scheduleService.clearUser();
+    });
+  }
 }

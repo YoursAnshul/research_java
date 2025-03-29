@@ -240,7 +240,18 @@ export class ShiftScheduleComponent implements OnInit {
     );
     setTimeout(() => {
       this.loadScheduleData();
+      this.loadUserData();
     }, 100);
+  }
+  loadUserData():void {
+    this.scheduleService.getUser().subscribe((user) => {
+      if(user){
+        const selectedUser =
+        this.userList.find((user) => user?.userId === user?.userid) || null;
+        this.homeUser = selectedUser;
+        this.getProjectInfo(user.dempoid);
+      }
+    });
   }
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
@@ -741,7 +752,7 @@ export class ShiftScheduleComponent implements OnInit {
         const obj = {
           dempoId: shift.user?.dempoId || null,
           scheduleDate,
-          projectId: shift.projects?.projectID || null,
+          projectId: shift.projects?.projectId || null,
           comments: shift.comments || '',
           startTime: shift.startTime || null,
           endTime: shift.endTime || null,
