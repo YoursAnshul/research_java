@@ -1240,6 +1240,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
     return '';
   }
   openUserSchedule(){
+    console.log("this.selectedUser---->",this.selectedUser);
+    console.log("this.viewUser---->",this.viewUser);
+
     this.scheduleService.setUser(this.selectedUser);
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',

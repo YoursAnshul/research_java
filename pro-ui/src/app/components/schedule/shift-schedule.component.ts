@@ -244,12 +244,22 @@ export class ShiftScheduleComponent implements OnInit {
     }, 100);
   }
   loadUserData():void {
-    this.scheduleService.getUser().subscribe((user) => {
-      if(user){
+    this.scheduleService.getUser().subscribe((data) => {
+      if(data){
         const selectedUser =
-        this.userList.find((user) => user?.userId === user?.userid) || null;
+        this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;
-        this.getProjectInfo(user.dempoid);
+        const selectedProject =
+        this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
+        null;
+        this.homeSelectedProject = selectedProject;
+        setTimeout(() => {
+          this.shiftForm.patchValue({
+            user: selectedUser,
+            projects: selectedProject
+          });
+          this.cdr.detectChanges();
+        }, 0);
       }
     });
   }
