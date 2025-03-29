@@ -1,26 +1,36 @@
-import { Component, Input, OnInit, } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
-import { ILegend, ISchedule, IUserSchedule } from '../../../interfaces/interfaces';
+import {
+  ILegend,
+  ISchedule,
+  IUserSchedule,
+} from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
+import { ScheduleService } from '../../schedule/schedule.service';
+import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-day-view',
   templateUrl: './day-view.component.html',
-  styleUrls: ['./day-view.component.css']
+  styleUrls: ['./day-view.component.css'],
 })
 export class DayViewComponent implements OnInit {
-
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
 
   hoverMessage: HoverMessage = new HoverMessage();
 
-  constructor(private globalsService: GlobalsService) { }
+  constructor(
+    private globalsService: GlobalsService,
+    private scheduleService: ScheduleService,
+    private dialog: MatDialog,
+    
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;
@@ -31,8 +41,8 @@ export class DayViewComponent implements OnInit {
     }
 
     return {
-      'left': ((((startTimeCode) - 15 + 1) * 2.625) + 8.8) + '%',
-      'width': (totalHours * 5.25) + '%',
+      left: (startTimeCode - 15 + 1) * 2.625 + 8.8 + '%',
+      width: totalHours * 5.25 + '%',
     };
   }
 
@@ -82,24 +92,61 @@ export class DayViewComponent implements OnInit {
   //open contextual popup for the clicked user
   openUserSchedule(netId: string, projectName: string | null = null): void {
     //tab index of 1 = Day tab
-    this.globalsService.showContextualPopup(1, netId, null, (this.selectedDate.value ? Utils.formatDateOnly(this.selectedDate.value as Date) : null) as Date);
+    this.globalsService.showContextualPopup(
+      1,
+      netId,
+      null,
+      (this.selectedDate.value
+        ? Utils.formatDateOnly(this.selectedDate.value as Date)
+        : null) as Date
+    );
   }
 
-  displayHoverMessage(event: any, schedule: ISchedule, us: IUserSchedule): void {
-
-    let htmlMessage: string = '<p class="hover-message-title">' + us.user.displayName + ' (' + schedule.projectName + '): ' + ' - ' + schedule.startTime + ' – '  + schedule.endTime + ' - ' + Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + '<p>';
+  displayHoverMessage(
+    event: any,
+    schedule: ISchedule,
+    us: IUserSchedule
+  ): void {
+    let htmlMessage: string =
+      '<p class="hover-message-title">' +
+      us.user.displayName +
+      ' (' +
+      schedule.projectName +
+      '): ' +
+      ' - ' +
+      schedule.startTime +
+      ' – ' +
+      schedule.endTime +
+      ' - ' +
+      Utils.formatDateOnlyToStringUTC(schedule.startdatetime) +
+      '<p>';
 
     //comments
     if (schedule.comments) {
-      htmlMessage = htmlMessage + '<p class="bold">Comments:</p><p>' + schedule.comments + '</p>';
+      htmlMessage =
+        htmlMessage +
+        '<p class="bold">Comments:</p><p>' +
+        schedule.comments +
+        '</p>';
     }
 
     this.hoverMessage.setAndShow(event, htmlMessage);
-
   }
 
   hideHoverMessage(): void {
     this.hoverMessage.hide();
   }
-
+  openScheduleData(schedule: any): void {
+    console.log('Clicked schedule------->:', schedule);
+    this.scheduleService.setSchedule(schedule);
+    const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      width: '1900px',
+      height: '900px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Shift Schedule dialog was closed', result);
+      this.scheduleService.clearSchedule();
+    });
+  }
 }

@@ -46,6 +46,7 @@
           </div>
         </div> -->
         <div class="schedule-card"
+            (click)="openScheduleData(schedule)"
             (mouseenter)="displayHoverMessage($event, schedule, us)"
             (mouseleave)="hideHoverMessage()"
             [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">

@@ -112,6 +112,11 @@ export class ShifCalendarComponent implements OnInit {
   @Input() changeDate!: Date | null;
   adminProjects: any[] = [];   
   otherProjects: any[] = [];   
+  allProjects: any[] = [];  
+  @Input() homeUser: any = null;
+  @Input() homeSelectedDate: Date | null = null;
+  @Input() homeSelectedProject: any = null;
+
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -302,6 +307,19 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
+    console.log("this.shiftSchedule1--->",this.shiftSchedule1);
+    console.log("this.homeUser----->",this.homeUser);
+    console.log("this.homeSelectedDate------>",this.homeSelectedDate);
+    console.log("this.homeSelectedProject------->",this.homeSelectedProject);
+    if(this.homeSelectedDate){
+      this.selectedDate.setValue(this.homeSelectedDate)
+    }
+   if (this.homeUser) {
+      this.selectedUser = this.homeUser;
+    }
+    if (this.homeSelectedProject) {
+      this.selectedProject = this.homeSelectedProject;
+    }
     if(this.changeDate){
       console.log("this.changeDate-------",this.changeDate);
       this.selectedDate.setValue(this.changeDate);
@@ -918,18 +936,21 @@ export class ShifCalendarComponent implements OnInit {
       error: (error) => console.error('Error fetching authors:', error),
     });
   }
-
   getProjectInfo(dempoId: string): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
     
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {  
-        const allProjects = Array.isArray(data) ? data : [];
-          this.adminProjects = allProjects
-          .filter((project: {projectType: number; }) => project.projectType === 4);
-  
-        this.otherProjects = allProjects
-          .filter((project: {projectType: number; }) => project.projectType == 2);
+        this.allProjects = Array.isArray(data) ? data : [];
+          this.adminProjects = this.allProjects
+          .filter((project: {projectType: number; }) => project.projectType === 4);        
+        const uniqueProjects = new Map();
+        this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
+          if (project.projectType === 2 && !uniqueProjects.has(project.projectId)) {
+            uniqueProjects.set(project.projectId, project);
+          }
+        });
+        this.otherProjects = Array.from(uniqueProjects.values());
       },
       error: (error) => console.error('Error fetching projects:', error),
     });

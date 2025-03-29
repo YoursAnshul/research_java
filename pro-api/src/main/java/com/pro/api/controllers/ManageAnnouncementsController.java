@@ -28,8 +28,9 @@ public class ManageAnnouncementsController {
 	private ManageAnnouncements manageAnnouncements;
 
 	@GetMapping("/authors")
-	public ResponseEntity<List<AuthorResponse>> getAuthors() {
-		List<AuthorResponse> allAuthors = manageAnnouncements.getAllAuthors();
+	public ResponseEntity<List<AuthorResponse>> getAuthors(
+			@RequestParam(required = false, value = "user_id") Long userId) {
+		List<AuthorResponse> allAuthors = manageAnnouncements.getAllAuthors(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(allAuthors);
 	}
 
@@ -102,13 +103,6 @@ public class ManageAnnouncementsController {
 			@RequestParam(required = false, value = "dempo_id") String dempoId) {
 		List<ProjectResponse> allProjects = manageAnnouncements.getUserProjects(dempoId);
 		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
-	}
-
-	@GetMapping("/default-projects")
-	public ResponseEntity<ProjectResponse> getDefaultProjectByUser(
-			@RequestParam(required = false, value = "dempo_id") String dempoId) {
-		ProjectResponse project = manageAnnouncements.getDefaultProjectByUser(dempoId);
-		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
 
 }

@@ -28,6 +28,7 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { ScheduleService } from './schedule.service';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -48,65 +49,65 @@ export class ShiftScheduleComponent implements OnInit {
   shiftSchedule1: any[] = [];
   weekSchedules: IWeekSchedules[] = []; // Data for Week View
   timeSlots: string[] = [
-    '8:00 AM',
-    '8:30 AM',
-    '9:00 AM',
-    '9:30 AM',
+    '08:00 AM',
+    '08:30 AM',
+    '09:00 AM',
+    '09:30 AM',
     '10:00 AM',
     '10:30 AM',
     '11:00 AM',
     '11:30 AM',
     '12:00 PM',
     '12:30 PM',
-    '1:00 PM',
-    '1:30 PM',
-    '2:00 PM',
-    '2:30 PM',
-    '3:00 PM',
-    '3:30 PM',
-    '4:00 PM',
-    '4:30 PM',
-    '5:00 PM',
-    '5:30 PM',
-    '6:00 PM',
-    '6:30 PM',
-    '7:00 PM',
-    '7:30 PM',
-    '8:00 PM',
-    '8:30 PM',
-    '9:00 PM',
-    '9:30 PM',
+    '01:00 PM',
+    '01:30 PM',
+    '02:00 PM',
+    '02:30 PM',
+    '03:00 PM',
+    '03:30 PM',
+    '04:00 PM',
+    '04:30 PM',
+    '05:00 PM',
+    '05:30 PM',
+    '06:00 PM',
+    '06:30 PM',
+    '07:00 PM',
+    '07:30 PM',
+    '08:00 PM',
+    '08:30 PM',
+    '09:00 PM',
+    '09:30 PM',
     '10:00 PM',
     '10:30 PM',
   ];
   endtimeSlots: string[] = [
-    '8:30 AM',
-    '9:00 AM',
-    '9:30 AM',
+    '08:30 AM',
+    '09:00 AM',
+    '09:30 AM',
     '10:00 AM',
     '10:30 AM',
     '11:00 AM',
     '11:30 AM',
     '12:00 PM',
     '12:30 PM',
-    '1:00 PM',
-    '1:30 PM',
-    '2:00 PM',
-    '2:30 PM',
-    '3:00 PM',
-    '3:30 PM',
-    '4:00 PM',
-    '4:30 PM',
-    '5:00 PM',
-    '5:30 PM',
-    '6:00 PM',
-    '6:30 PM',
-    '7:00 PM',
-    '7:30 PM',
-    '8:00 PM',
-    '8:30 PM',
-    '9:00 PM',
-    '9:30 PM',
+    '01:00 PM',
+    '01:30 PM',
+    '02:00 PM',
+    '02:30 PM',
+    '03:00 PM',
+    '03:30 PM',
+    '04:00 PM',
+    '04:30 PM',
+    '05:00 PM',
+    '05:30 PM',
+    '06:00 PM',
+    '06:30 PM',
+    '07:00 PM',
+    '07:30 PM',
+    '08:00 PM',
+    '08:30 PM',
+    '09:00 PM',
+    '09:30 PM',
     '10:00 PM',
     '10:30 PM',
     '11:00 PM',
@@ -132,7 +133,11 @@ export class ShiftScheduleComponent implements OnInit {
   isModified: boolean = false;
   adminProjects: any[] = [];
   otherProjects: any[] = [];
+  allProjects: any[] = [];
   changeDate: Date | null = null;
+  homeUser: any = null;
+  homeSelectedDate: Date | null = null;
+  homeSelectedProject: any = null;
 
   constructor(
     private http: HttpClient,
@@ -141,7 +146,8 @@ export class ShiftScheduleComponent implements OnInit {
     private dialog: MatDialog,
     private authenticationService: AuthenticationService,
     private snackBar: MatSnackBar,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private scheduleService: ScheduleService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -176,7 +182,7 @@ export class ShiftScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBlockOutDates();
-    this.getAuthor();
+    this.getAuthor('');
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -204,15 +210,9 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
       if (date) {
-        // this.changeDate = new Date(date);
         this.updateDayLabel(date);
       }
     });
-
-    // const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
-    // dayWiseDateControl?.setErrors(null);
-    // dayWiseDateControl?.markAsTouched();
-    // dayWiseDateControl?.markAsDirty();
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
       this.isModified = true;
@@ -233,7 +233,36 @@ export class ShiftScheduleComponent implements OnInit {
         this.userObj = this.authenticatedUser;
       }
     );
+    setTimeout(() => {
+      this.loadScheduleData();
+    }, 100);
   }
+  loadScheduleData(): void {
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        const selectedUser =
+          this.userList.find((user) => user?.userId === data?.userid) || null;
+        this.homeUser = selectedUser;
+        const selectedProject =
+          this.allProjects.find((p) => p?.projectId === data?.projectid) ||
+          null;
+        this.homeSelectedProject = selectedProject;
+        this.homeSelectedDate = new Date(data.scheduledate); 
+        setTimeout(() => {
+          this.shiftForm.patchValue({
+            user: selectedUser,
+            projects: selectedProject,
+            dayWiseDate: new Date(data.scheduledate),
+            startTime: data.startTime,
+            endTime: data.endTime,
+            comments: data.comments,
+          });
+          this.cdr.detectChanges();
+        }, 0);
+      }
+    });
+  }
+
   onDateRangeReceived(dateRange: any): void {
     if (this.tabValue != 'Day') {
       this.dateRange = dateRange;
@@ -439,24 +468,29 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        const allProjects = Array.isArray(data) ? data : [];
-        this.adminProjects = allProjects.filter(
+        this.allProjects = Array.isArray(data) ? data : [];
+        this.adminProjects = this.allProjects.filter(
           (project: { projectType: number }) => project.projectType === 4
         );
 
-        this.otherProjects = allProjects.filter(
-          (project: { projectType: number }) => project.projectType == 2
-        );
+        const uniqueProjects = new Map();
+        this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
+          if (project.projectType === 2 && !uniqueProjects.has(project.projectId)) {
+            uniqueProjects.set(project.projectId, project);
+          }
+        });
+
+        this.otherProjects = Array.from(uniqueProjects.values());
         if (this.selectedUser) {
           let defaultProjectId = 0;
-          for (let obj of allProjects) {
+          for (let obj of this.allProjects) {
             if (obj.defualtProject && obj.defualtProject > 0) {
               defaultProjectId = obj.defualtProject;
               break;
             }
           }
           this.selectedProject =
-            allProjects.find(
+            this.allProjects.find(
               (project: { projectId: number }) =>
                 project.projectId === defaultProjectId
             ) || null;
@@ -466,8 +500,8 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
 
-  getAuthor(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
+  getAuthor(userId: any): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?user_id=${userId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.userList = Array.isArray(data) ? data : [];

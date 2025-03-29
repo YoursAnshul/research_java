@@ -30,10 +30,13 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	private AuditService auditService;
 
 	@Override
-	public List<AuthorResponse> getAllAuthors() {
+	public List<AuthorResponse> getAllAuthors(Long userId) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName, dempoid ");
 		sql.append(" FROM core.users WHERE active = true AND CONCAT(fname, ' ', lname) is not null ");
+		if (userId != null) {
+			sql.append(" WHERE userid = '" + userId + "' ");
+		}
 		sql.append(" ORDER BY userName ASC ");
 		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AuthorResponse obj = new AuthorResponse();
