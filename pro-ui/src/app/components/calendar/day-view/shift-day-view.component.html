@@ -76,10 +76,10 @@
       }
     </div>
     } <div class="user-card" style="  margin-top: -5px;"></div>
-    <div *ngIf="filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer" class="no-results bold italic" style="margin-left: 205px">
+    <div *ngIf="filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer" class="no-results bold italic" style="margin-top: -5px;">
       No schedules found for this day...
     </div>
-    <div *ngIf="filteredShiftSchedule?.length == 0 && !authenticatedUser?.interviewer" class="no-results bold italic" style="margin-left: 255px">
+    <div *ngIf="filteredShiftSchedule?.length == 0 && !authenticatedUser?.interviewer" class="no-results bold italic" style="margin-top: -5px;">
       No schedules found for this day...
     </div>
     <div class="icon-input-container">
