@@ -138,7 +138,7 @@ export class ShiftScheduleComponent implements OnInit {
   homeUser: any = null;
   homeSelectedDate: Date | null = null;
   homeSelectedProject: any = null;
-
+  tab: any = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -182,12 +182,12 @@ export class ShiftScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBlockOutDates();
-    this.getAuthor('');
+    this.getAuthor('');  
     if (this.selectedUser) {
       this.getProjectInfo(this.selectedUser.dempoId);
     } else {
       this.getProjectInfo('');
-    }
+    }  
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -260,6 +260,12 @@ export class ShiftScheduleComponent implements OnInit {
           });
           this.cdr.detectChanges();
         }, 0);
+      }
+    });
+    this.scheduleService.getTab().subscribe((tab) => {
+      if(tab){
+        console.log("tab----------->>>",tab);
+        this.tab = tab;
       }
     });
   }
@@ -725,6 +731,11 @@ export class ShiftScheduleComponent implements OnInit {
         this.userList = this.userList.filter(
           (user) => user.userId === this.selectedUser?.userId
         );
+        if (this.selectedUser) {
+          this.getProjectInfo(this.selectedUser.dempoId);
+        } else {
+          this.getProjectInfo('');
+        }
         this.getScheduleList();
       },
       error: (error: any) => {

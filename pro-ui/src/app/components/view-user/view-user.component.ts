@@ -1240,10 +1240,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
     return '';
   }
   openUserSchedule(){
-    console.log("this.selectedUser---->",this.selectedUser);
-    console.log("this.viewUser---->",this.viewUser);
-
     this.scheduleService.setUser(this.selectedUser);
+    this.scheduleService.setTab("Month")
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',
       height: '900px',
@@ -1253,6 +1251,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
       console.log('Shift Schedule dialog was closed', result);
       this.scheduleService.clearSchedule();
       this.scheduleService.clearUser();
+      this.scheduleService.clearTab();
     });
   }
 }
