@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ScheduleService {
   private scheduleData = new BehaviorSubject<any>(null);  
   private selectedUser = new BehaviorSubject<any>(null); 
+  private tab = new BehaviorSubject<any>(null); 
 
 
   setSchedule(schedule: any): void {
@@ -29,6 +30,17 @@ export class ScheduleService {
   }
 
   clearUser(): void {
+    this.selectedUser.next(null);
+  }
+  setTab(tab: any): void {
+    this.selectedUser.next(tab);
+  }
+
+  getTab() {
+    return this.selectedUser.asObservable();
+  }
+
+  clearTab(): void {
     this.selectedUser.next(null);
   }
 }

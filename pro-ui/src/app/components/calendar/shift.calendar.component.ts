@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -116,7 +117,8 @@ export class ShifCalendarComponent implements OnInit {
   @Input() homeUser: any = null;
   @Input() homeSelectedDate: Date | null = null;
   @Input() homeSelectedProject: any = null;
-
+  @Input() tab: any = null;
+  selectedIndex: any = null;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -125,7 +127,8 @@ export class ShifCalendarComponent implements OnInit {
     private projectsService: ProjectsService,
     private logsService: LogsService,
     private http: HttpClient,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private cdr: ChangeDetectorRef
   ) {
     //subscribe to users
     this.authenticationService.authenticatedUser.subscribe(
