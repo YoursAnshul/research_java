@@ -77,7 +77,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		}
 		sql.append(
 				" UNION  SELECT p.projectid, p.projectname,p.projecttype,null as projectcolor, null as defaultproject, null as dempoid "
-						+ "FROM core.projects p WHERE p.active = 1 AND p.projecttype = 4 ");
+						+ "FROM core.projects p WHERE p.active = 1 AND p.projecttype = 4 order by projecttype,projectname ");
 		System.out.println(sql.toString());
 		List<ProjectResponse> projects = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ProjectResponse project = new ProjectResponse();
