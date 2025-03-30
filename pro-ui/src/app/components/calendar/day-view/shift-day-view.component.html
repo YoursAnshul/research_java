@@ -75,7 +75,9 @@
 
       }
     </div>
-    } <div class="user-card" style="  margin-top: -5px;"></div>
+    } <div class="user-card" [ngStyle]="{
+      width: authenticatedUser?.interviewer ? '12.85%' : '15.4%'
+    }" style="  margin-top: -5px;"></div>
     <div *ngIf="filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer" class="no-results bold italic" style="margin-top: -5px;">
       No schedules found for this day...
     </div>
