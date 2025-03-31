@@ -33,14 +33,14 @@ export class ScheduleService {
     this.selectedUser.next(null);
   }
   setTab(tab: any): void {
-    this.selectedUser.next(tab);
+    this.tab.next(tab);
   }
 
   getTab() {
-    return this.selectedUser.asObservable();
+    return this.tab.asObservable();
   }
 
   clearTab(): void {
-    this.selectedUser.next(null);
+    this.tab.next(null);
   }
 }

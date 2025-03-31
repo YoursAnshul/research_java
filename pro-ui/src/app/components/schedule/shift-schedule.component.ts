@@ -252,11 +252,14 @@ export class ShiftScheduleComponent implements OnInit {
         const selectedProject =
         this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
         null;
-        this.homeSelectedProject = selectedProject;
+        this.homeSelectedProject = selectedProject;  
+        if(!this.selectedProject){
+           this.selectedProject = selectedProject;
+        }
         setTimeout(() => {
           this.shiftForm.patchValue({
             user: selectedUser,
-            projects: selectedProject
+            projects: this.selectedProject
           });
           this.cdr.detectChanges();
         }, 0);
@@ -278,14 +281,15 @@ export class ShiftScheduleComponent implements OnInit {
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.projectid) ||
           null;
-        console.log("selectedProject--->",selectedProject);
-        
         this.homeSelectedProject = selectedProject;
+        if(!this.selectedProject){
+          this.selectedProject = selectedProject;
+        }
         this.homeSelectedDate = new Date(data.scheduledate); 
         setTimeout(() => {
           this.shiftForm.patchValue({
             user: selectedUser,
-            projects: selectedProject,
+            projects: this.selectedProject,
             dayWiseDate: new Date(data.scheduledate),
             startTime: data.startTime,
             endTime: data.endTime,
