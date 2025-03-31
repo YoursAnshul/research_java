@@ -24,7 +24,7 @@
       scheduleFetchMessage
     }}</span>
   </div>
-  <mat-tab-group (selectedTabChange)="onTabChanged($event)">
+  <mat-tab-group  [(selectedIndex)]="tabIndex" (selectedTabChange)="onTabChanged($event)">
     <mat-tab label="Day">
       <div class="calendar-wrapper">
         <div
