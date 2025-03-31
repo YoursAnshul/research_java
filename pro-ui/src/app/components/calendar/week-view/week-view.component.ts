@@ -82,7 +82,11 @@ export class WeekViewComponent implements OnInit {
   }
 
   openScheduleData(schedule: any): void {
-      schedule.tab = "Week";
+      if(this.monthPart){
+        schedule.tab = "Month";
+      } else {
+        schedule.tab = "Week";
+      }
       console.log('Clicked Week schedule------->:', schedule);
       this.scheduleService.setSchedule(schedule);
       const dialogRef = this.dialog.open(ShiftScheduleComponent, {

@@ -314,6 +314,10 @@ export class ShifCalendarComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if(this.tab && this.tab === 'Month'){
       this.tabIndex = 2;
+    } else if(this.tab && this.tab == 'Week'){
+      this.tabIndex = 1;
+    } else {
+      this.tabIndex = 0;
     }
     if(this.homeSelectedDate){
       this.selectedDate.setValue(this.homeSelectedDate)

@@ -275,6 +275,7 @@ export class ShiftScheduleComponent implements OnInit {
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
+        this.tab = data.tab;
         const selectedUser =
           this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;

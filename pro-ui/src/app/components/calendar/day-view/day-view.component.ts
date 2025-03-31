@@ -137,6 +137,7 @@ export class DayViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   openScheduleData(schedule: any): void {
+    schedule.tab = "Day";
     console.log('Clicked schedule------->:', schedule);
     this.scheduleService.setSchedule(schedule);
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
