@@ -514,7 +514,7 @@ export class ShiftScheduleComponent implements OnInit {
 
         const uniqueProjects = new Map();
         this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
-          if (project.projectType === 2 && !uniqueProjects.has(project.projectId)) {
+          if (project.projectType != 4 && !uniqueProjects.has(project.projectId)) {
             uniqueProjects.set(project.projectId, project);
           }
         });
