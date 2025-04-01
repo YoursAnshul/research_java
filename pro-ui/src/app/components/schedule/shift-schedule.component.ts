@@ -350,6 +350,9 @@ export class ShiftScheduleComponent implements OnInit {
   
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
+      this.shiftForm.get('startTime')?.enable();
+      this.shiftForm.get('endTime')?.enable();
+      this.blockedTimeSlots = [];
       return;
     }
   
@@ -359,35 +362,79 @@ export class ShiftScheduleComponent implements OnInit {
       selectedDate.getDate()
     );
   
-    // Find blocked time slots for selected date
-    this.blockedTimeSlots = this.blockOutDates
-      .filter((blockOut) => {
-        const blockOutDate = new Date(blockOut.blockOutDay!);
-        const blockOutDateOnly = new Date(
-          blockOutDate.getFullYear(),
-          blockOutDate.getMonth(),
-          blockOutDate.getDate()
-        );
-        return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
-      })
-      .flatMap((blockOut) => this.generateBlockedTimeSlots(blockOut.startTime, blockOut.endTime));
+    const blockedEntries = this.blockOutDates.filter((blockOut) => {
+      const blockOutDate = new Date(blockOut.blockOutDay!);
+      const blockOutDateOnly = new Date(
+        blockOutDate.getFullYear(),
+        blockOutDate.getMonth(),
+        blockOutDate.getDate()
+      );
+      return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
+    });
+  
+    if (blockedEntries.length === 0) {
+      this.shiftForm.get('startTime')?.enable();
+      this.shiftForm.get('endTime')?.enable();
+      this.blockedTimeSlots = [];
+      return;
+    } else {
+      this.confirmationPopup();
+    }
+  
+    const hasTimeBlock = blockedEntries.some(blockOut => blockOut.startTime && blockOut.endTime);
+  
+    if (!hasTimeBlock) {
+      this.shiftForm.get('startTime')?.disable();
+      this.shiftForm.get('endTime')?.disable();
+      this.blockedTimeSlots = [];
+      return;
+    }
+    this.blockedTimeSlots = [];
+    blockedEntries.forEach((blockOut) => {
+      if (blockOut.startTime && blockOut.endTime) {
+        this.blockedTimeSlots.push(...this.generateBlockedTimeSlots(blockOut.startTime, blockOut.endTime));
+      }
+    });
   
     console.log('Blocked Time Slots:', this.blockedTimeSlots);
+  
+    // Enable time selection but disable only blocked slots
+    this.shiftForm.get('startTime')?.enable();
+    this.shiftForm.get('endTime')?.enable();
   }
   generateBlockedTimeSlots(startTime: string, endTime: string): string[] {
     const blockedTimes: string[] = [];
-    const allTimeSlots = [...this.timeSlots, ...this.endtimeSlots];
+  
+    // Separate AM and PM slots
+    const amSlots = this.timeSlots.filter(time => time.includes('AM'));
+    const pmSlots = this.timeSlots.filter(time => time.includes('PM'));
+  
+    // Determine if the blocked range is AM or PM
+    const isAMBlock = startTime.includes('AM') && endTime.includes('AM');
+    const isPMBlock = startTime.includes('PM') && endTime.includes('PM');
   
     let isWithinRange = false;
   
-    for (const time of allTimeSlots) {
-      if (time === startTime) isWithinRange = true;
-      if (isWithinRange) blockedTimes.push(time);
-      if (time === endTime) break;
+    if (isAMBlock) {
+      for (const time of amSlots) {
+        if (time === startTime) isWithinRange = true;
+        if (isWithinRange) blockedTimes.push(time);
+        if (time === endTime) break; // Stop after endTime
+      }
+    } else if (isPMBlock) {
+      for (const time of pmSlots) {
+        if (time === startTime) isWithinRange = true;
+        if (isWithinRange) blockedTimes.push(time);
+        if (time === endTime) break; // Stop after endTime
+      }
     }
   
     return blockedTimes;
   }
+  
+  
+  
+  
   isTimeBlocked(time: string): boolean {
     return this.blockedTimeSlots.includes(time);
   }
