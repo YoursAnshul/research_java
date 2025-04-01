@@ -71,7 +71,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT p.projectid, p.projectname,p.projecttype,p.projectcolor, u.defaultproject, u.dempoid "
 				+ "FROM core.users u JOIN  core.training t ON u.dempoid = t.dempoid "
-				+ "JOIN core.projects p ON t.projectid = p.projectid " + "WHERE  p.active = 1 AND p.projecttype = 2  ");
+				+ "JOIN core.projects p ON t.projectid = p.projectid " + "WHERE  p.active = 1 AND p.projecttype <>4  ");
 		if (dempoId != null && !dempoId.isEmpty()) {
 			sql.append(" and u.dempoid = '" + dempoId + "' ");
 		}
