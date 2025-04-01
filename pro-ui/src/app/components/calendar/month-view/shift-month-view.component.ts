@@ -13,7 +13,7 @@ import {
 } from '../../../interfaces/interfaces';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 @Component({
   selector: 'app-shift-month-view',
