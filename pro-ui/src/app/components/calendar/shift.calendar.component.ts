@@ -940,7 +940,8 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   getProjectInfo(dempoId: string): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
+    const validDempoId = dempoId ?? '';
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${validDempoId}`;
     
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
