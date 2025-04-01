@@ -9,6 +9,15 @@ public class ShiftScheduleRequest {
 	private String startTime;
 	private String endTime;
 	private String entryby;
+	private Long id;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getEntryby() {
 		return entryby;

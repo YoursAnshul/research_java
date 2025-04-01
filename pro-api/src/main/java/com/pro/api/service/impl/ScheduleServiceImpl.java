@@ -102,7 +102,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
 			LocalDate startDate, LocalDate endDate, int year, int month) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
+		query.append("SELECT s.preschedulekey, u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
 		query.append("p.projectid, p.projectcolor, p.projectname, ");
 		query.append("s.startdatetime, s.enddatetime, ");
 		query.append("s.comments, s.scheduleDate AS daywisedate ");
@@ -165,7 +165,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 			return new ScheduleResponse(rs.getString("comments"), formatTime(startTime), formatTime(endTime), duration,
 					rs.getDate("daywisedate"),
 					new User(rs.getString("dempoid"), rs.getInt("userid"), rs.getString("userName")),
-					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")));
+					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")),
+					rs.getLong("preschedulekey"));
 		}, params.toArray());
 	}
 
@@ -188,6 +189,51 @@ public class ScheduleServiceImpl implements ScheduleService {
 			return null;
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
 		return sdf.format(date);
+	}
+
+	@Override
+	public GeneralResponse updateSchedule(ShiftScheduleRequest request) {
+		GeneralResponse response = new GeneralResponse();
+		response.Message = "";
+		Set<String> errorMessages = new LinkedHashSet<>();
+
+		if (request.getId() == null) {
+			response.Message = "Error: Missing Schedule ID.";
+			return response;
+		}
+		String updateQuery = """
+				    UPDATE core.schedules
+				    SET projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?,
+				        status = ?, entryby = ?, entrydt = NOW()
+				    WHERE scheduleId = ?
+				""";
+
+		try {
+			LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
+			DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+
+			LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
+			LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
+
+			LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
+			LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
+
+			int rowsUpdated = this.jdbcTemplate.update(updateQuery, request.getProjectId(), request.getComments(),
+					startDateTime, endDateTime, "0", request.getEntryby(), request.getId());
+
+			if (rowsUpdated == 0) {
+				response.Message = "No matching schedule found to update.";
+			} else {
+				response.Message = "Schedule updated successfully.";
+			}
+
+		} catch (DateTimeParseException e) {
+			response.Message = "Invalid date/time format: " + e.getMessage();
+		} catch (Exception e) {
+			response.Message = "Error processing request: " + e.getMessage();
+		}
+
+		return response;
 	}
 
 }

@@ -10,12 +10,13 @@ public class ScheduleResponse {
 	private Date dayWiseDate;
 	private User user;
 	private Projects projects;
+	private Long preschedulekey;
 
 	public ScheduleResponse() {
 	}
 
 	public ScheduleResponse(String comments, String startTime, String endTime, Double duration, Date dayWiseDate,
-			User user, Projects projects) {
+			User user, Projects projects, Long preschedulekey) {
 		this.comments = comments;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -23,6 +24,15 @@ public class ScheduleResponse {
 		this.dayWiseDate = dayWiseDate;
 		this.user = user;
 		this.projects = projects;
+		this.preschedulekey = preschedulekey;
+	}
+
+	public Long getPreschedulekey() {
+		return preschedulekey;
+	}
+
+	public void setPreschedulekey(Long preschedulekey) {
+		this.preschedulekey = preschedulekey;
 	}
 
 	public String getComments() {

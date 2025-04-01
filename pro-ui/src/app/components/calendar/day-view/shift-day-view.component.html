@@ -42,10 +42,14 @@
       >
         {{ us.user.userName }}
       </div>
-
       @for (schedule of [us]; track schedule) {
       <div
         class="schedule-card"
+        [ngStyle]="{
+          'opacity': schedule.isEdit ? '0.5' : '1',
+          'pointer-events': schedule.isEdit ? 'none' : 'auto'
+        }"        
+        (click)="openScheduleData(schedule)"
         (mouseenter)="displayHoverMessage($event, schedule, us)"
         (mouseleave)="hideHoverMessage()"
         [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"

@@ -139,6 +139,7 @@ export class ShiftScheduleComponent implements OnInit {
   homeSelectedDate: Date | null = null;
   homeSelectedProject: any = null;
   tab: any = null;
+  isEdit: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -215,6 +216,8 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
       if (date) {
+        if(this.authenticatedUser?.interviewer)
+        this.validateBlockOutDate(date);
         this.updateDayLabel(date);
       }
     });
@@ -241,7 +244,38 @@ export class ShiftScheduleComponent implements OnInit {
     setTimeout(() => {
       this.loadScheduleData();
       this.loadUserData();
+      // this.loadEditScheduleData();
     }, 100);
+  }
+  loadEditScheduleData(){
+    this.scheduleService.getScheduleEditData().subscribe((data) => {
+      if (data) {
+        this.isEdit = data.isEdit;
+        this.tab = data.tab;
+        const selectedUser =
+          this.userList.find((user) => user?.userId === data?.user?.userId) || null;
+        this.selectedUser = selectedUser;
+        this.homeUser = selectedUser;        
+        const selectedProject =
+          this.allProjects.find((p) => p?.projectId === data?.projects?.projectId) ||
+          null;
+        this.selectedProject = selectedProject;
+        this.homeSelectedProject = selectedProject;
+        this.homeSelectedDate = new Date(data.dayWiseDate);
+        setTimeout(() => {
+          this.shiftForm.patchValue({
+            user: this.selectedUser,
+            projects: this.selectedProject,
+            dayWiseDate: new Date(data.dayWiseDate),
+            startTime: data.startTime,
+            endTime: data.endTime,
+            comments: data.comments,
+            id:data.preschedulekey
+          });
+          this.cdr.detectChanges();
+        }, 0);
+      }
+    });
   }
   loadUserData():void {
     this.scheduleService.getUser().subscribe((data) => {
@@ -938,4 +972,60 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftSchedule = data;
     console.log('Received shift schedule:', this.shiftSchedule);
   }
+  editSchedule() {
+    console.log("on edit ---->",this.shiftForm.value);
+    const startTime = this.shiftForm.get('startTime')?.value;
+    const endTime = this.shiftForm.get('endTime')?.value;
+    const dayWiseDate = this.shiftForm.get('dayWiseDate')?.value;
+    
+    if (!startTime) {
+      this.shiftForm.get('startTime')?.setErrors({ required: true });
+      this.showToastMessage('Start time required.', 'warning');
+      return;
+    }
+    
+    if (!endTime) {
+      this.shiftForm.get('endTime')?.setErrors({ required: true });
+      this.showToastMessage('End time required.', 'warning');
+      return;
+    }
+  
+    if (!dayWiseDate) {
+      this.showToastMessage('Schedule date required.', 'warning');
+      this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+      return;
+    }
+  
+    const date = new Date(dayWiseDate);
+    const scheduleDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  
+    const shift = this.shiftForm.value || {};
+    
+    const obj = {
+      dempoId: shift.user?.dempoId || null,
+      scheduleDate,
+      projectId: shift.projects?.projectId || null,
+      comments: shift.comments || '',
+      startTime: startTime || null,
+      endTime: endTime || null,
+      entryby: this.authenticatedUser?.netID || null,
+    };
+  
+    this.http.post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
+      .subscribe({
+        next: (res: any) => {
+          this.showToastMessage(res.Message, 'success');
+          this.getScheduleList();
+          this.shiftSchedule1 = [];
+          this.shiftSchedule = [];
+        },
+        error: (error) => {
+          console.error('Error saving shifts:', error);
+          this.showToastMessage('Failed to update schedule.', 'error');
+          this.shiftSchedule1 = [];
+          this.shiftSchedule = [];
+        },
+      });
+  }
+  
 }

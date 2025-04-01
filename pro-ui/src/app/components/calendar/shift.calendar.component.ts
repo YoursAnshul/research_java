@@ -327,7 +327,7 @@ export class ShifCalendarComponent implements OnInit {
       this.defaultUser =this.homeUser
     }
     if (this.homeSelectedProject) {
-      this.selectedProject = null;
+      this.selectedProject = this.homeSelectedProject;
     }    
     this.getAuthor();
     this.getProjectInfo('');

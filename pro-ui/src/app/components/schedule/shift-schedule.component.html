@@ -164,7 +164,7 @@
         </mat-form-field>
 
         <!-- Add to Calendar Button -->
-        <div class="ml-1 mr-1">
+        <div class="ml-1 mr-1" *ngIf="!isEdit">
           <button
             mat-raised-button
             color="primary"
@@ -177,7 +177,10 @@
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
-      </div>
+        <!-- <div class="icon-container" *ngIf="isEdit" style="cursor: pointer;">
+          <mat-icon (click)="editSchedule()">edit</mat-icon>
+        </div> -->
+         </div>
     </div>
 
     <!-- Shift Calendar Component -->

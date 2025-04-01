@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -18,6 +19,9 @@ import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { ScheduleService } from '../../schedule/schedule.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 
 @Component({
   selector: 'app-shift-day-view',
@@ -42,11 +46,14 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() selectedUserChange = new EventEmitter<any>();
   @Output() selectedProjectChange = new EventEmitter<any>();
   @Output() sendDate = new EventEmitter<FormControl>();
-
+  isEdit: boolean = false;
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private scheduleService: ScheduleService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -55,7 +62,12 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.scheduleService.getScheduleEditData().subscribe((data) => {
+      this.isEdit = data?.isEdit;
+      this.cdr.detectChanges();
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log("this.shiftSchedule====================", this.shiftSchedule);
@@ -72,7 +84,7 @@ export class ShiftDayViewComponent implements OnInit {
     const selectedProjectId = this.selectedProject?.projectId || 0;
   
     this.filteredShiftSchedule = this.shiftSchedule?.filter((schedule) => {
-      const scheduleDateUTC = new Date(schedule.dayWiseDate);
+      const scheduleDateUTC = new Date(schedule?.dayWiseDate);
   
       const scheduleDateET = new Date(
         scheduleDateUTC.toLocaleString('en-US', { timeZone: 'America/New_York' })
@@ -184,5 +196,28 @@ export class ShiftDayViewComponent implements OnInit {
   addShift(): void {
     this.sendDate.emit(this.selectedDate);  
     this.resetShiftSchedule.emit();
+  }
+  openScheduleData(schedule: any): void {
+      schedule.tab = "Day";
+      if (!('isEdit' in schedule)) {
+        schedule.isEdit = false;
+      }
+      schedule.isEdit = !schedule.isEdit;
+      
+      console.log('Clicked edit schedule------->:', schedule);
+      this.scheduleService.setScheduleEditData(schedule);
+      
+      // Ensure Angular detects changes
+      this.filteredShiftSchedule = [...this.filteredShiftSchedule];
+      
+      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+        width: '1900px',
+        height: '900px',
+        disableClose: true,
+      });
+      dialogRef.afterClosed().subscribe((result: any) => {
+        console.log('Shift Schedule dialog was closed', result);
+        this.scheduleService.clearScheduleEditData();
+      });
   }
 }

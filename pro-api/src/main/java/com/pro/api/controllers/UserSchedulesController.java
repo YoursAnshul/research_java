@@ -714,8 +714,7 @@ public class UserSchedulesController {
 	}
 
 	@GetMapping("/schedule-list/{anchorDate}")
-	public ResponseEntity<List<ScheduleResponse>> getScheduleList(
-		@PathVariable String anchorDate,
+	public ResponseEntity<List<ScheduleResponse>> getScheduleList(@PathVariable String anchorDate,
 			@RequestParam(required = false, value = "demId") String dempoId,
 			@RequestParam(required = false, value = "project_id") Integer projectId,
 			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate,
@@ -723,10 +722,9 @@ public class UserSchedulesController {
 			@RequestParam(required = false, value = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false, value = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 		LocalDate parsedAnchorDate = LocalDate.parse(anchorDate.substring(0, 10), DateTimeFormatter.ISO_DATE);
-		System.out.println("dempoId---------"+dempoId);
+		System.out.println("dempoId---------" + dempoId);
 		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate, tabValue, startDate,
-				endDate,parsedAnchorDate.getYear(),
-				parsedAnchorDate.getMonthValue());
+				endDate, parsedAnchorDate.getYear(), parsedAnchorDate.getMonthValue());
 
 		if (response == null || response.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());
@@ -735,6 +733,10 @@ public class UserSchedulesController {
 		return ResponseEntity.ok(response);
 	}
 
-
+	@PostMapping("/update-schedule")
+	public ResponseEntity<GeneralResponse> updateSchedule(@RequestBody ShiftScheduleRequest request) {
+		GeneralResponse response = scheduleService.updateSchedule(request);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
 }

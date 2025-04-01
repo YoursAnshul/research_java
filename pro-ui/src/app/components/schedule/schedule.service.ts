@@ -7,6 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 export class ScheduleService {
   private scheduleData = new BehaviorSubject<any>(null);  
   private selectedUser = new BehaviorSubject<any>(null); 
+  private scheduleEditData = new BehaviorSubject<any>(null);  
+
   private tab = new BehaviorSubject<any>(null); 
 
 
@@ -42,5 +44,16 @@ export class ScheduleService {
 
   clearTab(): void {
     this.tab.next(null);
+  }
+  setScheduleEditData(schedule: any): void {
+    this.scheduleEditData.next(schedule);
+  }
+
+  getScheduleEditData() {
+    return this.scheduleEditData.asObservable();
+  }
+
+  clearScheduleEditData(): void {
+    this.scheduleEditData.next(null);
   }
 }
