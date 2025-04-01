@@ -169,7 +169,7 @@ export class ShiftDayViewComponent implements OnInit {
     schedule: ISchedule,
     us: IUserSchedule): void {
 
-      const userName = us?.user?.userName ?? 'Unknown User';
+    const userName = us?.user?.userName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
     const projectName = schedule?.projects?.projectName ?? 'N/A';
@@ -198,26 +198,23 @@ export class ShiftDayViewComponent implements OnInit {
     this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: any): void {
-      schedule.tab = "Day";
-      if (!('isEdit' in schedule)) {
-        schedule.isEdit = false;
-      }
-      schedule.isEdit = !schedule.isEdit;
+      // schedule.tab = "Day";
+      // if (!('isEdit' in schedule)) {
+      //   schedule.isEdit = false;
+      // }
+      // schedule.isEdit = !schedule.isEdit;
       
-      console.log('Clicked edit schedule------->:', schedule);
-      this.scheduleService.setScheduleEditData(schedule);
+      // console.log('Clicked edit schedule------->:', schedule);
+      // this.scheduleService.setScheduleEditData(schedule);
       
-      // Ensure Angular detects changes
-      this.filteredShiftSchedule = [...this.filteredShiftSchedule];
-      
-      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-        width: '1900px',
-        height: '900px',
-        disableClose: true,
-      });
-      dialogRef.afterClosed().subscribe((result: any) => {
-        console.log('Shift Schedule dialog was closed', result);
-        this.scheduleService.clearScheduleEditData();
-      });
+      // const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      //   width: '1900px',
+      //   height: '900px',
+      //   disableClose: true,
+      // });
+      // dialogRef.afterClosed().subscribe((result: any) => {
+      //   console.log('Shift Schedule dialog was closed', result);
+      //   this.scheduleService.clearScheduleEditData();
+      // });
   }
 }

@@ -195,8 +195,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public GeneralResponse updateSchedule(ShiftScheduleRequest request) {
 		GeneralResponse response = new GeneralResponse();
 		response.Message = "";
-		Set<String> errorMessages = new LinkedHashSet<>();
-
 		if (request.getId() == null) {
 			response.Message = "Error: Missing Schedule ID.";
 			return response;
@@ -205,7 +203,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				    UPDATE core.schedules
 				    SET projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?,
 				        status = ?, entryby = ?, entrydt = NOW()
-				    WHERE scheduleId = ?
+				    WHERE preschedulekey = ?
 				""";
 
 		try {

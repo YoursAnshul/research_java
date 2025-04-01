@@ -140,6 +140,8 @@ export class ShiftScheduleComponent implements OnInit {
   homeSelectedProject: any = null;
   tab: any = null;
   isEdit: boolean = false;
+  blockedTimeSlots: string[] = []; // Store blocked time slots for selected date
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -344,41 +346,52 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   validateBlockOutDate(selectedDate: Date): void {
+    console.log("Block Out Dates--->", this.blockOutDates);
+  
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
       return;
     }
-
+  
     const selectedDateOnly = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       selectedDate.getDate()
     );
-
-    const isBlocked = this.blockOutDates.some((blockOut) => {
-      const blockOutDate = new Date(blockOut.blockOutDay!);
-      const blockOutDateOnly = new Date(
-        blockOutDate.getFullYear(),
-        blockOutDate.getMonth(),
-        blockOutDate.getDate()
-      );
-      return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
-    });
-
-    if (isBlocked && this.authenticatedUser?.interviewer) {
-      this.confirmationPopup();
-      this.shiftForm.get('dayWiseDate')?.setErrors({ blocked: true });
-      this.shiftForm.get('startTime')?.disable();
-      this.shiftForm.get('endTime')?.disable();
-    } else if (this.authenticatedUser?.interviewer) {
-      const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
-      dayWiseDateControl?.setErrors(null);
-      dayWiseDateControl?.markAsTouched();
-      dayWiseDateControl?.markAsDirty();
-      this.shiftForm.get('startTime')?.enable();
-      this.shiftForm.get('endTime')?.enable();
-    }
+  
+    // Find blocked time slots for selected date
+    this.blockedTimeSlots = this.blockOutDates
+      .filter((blockOut) => {
+        const blockOutDate = new Date(blockOut.blockOutDay!);
+        const blockOutDateOnly = new Date(
+          blockOutDate.getFullYear(),
+          blockOutDate.getMonth(),
+          blockOutDate.getDate()
+        );
+        return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
+      })
+      .flatMap((blockOut) => this.generateBlockedTimeSlots(blockOut.startTime, blockOut.endTime));
+  
+    console.log('Blocked Time Slots:', this.blockedTimeSlots);
   }
+  generateBlockedTimeSlots(startTime: string, endTime: string): string[] {
+    const blockedTimes: string[] = [];
+    const allTimeSlots = [...this.timeSlots, ...this.endtimeSlots];
+  
+    let isWithinRange = false;
+  
+    for (const time of allTimeSlots) {
+      if (time === startTime) isWithinRange = true;
+      if (isWithinRange) blockedTimes.push(time);
+      if (time === endTime) break;
+    }
+  
+    return blockedTimes;
+  }
+  isTimeBlocked(time: string): boolean {
+    return this.blockedTimeSlots.includes(time);
+  }
+  
 
   confirmationPopup(): void {
     const dialogRef = this.dialog.open(BlockdateDialog, {
@@ -1009,6 +1022,7 @@ export class ShiftScheduleComponent implements OnInit {
       startTime: startTime || null,
       endTime: endTime || null,
       entryby: this.authenticatedUser?.netID || null,
+      id: shift.preschedulekey || null,
     };
   
     this.http.post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)

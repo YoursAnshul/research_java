@@ -112,7 +112,7 @@
             formControlName="startTime"
             [disabled]="!!shiftForm.get('startTime')?.disabled"
           >
-            <mat-option *ngFor="let time of timeSlots" [value]="time">
+            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
               <div
                 class="time-box"
                 [ngStyle]="{
@@ -137,7 +137,7 @@
             formControlName="endTime"
             [disabled]="!!shiftForm.get('endTime')?.disabled"
           >
-            <mat-option *ngFor="let time of endtimeSlots" [value]="time">
+            <mat-option *ngFor="let time of endtimeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
               <div
                 class="time-box"
                 [ngStyle]="{
@@ -177,9 +177,9 @@
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
-        <!-- <div class="icon-container" *ngIf="isEdit" style="cursor: pointer;">
+        <div class="icon-container" *ngIf="isEdit" style="cursor: pointer;">
           <mat-icon (click)="editSchedule()">edit</mat-icon>
-        </div> -->
+        </div>
          </div>
     </div>
 
