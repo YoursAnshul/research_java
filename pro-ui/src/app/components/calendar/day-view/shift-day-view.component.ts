@@ -60,6 +60,7 @@ export class ShiftDayViewComponent implements OnInit {
         this.authenticatedUser = authenticatedUser;
       }
     );
+    
   }
 
   ngOnInit(): void {
@@ -70,7 +71,7 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("this.shiftSchedule====================", this.shiftSchedule);
+    console.log("this.shiftSchedule========88888============", this.shiftSchedule);
   
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
@@ -198,23 +199,31 @@ export class ShiftDayViewComponent implements OnInit {
     this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: any): void {
-      // schedule.tab = "Day";
-      // if (!('isEdit' in schedule)) {
-      //   schedule.isEdit = false;
-      // }
-      // schedule.isEdit = !schedule.isEdit;
+      schedule.tab = "Day";
+      if (!('isEdit' in schedule)) {
+        schedule.isEdit = false;
+      }
+      if(this.dialog.openDialogs.length > 0){
+        const existingDialog = this.dialog.openDialogs.find(
+          (dialog) => dialog.componentInstance instanceof ShiftScheduleComponent
+        );
+  
+        if (existingDialog) {
+          existingDialog.close();
+        }
+      }
+      schedule.isEdit = !schedule.isEdit;
       
-      // console.log('Clicked edit schedule------->:', schedule);
-      // this.scheduleService.setScheduleEditData(schedule);
+      console.log('Clicked edit schedule------->:', schedule);
+      this.scheduleService.setScheduleEditData(schedule);
       
-      // const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-      //   width: '1900px',
-      //   height: '900px',
-      //   disableClose: true,
-      // });
-      // dialogRef.afterClosed().subscribe((result: any) => {
-      //   console.log('Shift Schedule dialog was closed', result);
-      //   this.scheduleService.clearScheduleEditData();
-      // });
+      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+        width: '1900px',
+        height: '900px',
+        disableClose: true,
+      });
+      dialogRef.afterClosed().subscribe((result: any) => {
+        console.log('Shift Schedule dialog was closed', result);
+      });
   }
 }

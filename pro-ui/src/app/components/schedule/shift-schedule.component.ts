@@ -202,6 +202,7 @@ export class ShiftScheduleComponent implements OnInit {
       startTime: new FormControl(null, Validators.required),
       endTime: new FormControl(null, Validators.required),
       comments: new FormControl(''),
+      id: new FormControl(null),
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
@@ -246,11 +247,13 @@ export class ShiftScheduleComponent implements OnInit {
     setTimeout(() => {
       this.loadScheduleData();
       this.loadUserData();
-      // this.loadEditScheduleData();
+      this.loadEditScheduleData();
     }, 100);
   }
-  loadEditScheduleData(){
+  loadEditScheduleData(){    
     this.scheduleService.getScheduleEditData().subscribe((data) => {
+      console.log("load data----->",data);
+      console.log("data.preschedulekey--->",data.preschedulekey);
       if (data) {
         this.isEdit = data.isEdit;
         this.tab = data.tab;
@@ -272,7 +275,7 @@ export class ShiftScheduleComponent implements OnInit {
             startTime: data.startTime,
             endTime: data.endTime,
             comments: data.comments,
-            id:data.preschedulekey
+            id: data.preschedulekey
           });
           this.cdr.detectChanges();
         }, 0);
@@ -303,7 +306,6 @@ export class ShiftScheduleComponent implements OnInit {
     });
     this.scheduleService.getTab().subscribe((tab) => {
       if(tab){
-        console.log("tab----------->>>",tab);
         this.tab = tab;
       }
     });
@@ -543,9 +545,8 @@ export class ShiftScheduleComponent implements OnInit {
 
       const newShift = { ...formData, duration: this.duration };
       this.shiftSchedule1 = this.shiftSchedule1
-        ? [...this.shiftSchedule1, newShift]
-        : [newShift];
-
+      ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
+      : [{ ...newShift, isNew: true }];
       const formatDate = (date: any) => {
         if (typeof date === 'string') {
           return date;
@@ -578,6 +579,8 @@ export class ShiftScheduleComponent implements OnInit {
     console.log('this.shiftSchedule---------', this.shiftSchedule);
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
+
+  
 
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');
@@ -1060,7 +1063,7 @@ export class ShiftScheduleComponent implements OnInit {
     const scheduleDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   
     const shift = this.shiftForm.value || {};
-    
+    console.log("shift====>",shift);
     const obj = {
       dempoId: shift.user?.dempoId || null,
       scheduleDate,
@@ -1069,14 +1072,13 @@ export class ShiftScheduleComponent implements OnInit {
       startTime: startTime || null,
       endTime: endTime || null,
       entryby: this.authenticatedUser?.netID || null,
-      id: shift.preschedulekey || null,
+      id: shift.id || null,
     };
   
     this.http.post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
-          this.getScheduleList();
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
         },

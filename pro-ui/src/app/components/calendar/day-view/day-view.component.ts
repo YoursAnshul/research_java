@@ -140,6 +140,10 @@ export class DayViewComponent implements OnInit {
     schedule.tab = "Day";
     console.log('Clicked schedule------->:', schedule);
     this.scheduleService.setSchedule(schedule);
+    if (this.dialog.openDialogs.length > 0) {
+        console.warn("A schedule dialog is already open.");
+        return;
+    }
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',
       height: '900px',
