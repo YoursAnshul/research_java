@@ -519,13 +519,13 @@
           <div class="d-flex align-items-center justify-content-between">
             <div class="font-medium tracking-wider">SHIFT SCHEDULE</div>
             <button
-              style="height: 30px"
+              style="height: 30px; width: 100px;"
               mat-raised-button
               color="primary"
               class="submit wd90"
               (click)="openUserSchedule()"
             >
-              Add Shift
+             + Add Shift
             </button>
           </div>
           <app-calendar [authenticatedUser]="authenticatedUser" [contextUser]="selectedUser"></app-calendar>

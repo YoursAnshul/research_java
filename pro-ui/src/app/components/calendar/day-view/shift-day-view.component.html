@@ -24,7 +24,7 @@
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
     <div
-      *ngIf="authenticatedUser?.interviewer"
+      
       class="total-hour-header"
       style="background: #0078d4; color: white"
     >
@@ -37,7 +37,7 @@
       <div
         class="user-card"
         [ngStyle]="{
-          width: authenticatedUser?.interviewer ? '12.85%' : '15.4%'
+          width: authenticatedUser?.interviewer ? '12.85%' : '14.6%'
         }"
       >
         {{ us.user.userName }}
@@ -67,7 +67,7 @@
           </div>
         </div>
       </div>
-      <div class="input-container" *ngIf="authenticatedUser?.interviewer">
+      <div class="input-container">
         <input
           type="text"
           [value]="schedule?.duration + ' hr'"
@@ -80,7 +80,7 @@
       }
     </div>
     } <div class="user-card" [ngStyle]="{
-      width: authenticatedUser?.interviewer ? '12.85%' : '15.4%'
+      width: authenticatedUser?.interviewer ? '12.85%' : '14.6%'
     }" style="  margin-top: -5px;"></div>
     <div *ngIf="filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer" class="no-results bold italic" style="margin-top: -5px;">
       No schedules found for this day...

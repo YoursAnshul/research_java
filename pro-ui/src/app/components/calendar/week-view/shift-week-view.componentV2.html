@@ -14,7 +14,7 @@
       </div>
   
       <div
-        *ngIf="authenticatedUser?.interviewer"
+        
         [ngStyle]="{
           width: '7%',
           'background-color': '#0078d4',
@@ -46,7 +46,7 @@
       </div>
   
       <div
-        *ngIf="authenticatedUser?.interviewer"
+        
         [ngStyle]="{
           width: '7%',
           justifyContent: 'center',
@@ -84,7 +84,7 @@
   
     <!-- User Schedules -->
     <div id="week-calendar-user-schedules">
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day1Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -103,7 +103,7 @@
       </div>
       
   
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day2Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -121,7 +121,7 @@
         }
       </div>
   
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day3Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -139,7 +139,7 @@
         }
       </div>
   
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day4Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -157,7 +157,7 @@
         }
       </div>
   
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day5Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -175,7 +175,7 @@
         }
       </div>
   
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day6Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -193,7 +193,7 @@
         }
       </div>
   
-      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day7Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
