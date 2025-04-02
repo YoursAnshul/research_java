@@ -83,7 +83,7 @@
     
   
     <!-- User Schedules -->
-    <div id="week-calendar-user-schedules">
+    <div id="week-calendar-user-schedules" style="display: flex;">
       <div [ngClass]="authenticatedUser?.interviewer ? 'day-schedules-container-interviewer' : 'day-schedules-container-interviewer'">
         @for (schedule of weekSchedules?.day1Schedules; track schedule) {
           <div class="schedule-card"
