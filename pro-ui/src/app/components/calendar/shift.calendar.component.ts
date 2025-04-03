@@ -91,8 +91,8 @@ export class ShifCalendarComponent implements OnInit {
   userObj: any;
   tabIndex = 0;
   userList: any[] = [];
-  defaultUser = { userId: 0, userName: 'Any Active Users' };
-  defaultProject = { projectId: 0, projectName: 'Any Active Projects' };
+  defaultUser = { userId: 0, userName: 'Any Users' };
+  defaultProject = { projectId: 0, projectName: 'Any Projects' };
   selectedUser: any = this.defaultUser;
   selectedProject: any = this.defaultProject;
   @Input() shiftSchedule1: any[] = [];
@@ -277,8 +277,8 @@ export class ShifCalendarComponent implements OnInit {
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
     });
-    this.defaultUser = { userId: 0, userName: 'Any Active Users' };
-    this.defaultProject = { projectId: 0, projectName: 'Any Active Projects' };
+    this.defaultUser = { userId: 0, userName: 'Any Users' };
+    this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
     this.getScheduleList(
@@ -325,12 +325,18 @@ export class ShifCalendarComponent implements OnInit {
    if (this.homeUser) {
       this.selectedUser = this.homeUser;
       this.defaultUser =this.homeUser
+      console.log("this.selectedUser--4444--",this.selectedUser);
+      this.getAuthor();
+      this.getProjectInfo(this.selectedUser?.dempoId);
     }
     if (this.homeSelectedProject) {
       this.selectedProject = this.homeSelectedProject;
+      this.defaultProject = this.homeSelectedProject
+      console.log("this.selectedProject--4444--",this.selectedProject);
+      
     }    
-    this.getAuthor();
-    this.getProjectInfo('');
+   
+    
     if(this.changeDate){
       this.selectedDate.setValue(this.changeDate);
       this.getScheduleList(
@@ -974,8 +980,12 @@ export class ShifCalendarComponent implements OnInit {
   
 
   onUserChange(user: any) {
+    
     this.selectedUser = user;
     this.getProjectInfo(user?.dempoId);
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
     this.selectedUserChange.emit(this.selectedUser);
   }
   onProjectChange(project: any) {
@@ -986,6 +996,7 @@ export class ShifCalendarComponent implements OnInit {
 
   onSelectedUserChange(user: any) {
     this.selectedUser = user;
+    
   }
   onSelectedProjectChange(project: any) {
     this.selectedProject = project;
