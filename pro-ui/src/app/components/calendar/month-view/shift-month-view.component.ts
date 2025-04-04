@@ -16,6 +16,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import moment from 'moment-timezone';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { ScheduleService } from '../../schedule/schedule.service';
 
 @Component({
   selector: 'app-shift-month-view',
@@ -34,8 +35,8 @@ export class ShiftMonthViewComponent implements OnInit {
   @Output() addDateEvent = new EventEmitter<Date>();
   @Output() monthDate = new EventEmitter<Date>();
    authenticatedUser!: IAuthenticatedUser;
-
-  constructor(private authenticationService: AuthenticationService) {
+   type: any = null;
+  constructor(private authenticationService: AuthenticationService,private scheduleService: ScheduleService) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -43,7 +44,9 @@ export class ShiftMonthViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.processShiftSchedules();
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (
       changes['selectedUser'] ||
@@ -58,7 +61,8 @@ export class ShiftMonthViewComponent implements OnInit {
     if (!this.monthSchedules) {
       this.monthSchedules = { weekSchedules: [] };
     }
-  
+    
+    
     this.monthSchedules.weekSchedules = [];
   
     const referenceDate = new Date(this.selectedDate?.value || new Date());
@@ -86,10 +90,19 @@ export class ShiftMonthViewComponent implements OnInit {
       if (this.selectedUser && this.selectedUser.userId && this.selectedUser.userId !== 0) {
         isValid = isValid && (shift.user?.userId === this.selectedUser.userId);
       }
-    
-      if (this.selectedProject && this.selectedProject.projectId) {
-        isValid = isValid && (shift.projects?.projectId === this.selectedProject.projectId);
-      }
+      console.log("this.selectedProject.projectId===========",this.selectedProject.projectId);
+      this.scheduleService.getType().subscribe((type) => {
+        if(type){
+          this.type = type;
+          console.log("this.type===========",this.type);
+
+        }else{
+          if (this.selectedProject && this.selectedProject.projectId && this.selectedProject.projectId !== 0) {
+            isValid = isValid && (shift.projects?.projectId === this.selectedProject.projectId);
+          }
+        }
+      });
+      
     
       return isValid;
     });

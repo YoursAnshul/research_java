@@ -10,6 +10,7 @@ export class ScheduleService {
   private scheduleEditData = new BehaviorSubject<any>(null);  
 
   private tab = new BehaviorSubject<any>(null); 
+  private type = new BehaviorSubject<any>(null); 
 
 
   setSchedule(schedule: any): void {
@@ -55,5 +56,17 @@ export class ScheduleService {
 
   clearScheduleEditData(): void {
     this.scheduleEditData.next(null);
+  }
+
+  setType(type: any): void {
+    this.type.next(type);
+  }
+
+  getType() {
+    return this.type.asObservable();
+  }
+
+  clearType(): void {
+    this.type.next(null);
   }
 }

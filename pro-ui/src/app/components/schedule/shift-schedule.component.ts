@@ -253,7 +253,7 @@ export class ShiftScheduleComponent implements OnInit {
   loadEditScheduleData(){    
     this.scheduleService.getScheduleEditData().subscribe((data) => {
       console.log("load data----->",data);
-      console.log("data.preschedulekey--->",data.preschedulekey);
+      // console.log("data.preschedulekey--->",data.preschedulekey);
       if (data) {
         this.isEdit = data.isEdit;
         this.tab = data.tab;

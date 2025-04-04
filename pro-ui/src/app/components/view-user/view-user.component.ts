@@ -1241,6 +1241,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
   openUserSchedule(){
     this.scheduleService.setUser(this.selectedUser);
+    this.scheduleService.setType('user-profile')
     this.scheduleService.setTab("Month")
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',
