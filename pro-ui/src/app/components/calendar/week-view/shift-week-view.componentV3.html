@@ -1,4 +1,4 @@
-<div id="week-calendar1" style="background-color: #f2f2f2 !important;height: 500px;" >
+<div id="week-calendar" style="background-color: #f2f2f2 !important;">
     <div id="week-calendar-header"></div>
   
     <div id="week-calendar-time-header" class="week-calendar-time-header">
@@ -11,27 +11,6 @@
         }"
       >
         {{ day }} {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
-      </div>
-  
-      <div 
-      *ngIf="authenticatedUser?.interviewer"
-        [ngStyle]="{
-          width: '7%',
-          'background-color': '#0078d4',
-          color: 'white'
-        }"
-      >
-        Total
-      </div>
-      <div 
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
-        [ngStyle]="{
-          width: '7%',
-          'background-color': '#0078d4',
-          color: 'white'
-        }"
-      >
-        Total
       </div>
     </div>
   
@@ -55,44 +34,7 @@
         </mat-icon>
       </div>
   
-      <div
-      *ngIf="authenticatedUser?.interviewer"
-        [ngStyle]="{
-          width: '7%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '30px'
-        }"
-      >
-        <input
-          id="week-calendar-user-schedules"
-          type="text"
-          [value]="calculateTotalDuration() + ' hr'"
-          class="right-aligned-input"
-          [style.height]="inputHeight"
-          [readonly]="true"
-          disabled="true"
-        />
-      </div>
-      <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
-        [ngStyle]="{
-          width: '7%',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '30px'
-        }"
-      >
-        <input
-          id="week-calendar-user-schedules"
-          type="text"
-          [value]="calculateTotalDuration() + ' hr'"
-          class="right-aligned-input"
-          [style.height]="inputHeight"
-          [readonly]="true"
-          disabled="true"
-        />
-      </div>
+      
     </div>
     @if ((weekSchedules?.day1Schedules || []).length < 1
       && (weekSchedules?.day2Schedules || []).length < 1
@@ -113,7 +55,7 @@
   
     <!-- User Schedules -->
     <div id="week-calendar-user-schedules" style="display: flex;">
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day1Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -132,7 +74,7 @@
       </div>
       
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day2Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -150,7 +92,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day3Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -168,7 +110,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day4Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -186,7 +128,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day5Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -204,7 +146,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day6Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"
@@ -222,7 +164,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="'day-schedules-container'">
         @for (schedule of weekSchedules?.day7Schedules; track schedule) {
           <div class="schedule-card"
             (mouseenter)="displayHoverMessage($event, schedule)"

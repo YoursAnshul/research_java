@@ -7,6 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import {
+  IAuthenticatedUser,
   IMonthSchedules,
   ISchedule,
   IWeekSchedules,
@@ -14,6 +15,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import moment from 'moment-timezone';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-shift-month-view',
@@ -31,52 +33,74 @@ export class ShiftMonthViewComponent implements OnInit {
   @Input() selectedProject: any = null;
   @Output() addDateEvent = new EventEmitter<Date>();
   @Output() monthDate = new EventEmitter<Date>();
+   authenticatedUser!: IAuthenticatedUser;
 
-  constructor() {}
+  constructor(private authenticationService: AuthenticationService) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+  }
 
   ngOnInit(): void {}
-  ngOnChanges(changes: SimpleChanges): void {    
-    this.processShiftSchedules();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['selectedUser'] ||
+      changes['selectedProject'] ||
+      changes['shiftSchedule'] ||
+      changes['selectedDate']
+    ) {
+      this.processShiftSchedules();
+    }
   }
   processShiftSchedules(): void {
-    if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
-      console.log('No shift schedule available.');
-      return;
+    if (!this.monthSchedules) {
+      this.monthSchedules = { weekSchedules: [] };
     }
   
-    console.log('Selected Date:', this.selectedDate.value);
+    this.monthSchedules.weekSchedules = [];
   
-    const referenceDate = new Date(this.selectedDate.value);
+    const referenceDate = new Date(this.selectedDate?.value || new Date());
     const startOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
     const endOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 0);
   
     startOfMonth.setHours(0, 0, 0, 0);
     endOfMonth.setHours(23, 59, 59, 999);
   
-    // Always display 5 weeks starting from the first Monday
-    let weekStarts = this.getWeekStarts(startOfMonth);
+    const weekStarts = this.getWeekStarts(startOfMonth);
   
-    if (!this.monthSchedules || !this.monthSchedules.weekSchedules) {
-      this.monthSchedules = { weekSchedules: [] };
+    if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
+      for (const weekStart of weekStarts) {
+        this.monthSchedules.weekSchedules.push(this.createEmptyWeekSchedule(weekStart));
+      }
+      return;
     }
-    this.monthSchedules.weekSchedules = [];
   
-    // Group shifts by week start date
+    const filteredShifts = this.shiftSchedule.filter(shift => {
+      const shiftDate = moment(shift.dayWiseDate).tz('America/New_York').startOf('day').toDate();
+      if (shiftDate < startOfMonth || shiftDate > endOfMonth) return false;
+    
+      let isValid = true;
+    
+      if (this.selectedUser && this.selectedUser.userId && this.selectedUser.userId !== 0) {
+        isValid = isValid && (shift.user?.userId === this.selectedUser.userId);
+      }
+    
+      if (this.selectedProject && this.selectedProject.projectId) {
+        isValid = isValid && (shift.projects?.projectId === this.selectedProject.projectId);
+      }
+    
+      return isValid;
+    });
+  
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
   
-    for (const shift of this.shiftSchedule) {
-      const shiftDate = moment(shift.dayWiseDate)
-              .tz('America/New_York')
-              .startOf('day')
-              .toDate();
+    for (const shift of filteredShifts) {
+      const shiftDate = moment(shift.dayWiseDate).tz('America/New_York').startOf('day').toDate();
       shiftDate.setHours(0, 0, 0, 0);
   
-      if (shiftDate < startOfMonth || shiftDate > endOfMonth) {
-        continue; // Skip shifts outside the current month
-      }
-  
       const weekStart = this.getWeekStart(shiftDate);
-  
       const schedule: ISchedule = {
         preschedulekey: shift.user?.userId || '',
         displayName: shift.user?.userName || '',
@@ -110,26 +134,15 @@ export class ShiftMonthViewComponent implements OnInit {
       if (!shiftsByWeek.has(key)) {
         shiftsByWeek.set(key, []);
       }
-      shiftsByWeek.get(key)?.push(schedule);
+      shiftsByWeek.get(key)!.push(schedule);
     }
   
-    // Display all 5 weeks and populate matching ones with data
     for (const weekStart of weekStarts) {
-      let weekSchedule: IWeekSchedules = {
-        weekStart: weekStart,
-        day1Schedules: [],
-        day2Schedules: [],
-        day3Schedules: [],
-        day4Schedules: [],
-        day5Schedules: [],
-        day6Schedules: [],
-        day7Schedules: [],
-      };
-  
+      const weekSchedule = this.createEmptyWeekSchedule(weekStart);
       const key = weekStart.toISOString();
+  
       if (shiftsByWeek.has(key)) {
         const weekShifts = shiftsByWeek.get(key) || [];
-  
         for (const schedule of weekShifts) {
           const dayIndex = schedule.dayOfWeek;
           (weekSchedule as any)[`day${dayIndex}Schedules`].push(schedule);
@@ -139,6 +152,20 @@ export class ShiftMonthViewComponent implements OnInit {
       this.monthSchedules.weekSchedules.push(weekSchedule);
     }
   }
+
+  createEmptyWeekSchedule(weekStart: Date): IWeekSchedules {
+    return {
+      weekStart: new Date(weekStart),
+      day1Schedules: [],
+      day2Schedules: [],
+      day3Schedules: [],
+      day4Schedules: [],
+      day5Schedules: [],
+      day6Schedules: [],
+      day7Schedules: [],
+    };
+  }
+  
   
   getWeekStarts(referenceDate: Date): Date[] {
     const weekStarts: Date[] = [];

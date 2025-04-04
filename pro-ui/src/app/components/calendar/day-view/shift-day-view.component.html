@@ -1,9 +1,21 @@
 <div id="day-calendar">
   <div id="day-calendar-header"></div>
   <div id="day-calendar-time-header">
-    <div
+    <div *ngIf="authenticatedUser?.interviewer"
       [ngStyle]="{
-        width: authenticatedUser?.interviewer ? '13.1%' : '13.1%',
+        width: '13.1%',
+        border: 'none'
+      }"
+    ></div>
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
+      [ngStyle]="{
+        width: '13.1%',
+        border: 'none'
+      }"
+    ></div>
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId==0"
+      [ngStyle]="{
+        width: '15.4%',
         border: 'none'
       }"
     ></div>
@@ -24,7 +36,14 @@
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
     <div
-      
+    *ngIf="authenticatedUser?.interviewer"
+      class="total-hour-header"
+      style="background: #0078d4; color: white"
+    >
+      Total
+    </div>
+    <div
+    *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
       class="total-hour-header"
       style="background: #0078d4; color: white"
     >
@@ -34,14 +53,33 @@
   <div id="day-calendar-user-schedules" style="margin-top: 4px">
     @for (us of filteredShiftSchedule; track us) {
     <div class="user-schedule-row">
-      <div
+      <div *ngIf="authenticatedUser?.interviewer"
         class="user-card"
         [ngStyle]="{
-          width: authenticatedUser?.interviewer ? '12.85%' : '12.85%'
+          width: '12.85%'
         }"
       >
         {{ us.user.userName }}
       </div>
+
+      <div *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
+        class="user-card"
+        [ngStyle]="{
+          width: '12.85%'
+        }"
+      >
+        {{ us.user.userName }}
+      </div>
+
+      <div *ngIf="authenticatedUser?.admin && selectedUser?.userId==0"
+        class="user-card"
+        [ngStyle]="{
+          width: '15.4%'
+        }"
+      >
+        {{ us.user.userName }}
+      </div>
+
       @for (schedule of [us]; track schedule) {
       <div
         class="schedule-card"
@@ -64,7 +102,16 @@
           </div>
         </div>
       </div>
-      <div class="input-container">
+      <div class="input-container" *ngIf="authenticatedUser?.interviewer">
+        <input
+          type="text"
+          [value]="schedule?.duration + ' hr'"
+          class="right-aligned-input"
+          [readonly]="true"
+          disabled="true"
+        />
+      </div>
+      <div class="input-container" *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0">
         <input
           type="text"
           [value]="schedule?.duration + ' hr'"
@@ -76,9 +123,18 @@
 
       }
     </div>
-    } <div class="user-card" [ngStyle]="{
-      width: authenticatedUser?.interviewer ? '12.85%' : '12.85%'
+    } <div *ngIf="authenticatedUser?.interviewer" class="user-card" [ngStyle]="{
+      width: '12.85%'
     }" style="  margin-top: -5px;"></div>
+
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0" class="user-card" [ngStyle]="{
+      width: '12.85%'
+    }" style="  margin-top: -5px;"></div>
+
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId==0" class="user-card" [ngStyle]="{
+      width: '15.4%'
+    }" style="  margin-top: -5px;"></div>
+
     <div *ngIf="filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer" class="no-results bold italic" style="margin-top: -5px;">
       No schedules found for this day...
     </div>

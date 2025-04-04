@@ -72,7 +72,8 @@ export class ShiftDayViewComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log("this.shiftSchedule========88888============", this.shiftSchedule);
-  
+    console.log("this.selectedUser?.userId========88888============", this.selectedUser?.userId);
+    
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
@@ -113,9 +114,18 @@ export class ShiftDayViewComponent implements OnInit {
     const startHour = this.convertTimeToSlot(startTime); // Converts time to slot index (8 = 8 AM, 9 = 9 AM, etc.)
     const endHour = this.convertTimeToSlot(endTime); // Converts end time to slot index
     const duration = endHour - startHour; // Calculate event duration in hours
-
-    const leftOffset = this.authenticatedUser?.interviewer ? 12.85 : 12.85; // Adjust offset based on role
-    const totalHours = this.authenticatedUser?.interviewer ? 17 : 17; // From 08:00 AM to 11:00 PM = 16 hours
+    let leftOffset = 0;
+    let totalHours = 0;
+    if (this.authenticatedUser?.interviewer) {
+      leftOffset = 12.85; 
+      totalHours = 17;
+    }else if (this.authenticatedUser?.admin && this.selectedUser?.userId!=0) {
+      leftOffset = 12.85; 
+      totalHours = 17;
+    } else if (this.authenticatedUser?.admin && this.selectedUser?.userId==0) {
+      leftOffset = 15.4; 
+      totalHours = 16;
+    }
     const slotWidth = (100 - leftOffset) / totalHours; // Remaining width for time slots
 
     return {
@@ -199,31 +209,31 @@ export class ShiftDayViewComponent implements OnInit {
     this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: any): void {
-      schedule.tab = "Day";
-      if (!('isEdit' in schedule)) {
-        schedule.isEdit = false;
-      }
-      if(this.dialog.openDialogs.length > 0){
-        const existingDialog = this.dialog.openDialogs.find(
-          (dialog) => dialog.componentInstance instanceof ShiftScheduleComponent
-        );
+      // schedule.tab = "Day";
+      // if (!('isEdit' in schedule)) {
+      //   schedule.isEdit = false;
+      // }
+      // if(this.dialog.openDialogs.length > 0){
+      //   const existingDialog = this.dialog.openDialogs.find(
+      //     (dialog) => dialog.componentInstance instanceof ShiftScheduleComponent
+      //   );
   
-        if (existingDialog) {
-          existingDialog.close();
-        }
-      }
-      schedule.isEdit = !schedule.isEdit;
+      //   if (existingDialog) {
+      //     existingDialog.close();
+      //   }
+      // }
+      // schedule.isEdit = !schedule.isEdit;
       
-      console.log('Clicked edit schedule------->:', schedule);
-      this.scheduleService.setScheduleEditData(schedule);
+      // console.log('Clicked edit schedule------->:', schedule);
+      // this.scheduleService.setScheduleEditData(schedule);
       
-      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-        width: '1900px',
-        height: '900px',
-        disableClose: true,
-      });
-      dialogRef.afterClosed().subscribe((result: any) => {
-        console.log('Shift Schedule dialog was closed', result);
-      });
+      // const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      //   width: '1900px',
+      //   height: '900px',
+      //   disableClose: true,
+      // });
+      // dialogRef.afterClosed().subscribe((result: any) => {
+      //   console.log('Shift Schedule dialog was closed', result);
+      // });
   }
 }

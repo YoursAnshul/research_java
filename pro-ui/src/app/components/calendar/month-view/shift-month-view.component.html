@@ -1,4 +1,4 @@
-<div style="background-color: #f2f2f2 !important">
+<div *ngIf="authenticatedUser?.interviewer" style="background-color: #f2f2f2 !important">
   @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {
   <div class="week-schedules-container">
     <app-shift-week-view
@@ -6,6 +6,34 @@
       (resetShiftSchedule)="onResetShiftSchedule()"
       [monthPart]="true"
     ></app-shift-week-view>
+  </div>
+  } @if ([monthSchedules?.weekSchedules || []].length < 1) {
+  <app-shift-week-view [weekSchedules]="null"></app-shift-week-view>
+  }
+</div>
+
+<div *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0" style="background-color: #f2f2f2 !important">
+  @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {
+  <div class="week-schedules-container">
+    <app-shift-week-view
+      [weekSchedules]="weekSchedules"
+      (resetShiftSchedule)="onResetShiftSchedule()"
+      [monthPart]="true"
+    ></app-shift-week-view>
+  </div>
+  } @if ([monthSchedules?.weekSchedules || []].length < 1) {
+  <app-shift-week-view [weekSchedules]="null"></app-shift-week-view>
+  }
+</div>
+
+<div *ngIf="authenticatedUser?.admin && selectedUser?.userId==0" style="background-color: #f2f2f2 !important">
+  @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {
+  <div class="week-schedules-container">
+    <app-shift-week-view-v3
+      [weekSchedules]="weekSchedules"
+      (resetShiftSchedule)="onResetShiftSchedule()"
+      [monthPart]="true"
+    ></app-shift-week-view-v3>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
   <app-shift-week-view [weekSchedules]="null"></app-shift-week-view>
