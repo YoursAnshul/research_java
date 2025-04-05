@@ -163,7 +163,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
           userName: null,
           expr1: null,
           isNew: shift.isNew === true || !shift.preschedulekey,
-          projectId: shift?.projects?.projectId
+          projectId: shift.projects?.projectId
         };
 
         (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(

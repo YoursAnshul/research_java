@@ -155,7 +155,7 @@ export class ShiftMonthViewComponent implements OnInit {
 
       const weekStart = this.getWeekStart(shiftDate);
       const schedule: ISchedule = {
-        preschedulekey: shift.user?.userId || '',
+        preschedulekey:shift?.preschedulekey || '',
         displayName: shift.user?.userName || '',
         projectName: shift.projects?.projectName || '',
         projectColor: shift.projects?.projectColor || '',
@@ -182,6 +182,7 @@ export class ShiftMonthViewComponent implements OnInit {
         userName: null,
         expr1: null,
         isNew: shift.isNew === true || !shift.preschedulekey,
+        projectId: shift.projects?.projectId
       };
 
       const key = weekStart.toISOString();
