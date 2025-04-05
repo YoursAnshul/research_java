@@ -136,7 +136,7 @@ import {
           const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
   
           const schedule: ISchedule = {
-            preschedulekey: shift.user?.userId || '',
+            preschedulekey: shift?.preschedulekey || '',
             displayName: shift.user?.userName || '',
             projectName: shift.projects?.projectName || '',
             projectColor: shift.projects?.projectColor || '',
