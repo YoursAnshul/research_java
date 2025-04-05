@@ -1047,6 +1047,7 @@ export class ShifCalendarComponent implements OnInit {
 
         // Ensure `this.shiftSchedule` is not null before pushing items
         this.shiftSchedule.push(...missingSchedules);
+        this.syncData(this.shiftSchedule);
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);

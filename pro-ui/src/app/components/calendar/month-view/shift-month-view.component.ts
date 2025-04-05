@@ -33,7 +33,7 @@ export class ShiftMonthViewComponent implements OnInit {
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
   @Output() addDateEvent = new EventEmitter<Date>();
-  @Output() monthDate = new EventEmitter<Date>();
+  @Output() monthDate = new EventEmitter<FormControl>();
    authenticatedUser!: IAuthenticatedUser;
    type: any = null;
   constructor(private authenticationService: AuthenticationService,private scheduleService: ScheduleService) {
@@ -54,8 +54,12 @@ export class ShiftMonthViewComponent implements OnInit {
       changes['shiftSchedule'] ||
       changes['selectedDate']
     ) {
+      
       this.processShiftSchedules();
     }
+  }
+  handleMonthDate(event: FormControl){
+    this.monthDate.emit(event);
   }
   processShiftSchedules(): void {
     if (!this.monthSchedules) {

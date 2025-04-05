@@ -270,6 +270,7 @@
         [selectedUser]="selectedUser"
         [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
+        (monthDate)="handleWeekDate($event)"
       ></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>
