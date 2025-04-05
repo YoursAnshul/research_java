@@ -234,4 +234,31 @@ public class ScheduleServiceImpl implements ScheduleService {
 		return response;
 	}
 
+	@Override
+	public GeneralResponse deleteSchedule(Long id) {
+		GeneralResponse response = new GeneralResponse();
+		response.Message = "";
+
+		if (id == null) {
+			response.Message = "Error: Missing Schedule ID.";
+			return response;
+		}
+
+		String deleteQuery = "DELETE FROM core.schedules WHERE preschedulekey = ?";
+
+		try {
+			int rowsDeleted = this.jdbcTemplate.update(deleteQuery, id);
+
+			if (rowsDeleted == 0) {
+				response.Message = "No matching schedule found to delete.";
+			} else {
+				response.Message = "Schedule deleted successfully.";
+			}
+		} catch (Exception e) {
+			response.Message = "Error deleting schedule: " + e.getMessage();
+		}
+
+		return response;
+	}
+
 }

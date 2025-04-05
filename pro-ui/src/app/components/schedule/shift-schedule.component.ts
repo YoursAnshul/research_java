@@ -185,12 +185,12 @@ export class ShiftScheduleComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBlockOutDates();
-    this.getAuthor('');  
+    this.getAuthor('');
     if (this.selectedUser) {
       this.getProjectInfo(this.selectedUser.dempoId);
     } else {
       this.getProjectInfo('');
-    }  
+    }
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
@@ -219,8 +219,8 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
       if (date) {
-        if(this.authenticatedUser?.interviewer)
-        this.validateBlockOutDate(date);
+        if (this.authenticatedUser?.interviewer)
+          this.validateBlockOutDate(date);
         this.updateDayLabel(date);
       }
     });
@@ -247,65 +247,65 @@ export class ShiftScheduleComponent implements OnInit {
     setTimeout(() => {
       this.loadScheduleData();
       this.loadUserData();
-      this.loadEditScheduleData();
+      // this.loadEditScheduleData();
     }, 100);
   }
-  loadEditScheduleData(){    
-    this.scheduleService.getScheduleEditData().subscribe((data) => {
-      console.log("load data----->",data);
-      // console.log("data.preschedulekey--->",data.preschedulekey);
-      if (data) {
-        this.isEdit = data.isEdit;
-        this.tab = data.tab;
-        const selectedUser =
-          this.userList.find((user) => user?.userId === data?.user?.userId) || null;
-        this.selectedUser = selectedUser;
-        this.homeUser = selectedUser;        
-        const selectedProject =
-          this.allProjects.find((p) => p?.projectId === data?.projects?.projectId) ||
-          null;
-        this.selectedProject = selectedProject;
-        this.homeSelectedProject = selectedProject;
-        this.homeSelectedDate = new Date(data.dayWiseDate);
-        setTimeout(() => {
-          this.shiftForm.patchValue({
-            user: this.selectedUser,
-            projects: this.selectedProject,
-            dayWiseDate: new Date(data.dayWiseDate),
-            startTime: data.startTime,
-            endTime: data.endTime,
-            comments: data.comments,
-            id: data.preschedulekey
-          });
-          this.cdr.detectChanges();
-        }, 0);
-      }
-    });
-  }
-  loadUserData():void {
+  // loadEditScheduleData(){
+  //   this.scheduleService.getScheduleEditData().subscribe((data) => {
+  //     console.log("load data----->",data);
+  //     // console.log("data.preschedulekey--->",data.preschedulekey);
+  //     if (data) {
+  //       this.isEdit = data.isEdit;
+  //       this.tab = data.tab;
+  //       const selectedUser =
+  //         this.userList.find((user) => user?.userId === data?.user?.userId) || null;
+  //       this.selectedUser = selectedUser;
+  //       this.homeUser = selectedUser;
+  //       const selectedProject =
+  //         this.allProjects.find((p) => p?.projectId === data?.projects?.projectId) ||
+  //         null;
+  //       this.selectedProject = selectedProject;
+  //       this.homeSelectedProject = selectedProject;
+  //       this.homeSelectedDate = new Date(data.dayWiseDate);
+  //       setTimeout(() => {
+  //         this.shiftForm.patchValue({
+  //           user: this.selectedUser,
+  //           projects: this.selectedProject,
+  //           dayWiseDate: new Date(data.dayWiseDate),
+  //           startTime: data.startTime,
+  //           endTime: data.endTime,
+  //           comments: data.comments,
+  //           id: data.preschedulekey
+  //         });
+  //         this.cdr.detectChanges();
+  //       }, 0);
+  //     }
+  //   });
+  // }
+  loadUserData(): void {
     this.scheduleService.getUser().subscribe((data) => {
-      if(data){
+      if (data) {
         const selectedUser =
-        this.userList.find((user) => user?.userId === data?.userid) || null;
+          this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;
         const selectedProject =
-        this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
-        null;
-        this.homeSelectedProject = selectedProject;  
-        if(!this.selectedProject){
-           this.selectedProject = selectedProject;
+          this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
+          null;
+        this.homeSelectedProject = selectedProject;
+        if (!this.selectedProject) {
+          this.selectedProject = selectedProject;
         }
         setTimeout(() => {
           this.shiftForm.patchValue({
             user: selectedUser,
-            projects: this.selectedProject
+            projects: this.selectedProject,
           });
           this.cdr.detectChanges();
         }, 0);
       }
     });
     this.scheduleService.getTab().subscribe((tab) => {
-      if(tab){
+      if (tab) {
         this.tab = tab;
       }
     });
@@ -321,10 +321,10 @@ export class ShiftScheduleComponent implements OnInit {
           this.allProjects.find((p) => p?.projectId === data?.projectid) ||
           null;
         this.homeSelectedProject = selectedProject;
-        if(!this.selectedProject){
+        if (!this.selectedProject) {
           this.selectedProject = selectedProject;
         }
-        this.homeSelectedDate = new Date(data.scheduledate); 
+        this.homeSelectedDate = new Date(data.scheduledate);
         setTimeout(() => {
           this.shiftForm.patchValue({
             user: selectedUser,
@@ -348,8 +348,8 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   validateBlockOutDate(selectedDate: Date): void {
-    console.log("Block Out Dates--->", this.blockOutDates);
-  
+    console.log('Block Out Dates--->', this.blockOutDates);
+
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
       this.shiftForm.get('startTime')?.enable();
@@ -357,13 +357,13 @@ export class ShiftScheduleComponent implements OnInit {
       this.blockedTimeSlots = [];
       return;
     }
-  
+
     const selectedDateOnly = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       selectedDate.getDate()
     );
-  
+
     const blockedEntries = this.blockOutDates.filter((blockOut) => {
       const blockOutDate = new Date(blockOut.blockOutDay!);
       const blockOutDateOnly = new Date(
@@ -373,7 +373,7 @@ export class ShiftScheduleComponent implements OnInit {
       );
       return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
     });
-  
+
     if (blockedEntries.length === 0) {
       this.shiftForm.get('startTime')?.enable();
       this.shiftForm.get('endTime')?.enable();
@@ -382,9 +382,11 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       this.confirmationPopup();
     }
-  
-    const hasTimeBlock = blockedEntries.some(blockOut => blockOut.startTime && blockOut.endTime);
-  
+
+    const hasTimeBlock = blockedEntries.some(
+      (blockOut) => blockOut.startTime && blockOut.endTime
+    );
+
     if (!hasTimeBlock) {
       this.shiftForm.get('startTime')?.disable();
       this.shiftForm.get('endTime')?.disable();
@@ -394,29 +396,31 @@ export class ShiftScheduleComponent implements OnInit {
     this.blockedTimeSlots = [];
     blockedEntries.forEach((blockOut) => {
       if (blockOut.startTime && blockOut.endTime) {
-        this.blockedTimeSlots.push(...this.generateBlockedTimeSlots(blockOut.startTime, blockOut.endTime));
+        this.blockedTimeSlots.push(
+          ...this.generateBlockedTimeSlots(blockOut.startTime, blockOut.endTime)
+        );
       }
     });
-  
+
     console.log('Blocked Time Slots:', this.blockedTimeSlots);
-  
+
     // Enable time selection but disable only blocked slots
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
   }
   generateBlockedTimeSlots(startTime: string, endTime: string): string[] {
     const blockedTimes: string[] = [];
-  
+
     // Separate AM and PM slots
-    const amSlots = this.timeSlots.filter(time => time.includes('AM'));
-    const pmSlots = this.timeSlots.filter(time => time.includes('PM'));
-  
+    const amSlots = this.timeSlots.filter((time) => time.includes('AM'));
+    const pmSlots = this.timeSlots.filter((time) => time.includes('PM'));
+
     // Determine if the blocked range is AM or PM
     const isAMBlock = startTime.includes('AM') && endTime.includes('AM');
     const isPMBlock = startTime.includes('PM') && endTime.includes('PM');
-  
+
     let isWithinRange = false;
-  
+
     if (isAMBlock) {
       for (const time of amSlots) {
         if (time === startTime) isWithinRange = true;
@@ -430,17 +434,13 @@ export class ShiftScheduleComponent implements OnInit {
         if (time === endTime) break; // Stop after endTime
       }
     }
-  
+
     return blockedTimes;
   }
-  
-  
-  
-  
+
   isTimeBlocked(time: string): boolean {
     return this.blockedTimeSlots.includes(time);
   }
-  
 
   confirmationPopup(): void {
     const dialogRef = this.dialog.open(BlockdateDialog, {
@@ -545,8 +545,8 @@ export class ShiftScheduleComponent implements OnInit {
 
       const newShift = { ...formData, duration: this.duration };
       this.shiftSchedule1 = this.shiftSchedule1
-      ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
-      : [{ ...newShift, isNew: true }];
+        ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
+        : [{ ...newShift, isNew: true }];
       const formatDate = (date: any) => {
         if (typeof date === 'string') {
           return date;
@@ -580,8 +580,6 @@ export class ShiftScheduleComponent implements OnInit {
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
 
-  
-
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');
     let [hours, minutes] = timePart.split(':').map(Number);
@@ -610,11 +608,16 @@ export class ShiftScheduleComponent implements OnInit {
         );
 
         const uniqueProjects = new Map();
-        this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
-          if (project.projectType != 4 && !uniqueProjects.has(project.projectId)) {
-            uniqueProjects.set(project.projectId, project);
+        this.allProjects.forEach(
+          (project: { projectId: number; projectType: number }) => {
+            if (
+              project.projectType != 4 &&
+              !uniqueProjects.has(project.projectId)
+            ) {
+              uniqueProjects.set(project.projectId, project);
+            }
           }
-        });
+        );
 
         this.otherProjects = Array.from(uniqueProjects.values());
         if (this.selectedUser) {
@@ -630,7 +633,6 @@ export class ShiftScheduleComponent implements OnInit {
               (project: { projectId: number }) =>
                 project.projectId === defaultProjectId
             ) || null;
-            
         }
       },
       error: (error) => console.error('Error fetching projects:', error),
@@ -1036,34 +1038,36 @@ export class ShiftScheduleComponent implements OnInit {
     console.log('Received shift schedule:', this.shiftSchedule);
   }
   editSchedule() {
-    console.log("on edit ---->",this.shiftForm.value);
+    console.log('on edit ---->', this.shiftForm.value);
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
     const dayWiseDate = this.shiftForm.get('dayWiseDate')?.value;
-    
+
     if (!startTime) {
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.showToastMessage('Start time required.', 'warning');
       return;
     }
-    
+
     if (!endTime) {
       this.shiftForm.get('endTime')?.setErrors({ required: true });
       this.showToastMessage('End time required.', 'warning');
       return;
     }
-  
+
     if (!dayWiseDate) {
       this.showToastMessage('Schedule date required.', 'warning');
       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
       return;
     }
-  
+
     const date = new Date(dayWiseDate);
-    const scheduleDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  
+    const scheduleDate = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
     const shift = this.shiftForm.value || {};
-    console.log("shift====>",shift);
+    console.log('shift====>', shift);
     const obj = {
       dempoId: shift.user?.dempoId || null,
       scheduleDate,
@@ -1074,8 +1078,77 @@ export class ShiftScheduleComponent implements OnInit {
       entryby: this.authenticatedUser?.netID || null,
       id: shift.id || null,
     };
-  
-    this.http.post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
+
+    this.http
+      .post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
+      .subscribe({
+        next: (res: any) => {
+          this.showToastMessage(res.Message, 'success');
+          this.shiftSchedule1 = [];
+          this.shiftSchedule = [];
+          this.isEdit = false;
+          this.scheduleFetchStatus = false
+          localStorage.removeItem('shiftSchedule');
+        },
+        error: (error) => {
+          console.error('Error saving shifts:', error);
+          this.showToastMessage('Failed to update schedule.', 'error');
+          this.shiftSchedule1 = [];
+          this.shiftSchedule = [];
+          localStorage.removeItem('shiftSchedule');
+        },
+      });
+  }
+  handleSchedule(schedule: any) {
+    const storedSchedule = localStorage.getItem('shiftSchedule');
+    if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
+      this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
+    }
+    if (schedule) {
+      this.isEdit = true;
+      this.tab = schedule.tab;
+      let scheduleDate = null;
+      if (schedule.tab == 'Day') {
+        const selectedUser =
+          this.userList.find(
+            (user) => user?.userId === schedule?.user?.userId
+          ) || null;
+        this.selectedUser = selectedUser;
+        const selectedProject =
+          this.allProjects.find(
+            (p) => p?.projectId === schedule?.projects?.projectId
+          ) || null;
+        this.selectedProject = selectedProject;
+        scheduleDate = new Date(schedule.dayWiseDate);
+      } else {
+        const selectedUser =
+          this.userList.find((user) => user?.userId === schedule?.userid) ||
+          null;
+        this.selectedUser = selectedUser;
+        const selectedProject =
+          this.allProjects.find((p) => p?.projectId === schedule.projectId) ||
+          null;
+        this.selectedProject = selectedProject;
+        scheduleDate = new Date(schedule.scheduledate);
+      }
+      console.log('schedule--->', schedule);
+      console.log('scheduleDate--->', scheduleDate);
+      this.shiftForm.patchValue({
+        user: this.selectedUser,
+        projects: this.selectedProject,
+        dayWiseDate: scheduleDate,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        comments: schedule.comments,
+        id: schedule.preschedulekey,
+      });
+    }
+  }
+
+  deleteSchedule() {
+    const shift = this.shiftForm.value || {};
+    this.http
+      .delete(`${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}`)
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
@@ -1083,8 +1156,8 @@ export class ShiftScheduleComponent implements OnInit {
           this.shiftSchedule = [];
         },
         error: (error) => {
-          console.error('Error saving shifts:', error);
-          this.showToastMessage('Failed to update schedule.', 'error');
+          console.error('Error deleting schedule:', error);
+          this.showToastMessage('Failed to delete schedule.', 'error');
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
         },

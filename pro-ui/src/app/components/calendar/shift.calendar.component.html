@@ -24,7 +24,10 @@
       scheduleFetchMessage
     }}</span>
   </div>
-  <mat-tab-group  [(selectedIndex)]="tabIndex" (selectedTabChange)="onTabChanged($event)">
+  <mat-tab-group
+    [(selectedIndex)]="tabIndex"
+    (selectedTabChange)="onTabChanged($event)"
+  >
     <mat-tab label="Day">
       <div class="calendar-wrapper">
         <div
@@ -42,7 +45,6 @@
       </div>
       <div class="center-container" *ngIf="!authenticatedUser?.interviewer">
         <div>
-          
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
             <mat-select
@@ -63,16 +65,25 @@
               (selectionChange)="onProjectChange($event.value)"
               [compareWith]="compareProjects"
             >
+            <mat-option [value]="selectedProject">
+              {{ selectedProject.projectName }}
+            </mat-option>
               <!-- Other Projects -->
               <mat-optgroup label="Projects">
-                <mat-option *ngFor="let project of otherProjects" [value]="project">
+                <mat-option
+                  *ngFor="let project of otherProjects"
+                  [value]="project"
+                >
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
-          
+
               <!-- Admin Projects -->
               <mat-optgroup label="Admin">
-                <mat-option *ngFor="let project of adminProjects" [value]="project">
+                <mat-option
+                  *ngFor="let project of adminProjects"
+                  [value]="project"
+                >
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
@@ -100,6 +111,7 @@
         (selectedUserChange)="onSelectedUserChange($event)"
         (selectedProjectChange)="onSelectedProjectChange($event)"
         (sendDate)="handleDate($event)"
+        (scheduleData)="handleSchedule($event)"
       >
       </app-shift-day-view>
     </mat-tab>
@@ -144,6 +156,9 @@
               [(value)]="selectedProject"
               (selectionChange)="onProjectChange($event.value)"
             >
+            <mat-option [value]="selectedProject">
+              {{ selectedProject.projectName }}
+            </mat-option>
               <!-- Other Projects -->
               <mat-optgroup label="Projects">
                 <mat-option
@@ -186,6 +201,7 @@
         [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
         (sendWeekDate)="handleWeekDate($event)"
+        (scheduleData)="handleSchedule($event)"
       ></app-shift-week-view-v2>
     </mat-tab>
     <mat-tab label="Month">
@@ -228,6 +244,9 @@
               [(value)]="selectedProject"
               (selectionChange)="onProjectChange($event.value)"
             >
+            <mat-option [value]="selectedProject">
+              {{ selectedProject.projectName }}
+            </mat-option>
               <!-- Other Projects -->
               <mat-optgroup label="Projects">
                 <mat-option
@@ -271,6 +290,7 @@
         [selectedProject]="selectedProject"
         (resetShiftSchedule)="onResetShiftSchedule()"
         (monthDate)="handleWeekDate($event)"
+        (scheduleData)="handleSchedule($event)"
       ></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>

@@ -45,7 +45,8 @@ import {
     inputHeight: string = '30px';
     totalDuration: number = 0;
     @Output() sendWeekDate = new EventEmitter<FormControl>();
-  
+    @Output() scheduleData = new EventEmitter<any>();
+
     constructor(
       private globalsService: GlobalsService,
       private sanitizer: DomSanitizer,
@@ -80,6 +81,7 @@ import {
     }
     
     processShiftSchedules(): void {
+      console.log("this.shiftSchedule--3--->",this.shiftSchedule);
       if (
         !this.selectedDateRange?.value?.start ||
         !this.selectedDateRange?.value?.end
@@ -153,13 +155,15 @@ import {
             trainedon: '',
             language: null,
             entryBy: null,
-            dempoid: null,
+            dempoid: shift?.user?.dempoId,
             fname: null,
             lname: null,
             preferredfname: null,
             preferredlname: null,
             userName: null,
             expr1: null,
+            isNew: shift.isNew === true || !shift.preschedulekey,
+            projectId: shift?.projects?.projectId
           };
   
           (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
@@ -324,5 +328,12 @@ import {
       if (weekCalendar) {
         weekCalendar.style.height = height;      
       }
+    }
+    openScheduleData(schedule: any): void {
+      schedule.tab = 'Week';
+      if (!('isEdit' in schedule)) {
+        schedule.isEdit = false;
+      }
+      this.scheduleData.emit(schedule);
     }
   }

@@ -739,4 +739,10 @@ public class UserSchedulesController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	@DeleteMapping("/delete-schedule/{id}")
+	public ResponseEntity<GeneralResponse> deleteSchedule(@PathVariable("id") Long id) {
+		GeneralResponse response = scheduleService.deleteSchedule(id);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
 }

@@ -6,6 +6,7 @@
       (resetShiftSchedule)="onResetShiftSchedule()"
       [monthPart]="true"
       (sendWeekDate)="handleMonthDate($event)"
+      (scheduleData)="handleWeekSchedule($event)"
     ></app-shift-week-view>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
@@ -21,6 +22,7 @@
       (resetShiftSchedule)="onResetShiftSchedule()"
       [monthPart]="true"
       (sendWeekDate)="handleMonthDate($event)"
+      (scheduleData)="handleWeekSchedule($event)"
     ></app-shift-week-view>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
@@ -36,6 +38,7 @@
       (resetShiftSchedule)="onResetShiftSchedule()"
       [monthPart]="true"
       (sendWeekDate)="handleMonthDate($event)"
+      (scheduleData)="handleWeekSchedule($event)"
     ></app-shift-week-view-v3>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {

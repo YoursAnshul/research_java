@@ -47,6 +47,8 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() selectedProjectChange = new EventEmitter<any>();
   @Output() sendDate = new EventEmitter<FormControl>();
   isEdit: boolean = false;
+  @Output() scheduleData = new EventEmitter<any>();
+
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -213,27 +215,29 @@ export class ShiftDayViewComponent implements OnInit {
       if (!('isEdit' in schedule)) {
         schedule.isEdit = false;
       }
-      if(this.dialog.openDialogs.length > 0){
-        const existingDialog = this.dialog.openDialogs.find(
-          (dialog) => dialog.componentInstance instanceof ShiftScheduleComponent
-        );
+      this.scheduleData.emit(schedule); 
+      // if(this.dialog.openDialogs.length > 0){
+      //   const existingDialog = this.dialog.openDialogs.find(
+      //     (dialog) => dialog.componentInstance instanceof ShiftScheduleComponent
+      //   );
   
-        if (existingDialog) {
-          existingDialog.close();
-        }
-      }
-      schedule.isEdit = !schedule.isEdit;
+      //   if (existingDialog) {
+      //     existingDialog.close();
+      //   }
+      // }
+      // schedule.isEdit = !schedule.isEdit;
       
-      console.log('Clicked edit schedule------->:', schedule);
-      this.scheduleService.setScheduleEditData(schedule);
+      // console.log('Clicked edit schedule------->:', schedule);
+      // this.scheduleService.setScheduleEditData(schedule);
       
-      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-        width: '1900px',
-        height: '900px',
-        disableClose: true,
-      });
-      dialogRef.afterClosed().subscribe((result: any) => {
-        console.log('Shift Schedule dialog was closed', result);
-      });
+      // const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      //   width: '1900px',
+      //   height: '900px',
+      //   disableClose: true,
+      // });
+      // dialogRef.afterClosed().subscribe((result: any) => {
+      //   console.log('Shift Schedule dialog was closed', result);
+      //   this.scheduleService.clearScheduleEditData();
+      // });
   }
 }
