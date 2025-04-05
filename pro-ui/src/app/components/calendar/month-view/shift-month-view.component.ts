@@ -182,7 +182,8 @@ export class ShiftMonthViewComponent implements OnInit {
         userName: null,
         expr1: null,
         isNew: shift.isNew === true || !shift.preschedulekey,
-        projectId: shift.projects?.projectId
+        projectId: shift.projects?.projectId,
+        isEdit:shift.isEdit
       };
 
       const key = weekStart.toISOString();

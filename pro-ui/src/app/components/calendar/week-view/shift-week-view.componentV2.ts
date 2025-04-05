@@ -163,7 +163,8 @@ export class ShiftWeekViewComponentV2 implements OnInit {
           userName: null,
           expr1: null,
           isNew: shift.isNew === true || !shift.preschedulekey,
-          projectId: shift.projects?.projectId
+          projectId: shift.projects?.projectId,
+          isEdit: shift.isEdit
         };
 
         (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
@@ -350,9 +351,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   }
   openScheduleData(schedule: any): void {
     schedule.tab = 'Week';
-    if (!('isEdit' in schedule)) {
-      schedule.isEdit = false;
-    }
+    schedule.isEdit = true;
     this.scheduleData.emit(schedule);
   }
 }

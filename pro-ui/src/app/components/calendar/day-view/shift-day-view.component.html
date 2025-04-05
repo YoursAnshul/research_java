@@ -81,6 +81,7 @@
       </div>
 
       @for (schedule of [us]; track schedule) {
+        {{schedule.isEdit}}
       <div
         class="schedule-card"
         (click)="openScheduleData(schedule)"
@@ -88,6 +89,7 @@
         (mouseleave)="hideHoverMessage()"
         [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"
         [style.border]="schedule.isNew ? '2.5px solid #66aeff' : ''"
+        [style.opacity]="schedule.isEdit ? 0.5 : 1"
         >
         <div class="center-align-container">
           <app-project-swatch

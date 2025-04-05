@@ -29,6 +29,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ScheduleService } from './schedule.service';
+import { Utils } from '../../classes/utils';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -813,11 +814,9 @@ export class ShiftScheduleComponent implements OnInit {
 
   handleUser(user: any): void {
     this.filterUser = user;
-    this.getScheduleList();
   }
   handleProject(project: any): void {
     this.filterProject = project;
-    this.getScheduleList();
   }
   getLoginUser(email: string): void {
     if (!email) {
@@ -840,7 +839,6 @@ export class ShiftScheduleComponent implements OnInit {
         } else {
           this.getProjectInfo('');
         }
-        this.getScheduleList();
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -901,9 +899,17 @@ export class ShiftScheduleComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
-          this.getScheduleList();
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
+          localStorage.removeItem('shiftSchedule');
+          this.getScheduleList(
+            Utils.formatDateOnlyToStringUTC(
+              this.selectedDate.value,
+              true,
+              true,
+              true
+            )
+          );
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
@@ -919,68 +925,110 @@ export class ShiftScheduleComponent implements OnInit {
       this.getProjectInfo(event.value.dempoId);
     }
   }
-  getScheduleList(): void {
-    // let formattedDate = '';
-    // let startDateFormat = '';
-    // let endDateFormat = '';
-    // console.log('this.dateRange----------', this.dateRange);
-    // // Handle filtering based on the tab value
-    // if (this.tabValue === 'Day' && this.selectedDayDate) {
-    //   // Single day selection
-    //   startDateFormat = '';
-    //   endDateFormat = '';
-    //   const scheduleDate = new Date(this.selectedDayDate);
-    //   if (!isNaN(scheduleDate.getTime())) {
-    //     formattedDate = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    //   } else {
-    //     console.warn('Invalid scheduleDate:', scheduleDate);
-    //   }
-    // } else if (
-    //   (this.tabValue === 'Week' || this.tabValue === 'Month') &&
-    //   this.dateRange
-    // ) {
-    //   // Range selection
-    //   formattedDate = '';
-    //   startDateFormat = '';
-    //   endDateFormat = '';
-    //   console.log('this.dateRange----------', this.dateRange);
-    //   const startDate = this.dateRange.start
-    //     ? new Date(this.dateRange.start)
-    //     : null;
-    //   const endDate = this.dateRange.end ? new Date(this.dateRange.end) : null;
-    //   if (startDate && !isNaN(startDate.getTime())) {
-    //     startDateFormat = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    //   } else {
-    //     console.warn('Invalid startDate:', startDate);
-    //   }
-    //   if (endDate && !isNaN(endDate.getTime())) {
-    //     endDateFormat = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    //   } else {
-    //     console.warn('Invalid endDate:', endDate);
-    //   }
-    // }
-    // // Construct the API URL properly
-    // let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${this.selectedDayDate}?tab_value=${this.tabValue}`;
-    // if (this.filterProject) {
-    //   url += `&project_id=${this.filterProject.projectId}`;
-    // }
-    // if (this.authenticatedUser?.admin && this.filterUser) {
-    //   url += `&demId=${this.filterUser?.dempoId}`;
-    // } else if (this.selectedUser && this.selectedUser?.dempoId) {
-    //   url += `&demId=${this.selectedUser?.dempoId}`;
-    // }
-    // console.log('Final API URL:', url);
-    // // Make the API call
-    // this.http.get<any[]>(url).subscribe({
-    //   next: (response) => {
-    //     console.log('Schedule list retrieved successfully:', response);
-    //     this.shiftSchedule = response;
-    //   },
-    //   error: (error) => {
-    //     console.error('Error fetching schedule list:', error);
-    //     this.shiftSchedule = [];
-    //   },
-    // });
+  // getScheduleList(): void {
+  //   // let formattedDate = '';
+  //   // let startDateFormat = '';
+  //   // let endDateFormat = '';
+  //   // console.log('this.dateRange----------', this.dateRange);
+  //   // // Handle filtering based on the tab value
+  //   // if (this.tabValue === 'Day' && this.selectedDayDate) {
+  //   //   // Single day selection
+  //   //   startDateFormat = '';
+  //   //   endDateFormat = '';
+  //   //   const scheduleDate = new Date(this.selectedDayDate);
+  //   //   if (!isNaN(scheduleDate.getTime())) {
+  //   //     formattedDate = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
+  //   //   } else {
+  //   //     console.warn('Invalid scheduleDate:', scheduleDate);
+  //   //   }
+  //   // } else if (
+  //   //   (this.tabValue === 'Week' || this.tabValue === 'Month') &&
+  //   //   this.dateRange
+  //   // ) {
+  //   //   // Range selection
+  //   //   formattedDate = '';
+  //   //   startDateFormat = '';
+  //   //   endDateFormat = '';
+  //   //   console.log('this.dateRange----------', this.dateRange);
+  //   //   const startDate = this.dateRange.start
+  //   //     ? new Date(this.dateRange.start)
+  //   //     : null;
+  //   //   const endDate = this.dateRange.end ? new Date(this.dateRange.end) : null;
+  //   //   if (startDate && !isNaN(startDate.getTime())) {
+  //   //     startDateFormat = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
+  //   //   } else {
+  //   //     console.warn('Invalid startDate:', startDate);
+  //   //   }
+  //   //   if (endDate && !isNaN(endDate.getTime())) {
+  //   //     endDateFormat = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
+  //   //   } else {
+  //   //     console.warn('Invalid endDate:', endDate);
+  //   //   }
+  //   // }
+  //   // // Construct the API URL properly
+  //   // let url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${this.selectedDayDate}?tab_value=${this.tabValue}`;
+  //   // if (this.filterProject) {
+  //   //   url += `&project_id=${this.filterProject.projectId}`;
+  //   // }
+  //   // if (this.authenticatedUser?.admin && this.filterUser) {
+  //   //   url += `&demId=${this.filterUser?.dempoId}`;
+  //   // } else if (this.selectedUser && this.selectedUser?.dempoId) {
+  //   //   url += `&demId=${this.selectedUser?.dempoId}`;
+  //   // }
+  //   // console.log('Final API URL:', url);
+  //   // // Make the API call
+  //   // this.http.get<any[]>(url).subscribe({
+  //   //   next: (response) => {
+  //   //     console.log('Schedule list retrieved successfully:', response);
+  //   //     this.shiftSchedule = response;
+  //   //   },
+  //   //   error: (error) => {
+  //   //     console.error('Error fetching schedule list:', error);
+  //   //     this.shiftSchedule = [];
+  //   //   },
+  //   // });
+  // }
+
+  getScheduleList(anchorDate: string | null): void {
+    let url = '';
+    if (this.authenticatedUser?.interviewer && this.selectedUser?.dempoId) {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser?.dempoId}`;
+    } else {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+      if (this.selectedUser && this.selectedUser?.dempoId) {
+        url += `?demId=${this.selectedUser?.dempoId}`;
+      }
+    }
+
+    // Make the API call
+    this.http.get<any[]>(url).subscribe({
+      next: (response) => {
+        // Ensure this.shiftSchedule is always an array
+        this.shiftSchedule = response ?? [];
+        localStorage.setItem(
+          'shiftSchedule',
+          JSON.stringify(this.shiftSchedule)
+        );
+
+        // Check for missing schedules and merge them
+        const missingSchedules =
+          this.shiftSchedule1?.filter(
+            (item1) =>
+              !this.shiftSchedule?.some(
+                (item2) =>
+                  item1.startTime === item2.startTime &&
+                  item1.endTime === item2.endTime &&
+                  item1.duration === item2.duration
+              )
+          ) || [];
+
+        this.shiftSchedule.push(...missingSchedules);
+      },
+      error: (error) => {
+        console.error('Error fetching schedule list:', error);
+        this.shiftSchedule = [];
+      },
+    });
   }
 
   showToastMessage(message: string, type: string): void {
@@ -1038,7 +1086,6 @@ export class ShiftScheduleComponent implements OnInit {
     console.log('Received shift schedule:', this.shiftSchedule);
   }
   editSchedule() {
-    console.log('on edit ---->', this.shiftForm.value);
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
     const dayWiseDate = this.shiftForm.get('dayWiseDate')?.value;
@@ -1084,18 +1131,24 @@ export class ShiftScheduleComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
-          this.shiftSchedule1 = [];
-          this.shiftSchedule = [];
           this.isEdit = false;
-          this.scheduleFetchStatus = false
+          this.scheduleFetchStatus = false;
+          this.shiftSchedule = [];
           localStorage.removeItem('shiftSchedule');
+          this.getScheduleList(
+            Utils.formatDateOnlyToStringUTC(
+              this.shiftForm.value.scheduleDate,
+              true,
+              true,
+              true
+            )
+          );
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
           this.showToastMessage('Failed to update schedule.', 'error');
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
-          localStorage.removeItem('shiftSchedule');
         },
       });
   }
@@ -1148,20 +1201,27 @@ export class ShiftScheduleComponent implements OnInit {
   deleteSchedule() {
     const shift = this.shiftForm.value || {};
     this.http
-      .delete(`${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}`)
+      .delete(
+        `${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}`
+      )
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
-          this.shiftSchedule1 = [];
           this.shiftSchedule = [];
+          localStorage.removeItem('shiftSchedule');
+          this.getScheduleList(
+            Utils.formatDateOnlyToStringUTC(
+              this.shiftForm.value.scheduleDate,
+              true,
+              true,
+              true
+            )
+          );
         },
         error: (error) => {
           console.error('Error deleting schedule:', error);
           this.showToastMessage('Failed to delete schedule.', 'error');
-          this.shiftSchedule1 = [];
-          this.shiftSchedule = [];
         },
       });
   }
-  
 }
