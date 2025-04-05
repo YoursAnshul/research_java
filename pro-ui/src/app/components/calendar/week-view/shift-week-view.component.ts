@@ -66,22 +66,22 @@ export class ShiftWeekViewComponent implements OnInit {
   }
   hasSchedules(): boolean {
     if (!this.weekSchedules) return false;
-  
+
     const schedules = [
-      ...this.weekSchedules.day1Schedules || [],
-      ...this.weekSchedules.day2Schedules || [],
-      ...this.weekSchedules.day3Schedules || [],
-      ...this.weekSchedules.day4Schedules || [],
-      ...this.weekSchedules.day5Schedules || [],
-      ...this.weekSchedules.day6Schedules || [],
-      ...this.weekSchedules.day7Schedules || []
+      ...(this.weekSchedules.day1Schedules || []),
+      ...(this.weekSchedules.day2Schedules || []),
+      ...(this.weekSchedules.day3Schedules || []),
+      ...(this.weekSchedules.day4Schedules || []),
+      ...(this.weekSchedules.day5Schedules || []),
+      ...(this.weekSchedules.day6Schedules || []),
+      ...(this.weekSchedules.day7Schedules || []),
     ];
-  
+
     return schedules.length > 0;
   }
-  
+
   processShiftSchedules(): void {
-    console.log("this.shiftSchedule--3--->",this.shiftSchedule);
+    console.log('this.shiftSchedule--3--->', this.shiftSchedule);
     if (
       !this.selectedDateRange?.value?.start ||
       !this.selectedDateRange?.value?.end
@@ -92,7 +92,7 @@ export class ShiftWeekViewComponent implements OnInit {
       .tz('America/New_York')
       .startOf('day')
       .toDate();
-      const endOfWeek = moment(this.selectedDateRange.value.end)
+    const endOfWeek = moment(this.selectedDateRange.value.end)
       .tz('America/New_York')
       .endOf('day')
       .toDate();
@@ -163,7 +163,7 @@ export class ShiftWeekViewComponent implements OnInit {
           expr1: null,
           isNew: shift.isNew === true || !shift.preschedulekey,
           projectId: shift.projects?.projectId,
-          isEdit:shift.isEdit
+          isEdit: shift.isEdit,
         };
 
         (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
@@ -225,37 +225,50 @@ export class ShiftWeekViewComponent implements OnInit {
       contextDate as Date
     );
   }
-  displayHoverMessage(event: MouseEvent,
-    schedule: ISchedule): void {
-
-      const userName = schedule?.displayName ?? 'Unknown User';
+  displayHoverMessage(event: MouseEvent, schedule: ISchedule): void {
+    const userName = schedule?.displayName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
     const projectName = schedule.projectName ?? 'N/A';
-    const date = Utils.formatDateOnlyToStringUTC(schedule.scheduledate) ?? 'N/A';
-    
-    let htmlMessage: string = '<p class="hover-message-title">' + userName + ' (' + projectName + '): ' + ' - ' + startTime + ' – '  + endTime + ' - ' + date + '<p>';
+    const date =
+      Utils.formatDateOnlyToStringUTC(schedule.scheduledate) ?? 'N/A';
+
+    let htmlMessage: string =
+      '<p class="hover-message-title">' +
+      userName +
+      ' (' +
+      projectName +
+      '): ' +
+      ' - ' +
+      startTime +
+      ' – ' +
+      endTime +
+      ' - ' +
+      date +
+      '<p>';
 
     //comments
     if (schedule?.duration) {
-      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
+      htmlMessage =
+        htmlMessage +
+        `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
     }
     if (schedule?.comments) {
-      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
+      htmlMessage =
+        htmlMessage +
+        `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
     }
 
     this.hoverMessage.setAndShow(event, htmlMessage);
-
   }
-  
 
   hideHoverMessage(): void {
     this.hoverMessage.hide();
   }
-  addShift(date: any): void {    
+  addShift(date: any): void {
     console.log('Date:--------->', date);
-    
-    this.sendWeekDate.emit(date);  
+
+    this.sendWeekDate.emit(date);
     this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {
@@ -326,14 +339,16 @@ export class ShiftWeekViewComponent implements OnInit {
   updateWeekCalendarHeight(height: string): void {
     const weekCalendar = document.getElementById('week-calendar');
     if (weekCalendar) {
-      weekCalendar.style.height = height;      
+      weekCalendar.style.height = height;
     }
   }
   openScheduleData(schedule: any): void {
     schedule.tab = 'Week';
-    schedule.isEdit = true;
+    if (schedule.isEdit) {
+      schedule.isEdit = false;
+    } else {
+      schedule.isEdit = true;
+    }
     this.scheduleData.emit(schedule);
   }
 }
-
-

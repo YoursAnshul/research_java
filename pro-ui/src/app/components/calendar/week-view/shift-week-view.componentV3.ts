@@ -1,338 +1,355 @@
 import {
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    SimpleChanges,
-  } from '@angular/core';
-  import { Utils } from '../../../classes/utils';
-  import {
-    IAuthenticatedUser,
-    ILegend,
-    ISchedule,
-    IWeekSchedules,
-  } from '../../../interfaces/interfaces';
-  import { GlobalsService } from '../../../services/globals/globals.service';
-  import { HoverMessage } from '../../../models/presentation/hover-message';
-  import { FormControl, FormGroup } from '@angular/forms';
-  import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-  import { AuthenticationService } from '../../../services/authentication/authentication.service';
-  import moment from 'moment-timezone';
-  
-  @Component({
-    selector: 'app-shift-week-view-v3',
-    templateUrl: './shift-week-view.componentV3.html',
-    styleUrls: ['./shift-week-view.component.css'],
-  })
-  export class ShiftWeekViewComponentV3 implements OnInit {
-    @Input() weekSchedules: IWeekSchedules | null = null;
-    @Input() monthPart: boolean = false;
-    @Input() shiftSchedule: any[] = [];
-    @Input() selectedDate!: FormControl;
-    @Input() selectedDateRange!: FormGroup;
-    @Output() resetShiftSchedule = new EventEmitter<void>();
-    @Input() selectedUser: any = null;
-    @Input() selectedProject: any = null;
-    authenticatedUser!: IAuthenticatedUser;
-    hoverMessage: HoverMessage = new HoverMessage();
-    tooltipMessage: SafeHtml = ''; // New property to store tooltip content
-    showTooltip: boolean = false;
-    tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
-    isLoading: boolean = false;
-    private debounceTimer: any;
-    inputHeight: string = '30px';
-    totalDuration: number = 0;
-    @Output() sendWeekDate = new EventEmitter<FormControl>();
-    @Output() scheduleData = new EventEmitter<any>();
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { Utils } from '../../../classes/utils';
+import {
+  IAuthenticatedUser,
+  ILegend,
+  ISchedule,
+  IWeekSchedules,
+} from '../../../interfaces/interfaces';
+import { GlobalsService } from '../../../services/globals/globals.service';
+import { HoverMessage } from '../../../models/presentation/hover-message';
+import { FormControl, FormGroup } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import moment from 'moment-timezone';
 
-    constructor(
-      private globalsService: GlobalsService,
-      private sanitizer: DomSanitizer,
-      private authenticationService: AuthenticationService,
-      private cdr: ChangeDetectorRef
-    ) {
-      this.authenticationService.authenticatedUser.subscribe(
-        (authenticatedUser) => {
-          this.authenticatedUser = authenticatedUser;
-        }
-      );
-    }
-  
-    ngOnInit(): void {}
-    ngOnChanges(changes: SimpleChanges): void {
-      this.processShiftSchedules();
-    }
-    hasSchedules(): boolean {
-      if (!this.weekSchedules) return false;
-    
-      const schedules = [
-        ...this.weekSchedules.day1Schedules || [],
-        ...this.weekSchedules.day2Schedules || [],
-        ...this.weekSchedules.day3Schedules || [],
-        ...this.weekSchedules.day4Schedules || [],
-        ...this.weekSchedules.day5Schedules || [],
-        ...this.weekSchedules.day6Schedules || [],
-        ...this.weekSchedules.day7Schedules || []
-      ];
-    
-      return schedules.length > 0;
-    }
-    
-    processShiftSchedules(): void {
-      console.log("this.shiftSchedule--3--->",this.shiftSchedule);
-      if (
-        !this.selectedDateRange?.value?.start ||
-        !this.selectedDateRange?.value?.end
-      ) {
-        return;
+@Component({
+  selector: 'app-shift-week-view-v3',
+  templateUrl: './shift-week-view.componentV3.html',
+  styleUrls: ['./shift-week-view.component.css'],
+})
+export class ShiftWeekViewComponentV3 implements OnInit {
+  @Input() weekSchedules: IWeekSchedules | null = null;
+  @Input() monthPart: boolean = false;
+  @Input() shiftSchedule: any[] = [];
+  @Input() selectedDate!: FormControl;
+  @Input() selectedDateRange!: FormGroup;
+  @Output() resetShiftSchedule = new EventEmitter<void>();
+  @Input() selectedUser: any = null;
+  @Input() selectedProject: any = null;
+  authenticatedUser!: IAuthenticatedUser;
+  hoverMessage: HoverMessage = new HoverMessage();
+  tooltipMessage: SafeHtml = ''; // New property to store tooltip content
+  showTooltip: boolean = false;
+  tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
+  isLoading: boolean = false;
+  private debounceTimer: any;
+  inputHeight: string = '30px';
+  totalDuration: number = 0;
+  @Output() sendWeekDate = new EventEmitter<FormControl>();
+  @Output() scheduleData = new EventEmitter<any>();
+
+  constructor(
+    private globalsService: GlobalsService,
+    private sanitizer: DomSanitizer,
+    private authenticationService: AuthenticationService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
       }
-      const startOfWeek = moment(this.selectedDateRange.value.start)
+    );
+  }
+
+  ngOnInit(): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    this.processShiftSchedules();
+  }
+  hasSchedules(): boolean {
+    if (!this.weekSchedules) return false;
+
+    const schedules = [
+      ...(this.weekSchedules.day1Schedules || []),
+      ...(this.weekSchedules.day2Schedules || []),
+      ...(this.weekSchedules.day3Schedules || []),
+      ...(this.weekSchedules.day4Schedules || []),
+      ...(this.weekSchedules.day5Schedules || []),
+      ...(this.weekSchedules.day6Schedules || []),
+      ...(this.weekSchedules.day7Schedules || []),
+    ];
+
+    return schedules.length > 0;
+  }
+
+  processShiftSchedules(): void {
+    console.log('this.shiftSchedule--3--->', this.shiftSchedule);
+    if (
+      !this.selectedDateRange?.value?.start ||
+      !this.selectedDateRange?.value?.end
+    ) {
+      return;
+    }
+    const startOfWeek = moment(this.selectedDateRange.value.start)
+      .tz('America/New_York')
+      .startOf('day')
+      .toDate();
+    const endOfWeek = moment(this.selectedDateRange.value.end)
+      .tz('America/New_York')
+      .endOf('day')
+      .toDate();
+
+    startOfWeek.setHours(0, 0, 0, 0);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    this.weekSchedules = {
+      weekStart: startOfWeek,
+      day1Schedules: [],
+      day2Schedules: [],
+      day3Schedules: [],
+      day4Schedules: [],
+      day5Schedules: [],
+      day6Schedules: [],
+      day7Schedules: [],
+    };
+
+    const selectedUserId = this.selectedUser?.userId ?? null;
+    const selectedProjectId = this.selectedProject?.projectId ?? null;
+    console.log('selectedUserId-----------', selectedUserId);
+
+    this.shiftSchedule?.forEach((shift) => {
+      const shiftDate = moment(shift.dayWiseDate)
         .tz('America/New_York')
         .startOf('day')
         .toDate();
-        const endOfWeek = moment(this.selectedDateRange.value.end)
-        .tz('America/New_York')
-        .endOf('day')
-        .toDate();
-  
-      startOfWeek.setHours(0, 0, 0, 0);
-      endOfWeek.setHours(23, 59, 59, 999);
-  
-      this.weekSchedules = {
-        weekStart: startOfWeek,
-        day1Schedules: [],
-        day2Schedules: [],
-        day3Schedules: [],
-        day4Schedules: [],
-        day5Schedules: [],
-        day6Schedules: [],
-        day7Schedules: [],
-      };
-  
-      const selectedUserId = this.selectedUser?.userId ?? null;
-      const selectedProjectId = this.selectedProject?.projectId ?? null;
-      console.log("selectedUserId-----------",selectedUserId);
-      
-      this.shiftSchedule?.forEach((shift) => {
-        const shiftDate = moment(shift.dayWiseDate)
-          .tz('America/New_York')
-          .startOf('day')
-          .toDate();
-        shiftDate.setHours(0, 0, 0, 0);
-  
-        const isWithinDateRange =
-          shiftDate >= startOfWeek && shiftDate <= endOfWeek;
-        const isUserMatch = selectedUserId
-          ? shift.user?.userId === selectedUserId
-          : true;
-        const isProjectMatch = selectedProjectId
-          ? shift.projects?.projectId === selectedProjectId
-          : true;
-  
-        if (isWithinDateRange && isUserMatch && isProjectMatch) {
-          const dayIndex = shiftDate.getDay();
-          const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
-  
-          const schedule: ISchedule = {
-            preschedulekey: shift?.preschedulekey || '',
-            displayName: shift.user?.userName || '',
-            projectName: shift.projects?.projectName || '',
-            projectColor: shift.projects?.projectColor || '',
-            scheduledate: shiftDate,
-            comments: shift.comments || '',
-            startTime: shift.startTime || '',
-            endTime: shift.endTime || '',
-            duration: parseFloat(shift.duration) || 0,
-            dayOfWeek: adjustedDayIndex,
-            weekStart: startOfWeek,
-            weekEnd: endOfWeek,
-            month: moment(shiftDate).format('MMMM'),
-            requestDetails: '',
-            requestCode: '',
-            userid: shift.user?.userId || '',
-            trainedon: '',
-            language: null,
-            entryBy: null,
-            dempoid: shift?.user?.dempoId,
-            fname: null,
-            lname: null,
-            preferredfname: null,
-            preferredlname: null,
-            userName: null,
-            expr1: null,
-            isNew: shift.isNew === true || !shift.preschedulekey,
-            projectId: shift.projects?.projectId,
-            isEdit:shift.isEdit
-          };
-  
-          (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
-            schedule
-          );
-        }
-      });
-    }
-  
-    public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
-      let workingDate: Date = new Date(weekStart || '');
-      workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
-      const options: Intl.DateTimeFormatOptions = {
-        day: 'numeric',
-        month: 'numeric',
-      };
-  
-      return workingDate.toLocaleString('en-US', options);
-    }
-  
-    public GetDaysDateAsDate(
-      weekStart: Date | undefined,
-      dayOfWeek: number
-    ): Date {
-      let workingDate: Date = new Date(weekStart || '');
-      workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
-      return workingDate;
-    }
-  
-    formatDateOnlyString(dateToFormat: Date | null | undefined): string | null {
-      if (!dateToFormat) {
-        return null;
+      shiftDate.setHours(0, 0, 0, 0);
+
+      const isWithinDateRange =
+        shiftDate >= startOfWeek && shiftDate <= endOfWeek;
+      const isUserMatch = selectedUserId
+        ? shift.user?.userId === selectedUserId
+        : true;
+      const isProjectMatch = selectedProjectId
+        ? shift.projects?.projectId === selectedProjectId
+        : true;
+
+      if (isWithinDateRange && isUserMatch && isProjectMatch) {
+        const dayIndex = shiftDate.getDay();
+        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
+
+        const schedule: ISchedule = {
+          preschedulekey: shift?.preschedulekey || '',
+          displayName: shift.user?.userName || '',
+          projectName: shift.projects?.projectName || '',
+          projectColor: shift.projects?.projectColor || '',
+          scheduledate: shiftDate,
+          comments: shift.comments || '',
+          startTime: shift.startTime || '',
+          endTime: shift.endTime || '',
+          duration: parseFloat(shift.duration) || 0,
+          dayOfWeek: adjustedDayIndex,
+          weekStart: startOfWeek,
+          weekEnd: endOfWeek,
+          month: moment(shiftDate).format('MMMM'),
+          requestDetails: '',
+          requestCode: '',
+          userid: shift.user?.userId || '',
+          trainedon: '',
+          language: null,
+          entryBy: null,
+          dempoid: shift?.user?.dempoId,
+          fname: null,
+          lname: null,
+          preferredfname: null,
+          preferredlname: null,
+          userName: null,
+          expr1: null,
+          isNew: shift.isNew === true || !shift.preschedulekey,
+          projectId: shift.projects?.projectId,
+          isEdit: shift.isEdit,
+        };
+
+        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
+          schedule
+        );
       }
-  
-      return Utils.formatDateOnlyToStringUTC(dateToFormat);
+    });
+  }
+
+  public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
+    let workingDate: Date = new Date(weekStart || '');
+    workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'numeric',
+    };
+
+    return workingDate.toLocaleString('en-US', options);
+  }
+
+  public GetDaysDateAsDate(
+    weekStart: Date | undefined,
+    dayOfWeek: number
+  ): Date {
+    let workingDate: Date = new Date(weekStart || '');
+    workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
+    return workingDate;
+  }
+
+  formatDateOnlyString(dateToFormat: Date | null | undefined): string | null {
+    if (!dateToFormat) {
+      return null;
     }
-  
-    //open contextual popup for the clicked user
-    openUserSchedule(
-      netId: string | null,
-      projectName: string | null = null,
-      contextDate: Date | null = null,
-      scheduleTabIndex: number | null = null
-    ): void {
-      if (!scheduleTabIndex) {
-        if (this.monthPart) {
-          //tab index of 3 = Month tab
-          scheduleTabIndex = 3;
-        } else {
-          //tab index of 2 = Week tab
-          scheduleTabIndex = 2;
-        }
-      }
-  
-      this.globalsService.showContextualPopup(
-        scheduleTabIndex,
-        netId,
-        null,
-        contextDate as Date
-      );
-    }
-    displayHoverMessage(event: MouseEvent,
-      schedule: ISchedule): void {
-  
-        const userName = schedule?.displayName ?? 'Unknown User';
-      const startTime = schedule?.startTime ?? 'N/A';
-      const endTime = schedule?.endTime ?? 'N/A';
-      const projectName = schedule.projectName ?? 'N/A';
-      const date = Utils.formatDateOnlyToStringUTC(schedule.scheduledate) ?? 'N/A';
-      
-      let htmlMessage: string = '<p class="hover-message-title">' + userName + ' (' + projectName + '): ' + ' - ' + startTime + ' – '  + endTime + ' - ' + date + '<p>';
-  
-      //comments
-      if (schedule?.duration) {
-        htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
-      }
-      if (schedule?.comments) {
-        htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
-      }
-  
-      this.hoverMessage.setAndShow(event, htmlMessage);
-  
-    }
-    
-  
-    hideHoverMessage(): void {
-      this.hoverMessage.hide();
-    }
-    addShift(date: any): void {    
-      console.log('Date:--------->', date);
-      
-      this.sendWeekDate.emit(date);  
-      this.resetShiftSchedule.emit();
-    }
-    onResetShiftSchedule(): void {
-      console.log(' sdfsdfds:');
-      this.resetShiftSchedule.emit();
-    }
-    calculateTotalDuration(): number {
-      if (!this.weekSchedules) return 0;
-  
-      const days = [
-        this.weekSchedules.day1Schedules,
-        this.weekSchedules.day2Schedules,
-        this.weekSchedules.day3Schedules,
-        this.weekSchedules.day4Schedules,
-        this.weekSchedules.day5Schedules,
-        this.weekSchedules.day6Schedules,
-        this.weekSchedules.day7Schedules,
-      ];
-  
-      let totalUserCards = 0;
-      this.totalDuration = days.reduce((total, schedules) => {
-        if (schedules?.length) {
-          totalUserCards += schedules.length; // Count user cards
-          total += schedules.reduce(
-            (sum, schedule) => sum + (schedule.duration || 0),
-            0
-          ); // Sum of durations
-        }
-        return total;
-      }, 0);
-  
-      this.calculateInputHeight();
-      return this.totalDuration;
-    }
-  
-    calculateInputHeight(): void {
-      const baseHeight = 30;
-      const userCardHeight = 62;
-  
-      if (!this.weekSchedules) {
-        this.inputHeight = `${baseHeight}px`;
-        return;
-      }
-  
-      const days = [
-        this.weekSchedules.day1Schedules,
-        this.weekSchedules.day2Schedules,
-        this.weekSchedules.day3Schedules,
-        this.weekSchedules.day4Schedules,
-        this.weekSchedules.day5Schedules,
-        this.weekSchedules.day6Schedules,
-        this.weekSchedules.day7Schedules,
-      ];
-  
-      let maxSchedulesPerDay = Math.max(
-        ...days.map((schedules) => (schedules ? schedules.length : 0))
-      );
-  
-      const newHeight = `${baseHeight + maxSchedulesPerDay * userCardHeight}px`;
-  
-      if (this.inputHeight !== newHeight) {
-        this.inputHeight = newHeight;
-        this.updateWeekCalendarHeight(newHeight);
-        this.cdr.detectChanges();
+
+    return Utils.formatDateOnlyToStringUTC(dateToFormat);
+  }
+
+  //open contextual popup for the clicked user
+  openUserSchedule(
+    netId: string | null,
+    projectName: string | null = null,
+    contextDate: Date | null = null,
+    scheduleTabIndex: number | null = null
+  ): void {
+    if (!scheduleTabIndex) {
+      if (this.monthPart) {
+        //tab index of 3 = Month tab
+        scheduleTabIndex = 3;
+      } else {
+        //tab index of 2 = Week tab
+        scheduleTabIndex = 2;
       }
     }
-  
-    updateWeekCalendarHeight(height: string): void {
-      const weekCalendar = document.getElementById('week-calendar');
-      if (weekCalendar) {
-        weekCalendar.style.height = height;      
-      }
+
+    this.globalsService.showContextualPopup(
+      scheduleTabIndex,
+      netId,
+      null,
+      contextDate as Date
+    );
+  }
+  displayHoverMessage(event: MouseEvent, schedule: ISchedule): void {
+    const userName = schedule?.displayName ?? 'Unknown User';
+    const startTime = schedule?.startTime ?? 'N/A';
+    const endTime = schedule?.endTime ?? 'N/A';
+    const projectName = schedule.projectName ?? 'N/A';
+    const date =
+      Utils.formatDateOnlyToStringUTC(schedule.scheduledate) ?? 'N/A';
+
+    let htmlMessage: string =
+      '<p class="hover-message-title">' +
+      userName +
+      ' (' +
+      projectName +
+      '): ' +
+      ' - ' +
+      startTime +
+      ' – ' +
+      endTime +
+      ' - ' +
+      date +
+      '<p>';
+
+    //comments
+    if (schedule?.duration) {
+      htmlMessage =
+        htmlMessage +
+        `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
     }
-    openScheduleData(schedule: any): void {
-      schedule.tab = 'Week';
-      schedule.isEdit = true;
-      this.scheduleData.emit(schedule);
+    if (schedule?.comments) {
+      htmlMessage =
+        htmlMessage +
+        `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
+    }
+
+    this.hoverMessage.setAndShow(event, htmlMessage);
+  }
+
+  hideHoverMessage(): void {
+    this.hoverMessage.hide();
+  }
+  addShift(date: any): void {
+    console.log('Date:--------->', date);
+
+    this.sendWeekDate.emit(date);
+    this.resetShiftSchedule.emit();
+  }
+  onResetShiftSchedule(): void {
+    console.log(' sdfsdfds:');
+    this.resetShiftSchedule.emit();
+  }
+  calculateTotalDuration(): number {
+    if (!this.weekSchedules) return 0;
+
+    const days = [
+      this.weekSchedules.day1Schedules,
+      this.weekSchedules.day2Schedules,
+      this.weekSchedules.day3Schedules,
+      this.weekSchedules.day4Schedules,
+      this.weekSchedules.day5Schedules,
+      this.weekSchedules.day6Schedules,
+      this.weekSchedules.day7Schedules,
+    ];
+
+    let totalUserCards = 0;
+    this.totalDuration = days.reduce((total, schedules) => {
+      if (schedules?.length) {
+        totalUserCards += schedules.length; // Count user cards
+        total += schedules.reduce(
+          (sum, schedule) => sum + (schedule.duration || 0),
+          0
+        ); // Sum of durations
+      }
+      return total;
+    }, 0);
+
+    this.calculateInputHeight();
+    return this.totalDuration;
+  }
+
+  calculateInputHeight(): void {
+    const baseHeight = 30;
+    const userCardHeight = 62;
+
+    if (!this.weekSchedules) {
+      this.inputHeight = `${baseHeight}px`;
+      return;
+    }
+
+    const days = [
+      this.weekSchedules.day1Schedules,
+      this.weekSchedules.day2Schedules,
+      this.weekSchedules.day3Schedules,
+      this.weekSchedules.day4Schedules,
+      this.weekSchedules.day5Schedules,
+      this.weekSchedules.day6Schedules,
+      this.weekSchedules.day7Schedules,
+    ];
+
+    let maxSchedulesPerDay = Math.max(
+      ...days.map((schedules) => (schedules ? schedules.length : 0))
+    );
+
+    const newHeight = `${baseHeight + maxSchedulesPerDay * userCardHeight}px`;
+
+    if (this.inputHeight !== newHeight) {
+      this.inputHeight = newHeight;
+      this.updateWeekCalendarHeight(newHeight);
+      this.cdr.detectChanges();
     }
   }
+
+  updateWeekCalendarHeight(height: string): void {
+    const weekCalendar = document.getElementById('week-calendar');
+    if (weekCalendar) {
+      weekCalendar.style.height = height;
+    }
+  }
+  openScheduleData(schedule: any): void {
+    schedule.tab = 'Week';
+    if (schedule.isEdit) {
+      schedule.isEdit = false;
+    } else {
+      schedule.isEdit = true;
+    }
+    this.scheduleData.emit(schedule);
+  }
+}

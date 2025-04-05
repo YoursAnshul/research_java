@@ -1134,15 +1134,6 @@ export class ShiftScheduleComponent implements OnInit {
           this.isEdit = false;
           this.scheduleFetchStatus = false;
           this.shiftSchedule = [];
-          localStorage.removeItem('shiftSchedule');
-          this.getScheduleList(
-            Utils.formatDateOnlyToStringUTC(
-              this.shiftForm.value.scheduleDate,
-              true,
-              true,
-              true
-            )
-          );
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
@@ -1208,15 +1199,6 @@ export class ShiftScheduleComponent implements OnInit {
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule = [];
-          localStorage.removeItem('shiftSchedule');
-          this.getScheduleList(
-            Utils.formatDateOnlyToStringUTC(
-              this.shiftForm.value.scheduleDate,
-              true,
-              true,
-              true
-            )
-          );
         },
         error: (error) => {
           console.error('Error deleting schedule:', error);

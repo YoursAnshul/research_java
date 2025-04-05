@@ -81,8 +81,8 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   }
 
   processShiftSchedules(): void {
-    console.log("this.shiftSchedule--1--->",this.shiftSchedule);
-    
+    console.log('this.shiftSchedule--1--->', this.shiftSchedule);
+
     if (
       !this.selectedDateRange?.value?.start ||
       !this.selectedDateRange?.value?.end
@@ -164,7 +164,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
           expr1: null,
           isNew: shift.isNew === true || !shift.preschedulekey,
           projectId: shift.projects?.projectId,
-          isEdit: shift.isEdit
+          isEdit: shift.isEdit,
         };
 
         (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
@@ -351,7 +351,11 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   }
   openScheduleData(schedule: any): void {
     schedule.tab = 'Week';
-    schedule.isEdit = true;
+    if (schedule.isEdit) {
+      schedule.isEdit = false;
+    } else {
+      schedule.isEdit = true;
+    }
     this.scheduleData.emit(schedule);
   }
 }
