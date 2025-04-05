@@ -105,6 +105,7 @@
           [class.error-border]="
             shiftForm.get('startTime')?.hasError('duplicate')
           "
+          [class.disabled-field]="shiftForm.get('startTime')?.disabled"
           style="width: 80px"
         >
           <mat-label>Start Time</mat-label>
@@ -130,6 +131,7 @@
           appearance="outline"
           class="custom-form-field ml-2"
           [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
+          [class.disabled-field]="shiftForm.get('endTime')?.disabled"
           style="width: 80px"
         >
           <mat-label>End Time</mat-label>

@@ -60,3 +60,11 @@
   min-width: 120px;
   max-width: 200px;
 }
+.disabled-field {
+  color: #58595B !important;
+  opacity: 0.6;
+}
+
+.disabled-field .mat-form-field-outline {
+  border-color: #58595B !important;
+}
