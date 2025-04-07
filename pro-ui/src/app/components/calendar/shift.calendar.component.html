@@ -152,9 +152,9 @@
           <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
             <mat-select
-              formControlName="projects"
-              [(value)]="selectedProject"
+              [(ngModel)]="selectedProject"
               (selectionChange)="onProjectChange($event.value)"
+              [compareWith]="compareProjects"
             >
             <mat-option [value]="selectedProject">
               {{ selectedProject.projectName }}
@@ -240,9 +240,9 @@
           <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
             <mat-select
-              formControlName="projects"
-              [(value)]="selectedProject"
+              [(ngModel)]="selectedProject"
               (selectionChange)="onProjectChange($event.value)"
+              [compareWith]="compareProjects"
             >
             <mat-option [value]="selectedProject">
               {{ selectedProject.projectName }}
