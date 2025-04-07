@@ -66,7 +66,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 				if (existingCount != null && existingCount > 0) {
 					duplicateCount++;
-					errorMessages.add("For this simply we will put Schedule Already exists for this User.!");
 					continue;
 				}
 
@@ -85,13 +84,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		if (duplicateCount > 0 && successCount == 0) {
-			response.Message = "For this simply we will put Schedule Already exists for this User.!";
+			response.Message = "Schedule Already exists for this User.!";
 		} else if (successCount > 0) {
 			response.Message = "Schedules saved successfully!";
-		}
-
-		if (!errorMessages.isEmpty()) {
-			response.Message += " Some errors occurred: " + String.join("; ", errorMessages);
 		}
 
 		return response;

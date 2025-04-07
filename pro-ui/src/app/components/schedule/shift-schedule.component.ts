@@ -573,9 +573,9 @@ export class ShiftScheduleComponent implements OnInit {
       this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
-      const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
-        panelClass: 'custom-dialog-container',
-      });
+      // const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
+      //   panelClass: 'custom-dialog-container',
+      // });
       this.saveSchedule();
     }
     console.log('this.shiftSchedule---------', this.shiftSchedule);
