@@ -11,6 +11,7 @@
       color="primary"
       class="submit wd90"
       (click)="saveSchedule()"
+      [disabled]="shiftForm.invalid"
     >
       Save Calendar
     </button>

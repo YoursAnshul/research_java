@@ -48,6 +48,7 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() sendDate = new EventEmitter<FormControl>();
   isEdit: boolean = false;
   @Output() scheduleData = new EventEmitter<any>();
+  private previouslyEditedSchedule: ISchedule | null = null;
 
   constructor(
     private globalsService: GlobalsService,
@@ -62,7 +63,6 @@ export class ShiftDayViewComponent implements OnInit {
         this.authenticatedUser = authenticatedUser;
       }
     );
-    
   }
 
   ngOnInit(): void {
@@ -73,41 +73,59 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("this.shiftSchedule========88888============", this.shiftSchedule);
-    console.log("this.selectedUser?.userId========88888============", this.selectedUser?.userId);
-    
+    console.log(
+      'this.shiftSchedule========88888============',
+      this.shiftSchedule
+    );
+    console.log(
+      'this.selectedUser?.userId========88888============',
+      this.selectedUser?.userId
+    );
+
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
-  
+
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;
-  
+
     const selectedUserId = this.selectedUser?.userId || 0;
     const selectedProjectId = this.selectedProject?.projectId || 0;
-  
+
     this.filteredShiftSchedule = this.shiftSchedule?.filter((schedule) => {
       const scheduleDateUTC = new Date(schedule?.dayWiseDate);
-  
+
       const scheduleDateET = new Date(
-        scheduleDateUTC.toLocaleString('en-US', { timeZone: 'America/New_York' })
+        scheduleDateUTC.toLocaleString('en-US', {
+          timeZone: 'America/New_York',
+        })
       );
-  
+
       const formattedScheduleDate = scheduleDateET.toISOString().split('T')[0];
-  
+
       const selectedDateET = selectedDateValue
         ? new Date(
-            selectedDateValue.toLocaleString('en-US', { timeZone: 'America/New_York' })
-          ).toISOString().split('T')[0]
+            selectedDateValue.toLocaleString('en-US', {
+              timeZone: 'America/New_York',
+            })
+          )
+            .toISOString()
+            .split('T')[0]
         : null;
-  
-      const isDateMatch = selectedDateET ? formattedScheduleDate === selectedDateET : true;
-      const isUserMatch = selectedUserId ? schedule.user.userId === selectedUserId : true;
-      const isProjectMatch = selectedProjectId ? schedule.projects.projectId === selectedProjectId : true;
-      
+
+      const isDateMatch = selectedDateET
+        ? formattedScheduleDate === selectedDateET
+        : true;
+      const isUserMatch = selectedUserId
+        ? schedule.user.userId === selectedUserId
+        : true;
+      const isProjectMatch = selectedProjectId
+        ? schedule.projects.projectId === selectedProjectId
+        : true;
+
       schedule.duration = parseFloat(schedule.duration) || 0;
-  
+
       return isDateMatch && isUserMatch && isProjectMatch;
     });
   }
@@ -119,13 +137,19 @@ export class ShiftDayViewComponent implements OnInit {
     let leftOffset = 0;
     let totalHours = 0;
     if (this.authenticatedUser?.interviewer) {
-      leftOffset = 12.85; 
+      leftOffset = 12.85;
       totalHours = 17;
-    }else if (this.authenticatedUser?.admin && this.selectedUser?.userId!=0) {
-      leftOffset = 12.85; 
+    } else if (
+      this.authenticatedUser?.admin &&
+      this.selectedUser?.userId != 0
+    ) {
+      leftOffset = 12.85;
       totalHours = 17;
-    } else if (this.authenticatedUser?.admin && this.selectedUser?.userId==0) {
-      leftOffset = 15.4; 
+    } else if (
+      this.authenticatedUser?.admin &&
+      this.selectedUser?.userId == 0
+    ) {
+      leftOffset = 15.4;
       totalHours = 16;
     }
     const slotWidth = (100 - leftOffset) / totalHours; // Remaining width for time slots
@@ -178,45 +202,68 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  displayHoverMessage(event: MouseEvent,
+  displayHoverMessage(
+    event: MouseEvent,
     schedule: ISchedule,
-    us: IUserSchedule): void {
-
+    us: IUserSchedule
+  ): void {
     const userName = us?.user?.userName ?? 'Unknown User';
     const startTime = schedule?.startTime ?? 'N/A';
     const endTime = schedule?.endTime ?? 'N/A';
     const projectName = schedule?.projects?.projectName ?? 'N/A';
-    const date = Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
-    
-    let htmlMessage: string = '<p class="hover-message-title">' + userName + ' (' + projectName + '): ' + ' - ' + startTime + ' – '  + endTime + ' - ' + date + '<p>';
+    const date =
+      Utils.formatDateOnlyToStringUTC(schedule?.dayWiseDate) ?? 'N/A';
+
+    let htmlMessage: string =
+      '<p class="hover-message-title">' +
+      userName +
+      ' (' +
+      projectName +
+      '): ' +
+      ' - ' +
+      startTime +
+      ' – ' +
+      endTime +
+      ' - ' +
+      date +
+      '<p>';
 
     //comments
     if (schedule?.duration) {
-      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
+      htmlMessage =
+        htmlMessage +
+        `<p style="margin: 2px 0;"><strong>Hours:</strong> ${schedule.duration} hr</p>`;
     }
     if (schedule?.comments) {
-      htmlMessage = htmlMessage + `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
+      htmlMessage =
+        htmlMessage +
+        `<p style="margin: 2px 0;"><strong>Comments:</strong> ${schedule.comments}</p>`;
     }
 
     this.hoverMessage.setAndShow(event, htmlMessage);
-
   }
-  
 
   hideHoverMessage(): void {
     this.hoverMessage.hide();
   }
   addShift(): void {
-    this.sendDate.emit(this.selectedDate);  
+    this.sendDate.emit(this.selectedDate);
     this.resetShiftSchedule.emit();
   }
-  openScheduleData(schedule: any): void {
-      schedule.tab = "Day";
-      if(!schedule.isEdit){
-        schedule.isEdit = true;
-      } else {
-        schedule.isEdit = false;
+  openScheduleData(schedule: ISchedule): void {
+    if (schedule.isEdit) {
+      schedule.isEdit = false;
+      this.previouslyEditedSchedule = null;
+    } else {
+      if (this.previouslyEditedSchedule) {
+        this.previouslyEditedSchedule.isEdit = false;
       }
-      this.scheduleData.emit(schedule); 
+
+      schedule.isEdit = true;
+      this.previouslyEditedSchedule = schedule;
+    }
+
+    schedule.tab = 'Day';
+    this.scheduleData.emit(schedule);
   }
 }

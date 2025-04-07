@@ -270,7 +270,8 @@ export interface ISchedule {
   duration?: number | null;
   isNew?: boolean,
   projectId?:number| null,
-  isEdit?:boolean
+  isEdit?:boolean,
+  tab?: string;
 }
 
 export interface IScheduleMin {

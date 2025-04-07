@@ -46,6 +46,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   totalDuration: number = 0;
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
+  private previouslyEditedSchedule: ISchedule | null = null;
 
   constructor(
     private globalsService: GlobalsService,
@@ -349,13 +350,20 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       );
     }
   }
-  openScheduleData(schedule: any): void {
-    schedule.tab = 'Week';
+  openScheduleData(schedule: ISchedule): void {
     if (schedule.isEdit) {
       schedule.isEdit = false;
+      this.previouslyEditedSchedule = null;
     } else {
+      if (this.previouslyEditedSchedule) {
+        this.previouslyEditedSchedule.isEdit = false;
+      }
       schedule.isEdit = true;
+      this.previouslyEditedSchedule = schedule;
     }
+  
+    schedule.tab = 'Week';
     this.scheduleData.emit(schedule);
   }
+  
 }
