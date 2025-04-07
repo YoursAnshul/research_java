@@ -383,9 +383,9 @@ export class ShifCalendarComponent implements OnInit {
     }
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
+    // this.getScheduleList(
+    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // );
     this.selectedProject = this.defaultProject;
   }
 
@@ -967,16 +967,9 @@ export class ShifCalendarComponent implements OnInit {
             uniqueProjects.set(project.projectId, project);
           }
         });
-  
-        this.otherProjects = Array.from(uniqueProjects.values());
-  
-        console.log("Projects loaded:", this.otherProjects, this.adminProjects);
-  
-        if (this.homeSelectedProject) {
-          this.selectedProject = this.findProjectInLists(this.homeSelectedProject);
-          console.log("Selected Project Set:", this.selectedProject);
-        }
+        this.selectedProject = this.defaultProject;
       },
+      
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
