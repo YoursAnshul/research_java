@@ -1134,6 +1134,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.isEdit = false;
           this.scheduleFetchStatus = false;
+          this.onResetShiftSchedule();
           this.shiftSchedule = [];
         },
         error: (error) => {
