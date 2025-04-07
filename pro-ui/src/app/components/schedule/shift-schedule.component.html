@@ -5,7 +5,7 @@
   <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
 
   <div class="d-flex" style="margin-left: auto">
-    <button
+    <!-- <button
       style="height: 25px"
       mat-raised-button
       color="primary"
@@ -14,7 +14,7 @@
       [disabled]="shiftForm.invalid"
     >
       Save Calendar
-    </button>
+    </button> -->
     <button
       style="height: 25px"
       class="btn-outline ml-2"
@@ -172,9 +172,7 @@
             mat-raised-button
             color="primary"
             [disabled]="
-              !scheduleFetchStatus ||
-              !this.shiftForm.get('startTime')?.value ||
-              !this.shiftForm.get('endTime')?.value
+              !scheduleFetchStatus ||shiftForm.invalid
             "
           >
             <mat-icon>add</mat-icon> Add to Calendar

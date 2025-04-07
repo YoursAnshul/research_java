@@ -576,6 +576,7 @@ export class ShiftScheduleComponent implements OnInit {
       const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
+      this.saveSchedule();
     }
     console.log('this.shiftSchedule---------', this.shiftSchedule);
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
