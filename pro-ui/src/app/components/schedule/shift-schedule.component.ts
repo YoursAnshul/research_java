@@ -1089,93 +1089,43 @@ export class ShiftScheduleComponent implements OnInit {
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
     const dayWiseDate = this.shiftForm.get('dayWiseDate')?.value;
-  
+
     if (!startTime) {
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.showToastMessage('Start time required.', 'warning');
       return;
     }
-  
+
     if (!endTime) {
       this.shiftForm.get('endTime')?.setErrors({ required: true });
       this.showToastMessage('End time required.', 'warning');
       return;
     }
-  
+
     if (!dayWiseDate) {
-      this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
       this.showToastMessage('Schedule date required.', 'warning');
+      this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
       return;
     }
-  
-    const formData = this.shiftForm.value;
-    const scheduleId = formData.id;
-    const selectedUser = formData.user;
-    const selectedDate = formData.dayWiseDate;
-  
-    const newStartTime = this.combineDateAndTime(selectedDate, startTime).getTime();
-    const newEndTime = this.combineDateAndTime(selectedDate, endTime).getTime();
-  
-    if (newStartTime >= newEndTime) {
-      this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
-      this.showToastMessage('End time must be after start time.', 'warning');
-      return;
-    }
-  
-    const isDuplicate = this.shiftSchedule?.some((shift) => {
-      if (shift.id === scheduleId) return false; // skip current edited schedule
-  
-      const shiftDateMatch =
-        new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
-        new Date(selectedDate).toISOString().split('T')[0];
-      const shiftUserMatch = shift.user?.dempoId === selectedUser?.dempoId;
-  
-      const shiftStartTime = this.combineDateAndTime(
-        shift.dayWiseDate,
-        shift.startTime
-      ).getTime();
-      const shiftEndTime = this.combineDateAndTime(
-        shift.dayWiseDate,
-        shift.endTime
-      ).getTime();
-  
-      const isSameShift =
-        shiftDateMatch &&
-        shiftUserMatch &&
-        shiftStartTime === newStartTime &&
-        shiftEndTime === newEndTime;
-  
-      const isOverlapping =
-        shiftDateMatch &&
-        shiftUserMatch &&
-        newStartTime < shiftEndTime &&
-        newEndTime > shiftStartTime;
-  
-      return isSameShift || isOverlapping;
-    });
-  
-    if (isDuplicate) {
-      this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
-      this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
-      return;
-    }
-  
+
     const date = new Date(dayWiseDate);
     const scheduleDate = `${date.getFullYear()}-${String(
       date.getMonth() + 1
     ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  
+
+    const shift = this.shiftForm.value || {};
+    console.log('shift====>', shift);
     const obj = {
-      dempoId: formData.user?.dempoId || null,
+      dempoId: shift.user?.dempoId || null,
       scheduleDate,
-      projectId: formData.projects?.projectId || null,
-      comments: formData.comments || '',
-      startTime,
-      endTime,
+      projectId: shift.projects?.projectId || null,
+      comments: shift.comments || '',
+      startTime: startTime || null,
+      endTime: endTime || null,
       entryby: this.authenticatedUser?.netID || null,
-      id: scheduleId || null,
+      id: shift.id || null,
     };
-  
+
     this.http
       .post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
       .subscribe({
@@ -1193,7 +1143,6 @@ export class ShiftScheduleComponent implements OnInit {
         },
       });
   }
-  
   handleSchedule(schedule: any) {
     const storedSchedule = localStorage.getItem('shiftSchedule');
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {

@@ -66,8 +66,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 				if (existingCount != null && existingCount > 0) {
 					duplicateCount++;
-					errorMessages.add("Schedule already exists for DempoId: " + request.getDempoId() + ", Date: "
-							+ scheduleDate + ", Time: " + request.getStartTime() + " - " + request.getEndTime());
+					errorMessages.add("For this simply we will put Schedule Already exists for this User.!");
 					continue;
 				}
 
@@ -86,7 +85,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		if (duplicateCount > 0 && successCount == 0) {
-			response.Message = "Schedule already exists for the given day, time, and DempoId.";
+			response.Message = "For this simply we will put Schedule Already exists for this User.!";
 		} else if (successCount > 0) {
 			response.Message = "Schedules saved successfully!";
 		}
