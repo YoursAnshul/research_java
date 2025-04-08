@@ -2,14 +2,24 @@
   <div class="dialog-header">
     <span class="icon-warning">!</span>
   </div>
-  <h2 class="dialog-title">This date is blocked</h2>
-  <p class="dialog-message">Shifts cannot be scheduled on this date.</p>
+  <h2 class="dialog-title" *ngIf="!data.isTimeSlot">This date is blocked</h2>
+  <h2 class="dialog-title" *ngIf="data.isTimeSlot">
+    This selected time is blocked
+  </h2>
+
+  <p class="dialog-message" *ngIf="!data.isTimeSlot">
+    Shifts cannot be scheduled on this date.
+  </p>
+  <p class="dialog-message" *ngIf="data.isTimeSlot">
+    Shifts cannot be scheduled during this time.
+  </p>
+
   <div class="dialog-actions">
     <!-- <button mat-flat-button class="w-100 primary-button" (click)="onConfirm()">
       OK
     </button> -->
     <button mat-flat-button class="w-100 primary-button" (click)="onCancel()">
-     OK
+      OK
     </button>
   </div>
 </div>

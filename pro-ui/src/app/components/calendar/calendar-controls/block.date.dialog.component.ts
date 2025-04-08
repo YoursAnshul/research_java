@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-block-date-dialog',
@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./block.date.dialog.component.css']
 })
 export class BlockdateDialog {
-  constructor(public dialogRef: MatDialogRef<BlockdateDialog>) {}
+  constructor(public dialogRef: MatDialogRef<BlockdateDialog>, @Inject(MAT_DIALOG_DATA) public data: { isTimeSlot: boolean }) {}
 
   onConfirm(): void {
     this.dialogRef.close(true);

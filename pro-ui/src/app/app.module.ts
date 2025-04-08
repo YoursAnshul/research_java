@@ -97,6 +97,7 @@ import { DateRangePickerComponent } from './components/form-inputs/date-range-pi
 import { TextareaComponent } from './components/form-inputs/textarea/textarea.component';
 import { ShiftWeekViewComponentV2 } from './components/calendar/week-view/shift-week-view.componentV2';
 import { ShiftWeekViewComponentV3 } from './components/calendar/week-view/shift-week-view.componentV3';
+import { BlockdateDialog } from './components/calendar/calendar-controls/block.date.dialog.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -167,7 +168,8 @@ import { ShiftWeekViewComponentV3 } from './components/calendar/week-view/shift-
     DateRangePickerComponent,
     TextareaComponent,
     ShiftWeekViewComponentV2,
-    ShiftWeekViewComponentV3
+    ShiftWeekViewComponentV3,
+    BlockdateDialog
   ],
   imports: [
     NgxMaterialTimepickerModule,
