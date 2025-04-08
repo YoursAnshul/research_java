@@ -902,6 +902,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
+          this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
           this.getScheduleList(
             Utils.formatDateOnlyToStringUTC(

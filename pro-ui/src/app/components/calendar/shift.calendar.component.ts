@@ -967,6 +967,7 @@ export class ShifCalendarComponent implements OnInit {
             uniqueProjects.set(project.projectId, project);
           }
         });
+        this.otherProjects = Array.from(uniqueProjects.values());
         this.selectedProject = this.defaultProject;
       },
       
