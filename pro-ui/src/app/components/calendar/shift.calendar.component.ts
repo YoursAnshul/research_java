@@ -447,6 +447,48 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
 
+  public getAllUserSchedulesByAnchorDateNew(): void {
+    //----------------------------------------------------
+    // get the first and last days of the selected week
+    //----------------------------------------------------
+    this.refreshDate();
+    this.userSchedulesService.selectedDate.next(
+      new Date(this.selectedDate.value)
+    );
+
+    //----------------------------------------------------
+    // set user schedules
+    //----------------------------------------------------
+    // this.userSchedulesService.setAllUserSchedulesByAnchorDate(
+    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // );
+    console.log('this.selectedDate------------', this.selectedDate);
+
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
+    this.seletedDayDate.emit(this.selectedDate?.value);
+    this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
+  }
+
+
+  refreshDate(){
+    this.userSchedulesService.scheduleFetchStatus.subscribe(
+      (scheduleFetchStatus) => {
+        this.scheduleFetchStatus = scheduleFetchStatus;
+        if (!scheduleFetchStatus) {
+          this.scheduleFetchMessage =
+            'last refresh: ' +
+            Utils.formatDateToTimeString(new Date(), false, true);
+        }
+      },
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
+      }
+    );
+  }
   //sync data from the month down to the week and day (month becomes our master data set and is what we ultimately pull from the database when the anchor date changes)
   public syncData(userSchedules: ISchedule[]): void {
     if (!userSchedules || !this.allUsers) {
