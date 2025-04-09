@@ -390,7 +390,6 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedDate.setValue(baseDate);
     }
     this.selectedProject = this.defaultProject;
-    this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
   }

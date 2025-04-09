@@ -350,7 +350,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
   validateBlockOutDate(selectedDate: Date): void {
     console.log('Block Out Dates--->', this.blockOutDates);
-  
+
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
       this.shiftForm.get('startTime')?.enable();
@@ -358,13 +358,13 @@ export class ShiftScheduleComponent implements OnInit {
       this.blockedTimeSlots = [];
       return;
     }
-  
+
     const selectedDateOnly = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       selectedDate.getDate()
     );
-  
+
     const blockedEntries = this.blockOutDates.filter((blockOut) => {
       const blockOutDate = new Date(blockOut.blockOutDay!);
       const blockOutDateOnly = new Date(
@@ -374,18 +374,18 @@ export class ShiftScheduleComponent implements OnInit {
       );
       return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
     });
-  
+
     if (blockedEntries.length === 0) {
       this.shiftForm.get('startTime')?.enable();
       this.shiftForm.get('endTime')?.enable();
       this.blockedTimeSlots = [];
       return;
     }
-  
+
     const hasTimeBlock = blockedEntries.some(
       (blockOut) => blockOut.startTime && blockOut.endTime
     );
-  
+
     if (!hasTimeBlock) {
       this.shiftForm.get('startTime')?.disable();
       this.shiftForm.get('endTime')?.disable();
@@ -393,7 +393,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.openBlockDialog(false); // date-only block
       return;
     }
-  
+
     // If there are blocked time ranges
     this.blockedTimeSlots = [];
     blockedEntries.forEach((blockOut) => {
@@ -403,18 +403,18 @@ export class ShiftScheduleComponent implements OnInit {
         );
       }
     });
-  
+
     if (this.blockedTimeSlots.length > 0) {
       // this.openBlockDialog(true); // time slot block
     }
-  
+
     console.log('Blocked Time Slots:', this.blockedTimeSlots);
-  
+
     // Enable fields (specific blocked times will be handled separately)
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
   }
-  
+
   generateBlockedTimeSlots(startTime: string, endTime: string): string[] {
     const blockedTimes: string[] = [];
 
@@ -452,16 +452,16 @@ export class ShiftScheduleComponent implements OnInit {
   openBlockDialog(isTimeSlot: boolean): void {
     const dialogRef = this.dialog.open(BlockdateDialog, {
       panelClass: 'custom-dialog-container',
-      data: { isTimeSlot }
+      data: { isTimeSlot },
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.closeDialog();
       }
     });
   }
-  
+
   closeDialog(): void {
     this.dialogRef?.close();
   }
@@ -805,7 +805,7 @@ export class ShiftScheduleComponent implements OnInit {
         null,
         Validators.required
       );
-    }  else {
+    } else {
       this.shiftForm.patchValue({
         startTime: '',
         endTime: '',
@@ -1169,7 +1169,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
     }
     if (schedule) {
-      this.isEdit = schedule.isEdit
+      this.isEdit = schedule.isEdit;
       this.tab = schedule.tab;
       let scheduleDate = null;
       if (schedule.tab == 'Day') {
@@ -1195,22 +1195,16 @@ export class ShiftScheduleComponent implements OnInit {
         this.selectedProject = selectedProject;
         scheduleDate = new Date(schedule.scheduledate);
       }
-      console.log('schedule--->', schedule);
-      console.log('scheduleDate--->', scheduleDate);
-      if(schedule.isEdit){
-        this.shiftForm.patchValue({
-          user: this.selectedUser,
-          projects: this.selectedProject,
-          dayWiseDate: scheduleDate,
-          startTime: schedule.startTime,
-          endTime: schedule.endTime,
-          comments: schedule.comments,
-          id: schedule.preschedulekey,
-        });
-      } else {
-        this.onResetShiftSchedule();
-      }
-   
+
+      this.shiftForm.patchValue({
+        user: this.selectedUser,
+        projects: this.selectedProject,
+        dayWiseDate: scheduleDate,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        comments: schedule.comments,
+        id: schedule.preschedulekey,
+      });
     }
   }
 
