@@ -405,7 +405,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
   
     if (this.blockedTimeSlots.length > 0) {
-      this.openBlockDialog(true); // time slot block
+      // this.openBlockDialog(true); // time slot block
     }
   
     console.log('Blocked Time Slots:', this.blockedTimeSlots);
