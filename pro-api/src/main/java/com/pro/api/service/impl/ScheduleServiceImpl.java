@@ -37,11 +37,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 		int duplicateCount = 0;
 
 		String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? "
-				+ "AND ((startDateTime <= ? AND endDateTime > ?) " + "OR (startDateTime < ? AND endDateTime >= ?) "
-				+ "OR (startDateTime >= ? AND endDateTime <= ?))";
+				+ "AND startDateTime < ? AND endDateTime > ?";
 
 		String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
 
 		for (ShiftScheduleRequest request : list) {
 			try {
@@ -52,20 +53,24 @@ public class ScheduleServiceImpl implements ScheduleService {
 				}
 
 				LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
-				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-
 				LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
 				LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
 				LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
 				LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
 
+				// Prevent invalid time range
+				if (!endDateTime.isAfter(startDateTime)) {
+					errorMessages.add("End time must be after start time for DempoId: " + request.getDempoId());
+					continue;
+				}
+
 				Integer existingCount = this.jdbcTemplate.queryForObject(checkQuery, Integer.class,
-						request.getDempoId(), scheduleDate, startDateTime, endDateTime, startDateTime, endDateTime,
-						startDateTime, endDateTime);
+						request.getDempoId(), scheduleDate, endDateTime, startDateTime);
 
 				if (existingCount != null && existingCount > 0) {
 					duplicateCount++;
+					errorMessages.add("Duplicate schedule found for DempoId: " + request.getDempoId());
 					continue;
 				}
 
@@ -83,10 +88,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 			}
 		}
 
-		if (duplicateCount > 0 && successCount == 0) {
-			response.Message = "Schedule Already exists for this User.!";
-		} else if (successCount > 0) {
+		// Set final message
+		if (successCount > 0 && duplicateCount == 0) {
 			response.Message = "Schedules saved successfully!";
+		} else if (duplicateCount > 0) {
+			response.Message = "Schedule already exists for this user!";
+		} else {
+			response.Message = "No schedules were saved.";
 		}
 
 		return response;
