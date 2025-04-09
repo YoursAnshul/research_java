@@ -805,6 +805,15 @@ export class ShiftScheduleComponent implements OnInit {
         null,
         Validators.required
       );
+    }  else {
+      this.shiftForm.patchValue({
+        startTime: '',
+        endTime: '',
+        comments: '',
+      });
+      this.shiftForm.get('startTime')?.markAsPristine();
+      this.shiftForm.get('endTime')?.markAsPristine();
+      this.shiftForm.get('comments')?.markAsPristine();
     }
   }
 
@@ -1160,7 +1169,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
     }
     if (schedule) {
-      this.isEdit = true;
+      this.isEdit = schedule.isEdit
       this.tab = schedule.tab;
       let scheduleDate = null;
       if (schedule.tab == 'Day') {
@@ -1188,15 +1197,20 @@ export class ShiftScheduleComponent implements OnInit {
       }
       console.log('schedule--->', schedule);
       console.log('scheduleDate--->', scheduleDate);
-      this.shiftForm.patchValue({
-        user: this.selectedUser,
-        projects: this.selectedProject,
-        dayWiseDate: scheduleDate,
-        startTime: schedule.startTime,
-        endTime: schedule.endTime,
-        comments: schedule.comments,
-        id: schedule.preschedulekey,
-      });
+      if(schedule.isEdit){
+        this.shiftForm.patchValue({
+          user: this.selectedUser,
+          projects: this.selectedProject,
+          dayWiseDate: scheduleDate,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          comments: schedule.comments,
+          id: schedule.preschedulekey,
+        });
+      } else {
+        this.onResetShiftSchedule();
+      }
+   
     }
   }
 

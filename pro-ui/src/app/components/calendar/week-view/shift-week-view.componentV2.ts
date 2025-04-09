@@ -47,7 +47,6 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
   private previouslyEditedSchedule: ISchedule | null = null;
-
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -82,8 +81,6 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   }
 
   processShiftSchedules(): void {
-    console.log('this.shiftSchedule--1--->', this.shiftSchedule);
-
     if (
       !this.selectedDateRange?.value?.start ||
       !this.selectedDateRange?.value?.end
@@ -116,7 +113,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
 
-    this.shiftSchedule?.forEach((shift) => {
+    this.shiftSchedule?.forEach((shift) => {      
       const shiftDate = moment(shift.dayWiseDate)
         .tz('America/New_York')
         .startOf('day')

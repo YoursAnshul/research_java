@@ -48,6 +48,7 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() sendDate = new EventEmitter<FormControl>();
   isEdit: boolean = false;
   @Output() scheduleData = new EventEmitter<any>();
+
   private previouslyEditedSchedule: ISchedule | null = null;
 
   constructor(
@@ -73,19 +74,9 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(
-      'this.shiftSchedule========88888============',
-      this.shiftSchedule
-    );
-    console.log(
-      'this.selectedUser?.userId========88888============',
-      this.selectedUser?.userId
-    );
-
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
-
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;

@@ -111,16 +111,17 @@ export class ShifCalendarComponent implements OnInit {
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() shiftScheduleChange = new EventEmitter<any[]>();
   @Input() changeDate!: Date | null;
-  adminProjects: any[] = [];   
-  otherProjects: any[] = [];   
-  allProjects: any[] = [];  
+  adminProjects: any[] = [];
+  otherProjects: any[] = [];
+  allProjects: any[] = [];
   @Input() homeUser: any = null;
   @Input() homeSelectedDate: Date | null = null;
   @Input() homeSelectedProject: any = null;
   @Input() tab: any = null;
   selectedIndex: any = null;
   @Output() scheduleData = new EventEmitter<FormControl>();
-
+  @Input() isEdit: boolean = false;
+  isUpdate: boolean = false;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -152,7 +153,6 @@ export class ShifCalendarComponent implements OnInit {
       (error) => {
         this.errorMessage = <string>error.message;
         this.logsService.logError(this.errorMessage);
-        console.log(this.errorMessage);
       }
     );
 
@@ -171,7 +171,6 @@ export class ShifCalendarComponent implements OnInit {
       (error) => {
         this.errorMessage = <string>error.message;
         this.logsService.logError(this.errorMessage);
-        console.log(this.errorMessage);
       }
     );
 
@@ -184,7 +183,6 @@ export class ShifCalendarComponent implements OnInit {
       (error) => {
         this.errorMessage = <string>error.message;
         this.logsService.logError(this.errorMessage);
-        console.log(this.errorMessage);
       }
     );
 
@@ -196,14 +194,13 @@ export class ShifCalendarComponent implements OnInit {
       (error) => {
         this.errorMessage = <string>error.message;
         this.logsService.logError(this.errorMessage);
-        console.log(this.errorMessage);
       }
     );
   }
 
   ngOnInit(): void {
     // this.getScheduleList()
-    //subscribe to scheduleFetchStatus    
+    //subscribe to scheduleFetchStatus
     this.getAuthor();
     this.getProjectInfo('');
     this.userSchedulesService.scheduleFetchStatus.subscribe(
@@ -314,33 +311,42 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.tab){
-      if(this.tab === 'Month'){
+    if (changes['isEdit']) {
+      console.log('Edit flag received in child:', this.isEdit);
+      this.isUpdate = this.isEdit;
+      console.log('Edit flag before:',  this.shiftSchedule);
+
+      if (!this.isUpdate) {
+        this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
+      }
+      console.log('Edit flag after:',  this.shiftSchedule);
+    }
+    if (this.tab) {
+      if (this.tab === 'Month') {
         this.tabIndex = 2;
-      } else if(this.tab == 'Week'){
+      } else if (this.tab == 'Week') {
         this.tabIndex = 1;
       } else {
         this.tabIndex = 0;
       }
     }
-    if(this.homeSelectedDate){
-      this.selectedDate.setValue(this.homeSelectedDate)
+    if (this.homeSelectedDate) {
+      this.selectedDate.setValue(this.homeSelectedDate);
     }
-   if (this.homeUser) {
+    if (this.homeUser) {
       this.selectedUser = this.homeUser;
-      this.defaultUser =this.homeUser
-      console.log("this.selectedUser--4444--",this.selectedUser);
+      this.defaultUser = this.homeUser;
+      console.log('this.selectedUser--4444--', this.selectedUser);
       this.getAuthor();
       this.getProjectInfo(this.selectedUser?.dempoId);
     }
     if (this.homeSelectedProject) {
       this.selectedProject = this.homeSelectedProject;
-      this.defaultProject = this.homeSelectedProject
-      console.log("this.selectedProject--4444--",this.selectedProject);
-    }    
-   
-    
-    if(this.changeDate){
+      this.defaultProject = this.homeSelectedProject;
+      console.log('this.selectedProject--4444--', this.selectedProject);
+    }
+
+    if (this.changeDate) {
       this.selectedDate.setValue(this.changeDate);
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
@@ -351,13 +357,15 @@ export class ShifCalendarComponent implements OnInit {
 
   findProjectInLists(projectToFind: any): any {
     return (
-      this.otherProjects.find(p => p.projectId === projectToFind.projectId) ||
-      this.adminProjects.find(p => p.projectId === projectToFind.projectId) ||
+      this.otherProjects.find((p) => p.projectId === projectToFind.projectId) ||
+      this.adminProjects.find((p) => p.projectId === projectToFind.projectId) ||
       null
     );
   }
   compareProjects(project1: any, project2: any): boolean {
-    return project1 && project2 ? project1.projectId === project2.projectId : project1 === project2;
+    return project1 && project2
+      ? project1.projectId === project2.projectId
+      : project1 === project2;
   }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     this.tabIndex = tabChangeEvent.index;
@@ -381,12 +389,10 @@ export class ShifCalendarComponent implements OnInit {
 
       this.selectedDate.setValue(baseDate);
     }
+    this.selectedProject = this.defaultProject;
+    this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
-    // this.getScheduleList(
-    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    // );
-    this.selectedProject = this.defaultProject;
   }
 
   checkContext(applyFilters: boolean = true): void {
@@ -414,7 +420,6 @@ export class ShifCalendarComponent implements OnInit {
         }
       }
     }
-    
   }
 
   //end ngOnInit
@@ -471,8 +476,7 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
 
-
-  refreshDate(){
+  refreshDate() {
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       (scheduleFetchStatus) => {
         this.scheduleFetchStatus = scheduleFetchStatus;
@@ -994,33 +998,35 @@ export class ShifCalendarComponent implements OnInit {
   getProjectInfo(dempoId: string): void {
     const validDempoId = dempoId ?? '';
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${validDempoId}`;
-    
+
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjects = Array.isArray(data) ? data : [];
-  
+
         this.adminProjects = this.allProjects.filter(
           (project: { projectType: number }) => project.projectType === 4
         );
-  
+
         const uniqueProjects = new Map();
-        this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
-          if (project.projectType != 4 && !uniqueProjects.has(project.projectId)) {
-            uniqueProjects.set(project.projectId, project);
+        this.allProjects.forEach(
+          (project: { projectId: number; projectType: number }) => {
+            if (
+              project.projectType != 4 &&
+              !uniqueProjects.has(project.projectId)
+            ) {
+              uniqueProjects.set(project.projectId, project);
+            }
           }
-        });
+        );
         this.otherProjects = Array.from(uniqueProjects.values());
         this.selectedProject = this.defaultProject;
       },
-      
+
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
-  
-  
 
   onUserChange(user: any) {
-    
     this.selectedUser = user;
     this.getProjectInfo(user?.dempoId);
     this.getScheduleList(
@@ -1036,7 +1042,6 @@ export class ShifCalendarComponent implements OnInit {
 
   onSelectedUserChange(user: any) {
     this.selectedUser = user;
-    
   }
   onSelectedProjectChange(project: any) {
     this.selectedProject = project;
@@ -1058,7 +1063,10 @@ export class ShifCalendarComponent implements OnInit {
       next: (response) => {
         // Ensure this.shiftSchedule is always an array
         this.shiftSchedule = response ?? [];
-        localStorage.setItem('shiftSchedule', JSON.stringify(this.shiftSchedule));
+        localStorage.setItem(
+          'shiftSchedule',
+          JSON.stringify(this.shiftSchedule)
+        );
 
         // Check for missing schedules and merge them
         const missingSchedules =
@@ -1071,7 +1079,6 @@ export class ShifCalendarComponent implements OnInit {
                   item1.duration === item2.duration
               )
           ) || [];
-
 
         this.shiftSchedule.push(...missingSchedules);
         this.syncData(this.shiftSchedule);
@@ -1091,10 +1098,9 @@ export class ShifCalendarComponent implements OnInit {
 
     this.sendWeekDate.emit(date);
   }
-  
+
   handleSchedule(schedule: any) {
     console.log('Received from A:', schedule);
     this.scheduleData.emit(schedule);
   }
-  
 }
