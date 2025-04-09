@@ -88,7 +88,7 @@
         (mouseleave)="hideHoverMessage()"
         [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"
         [style.border]="schedule.isNew ? '2.5px solid #66aeff' : ''"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        [style.opacity]="isEdit ? 0.5 : 1"
         >
         <div class="center-align-container">
           <app-project-swatch

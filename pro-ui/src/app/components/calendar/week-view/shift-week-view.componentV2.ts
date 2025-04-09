@@ -46,6 +46,14 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   totalDuration: number = 0;
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
+  @Input() isEdit: boolean = false;
+  weekEdit1: boolean = false;
+  weekEdit2: boolean = false;
+  weekEdit3: boolean = false;
+  weekEdit4: boolean = false;
+  weekEdit5: boolean = false; 
+  weekEdit6: boolean = false;
+  weekEdit7: boolean = false;
   private previouslyEditedSchedule: ISchedule | null = null;
   constructor(
     private globalsService: GlobalsService,
@@ -62,6 +70,19 @@ export class ShiftWeekViewComponentV2 implements OnInit {
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isEdit']) {
+      if (!this.isEdit && this.shiftSchedule?.length) {
+        this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
+        this.previouslyEditedSchedule = null;
+        this.weekEdit1 = false;
+        this.weekEdit2 = false;
+        this.weekEdit3 = false;
+        this.weekEdit4 = false;
+        this.weekEdit5 = false;
+        this.weekEdit6 = false;
+        this.weekEdit7 = false;
+      }
+    }
     this.processShiftSchedules();
   }
   hasSchedules(): boolean {
@@ -113,7 +134,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
 
-    this.shiftSchedule?.forEach((shift) => {      
+    this.shiftSchedule?.forEach((shift) => {
       const shiftDate = moment(shift.dayWiseDate)
         .tz('America/New_York')
         .startOf('day')
@@ -347,8 +368,28 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       );
     }
   }
+  private getDayKeyForSchedule(schedule: ISchedule): keyof IWeekSchedules | null {
+  if (!this.weekSchedules) return null;
+
+  for (const key of Object.keys(this.weekSchedules) as (keyof IWeekSchedules)[]) {
+    const schedules = this.weekSchedules[key];
+    if (Array.isArray(schedules) && schedules.includes(schedule)) {
+      return key;
+    }
+  }
+
+  return null;
+}
+
   openScheduleData(schedule: ISchedule): void {
-    if (schedule.isEdit) {
+    this.weekEdit1 = false;
+    this.weekEdit2 = false;
+    this.weekEdit3 = false;
+    this.weekEdit4 = false;
+    this.weekEdit5 = false;
+    this.weekEdit6 = false;
+    this.weekEdit7 = false;
+    if (schedule.isEdit || this.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;
     } else {
@@ -358,9 +399,19 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
-  
     schedule.tab = 'Week';
+    this.isEdit = schedule.isEdit;
+    switch (schedule.dayOfWeek) {
+      case 1: this.weekEdit1 = true; break;
+      case 2: this.weekEdit2 = true; break;
+      case 3: this.weekEdit3 = true; break;
+      case 4: this.weekEdit4 = true; break;
+      case 5: this.weekEdit5 = true; break;
+      case 6: this.weekEdit6 = true; break;
+      case 7: this.weekEdit7 = true; break;
+    }
     this.scheduleData.emit(schedule);
+    this.cdr.detectChanges();
   }
   
 }

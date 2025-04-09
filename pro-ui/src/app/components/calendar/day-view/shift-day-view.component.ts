@@ -46,7 +46,7 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() selectedUserChange = new EventEmitter<any>();
   @Output() selectedProjectChange = new EventEmitter<any>();
   @Output() sendDate = new EventEmitter<FormControl>();
-  isEdit: boolean = false;
+  @Input() isEdit: boolean = false;
   @Output() scheduleData = new EventEmitter<any>();
 
   private previouslyEditedSchedule: ISchedule | null = null;
@@ -74,6 +74,12 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isEdit']) {
+      if (!this.isEdit && this.shiftSchedule?.length) {
+        this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
+        this.previouslyEditedSchedule = null;
+      }
+    }
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
@@ -242,19 +248,18 @@ export class ShiftDayViewComponent implements OnInit {
     this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: ISchedule): void {
-    if (schedule.isEdit) {
+    if (schedule.isEdit || this.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;
     } else {
       if (this.previouslyEditedSchedule) {
         this.previouslyEditedSchedule.isEdit = false;
       }
-
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
-
     schedule.tab = 'Day';
-    this.scheduleData.emit(schedule);
+    this.isEdit = schedule.isEdit;
+    this.scheduleData.emit({ ...schedule });
   }
 }

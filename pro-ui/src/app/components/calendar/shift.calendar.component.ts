@@ -121,7 +121,6 @@ export class ShifCalendarComponent implements OnInit {
   selectedIndex: any = null;
   @Output() scheduleData = new EventEmitter<FormControl>();
   @Input() isEdit: boolean = false;
-  isUpdate: boolean = false;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -311,16 +310,6 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isEdit']) {
-      console.log('Edit flag received in child:', this.isEdit);
-      this.isUpdate = this.isEdit;
-      console.log('Edit flag before:',  this.shiftSchedule);
-
-      if (!this.isUpdate) {
-        this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
-      }
-      console.log('Edit flag after:',  this.shiftSchedule);
-    }
     if (this.tab) {
       if (this.tab === 'Month') {
         this.tabIndex = 2;

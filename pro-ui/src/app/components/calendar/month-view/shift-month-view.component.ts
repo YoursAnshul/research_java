@@ -37,6 +37,7 @@ export class ShiftMonthViewComponent implements OnInit {
   @Output() scheduleData = new EventEmitter<FormControl>();
   authenticatedUser!: IAuthenticatedUser;
   type: any = null;
+  @Input() isEdit: boolean = false;
   constructor(
     private authenticationService: AuthenticationService,
     private scheduleService: ScheduleService
@@ -52,6 +53,11 @@ export class ShiftMonthViewComponent implements OnInit {
     this.processShiftSchedules();
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isEdit']) {
+      if (this.shiftSchedule?.length) {
+        this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
+      }
+    }
     if (
       changes['selectedUser'] ||
       changes['selectedProject'] ||

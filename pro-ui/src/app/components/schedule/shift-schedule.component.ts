@@ -159,7 +159,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
-  ngOnChanges(): void {
+  ngOnChanges(): void {    
     // this.getScheduleList();
   }
   getBackgroundColor(time: string): string {
