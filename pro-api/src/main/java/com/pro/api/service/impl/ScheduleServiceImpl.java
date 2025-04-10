@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,46 +196,73 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public GeneralResponse updateSchedule(ShiftScheduleRequest request) {
-		GeneralResponse response = new GeneralResponse();
-		response.Message = "";
-		if (request.getId() == null) {
-			response.Message = "Error: Missing Schedule ID.";
-			return response;
-		}
-		String updateQuery = """
-				    UPDATE core.schedules
-				    SET projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?,
-				        status = ?, entryby = ?, entrydt = NOW()
-				    WHERE preschedulekey = ?
-				""";
+	    GeneralResponse response = new GeneralResponse();
+	    Set<String> errorMessages = new LinkedHashSet<>();
+	    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
 
-		try {
-			LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
-			DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+	    try {
+	        if (request.getScheduleDate() == null || request.getStartTime() == null || request.getEndTime() == null || request.getId() == null) {
+	            response.Message = "Missing required fields.";
+	            return response;
+	        }
 
-			LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
-			LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
+	        LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
+	        LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
+	        LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
-			LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
-			LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
+	        LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
+	        LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
 
-			int rowsUpdated = this.jdbcTemplate.update(updateQuery, request.getProjectId(), request.getComments(),
-					startDateTime, endDateTime, "0", request.getEntryby(), request.getId());
+	        if (!endDateTime.isAfter(startDateTime)) {
+	            response.Message = "End time must be after start time.";
+	            return response;
+	        }
 
-			if (rowsUpdated == 0) {
-				response.Message = "No matching schedule found to update.";
-			} else {
-				response.Message = "Schedule updated successfully.";
-			}
+	        // Fetch all existing schedules for this dempoId on the same date, excluding current schedule
+	        String fetchQuery = "SELECT preschedulekey, startDateTime, endDateTime FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? AND preschedulekey != ?";
+	        List<Map<String, Object>> existingSchedules = this.jdbcTemplate.queryForList(fetchQuery, request.getDempoId(), scheduleDate, request.getId());
 
-		} catch (DateTimeParseException e) {
-			response.Message = "Invalid date/time format: " + e.getMessage();
-		} catch (Exception e) {
-			response.Message = "Error processing request: " + e.getMessage();
-		}
+	        for (Map<String, Object> schedule : existingSchedules) {
+	            LocalDateTime existingStart = ((Timestamp) schedule.get("startDateTime")).toLocalDateTime();
+	            LocalDateTime existingEnd = ((Timestamp) schedule.get("endDateTime")).toLocalDateTime();
+	            System.out.println("existingStart--->"+existingStart);
+	            System.out.println("existingEnd--->"+existingEnd);
 
-		return response;
+	            System.out.println("startDateTime--->"+startDateTime);
+	            System.out.println("endDateTime--->"+endDateTime);
+
+	            // Check for overlapping time ranges
+	            if (startDateTime.isBefore(existingEnd) && endDateTime.isAfter(existingStart)) {
+	                response.Message = "Updated time range overlaps with another schedule for DempoId: " + request.getDempoId();
+	                return response;
+	            }
+	        }
+
+	        // Update schedule
+	        String updateQuery = "UPDATE core.schedules SET scheduleDate = ?, projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?, status = ?, entryby = ?, entrydt = ?, machinename = ? WHERE preschedulekey = ?";
+	        this.jdbcTemplate.update(updateQuery,
+	                scheduleDate,
+	                request.getProjectId(),
+	                request.getComments(),
+	                startDateTime,
+	                endDateTime,
+	                "0",
+	                request.getEntryby(),
+	                new Date(),
+	                "NA",
+	                request.getId()
+	        );
+
+	        response.Message = "Schedule updated successfully!";
+	    } catch (DateTimeParseException e) {
+	        response.Message = "Invalid date/time format: " + e.getMessage();
+	    } catch (Exception e) {
+	        response.Message = "Error updating schedule: " + e.getMessage();
+	    }
+
+	    return response;
 	}
+
 
 	@Override
 	public GeneralResponse deleteSchedule(Long id) {

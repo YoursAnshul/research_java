@@ -1194,7 +1194,8 @@ export class ShiftScheduleComponent implements OnInit {
             (p) => p?.projectId === schedule?.projects?.projectId
           ) || null;
         this.selectedProject = selectedProject;
-        scheduleDate = new Date(schedule.dayWiseDate);
+        const [year, month, day] = schedule.dayWiseDate.split('-').map(Number);
+        scheduleDate = new Date(year, month - 1, day);
       } else {
         const selectedUser =
           this.userList.find((user) => user?.userId === schedule?.userid) ||
