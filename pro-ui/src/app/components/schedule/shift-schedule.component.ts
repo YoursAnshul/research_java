@@ -805,15 +805,20 @@ export class ShiftScheduleComponent implements OnInit {
         null,
         Validators.required
       );
+      this.shiftForm.get('startTime')?.setErrors({ required: true });
+      this.shiftForm.get('endTime')?.setErrors({ required: true });
     } else {
       this.shiftForm.patchValue({
         startTime: '',
         endTime: '',
         comments: '',
       });
+      this.shiftForm.get('startTime')?.setErrors({ required: true });
+      this.shiftForm.get('endTime')?.setErrors({ required: true });
       this.shiftForm.get('startTime')?.markAsPristine();
       this.shiftForm.get('endTime')?.markAsPristine();
       this.shiftForm.get('comments')?.markAsPristine();
+
     }
   }
 
@@ -1170,9 +1175,7 @@ export class ShiftScheduleComponent implements OnInit {
     const storedSchedule = localStorage.getItem('shiftSchedule');
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
       this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
-    }
-    console.log("this.shiftSchedule --->",this.shiftSchedule );
-    
+    }    
     if (schedule) {      
       this.isEdit = schedule.isEdit;
       this.tab = schedule.tab;
