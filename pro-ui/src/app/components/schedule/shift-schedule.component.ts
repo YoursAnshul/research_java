@@ -1010,6 +1010,7 @@ export class ShiftScheduleComponent implements OnInit {
 
   getScheduleList(anchorDate: string | null): void {
     let url = '';
+  
     if (this.authenticatedUser?.interviewer && this.selectedUser?.dempoId) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser?.dempoId}`;
     } else {
@@ -1018,30 +1019,27 @@ export class ShiftScheduleComponent implements OnInit {
         url += `?demId=${this.selectedUser?.dempoId}`;
       }
     }
-
-    // Make the API call
+  
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        // Ensure this.shiftSchedule is always an array
         this.shiftSchedule = response ?? [];
-        localStorage.setItem(
-          'shiftSchedule',
-          JSON.stringify(this.shiftSchedule)
-        );
-
-        // Check for missing schedules and merge them
-        const missingSchedules =
-          this.shiftSchedule1?.filter(
-            (item1) =>
-              !this.shiftSchedule?.some(
-                (item2) =>
-                  item1.startTime === item2.startTime &&
-                  item1.endTime === item2.endTime &&
-                  item1.duration === item2.duration
-              )
-          ) || [];
-
+        localStorage.setItem('shiftSchedule', JSON.stringify(this.shiftSchedule));
+  
+        // OPTIONAL: merge unsaved new shifts if needed
+        const missingSchedules = this.shiftSchedule1?.filter(
+          (item1) =>
+            !this.shiftSchedule.some(
+              (item2) =>
+                item1.startTime === item2.startTime &&
+                item1.endTime === item2.endTime &&
+                item1.duration === item2.duration
+            )
+        ) || [];
+  
         this.shiftSchedule.push(...missingSchedules);
+  
+        // clear local temporary additions after successful fetch
+        this.shiftSchedule1 = [];
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
@@ -1049,6 +1047,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
+  
 
   showToastMessage(message: string, type: string): void {
     let snackBarClass = 'success-snackbar';
@@ -1108,32 +1107,29 @@ export class ShiftScheduleComponent implements OnInit {
     const startTime = this.shiftForm.get('startTime')?.value;
     const endTime = this.shiftForm.get('endTime')?.value;
     const dayWiseDate = this.shiftForm.get('dayWiseDate')?.value;
-
+  
     if (!startTime) {
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.showToastMessage('Start time required.', 'warning');
       return;
     }
-
+  
     if (!endTime) {
       this.shiftForm.get('endTime')?.setErrors({ required: true });
       this.showToastMessage('End time required.', 'warning');
       return;
     }
-
+  
     if (!dayWiseDate) {
-      this.showToastMessage('Schedule date required.', 'warning');
       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+      this.showToastMessage('Schedule date required.', 'warning');
       return;
     }
-
+  
     const date = new Date(dayWiseDate);
-    const scheduleDate = `${date.getFullYear()}-${String(
-      date.getMonth() + 1
-    ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
+    const scheduleDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  
     const shift = this.shiftForm.value || {};
-    console.log('shift====>', shift);
     const obj = {
       dempoId: shift.user?.dempoId || null,
       scheduleDate,
@@ -1144,7 +1140,7 @@ export class ShiftScheduleComponent implements OnInit {
       entryby: this.authenticatedUser?.netID || null,
       id: shift.id || null,
     };
-
+  
     this.http
       .post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
       .subscribe({
@@ -1152,8 +1148,22 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.isEdit = false;
           this.scheduleFetchStatus = false;
+  
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
+          this.shiftSchedule1 = [];
+  
+          // fetch updated list
+          // this.getScheduleList(
+          //   Utils.formatDateOnlyToStringUTC(
+          //     dayWiseDate,
+          //     true,
+          //     true,
+          //     true
+          //   )
+          // );
+          localStorage.removeItem('shiftSchedule');
+          this.onSubmit()
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
@@ -1163,6 +1173,7 @@ export class ShiftScheduleComponent implements OnInit {
         },
       });
   }
+  
   handleSchedule(schedule: any) {
     const storedSchedule = localStorage.getItem('shiftSchedule');
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
