@@ -112,7 +112,6 @@
         (selectedProjectChange)="onSelectedProjectChange($event)"
         (sendDate)="handleDate($event)"
         (scheduleData)="handleSchedule($event)"
-        [isEdit]="isEdit"
       >
       </app-shift-day-view>
     </mat-tab>
@@ -203,7 +202,6 @@
         (resetShiftSchedule)="onResetShiftSchedule()"
         (sendWeekDate)="handleWeekDate($event)"
         (scheduleData)="handleSchedule($event)"
-        [isEdit]="isEdit"
       ></app-shift-week-view-v2>
     </mat-tab>
     <mat-tab label="Month">
@@ -293,7 +291,6 @@
         (resetShiftSchedule)="onResetShiftSchedule()"
         (monthDate)="handleWeekDate($event)"
         (scheduleData)="handleSchedule($event)"
-        [isEdit]="isEdit"
       ></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>

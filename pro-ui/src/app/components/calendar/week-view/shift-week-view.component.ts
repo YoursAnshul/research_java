@@ -47,14 +47,6 @@ export class ShiftWeekViewComponent implements OnInit {
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
   private previouslyEditedSchedule: ISchedule | null = null;
-  weekEdit1: boolean = false;
-  weekEdit2: boolean = false;
-  weekEdit3: boolean = false;
-  weekEdit4: boolean = false;
-  weekEdit5: boolean = false; 
-  weekEdit6: boolean = false;
-  weekEdit7: boolean = false;
-  @Input() isEdit: boolean = false;
 
   constructor(
     private globalsService: GlobalsService,
@@ -71,19 +63,6 @@ export class ShiftWeekViewComponent implements OnInit {
 
   ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isEdit']) {
-      if (!this.isEdit && this.shiftSchedule?.length) {
-        this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
-        this.previouslyEditedSchedule = null;
-        this.weekEdit1 = false;
-        this.weekEdit2 = false;
-        this.weekEdit3 = false;
-        this.weekEdit4 = false;
-        this.weekEdit5 = false;
-        this.weekEdit6 = false;
-        this.weekEdit7 = false;
-      }
-    }
     this.processShiftSchedules();
   }
   hasSchedules(): boolean {
@@ -365,14 +344,7 @@ export class ShiftWeekViewComponent implements OnInit {
     }
   }
   openScheduleData(schedule: ISchedule): void {
-    this.weekEdit1 = false;
-    this.weekEdit2 = false;
-    this.weekEdit3 = false;
-    this.weekEdit4 = false;
-    this.weekEdit5 = false;
-    this.weekEdit6 = false;
-    this.weekEdit7 = false;
-    if (schedule.isEdit || this.isEdit) {
+    if (schedule.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;
     } else {
@@ -383,17 +355,6 @@ export class ShiftWeekViewComponent implements OnInit {
       this.previouslyEditedSchedule = schedule;
     }
     schedule.tab = 'Week';
-    this.isEdit = schedule.isEdit;
-    switch (schedule.dayOfWeek) {
-      case 1: this.weekEdit1 = true; break;
-      case 2: this.weekEdit2 = true; break;
-      case 3: this.weekEdit3 = true; break;
-      case 4: this.weekEdit4 = true; break;
-      case 5: this.weekEdit5 = true; break;
-      case 6: this.weekEdit6 = true; break;
-      case 7: this.weekEdit7 = true; break;
-    }
-    this.scheduleData.emit(schedule);
-    this.cdr.detectChanges();
+    this.scheduleData.emit({ ...schedule });
   }
 }

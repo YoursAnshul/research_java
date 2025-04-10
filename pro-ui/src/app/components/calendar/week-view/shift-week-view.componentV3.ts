@@ -355,8 +355,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
-  
     schedule.tab = 'Week';
-    this.scheduleData.emit(schedule);
+    this.scheduleData.emit({ ...schedule });
   }
 }

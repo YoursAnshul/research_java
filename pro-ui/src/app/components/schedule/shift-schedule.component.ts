@@ -1171,7 +1171,9 @@ export class ShiftScheduleComponent implements OnInit {
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
       this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
     }
-    if (schedule) {
+    console.log("this.shiftSchedule --->",this.shiftSchedule );
+    
+    if (schedule) {      
       this.isEdit = schedule.isEdit;
       this.tab = schedule.tab;
       let scheduleDate = null;
