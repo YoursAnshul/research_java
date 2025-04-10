@@ -921,14 +921,14 @@ export class ShiftScheduleComponent implements OnInit {
           this.shiftSchedule = [];
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
-          this.getScheduleList(
-            Utils.formatDateOnlyToStringUTC(
-              this.selectedDate.value,
-              true,
-              true,
-              true
-            )
-          );
+          // this.getScheduleList(
+          //   Utils.formatDateOnlyToStringUTC(
+          //     this.selectedDate.value,
+          //     true,
+          //     true,
+          //     true
+          //   )
+          // );
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
