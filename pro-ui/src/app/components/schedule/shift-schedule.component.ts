@@ -924,7 +924,12 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
-          this.onResetShiftSchedule();
+          // this.onResetShiftSchedule();
+          if(res.Message=='Schedule already exists for this user!'){
+            this.shiftForm.get('startTime')?.setErrors({ required: true });
+            this.shiftForm.get('endTime')?.setErrors({ required: true });
+          }
+          
           localStorage.removeItem('shiftSchedule');
         },
         error: (error) => {
