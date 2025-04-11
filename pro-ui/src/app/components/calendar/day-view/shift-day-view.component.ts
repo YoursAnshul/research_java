@@ -65,8 +65,7 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.selectedProject) {
@@ -234,22 +233,24 @@ export class ShiftDayViewComponent implements OnInit {
   }
   addShift(): void {
     this.sendDate.emit(this.selectedDate);
-    this.resetShiftSchedule.emit();
+    // this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: ISchedule): void {
-    if (schedule.isEdit ) {
+    if (schedule.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;
     } else {
       if (this.previouslyEditedSchedule) {
         this.previouslyEditedSchedule.isEdit = false;
       }
+  
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
+  
     schedule.tab = 'Day';
-    console.log("schedule--->",schedule);
+    console.log("schedule--->", schedule);
     this.scheduleData.emit({ ...schedule });
-    
   }
+  
 }
