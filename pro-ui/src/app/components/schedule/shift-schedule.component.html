@@ -174,7 +174,7 @@
         </mat-form-field>
 
         <!-- Add to Calendar Button -->
-        <div class="ml-1 mr-1" *ngIf="!isEdit">
+        <div class="ml-1 mr-1" *ngIf="!isEdit || shiftForm.invalid">
           <button
             mat-raised-button
             color="primary"
@@ -190,7 +190,7 @@
         </div>
         <div
           class="icon-container"
-          *ngIf="isEdit"
+          *ngIf="isEdit && !shiftForm.invalid"
           style="
             cursor: pointer;
             display: flex;

@@ -142,6 +142,7 @@ export class ShiftScheduleComponent implements OnInit {
   tab: any = null;
   isEdit: boolean = false;
   blockedTimeSlots: string[] = []; // Store blocked time slots for selected date
+  isTabChange: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -1072,6 +1073,7 @@ export class ShiftScheduleComponent implements OnInit {
   onTabValueReceived(tab: any): void {
     this.tabValue = tab;
   }
+  
   onSeletedDayDate(day: any): void {
     if (this.tabValue == 'Day') {
       this.dateRange = null;
