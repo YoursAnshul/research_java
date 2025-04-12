@@ -310,6 +310,16 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.changeDate) {
+      this.selectedDate.setValue(this.changeDate);
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
+      );
+    } else if(this.authenticatedUser?.admin && !this.isEdit) {
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+      );
+    }
     if (this.tab) {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
@@ -334,17 +344,6 @@ export class ShifCalendarComponent implements OnInit {
       this.defaultProject = this.homeSelectedProject;
       console.log('this.selectedProject--4444--', this.selectedProject);
     }
-
-    if (this.changeDate) {
-      this.selectedDate.setValue(this.changeDate);
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
-      );
-    } else {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-      );
-    }
     this.checkContext();
   }
 
@@ -361,6 +360,12 @@ export class ShifCalendarComponent implements OnInit {
       : project1 === project2;
   }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    if (this.shiftSchedule?.length) {
+      this.shiftSchedule = this.shiftSchedule.map(item => ({
+        ...item,
+        isEdit: false
+      }));
+    }
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
     let baseDate = this.selectedDate?.value || null;
