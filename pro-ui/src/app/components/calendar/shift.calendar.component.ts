@@ -360,12 +360,12 @@ export class ShifCalendarComponent implements OnInit {
       : project1 === project2;
   }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    // if (this.shiftSchedule?.length) {
-    //   this.shiftSchedule = this.shiftSchedule.map(item => ({
-    //     ...item,
-    //     isEdit: false
-    //   }));
-    // }
+    if (this.shiftSchedule?.length) {
+      this.shiftSchedule = this.shiftSchedule.map(item => ({
+        ...item,
+        isEdit: false
+      }));
+    }
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
     let baseDate = this.selectedDate?.value || null;
@@ -388,6 +388,10 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedDate.setValue(baseDate);
     }
     this.selectedProject = this.defaultProject;
+    this.selectedUser = this.defaultUser;
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
   }
