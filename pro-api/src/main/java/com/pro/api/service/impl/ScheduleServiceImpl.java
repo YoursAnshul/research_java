@@ -34,93 +34,87 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	    public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
-        GeneralResponse response = new GeneralResponse();
-        Set<String> errorMessages = new LinkedHashSet<>();
-        int successCount = 0;
-        int duplicateCount = 0;
+	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
+		GeneralResponse response = new GeneralResponse();
+		Set<String> errorMessages = new LinkedHashSet<>();
+		int successCount = 0;
+		int duplicateCount = 0;
 
-        String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? "
-                + "AND startDateTime < ? AND endDateTime > ?";
+		String checkQuery = "SELECT COUNT(*) FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? "
+				+ "AND startDateTime < ? AND endDateTime > ?";
 
-        String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String insertQuery = "INSERT INTO core.schedules (dempoId, scheduleDate, projectId, comments, startDateTime, endDateTime, status, entryby, entrydt, machinename) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-        ZoneId localZone = ZoneId.systemDefault(); // or specify your expected input zone, e.g., ZoneId.of("Asia/Kolkata")
-        ZoneId utcZone = ZoneOffset.UTC;
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+		ZoneId localZone = ZoneId.systemDefault(); // or specify your expected input zone, e.g.,
+													// ZoneId.of("Asia/Kolkata")
+		ZoneId utcZone = ZoneOffset.UTC;
 
-        for (ShiftScheduleRequest request : list) {
-            try {
-                if (request.getScheduleDate() == null || request.getStartTime() == null || request.getEndTime() == null) {
-                    errorMessages.add("Missing required fields for DempoId: " + request.getDempoId());
-                    continue;
-                }
+		for (ShiftScheduleRequest request : list) {
+			try {
+				if (request.getScheduleDate() == null || request.getStartTime() == null
+						|| request.getEndTime() == null) {
+					errorMessages.add("Missing required fields for DempoId: " + request.getDempoId());
+					continue;
+				}
 
-                LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
-                LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
-                LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
+				LocalDate scheduleDate = LocalDate.parse(request.getScheduleDate());
+				LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
+				LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
-                // Combine into LocalDateTime in local zone
-                LocalDateTime localStartDateTime = LocalDateTime.of(scheduleDate, startTime);
-                LocalDateTime localEndDateTime = LocalDateTime.of(scheduleDate, endTime);
+				// Combine into LocalDateTime in local zone
+				LocalDateTime localStartDateTime = LocalDateTime.of(scheduleDate, startTime);
+				LocalDateTime localEndDateTime = LocalDateTime.of(scheduleDate, endTime);
 
-                // Validate time range
-                if (!localEndDateTime.isAfter(localStartDateTime)) {
-                    errorMessages.add("End time must be after start time for DempoId: " + request.getDempoId());
-                    continue;
-                }
+				if (!localEndDateTime.isAfter(localStartDateTime)) {
+					errorMessages.add("End time must be after start time for DempoId: " + request.getDempoId());
+					continue;
+				}
 
-                // Convert local date-times to UTC
-                ZonedDateTime zonedStart = localStartDateTime.atZone(localZone);
-                ZonedDateTime zonedEnd = localEndDateTime.atZone(localZone);
+				ZonedDateTime zonedStart = localStartDateTime.atZone(localZone);
+				ZonedDateTime zonedEnd = localEndDateTime.atZone(localZone);
 
-                ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone);
-                ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone);
+				ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone);
+				ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone);
 
-                LocalDateTime startDateTimeUtc = utcStart.toLocalDateTime();
-                LocalDateTime endDateTimeUtc = utcEnd.toLocalDateTime();
+				LocalDateTime startDateTimeUtc = utcStart.toLocalDateTime();
+				LocalDateTime endDateTimeUtc = utcEnd.toLocalDateTime();
 
-                Integer existingCount = this.jdbcTemplate.queryForObject(checkQuery, Integer.class,
-                        request.getDempoId(), scheduleDate, endDateTimeUtc, startDateTimeUtc);
+				Integer existingCount = this.jdbcTemplate.queryForObject(checkQuery, Integer.class,
+						request.getDempoId(), scheduleDate, endDateTimeUtc, startDateTimeUtc);
 
-                if (existingCount != null && existingCount > 0) {
-                    duplicateCount++;
-                    errorMessages.add("Duplicate schedule found for DempoId: " + request.getDempoId());
-                    continue;
-                }
+				if (existingCount != null && existingCount > 0) {
+					duplicateCount++;
+					errorMessages.add("Duplicate schedule found for DempoId: " + request.getDempoId());
+					continue;
+				}
 
-                this.jdbcTemplate.update(insertQuery,
-                        request.getDempoId(),
-                        scheduleDate,
-                        request.getProjectId(),
-                        request.getComments(),
-                        startDateTimeUtc,
-                        endDateTimeUtc,
-                        "0",
-                        request.getEntryby(),
-                        new Date(),
-                        "NA");
+				this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
+						request.getComments(), startDateTimeUtc, endDateTimeUtc, "0", request.getEntryby(), new Date(),
+						"NA");
 
-                successCount++;
+				successCount++;
 
-            } catch (DateTimeParseException e) {
-                errorMessages.add("Invalid date/time format for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
-            } catch (Exception e) {
-                errorMessages.add("Error processing request for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
-            }
-        }
+			} catch (DateTimeParseException e) {
+				errorMessages
+						.add("Invalid date/time format for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
+			} catch (Exception e) {
+				errorMessages
+						.add("Error processing request for DempoId: " + request.getDempoId() + " -> " + e.getMessage());
+			}
+		}
 
-        if (successCount > 0 && duplicateCount == 0) {
-            response.Message = "Schedules saved successfully!";
-        } else if (duplicateCount > 0) {
-            response.Message = "Schedule already exists for this user!";
-        } else {
-            response.Message = "No schedules were saved.";
-        }
+		if (successCount > 0 && duplicateCount == 0) {
+			response.Message = "Schedules saved successfully!";
+		} else if (duplicateCount > 0) {
+			response.Message = "Schedule already exists for this user!";
+		} else {
+			response.Message = "No schedules were saved.";
+		}
 
-        return response;
-    }
+		return response;
+	}
 
 	@Override
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
@@ -183,8 +177,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");
-			System.out.println("startTime------------"+startTime);
-			System.out.println("endTime------------"+endTime);
+			System.out.println("startTime------------" + startTime);
+			System.out.println("endTime------------" + endTime);
 			double duration = calculateDuration(startTime, endTime);
 
 			return new ScheduleResponse(rs.getString("comments"), formatTime(startTime), formatTime(endTime), duration,
@@ -232,13 +226,23 @@ public class ScheduleServiceImpl implements ScheduleService {
 			LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
 			LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
-			LocalDateTime startDateTime = LocalDateTime.of(scheduleDate, startTime);
-			LocalDateTime endDateTime = LocalDateTime.of(scheduleDate, endTime);
-
-			if (!endDateTime.isAfter(startDateTime)) {
+			if (!endTime.isAfter(startTime)) {
 				response.Message = "End time must be after start time.";
 				return response;
 			}
+
+			// Convert to UTC
+			ZoneId localZone = ZoneId.systemDefault(); // or ZoneId.of("America/New_York")
+			ZoneId utcZone = ZoneOffset.UTC;
+
+			LocalDateTime localStartDateTime = LocalDateTime.of(scheduleDate, startTime);
+			LocalDateTime localEndDateTime = LocalDateTime.of(scheduleDate, endTime);
+
+			ZonedDateTime zonedStart = localStartDateTime.atZone(localZone);
+			ZonedDateTime zonedEnd = localEndDateTime.atZone(localZone);
+
+			LocalDateTime startDateTimeUtc = zonedStart.withZoneSameInstant(utcZone).toLocalDateTime();
+			LocalDateTime endDateTimeUtc = zonedEnd.withZoneSameInstant(utcZone).toLocalDateTime();
 
 			String fetchQuery = "SELECT preschedulekey, startDateTime, endDateTime FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? AND preschedulekey != ?";
 			List<Map<String, Object>> existingSchedules = this.jdbcTemplate.queryForList(fetchQuery,
@@ -248,12 +252,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 				LocalDateTime existingStart = ((Timestamp) schedule.get("startDateTime")).toLocalDateTime();
 				LocalDateTime existingEnd = ((Timestamp) schedule.get("endDateTime")).toLocalDateTime();
 
-				if (existingStart.equals(startDateTime) && existingEnd.equals(endDateTime)) {
+				if (existingStart.equals(startDateTimeUtc) && existingEnd.equals(endDateTimeUtc)) {
 					response.Message = "Schedule exists with the same time range.";
 					return response;
 				}
 
-				if (startDateTime.isBefore(existingEnd) && endDateTime.isAfter(existingStart)) {
+				if (startDateTimeUtc.isBefore(existingEnd) && endDateTimeUtc.isAfter(existingStart)) {
 					response.Message = "Schedule exists with the same time range.";
 					return response;
 				}
@@ -261,7 +265,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 			String updateQuery = "UPDATE core.schedules SET scheduleDate = ?, projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?, status = ?, entryby = ?, entrydt = ?, machinename = ? WHERE preschedulekey = ?";
 			this.jdbcTemplate.update(updateQuery, scheduleDate, request.getProjectId(), request.getComments(),
-					startDateTime, endDateTime, "0", request.getEntryby(), new Date(), "NA", request.getId());
+					startDateTimeUtc, endDateTimeUtc, "0", request.getEntryby(), new Date(), "NA", request.getId());
 
 			response.Message = "Schedule updated successfully!";
 		} catch (DateTimeParseException e) {
