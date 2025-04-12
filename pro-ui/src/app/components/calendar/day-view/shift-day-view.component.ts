@@ -262,7 +262,7 @@ export class ShiftDayViewComponent implements OnInit {
   }
   addShift(): void {
     this.sendDate.emit(this.selectedDate);
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: ISchedule): void {
     if (schedule.isEdit) {
