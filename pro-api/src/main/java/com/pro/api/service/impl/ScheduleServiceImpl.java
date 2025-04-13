@@ -135,10 +135,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 		params.add(year);
 		query.append("OR EXTRACT(YEAR FROM s.startdatetime) = ?) ");
 		params.add(year);
-//		params.add(month);
-//		query.append("OR EXTRACT(MONTH FROM s.startdatetime) = ? OR EXTRACT(MONTH FROM s.startdatetime) = ?) ");
-//		params.add(month);
-//		params.add(month);
 
 		if (dempoId != null && !dempoId.isBlank()) {
 			query.append(" AND s.dempoid = ? ");
@@ -149,31 +145,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 			query.append(" AND p.projectid = ? ");
 			params.add(projectId);
 		}
+		query.append("ORDER BY userName desc ");
 
-		// if ("Day".equalsIgnoreCase(tabValue) && scheduleDate != null) {
-		// query.append(" AND s.scheduleDate = ? ");
-		// System.out.println("scheduleDate---->" + scheduleDate);
-		// params.add(scheduleDate);
-		// } else if ("Week".equalsIgnoreCase(tabValue) && startDate != null && endDate
-		// != null) {
-		// LocalDate weekStart = startDate;
-		// LocalDate weekEnd = endDate;
-		// query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
-		// System.out.println("weekStart---->" + weekStart);
-		// System.out.println("weekEnd---->" + weekEnd);
-		// params.add(weekStart);
-		// params.add(weekEnd);
-		// } else if ("Month".equalsIgnoreCase(tabValue) && startDate != null && endDate
-		// != null) {
-		// LocalDate monthStart = startDate;
-		// LocalDate monthEnd = endDate;
-		// LocalDate fiveWeeksLater = monthEnd.plusWeeks(5);
-		// query.append(" AND s.scheduleDate BETWEEN ? AND ? ");
-		// System.out.println("weekStart---->" + monthStart);
-		// System.out.println("weekEnd---->" + fiveWeeksLater);
-		// params.add(monthStart);
-		// params.add(fiveWeeksLater);
-		// }
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");
