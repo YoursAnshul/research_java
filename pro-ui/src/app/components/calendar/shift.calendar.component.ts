@@ -396,7 +396,6 @@ export class ShifCalendarComponent implements OnInit {
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
-    this.onResetShiftSchedule();
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
   }
