@@ -870,6 +870,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   saveSchedule(): void {
+    this.isModified = false;
     const shiftScheduleList: any[] = [];
 
     const startTime = this.shiftForm.get('startTime')?.value;
@@ -1011,6 +1012,8 @@ export class ShiftScheduleComponent implements OnInit {
   // }
 
   getScheduleList(anchorDate: string | null): void {
+    this.shiftSchedule = [];
+    this.shiftSchedule1 = [];
     let url = '';
 
     if (this.authenticatedUser?.interviewer && this.selectedUser?.dempoId) {
