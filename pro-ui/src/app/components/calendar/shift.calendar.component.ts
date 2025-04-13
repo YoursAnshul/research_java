@@ -1061,6 +1061,8 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
+    this.shiftSchedule = [];
+    this.shiftSchedule1 = [];
     let url = '';
     if (this.authenticatedUser?.interviewer && this.selectedUser1?.dempoId) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
