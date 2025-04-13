@@ -188,8 +188,8 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   public addMonthsToSelectedDate(months: number): void {
     let selectedDt: Date = new Date(this._selectedDate.value);
-    selectedDt.setMonth(selectedDt.getMonth() + months);
     selectedDt.setDate(1);
+    selectedDt.setMonth(selectedDt.getMonth() + months);
     this._selectedDate.setValue(selectedDt);
     this.selectedDateChange.emit(this._selectedDate);
   }
