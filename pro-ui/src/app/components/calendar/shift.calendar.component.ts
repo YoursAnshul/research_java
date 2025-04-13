@@ -251,6 +251,8 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
   onReset(): void {
+    this.shiftSchedule=[]
+    this.shiftSchedule1=[]
     this.selectedDate.setValue(new Date());
     this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
       this.selectedDate = new FormControl(selectedDate.toISOString());
@@ -279,11 +281,13 @@ export class ShifCalendarComponent implements OnInit {
     this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
+   
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
     this.getAuthor();
     this.getProjectInfo('');
+ 
   }
 
   getLoginUser(email: string): void {
@@ -455,6 +459,8 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   public getAllUserSchedulesByAnchorDateNew(): void {
+    this.shiftSchedule=[]
+    this.shiftSchedule1=[]
     //----------------------------------------------------
     // get the first and last days of the selected week
     //----------------------------------------------------
