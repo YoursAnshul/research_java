@@ -277,8 +277,8 @@ export class ShifCalendarComponent implements OnInit {
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
     });
-    this.defaultUser = { userId: 0, userName: 'Any Users' };
-    this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
+    // this.defaultUser = { userId: 0, userName: 'Any Users' };
+    // this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
    
