@@ -1035,7 +1035,6 @@ export class ShifCalendarComponent implements OnInit {
           }
         );
         this.otherProjects = Array.from(uniqueProjects.values());
-        this.selectedProject = this.defaultProject;
       },
 
       error: (error) => console.error('Error fetching projects:', error),

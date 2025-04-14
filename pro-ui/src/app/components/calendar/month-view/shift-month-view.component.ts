@@ -85,21 +85,24 @@ export class ShiftMonthViewComponent implements OnInit {
     this.monthSchedules.weekSchedules = [];
 
     const referenceDate = new Date(this.selectedDate?.value || new Date());
-    const startOfMonth = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth(),
-      1
-    );
-    const endOfMonth = new Date(
-      referenceDate.getFullYear(),
-      referenceDate.getMonth() + 1,
-      0
-    );
-
-    startOfMonth.setHours(0, 0, 0, 0);
-    endOfMonth.setHours(23, 59, 59, 999);
-
+    const startOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
     const weekStarts = this.getWeekStarts(startOfMonth);
+    const startOfCalendarView = new Date(weekStarts[0]);
+    const endOfCalendarView = new Date(weekStarts[weekStarts.length - 1]);
+    endOfCalendarView.setDate(endOfCalendarView.getDate() + 6);
+
+    // const endOfMonth = new Date(
+    //   referenceDate.getFullYear(),
+    //   referenceDate.getMonth() + 1,
+    //   0
+    // );
+
+    // startOfMonth.setHours(0, 0, 0, 0);
+    // endOfMonth.setHours(23, 59, 59, 999);
+    startOfCalendarView.setHours(0, 0, 0, 0);
+    endOfCalendarView.setHours(23, 59, 59, 999);
+
+    // const weekStarts = this.getWeekStarts(startOfMonth);
 
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
       for (const weekStart of weekStarts) {
@@ -110,54 +113,70 @@ export class ShiftMonthViewComponent implements OnInit {
       return;
     }
 
-    const filteredShifts = this.shiftSchedule.filter((shift) => {
-      const shiftDate = moment(shift.dayWiseDate)
-        .tz('America/New_York')
-        .startOf('day')
-        .toDate();
-      if (shiftDate < startOfMonth || shiftDate > endOfMonth) return false;
+    // const filteredShifts = this.shiftSchedule.filter((shift) => {
+    //   const shiftDate = moment(shift.dayWiseDate)
+    //     .tz('America/New_York')
+    //     .startOf('day')
+    //     .toDate();
+    //   if (shiftDate < startOfMonth || shiftDate > endOfCalendarView) return false;
 
-      let isValid = true;
+    //   let isValid = true;
 
-      if (
-        this.selectedUser &&
-        this.selectedUser.userId &&
-        this.selectedUser.userId !== 0
-      ) {
-        isValid = isValid && shift.user?.userId === this.selectedUser.userId;
-      }
-      console.log(
-        'this.selectedProject.projectId===========',
-        this.selectedProject.projectId
-      );
-      this.scheduleService.getType().subscribe((type) => {
-        if (type) {
-          this.type = type;
-          console.log('this.type===========', this.type);
-        } else {
-          if (
-            this.selectedProject &&
-            this.selectedProject.projectId &&
-            this.selectedProject.projectId !== 0
-          ) {
-            isValid =
-              isValid &&
-              shift.projects?.projectId === this.selectedProject.projectId;
-          }
-        }
-      });
+    //   if (
+    //     this.selectedUser &&
+    //     this.selectedUser.userId &&
+    //     this.selectedUser.userId !== 0
+    //   ) {
+    //     isValid = isValid && shift.user?.userId === this.selectedUser.userId;
+    //   }
+    //   console.log(
+    //     'this.selectedProject.projectId===========',
+    //     this.selectedProject.projectId
+    //   );
+    //   this.scheduleService.getType().subscribe((type) => {
+    //     if (type) {
+    //       this.type = type;
+    //       console.log('this.type===========', this.type);
+    //     } else {
+    //       if (
+    //         this.selectedProject &&
+    //         this.selectedProject.projectId &&
+    //         this.selectedProject.projectId !== 0
+    //       ) {
+    //         isValid =
+    //           isValid &&
+    //           shift.projects?.projectId === this.selectedProject.projectId;
+    //       }
+    //     }
+    //   });
 
-      return isValid;
-    });
+    //   return isValid;
+    // });
 
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
 
-    for (const shift of filteredShifts) {
+    for (const shift of this.shiftSchedule) {
       const shiftDate = moment(shift.dayWiseDate)
         .tz('America/New_York')
         .startOf('day')
         .toDate();
       shiftDate.setHours(0, 0, 0, 0);
+      if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView) continue;
+      let isValid = true;
+  
+      if (this.selectedUser && this.selectedUser.userId && this.selectedUser.userId !== 0) {
+        isValid = isValid && shift.user?.userId === this.selectedUser.userId;
+      }
+  
+      if (
+        this.selectedProject &&
+        this.selectedProject.projectId &&
+        this.selectedProject.projectId !== 0
+      ) {
+        isValid = isValid && shift.projects?.projectId === this.selectedProject.projectId;
+      }
+  
+      if (!isValid) continue;
 
       const weekStart = this.getWeekStart(shiftDate);
       const schedule: ISchedule = {
@@ -172,7 +191,7 @@ export class ShiftMonthViewComponent implements OnInit {
         duration: parseFloat(shift.duration) || 0,
         dayOfWeek: shiftDate.getDay() === 0 ? 7 : shiftDate.getDay(),
         weekStart: weekStart,
-        weekEnd: endOfMonth,
+        weekEnd: endOfCalendarView,
         month: moment(shiftDate).format('MMMM'),
         requestDetails: '',
         requestCode: '',
