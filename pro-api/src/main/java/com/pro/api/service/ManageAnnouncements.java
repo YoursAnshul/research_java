@@ -13,7 +13,7 @@ import com.pro.api.response.ProjectResponse;
 @Service
 public interface ManageAnnouncements {
 
-	public List<AuthorResponse> getAllAuthors(Long userId);
+	public List<AuthorResponse> getAllAuthors(Long projectId);
 
 	public List<ProjectResponse> getAllProjects(String dempoId);
 

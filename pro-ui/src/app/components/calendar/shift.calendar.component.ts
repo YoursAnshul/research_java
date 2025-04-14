@@ -200,7 +200,7 @@ export class ShifCalendarComponent implements OnInit {
   ngOnInit(): void {
     // this.getScheduleList()
     //subscribe to scheduleFetchStatus
-    this.getAuthor();
+    this.getAuthor(0);
     this.getProjectInfo('');
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       (scheduleFetchStatus) => {
@@ -285,7 +285,7 @@ export class ShifCalendarComponent implements OnInit {
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
-    this.getAuthor();
+    this.getAuthor(0);
     this.getProjectInfo('');
  
   }
@@ -330,7 +330,7 @@ export class ShifCalendarComponent implements OnInit {
       this.selectedUser = this.homeUser;
       this.defaultUser = this.homeUser;
       console.log('this.selectedUser--4444--', this.selectedUser);
-      this.getAuthor();
+      this.getAuthor(0);
       this.getProjectInfo(this.selectedUser?.dempoId);
     }
     if (this.homeSelectedProject) {
@@ -975,18 +975,27 @@ export class ShifCalendarComponent implements OnInit {
   onResetShiftSchedule(): void {
     this.resetShiftSchedule.emit();
   }
-  getAuthor(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
+  getAuthor(projectId: number): void {
+    const prevUserId = this.selectedUser?.userId; // store the previous userId
+  
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.userList = [
+        const newUserList = [
           this.defaultUser,
           ...(Array.isArray(data) ? data : []),
         ];
+  
+        this.userList = newUserList;
+  
+        const matchedUser = newUserList.find(user => user.userId === prevUserId);
+  
+        this.selectedUser = matchedUser || this.defaultUser;
       },
       error: (error) => console.error('Error fetching authors:', error),
     });
   }
+  
 
   getAuthor1(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
@@ -1050,6 +1059,7 @@ export class ShifCalendarComponent implements OnInit {
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
+    this.getAuthor(project.projectId)
     this.selectedProjectChange.emit(this.selectedProject);
   }
 

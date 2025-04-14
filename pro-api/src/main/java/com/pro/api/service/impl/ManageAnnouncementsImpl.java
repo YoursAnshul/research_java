@@ -30,22 +30,41 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	private AuditService auditService;
 
 	@Override
-	public List<AuthorResponse> getAllAuthors(Long userId) {
+	public List<AuthorResponse> getAllAuthors(Long projectId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName, dempoid ");
-		sql.append(" FROM core.users WHERE active = true AND CONCAT(fname, ' ', lname) is not null ");
-		if (userId != null) {
-			sql.append(" WHERE userid = '" + userId + "' ");
+
+		if (projectId != null && projectId > 0) {
+			sql.append(" SELECT \r\n" + "    p.projectid, \r\n" + "    p.projectname,\r\n" + "    p.projecttype,\r\n"
+					+ "    p.projectcolor,\r\n" + "    u.userid,\r\n"
+					+ "    CONCAT(u.fname, ' ', u.lname) AS userName,\r\n" + "    u.defaultproject,\r\n"
+					+ "    u.dempoid\r\n" + "FROM core.users u\r\n"
+					+ "JOIN core.training t ON u.dempoid = t.dempoid\r\n"
+					+ "JOIN core.projects p ON t.projectid = p.projectid\r\n" + "WHERE p.active = 1 \r\n"
+					+ "  AND p.projecttype <> 4\r\n" + "  AND u.active = true\r\n"
+					+ "  AND CONCAT(u.fname, ' ', u.lname) IS NOT NULL\r\n" + "and p.projectId= '" + projectId
+					+ "' UNION\r\n" + "\r\n" + "SELECT \r\n" + "    p.projectid, \r\n" + "    p.projectname,\r\n"
+					+ "    p.projecttype,\r\n" + "    NULL AS projectcolor,\r\n" + "    u.userid,\r\n"
+					+ "    CONCAT(u.fname, ' ', u.lname) AS userName,\r\n" + "    NULL AS defaultproject,\r\n"
+					+ "    u.dempoid\r\n" + "FROM core.projects p\r\n" + "CROSS JOIN core.users u\r\n"
+					+ "WHERE p.active = 1 \r\n" + "  AND p.projecttype = 4 and p.projectId= '" + projectId + "'"
+					+ "  AND u.active = true\r\n" + "  AND CONCAT(u.fname, ' ', u.lname) IS NOT NULL\r\n" + "\r\n"
+					+ "ORDER BY projecttype, projectname, userName ");
+		} else {
+			sql.append("SELECT DISTINCT u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, u.dempoid ");
+			sql.append("FROM core.users u ");
+			sql.append("WHERE u.active = true ");
+			sql.append("AND CONCAT(u.fname, ' ', u.lname) IS NOT NULL ");
+			sql.append("ORDER BY userName ASC");
+
 		}
-		sql.append(" ORDER BY userName ASC ");
-		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+
+		return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AuthorResponse obj = new AuthorResponse();
 			obj.setUserId(rs.getLong("userid"));
 			obj.setUserName(rs.getString("userName"));
 			obj.setDempoId(rs.getString("dempoid"));
 			return obj;
 		});
-		return list;
 	}
 
 	@Override
