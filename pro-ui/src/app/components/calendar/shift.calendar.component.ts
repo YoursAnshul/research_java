@@ -1043,9 +1043,8 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   onUserChange(user: any) {
-     this.selectedUser=''
+    this.selectedUser=''
     this.selectedUser = user;
-   
     this.getProjectInfo(user?.dempoId);
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
@@ -1056,10 +1055,10 @@ export class ShifCalendarComponent implements OnInit {
     console.log('project--->', project);
     this.selectedProject=''
     this.selectedProject = project;
+    this.getAuthor(project.projectId)
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
-    this.getAuthor(project.projectId)
     this.selectedProjectChange.emit(this.selectedProject);
   }
 

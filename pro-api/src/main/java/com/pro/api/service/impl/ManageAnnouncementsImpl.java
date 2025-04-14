@@ -57,7 +57,6 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 			sql.append("ORDER BY userName ASC");
 
 		}
-
 		return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AuthorResponse obj = new AuthorResponse();
 			obj.setUserId(rs.getLong("userid"));
