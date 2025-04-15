@@ -225,8 +225,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 			ZonedDateTime zonedStart = localStartDateTime.atZone(localZone);
 			ZonedDateTime zonedEnd = localEndDateTime.atZone(localZone);
 
-			LocalDateTime startDateTimeUtc = zonedStart.withZoneSameInstant(utcZone).toLocalDateTime();
-			LocalDateTime endDateTimeUtc = zonedEnd.withZoneSameInstant(utcZone).toLocalDateTime();
+			ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
+			ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
+			if(isLocal) {
+				utcStart = zonedStart.withZoneSameInstant(utcZone);
+				utcEnd = zonedEnd.withZoneSameInstant(utcZone);	
+			}else {
+				utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
+				utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
+			}
+
+			LocalDateTime startDateTimeUtc = utcStart.toLocalDateTime();
+			LocalDateTime endDateTimeUtc = utcEnd.toLocalDateTime();
 
 			String fetchQuery = "SELECT preschedulekey, startDateTime, endDateTime FROM core.schedules WHERE dempoId = ? AND scheduleDate = ? AND preschedulekey != ?";
 			List<Map<String, Object>> existingSchedules = this.jdbcTemplate.queryForList(fetchQuery,
