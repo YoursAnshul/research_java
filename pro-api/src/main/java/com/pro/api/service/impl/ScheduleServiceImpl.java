@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Value("${isLocal}")
+	private Boolean isLocal;
 
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
 		GeneralResponse response = new GeneralResponse();
@@ -75,8 +79,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 				ZonedDateTime zonedStart = localStartDateTime.atZone(localZone);
 				ZonedDateTime zonedEnd = localEndDateTime.atZone(localZone);
 
-				ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone);
-				ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone);
+				ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
+				ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
+				if(isLocal) {
+					 utcStart = zonedStart.withZoneSameInstant(utcZone);
+					 utcEnd = zonedEnd.withZoneSameInstant(utcZone);	
+				}else {
+					 utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
+					 utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
+				}
 
 				LocalDateTime startDateTimeUtc = utcStart.toLocalDateTime();
 				LocalDateTime endDateTimeUtc = utcEnd.toLocalDateTime();
