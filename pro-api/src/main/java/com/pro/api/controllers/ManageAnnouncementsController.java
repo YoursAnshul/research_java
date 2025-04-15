@@ -29,8 +29,8 @@ public class ManageAnnouncementsController {
 
 	@GetMapping("/authors")
 	public ResponseEntity<List<AuthorResponse>> getAuthors(
-			@RequestParam(required = false, value = "user_id") Long userId) {
-		List<AuthorResponse> allAuthors = manageAnnouncements.getAllAuthors(userId);
+			@RequestParam(required = false, value = "project_id") Long projectId) {
+		List<AuthorResponse> allAuthors = manageAnnouncements.getAllAuthors(projectId);
 		return ResponseEntity.status(HttpStatus.OK).body(allAuthors);
 	}
 
