@@ -105,4 +105,10 @@ public class ManageAnnouncementsController {
 		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
 	}
 
+	@GetMapping("/projects-v2")
+	public ResponseEntity<List<ProjectResponse>> getProjects() {
+		List<ProjectResponse> allProjects = manageAnnouncements.getAllProjectsV2();
+		return ResponseEntity.status(HttpStatus.OK).body(allProjects);
+	}
+
 }

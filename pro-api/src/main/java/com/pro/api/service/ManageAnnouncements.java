@@ -36,4 +36,6 @@ public interface ManageAnnouncements {
 
 	public List<ProjectResponse> getUserProjects(String dempoId);
 
+	public List<ProjectResponse> getAllProjectsV2();
+
 }

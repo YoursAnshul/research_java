@@ -125,7 +125,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     this.getList(this.pageIndex + 1);
   }
   getProjectInfo(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects-v2`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjectList = data ? data : [];

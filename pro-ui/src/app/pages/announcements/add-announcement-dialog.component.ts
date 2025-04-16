@@ -340,7 +340,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   }
 
   getProjectInfo(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects`;
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects-v2`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = data;

@@ -410,4 +410,21 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		return projects;
 	}
 
+	@Override
+	public List<ProjectResponse> getAllProjectsV2() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT projectid, projectname, projectcolor ");
+		sql.append("FROM core.projects WHERE active = 1 AND projectType <> 4 ORDER BY projectid ");
+
+		List<ProjectResponse> projects = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+			ProjectResponse project = new ProjectResponse();
+			project.setProjectId(rs.getLong("projectid"));
+			project.setProjectName(rs.getString("projectname"));
+			project.setProjectColor(rs.getString("projectcolor"));
+			return project;
+		});
+
+		return projects;
+	}
+
 }
