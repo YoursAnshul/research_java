@@ -40,12 +40,13 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   tooltipMessage: SafeHtml = ''; // New property to store tooltip content
   showTooltip: boolean = false;
   tooltipPosition: { top: string; left: string } = { top: '0px', left: '0px' };
-  isLoading: boolean = false;
   private debounceTimer: any;
   inputHeight: string = '30px';
   totalDuration: number = 0;
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
+  @Input() isLoading!: boolean;
+
   private previouslyEditedSchedule: ISchedule | null = null;
   constructor(
     private globalsService: GlobalsService,

@@ -47,6 +47,7 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() selectedProjectChange = new EventEmitter<any>();
   @Output() sendDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
+  @Input() isLoading!: boolean;
 
   private previouslyEditedSchedule: ISchedule | null = null;
 

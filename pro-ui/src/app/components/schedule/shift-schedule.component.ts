@@ -345,8 +345,6 @@ export class ShiftScheduleComponent implements OnInit {
   onDateRangeReceived(dateRange: any): void {
     if (this.tabValue != 'Day') {
       this.dateRange = dateRange;
-      console.log(' this.dateRange------>', this.dateRange);
-      // this.getScheduleList();
     }
   }
   validateBlockOutDate(selectedDate: Date): void {
@@ -1075,6 +1073,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onTabValueReceived(tab: any): void {
     this.tabValue = tab;
+    this.isEdit = false;    
   }
   
   onSeletedDayDate(day: any): void {
@@ -1222,11 +1221,13 @@ export class ShiftScheduleComponent implements OnInit {
         user: this.selectedUser,
         projects: this.selectedProject,
         dayWiseDate: scheduleDate,
-        startTime: schedule.startTime,
-        endTime: schedule.endTime,
+        startTime: this.convertTo12HourFormat(schedule.startTime),
+        endTime: this.convertTo12HourFormat(schedule.endTime),
         comments: schedule.comments,
         id: schedule.preschedulekey,
       });
+      console.log("this.shiftForm---",this.shiftForm.value);
+      
     }
   }
 
@@ -1247,4 +1248,12 @@ export class ShiftScheduleComponent implements OnInit {
         },
       });
   }
+  convertTo12HourFormat(time24: string): string {
+    const [hourStr, minute] = time24.split(':');
+    let hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12
+    hour = hour % 12 || 12; 
+    return `${hour}:${minute}`;
+  }
+  
 }

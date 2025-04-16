@@ -36,7 +36,10 @@
     </div>
   
     <!-- Add Icons and Hour Inputs -->
-    <div id="week-calendar-add-icons" class="week-calendar-add-icons">
+    <div *ngIf="isLoading" class="spinner-container">
+      <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
+    </div>
+    <div id="week-calendar-add-icons" class="week-calendar-add-icons" *ngIf="!isLoading">
       <div
         *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
         [ngStyle]="{
@@ -112,7 +115,7 @@
     
   
     <!-- User Schedules -->
-    <div id="week-calendar-user-schedules" style="display: flex;">
+    <div id="week-calendar-user-schedules" style="display: flex;" *ngIf="!isLoading">
       <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day1Schedules; track schedule) {
           <div class="schedule-card"

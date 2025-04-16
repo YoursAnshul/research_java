@@ -45,9 +45,11 @@
       Total
     </div>
   </div>
-
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
+  </div>
   <!-- Add Icons and Hour Inputs -->
-  <div id="week-calendar-add-icons" class="week-calendar-add-icons">
+  <div id="week-calendar-add-icons" class="week-calendar-add-icons" *ngIf="!isLoading">
     <div
       *ngFor="
         let day of [
@@ -131,7 +133,7 @@
   <!-- Add Icons and Hour Inputs -->
 
   <!-- User Schedules -->
-  <div id="week-calendar-user-schedules" style="display: flex">
+  <div id="week-calendar-user-schedules" style="display: flex" *ngIf="!isLoading">
     <div
       [ngClass]="
         authenticatedUser?.interviewer ||

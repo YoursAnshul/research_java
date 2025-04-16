@@ -121,6 +121,7 @@ export class ShifCalendarComponent implements OnInit {
   selectedIndex: any = null;
   @Output() scheduleData = new EventEmitter<FormControl>();
   @Input() isEdit: boolean = false;
+  isLoading: boolean = false;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -314,7 +315,7 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.tab) {
+    if (this.tab && this.isEdit) {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
       } else if (this.tab == 'Week') {
@@ -370,6 +371,7 @@ export class ShifCalendarComponent implements OnInit {
         isEdit: false
       }));
     }
+    this.isEdit = false;
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
     let baseDate = this.selectedDate?.value || null;
@@ -1069,6 +1071,7 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
+    this.isLoading = true;
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     let url = '';
@@ -1105,10 +1108,12 @@ export class ShifCalendarComponent implements OnInit {
 
         this.shiftSchedule.push(...missingSchedules);
         this.syncData(this.shiftSchedule);
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
         this.shiftSchedule = [];
+        this.isLoading = false;
       },
     });
   }

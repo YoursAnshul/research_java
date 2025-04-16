@@ -50,7 +50,10 @@
       Total
     </div>
   </div>
-  <div id="day-calendar-user-schedules" style="margin-top: 4px">
+  <div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
+  </div>
+  <div id="day-calendar-user-schedules" style="margin-top: 4px" *ngIf="!isLoading" >
     @for (us of filteredShiftSchedule; track us) {
     <div class="user-schedule-row">
       <div *ngIf="authenticatedUser?.interviewer"
