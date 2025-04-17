@@ -289,11 +289,15 @@ export class ShiftScheduleComponent implements OnInit {
       if (data) {
         const selectedUser =
           this.userList.find((user) => user?.userId === data?.userid) || null;
-        this.homeUser = selectedUser;
+        if(this.authenticatedUser?.interviewer){
+          this.homeUser = selectedUser;
+        }
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
           null;
-        this.homeSelectedProject = selectedProject;
+        if(this.authenticatedUser?.interviewer){
+          this.homeSelectedProject = selectedProject;
+        }
         if (!this.selectedProject) {
           this.selectedProject = selectedProject;
         }
@@ -316,6 +320,9 @@ export class ShiftScheduleComponent implements OnInit {
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.tab = data.tab;
+        if(this.tab == 'Week' || this.tab == 'Month'){
+          this.isEdit = true;
+        }
         const selectedUser =
           this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;
@@ -326,20 +333,28 @@ export class ShiftScheduleComponent implements OnInit {
         if (!this.selectedProject) {
           this.selectedProject = selectedProject;
         }
-        this.homeSelectedDate = new Date(data.scheduledate);
+        this.homeSelectedDate = this.convertToLocalDate(data.scheduledate);
         setTimeout(() => {
           this.shiftForm.patchValue({
             user: selectedUser,
             projects: this.selectedProject,
-            dayWiseDate: new Date(data.scheduledate),
-            startTime: data.startTime,
-            endTime: data.endTime,
+            dayWiseDate: this.convertToLocalDate(data.scheduledate),
+            startTime: this.convertTo12HourFormat(data.startTime),
+            endTime: this.convertTo12HourFormat(data.endTime),
             comments: data.comments,
           });
           this.cdr.detectChanges();
         }, 0);
       }
     });
+  }
+  
+  convertToLocalDate(dateInput: string | Date): Date {
+    if (typeof dateInput === 'string') {
+      const [year, month, day] = dateInput.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    }
+    return dateInput;
   }
 
   onDateRangeReceived(dateRange: any): void {
@@ -817,7 +832,9 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.markAsPristine();
       this.shiftForm.get('endTime')?.markAsPristine();
       this.shiftForm.get('comments')?.markAsPristine();
+      
     }
+
   }
 
   getBlockOutDates(): void {

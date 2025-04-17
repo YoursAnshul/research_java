@@ -393,8 +393,8 @@ export class ShifCalendarComponent implements OnInit {
 
       this.selectedDate.setValue(baseDate);
     }
-    this.selectedProject = this.defaultProject;
-    this.selectedUser = this.defaultUser;
+    // this.selectedProject = this.defaultProject;
+    // this.selectedUser = this.defaultUser;
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
