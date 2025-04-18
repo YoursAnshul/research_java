@@ -1258,6 +1258,8 @@ export class ShiftScheduleComponent implements OnInit {
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule = [];
+          this.isEdit = false;
+          this.onResetShiftSchedule();
         },
         error: (error) => {
           console.error('Error deleting schedule:', error);
