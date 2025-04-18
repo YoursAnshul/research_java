@@ -7,10 +7,14 @@
     <input matStartDate placeholder="Start date"
            (dateChange)="emitSelectedDate()"
            formControlName="start"
+           (blur)="onFinalWeekInput()"
+           (keydown.enter)="onFinalWeekInput()"
            autocomplete="off">
     <input matEndDate placeholder="End date"
            (dateChange)="emitSelectedDate()"
            formControlName="end"
+           (blur)="onFinalWeekInput()"
+           (keydown.enter)="onFinalWeekInput()"
            autocomplete="off">
   </mat-date-range-input>
   <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>

@@ -1,9 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MomentDateAdapter,
+} from '@angular/material-moment-adapter';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 @Component({
   selector: 'app-day-datepicker',
@@ -13,32 +20,31 @@ import { Moment } from 'moment';
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     {
-      provide: MAT_DATE_FORMATS, useValue: {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
         parse: {
-          dateInput: "MM/DD/YYYY"
+          dateInput: 'MM/DD/YYYY',
         },
         display: {
-          dateInput: "MM/DD/YYYY",
-          monthYearLabel: "MMM YYYY",
-          dateA11yLabel: "LL",
-          monthYearA11yLabel: "MMMM YYYY",
-        }
+          dateInput: 'MM/DD/YYYY',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
       },
-    }
+    },
   ],
 })
-
 export class DayDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   //emit selected date
   emitSelectedDate(): void {
@@ -53,7 +59,10 @@ export class DayDatepickerComponent implements OnInit {
   }
 
   //handle month selection
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+  chosenMonthHandler(
+    normalizedMonth: Moment,
+    datepicker: MatDatepicker<Moment>
+  ) {
     //datepicker.close();
     //console.log(normalizedMonth);
   }
@@ -63,4 +72,20 @@ export class DayDatepickerComponent implements OnInit {
     //console.log(normalizedDay);
   }
 
+  onFinalDateInput(event: Event): void {
+    const input = (event.target as HTMLInputElement).value;
+    const parsed = moment(input, 'MM/DD/YYYY', true);
+    if (parsed.isValid()) {
+      const newDate = parsed.toDate();
+      this.selectedDate.setValue(newDate);
+    } else {
+      console.warn('Invalid date input:', input);
+      const now = new Date();
+      this.selectedDate.setValue(now);
+    }
+  
+    this.selectedDateChange.emit(this.selectedDate);
+  }
+  
+  
 }

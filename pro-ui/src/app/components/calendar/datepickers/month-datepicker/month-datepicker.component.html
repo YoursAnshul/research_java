@@ -3,6 +3,8 @@
   <input matInput [matDatepicker]="datePicker"
          [formControl]="selectedDate"
          (dateChange)="emitSelectedDate()"
+         (blur)="onFinalMonthInput($event)"
+         (keydown.enter)="onFinalMonthInput($event)"
          autocomplete="off" />
   <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker

@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 @Component({
   selector: 'app-month-datepicker',
@@ -81,4 +81,21 @@ export class MonthDatepickerComponent implements OnInit {
     //console.log(normalizedDay);
   }
 
+  onFinalMonthInput(event: Event): void {
+    const inputValue = (event.target as HTMLInputElement).value;
+    const parsed = moment(inputValue, 'MM/YYYY', true);
+  
+    if (parsed.isValid()) {
+      parsed.date(1); 
+      this.selectedDate.setValue(parsed.toDate()); 
+    } else {
+      console.warn('Invalid month format:', inputValue);
+      const now = moment(); 
+      now.date(1); 
+      this.selectedDate.setValue(now.toDate()); 
+    }
+  
+    this.selectedDateChange.emit(this.selectedDate);
+  }
+  
 }

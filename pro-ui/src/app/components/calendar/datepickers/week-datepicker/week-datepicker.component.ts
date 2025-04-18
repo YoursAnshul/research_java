@@ -8,7 +8,7 @@ import {
   MatDatepicker,
   MatDateRangeSelectionStrategy
 } from '@angular/material/datepicker';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 @Injectable()
 export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
   constructor(private _dateAdapter: DateAdapter<D>) { }
@@ -116,4 +116,34 @@ export class WeekDatepickerComponent implements OnInit {
     //console.log(normalizedDay);
   }
 
+  onFinalWeekInput(): void {
+    const startInput = this.selectedDateRange.value.start;
+    const endInput = this.selectedDateRange.value.end;
+  
+    const start = moment(startInput, 'MM/DD/YYYY', true);
+    const end = moment(endInput, 'MM/DD/YYYY', true);
+  
+    if (start.isValid() && end.isValid() && start.isSameOrBefore(end)) {
+      this.selectedDateRange.setValue({
+        start: start.toDate(),
+        end: end.toDate()
+      });
+      this.selectedDate.setValue(start.toDate());
+    } else {
+      // Fallback to current week's Monday to Sunday
+      const today = moment();
+      const weekStart = today.clone().startOf('isoWeek'); // Monday
+      const weekEnd = today.clone().endOf('isoWeek');     // Sunday
+  
+      this.selectedDateRange.setValue({
+        start: weekStart.toDate(),
+        end: weekEnd.toDate()
+      });
+      this.selectedDate.setValue(weekStart.toDate());
+    }
+  
+    this.selectedDateRangeChange.emit(this.selectedDateRange);
+    this.selectedDateChange.emit(this.selectedDate);
+  }
+  
 }
