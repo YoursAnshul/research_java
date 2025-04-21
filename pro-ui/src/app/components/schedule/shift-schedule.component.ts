@@ -144,6 +144,7 @@ export class ShiftScheduleComponent implements OnInit {
   blockedTimeSlots: string[] = []; // Store blocked time slots for selected date
   isTabChange: boolean = false;
   isHomeRedirect: boolean = false;
+  isClose: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -187,6 +188,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onClose(): void {
+    this.isClose = true;
     this.dialogRef.close();
   }
 

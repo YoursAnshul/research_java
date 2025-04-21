@@ -56,6 +56,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
   scheduleFetchMessage: string = '';
 
   errorMessage!: string;
+  @Input() isClose: boolean = false;
 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
@@ -82,6 +83,12 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   ngOnChanges(): void {
     //group projects for dropdown
+    if (this.isClose) {
+      this._selectedDate.setValue(new Date());
+      setTimeout(() => {
+        this.selectedDateChange.emit(this._selectedDate.value); 
+      });
+    }
     let projectGroup: IProjectGroup = {
       name: 'Projects',
       projects: this._projects?.filter(x => x.projectType !== 'Administrative')

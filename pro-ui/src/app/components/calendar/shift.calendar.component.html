@@ -39,6 +39,7 @@
             [_selectedDate]="selectedDate"
             (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
             [_calendarType]="'DAY'"
+            [isClose]="isClose"
           >
           </app-shift-calendar-controls>
         </div>
@@ -129,6 +130,7 @@
             [selectedDateRange]="selectedDateRange"
             (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
             [_calendarType]="'WEEK'"
+            [isClose]="isClose"
           >
           </app-shift-calendar-controls>
         </div>
@@ -219,6 +221,7 @@
             [_selectedDate]="selectedDate"
             [_calendarType]="'MONTH'"
             (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+            [isClose]="isClose"
           >
           </app-shift-calendar-controls>
         </div>

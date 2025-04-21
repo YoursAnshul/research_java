@@ -122,6 +122,8 @@ export class ShifCalendarComponent implements OnInit {
   @Output() scheduleData = new EventEmitter<FormControl>();
   @Input() isEdit: boolean = false;
   isLoading: boolean = false;
+  @Input() isClose: boolean = false;
+
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
