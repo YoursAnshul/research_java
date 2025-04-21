@@ -143,6 +143,7 @@ export class ShiftScheduleComponent implements OnInit {
   isEdit: boolean = false;
   blockedTimeSlots: string[] = []; // Store blocked time slots for selected date
   isTabChange: boolean = false;
+  isHomeRedirect: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -317,9 +318,11 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   loadScheduleData(): void {
+    this.isModified = false;
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.tab = data.tab;
+        this.isHomeRedirect = data.isHomeRedirect;
         if(this.tab == 'Week' || this.tab == 'Month'){
           this.isEdit = true;
         }

@@ -138,6 +138,7 @@ export class DayViewComponent implements OnInit {
   }
   openScheduleData(schedule: any): void {
     schedule.tab = "Day";
+    schedule.isHomeRedirect = true
     console.log('Clicked schedule------->:', schedule);
     this.scheduleService.setSchedule(schedule);
     if (this.dialog.openDialogs.length > 0) {

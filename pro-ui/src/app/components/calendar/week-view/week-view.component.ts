@@ -87,6 +87,7 @@ export class WeekViewComponent implements OnInit {
       } else {
         schedule.tab = "Week";
       }
+      schedule.isHomeRedirect = true;
       console.log('Clicked Week schedule------->:', schedule);
       this.scheduleService.setSchedule(schedule);
       const dialogRef = this.dialog.open(ShiftScheduleComponent, {
