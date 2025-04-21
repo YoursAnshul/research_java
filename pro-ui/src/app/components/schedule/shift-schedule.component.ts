@@ -168,6 +168,10 @@ export class ShiftScheduleComponent implements OnInit {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   confirmatationClose(): void {
+    if (this.isHomeRedirect) {
+      this.onClose();
+      return;
+    }
     if (this.isModified) {
       const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
         panelClass: 'custom-dialog-container',
@@ -318,7 +322,6 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   loadScheduleData(): void {
-    this.isModified = false;
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.tab = data.tab;
