@@ -32,6 +32,7 @@ import { ProjectsService } from '../../services/projects/projects.service';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
+import { ScheduleService } from '../schedule/schedule.service';
 
 @Component({
   selector: 'app-shift-calendar',
@@ -123,7 +124,9 @@ export class ShifCalendarComponent implements OnInit {
   @Input() isEdit: boolean = false;
   isLoading: boolean = false;
   @Input() isClose: boolean = false;
-
+  isTabChange: boolean = false;
+  isHomeRedirect: boolean = false;
+  profileType : string = '';
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -133,7 +136,8 @@ export class ShifCalendarComponent implements OnInit {
     private logsService: LogsService,
     private http: HttpClient,
     private authenticationService: AuthenticationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private scheduleService: ScheduleService
   ) {
     //subscribe to users
     this.authenticationService.authenticatedUser.subscribe(
@@ -280,8 +284,21 @@ export class ShifCalendarComponent implements OnInit {
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
     });
-    // this.defaultUser = { userId: 0, userName: 'Any Users' };
-    // this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        this.isHomeRedirect = data.isHomeRedirect;
+      }
+    });
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
+    if(this.isHomeRedirect || this.profileType == 'user-profile'){
+      this.defaultUser = { userId: 0, userName: 'Any Users' };
+      this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
+    }
+   
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
    

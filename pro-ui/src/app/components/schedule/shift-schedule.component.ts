@@ -30,6 +30,7 @@ import {
 } from '@angular/material/snack-bar';
 import { ScheduleService } from './schedule.service';
 import { Utils } from '../../classes/utils';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -145,6 +146,7 @@ export class ShiftScheduleComponent implements OnInit {
   isTabChange: boolean = false;
   isHomeRedirect: boolean = false;
   isClose: boolean = false;
+  profileType : string = '';
 
   constructor(
     private http: HttpClient,
@@ -169,7 +171,10 @@ export class ShiftScheduleComponent implements OnInit {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   confirmatationClose(): void {
-    if (this.isHomeRedirect) {
+    console.log("this.profileType--->",this.profileType);
+    console.log("this.isHomeRedirect--->",this.isHomeRedirect);
+
+    if (this.isHomeRedirect || this.profileType == 'user-profile') {
       this.onClose();
       return;
     }
@@ -193,71 +198,174 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getBlockOutDates();
-    this.getAuthor('');
-    if (this.selectedUser) {
-      this.getProjectInfo(this.selectedUser.dempoId);
-    } else {
-      this.getProjectInfo('');
-    }
-    this.currentDay = new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-    }).format(new Date());
-
-    this.shiftForm = new FormGroup({
-      user: new FormControl(null, Validators.required),
-      projects: new FormControl([], Validators.required),
-      dayWiseDate: new FormControl(new Date(), Validators.required),
-      startTime: new FormControl(null, Validators.required),
-      endTime: new FormControl(null, Validators.required),
-      comments: new FormControl(''),
-      id: new FormControl(null),
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        this.isHomeRedirect = data.isHomeRedirect;
+      }
     });
-
-    this.shiftForm.valueChanges.subscribe(() => {
-      if (this.authenticatedUser.admin) {
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
+    if(this.isHomeRedirect){
+      this.getBlockOutDates();
+      this.shiftForm = new FormGroup({
+        user: new FormControl(null, Validators.required),
+        projects: new FormControl([], Validators.required),
+        dayWiseDate: new FormControl(new Date(), Validators.required),
+        startTime: new FormControl(null, Validators.required),
+        endTime: new FormControl(null, Validators.required),
+        comments: new FormControl(''),
+        id: new FormControl(null),
+      });
+    
+      const userId = '';
+      const dempoId = this.selectedUser?.dempoId || '';
+      forkJoin([
+        this.http.get(`${environment.DataAPIUrl}/manage-announement/authors?user_id=${userId}`),
+        this.http.get(`${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`)
+      ]).subscribe({
+        next: ([userData, projectData]: any[]) => {
+          this.userList = Array.isArray(userData) ? userData : [];
+          this.authenticationService.authenticatedUser.subscribe(authenticatedUser => {
+            this.authenticatedUser = authenticatedUser;
+            this.userObj = this.authenticatedUser;
+          });
+          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+            this.getLoginUser(this.userObj.eppn);
+          }
+          this.allProjects = Array.isArray(projectData) ? projectData : [];
+          this.adminProjects = this.allProjects.filter((p) => p.projectType === 4);
+    
+          const uniqueProjects = new Map();
+          this.allProjects.forEach((p) => {
+            if (p.projectType !== 4 && !uniqueProjects.has(p.projectId)) {
+              uniqueProjects.set(p.projectId, p);
+            }
+          });
+          this.otherProjects = Array.from(uniqueProjects.values());
+    
+          if (this.selectedUser) {
+            const defProjectId = this.allProjects.find(p => p.defualtProject > 0)?.defualtProject;
+            this.selectedProject = this.allProjects.find(p => p.projectId === defProjectId) || null;
+          }
+          this.loadScheduleData();
+        },
+        error: (error) => {
+          console.error('Error loading authors/projects:', error);
+        }
+      });
+    
+      this.shiftForm.valueChanges.subscribe(() => {
+        if (this.authenticatedUser?.admin) {
+          this.isModified = true;
+        }
+        this.updateDuration();
+        this.scheduleFetchStatus = this.shiftForm.valid;
+        this.clearValidation();
+        this.shiftForm.markAsPristine();
+        this.shiftForm.markAsUntouched();
+        this.shiftForm.updateValueAndValidity({ emitEvent: false });
+      });
+    
+      this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+        if (date) {
+          if (this.authenticatedUser?.interviewer) {
+            this.validateBlockOutDate(date);
+          }
+          this.updateDayLabel(date);
+        }
+      });
+    
+      this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
+        this.profileType = '';
         this.isModified = true;
-      }
-      this.updateDuration();
-      this.scheduleFetchStatus = this.shiftForm.valid;
-      this.clearValidation();
-      this.shiftForm.markAsPristine();
-      this.shiftForm.markAsUntouched();
-      this.shiftForm.updateValueAndValidity({ emitEvent: false });
-    });
-
-    this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (date) {
-        if (this.authenticatedUser?.interviewer)
-          this.validateBlockOutDate(date);
-        this.updateDayLabel(date);
-      }
-    });
-
-    this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
-      this.isModified = true;
-      this.clearValidation();
-    });
-
-    this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
-      this.isModified = true;
-      this.clearValidation();
-    });
-
-    this.shiftForm.get('user')?.valueChanges.subscribe(() => {
-      this.clearValidation();
-    });
-    this.authenticationService.authenticatedUser.subscribe(
-      (authenticatedUser) => {
-        this.authenticatedUser = authenticatedUser;
-        this.userObj = this.authenticatedUser;
-      }
-    );
-    setTimeout(() => {
-      this.loadScheduleData();
+        this.clearValidation();
+      });
+    
+      this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
+        this.profileType = '';
+        this.isModified = true;
+        this.clearValidation();
+      });
+    
+      this.shiftForm.get('user')?.valueChanges.subscribe(() => {
+        this.clearValidation();
+      });
+    
       this.loadUserData();
-      // this.loadEditScheduleData();
-    }, 100);
+        this.currentDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date());
+    } else{
+      this.getBlockOutDates();
+      this.getAuthor('');
+      if (this.selectedUser) {
+        this.getProjectInfo(this.selectedUser.dempoId);
+      } else {
+        this.getProjectInfo('');
+      }
+      this.currentDay = new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+      }).format(new Date());
+  
+      this.shiftForm = new FormGroup({
+        user: new FormControl(null, Validators.required),
+        projects: new FormControl([], Validators.required),
+        dayWiseDate: new FormControl(new Date(), Validators.required),
+        startTime: new FormControl(null, Validators.required),
+        endTime: new FormControl(null, Validators.required),
+        comments: new FormControl(''),
+        id: new FormControl(null),
+      });
+  
+      this.shiftForm.valueChanges.subscribe(() => {
+        if (this.authenticatedUser.admin) {
+          this.isModified = true;
+        }
+        this.updateDuration();
+        this.scheduleFetchStatus = this.shiftForm.valid;
+        this.clearValidation();
+        this.shiftForm.markAsPristine();
+        this.shiftForm.markAsUntouched();
+        this.shiftForm.updateValueAndValidity({ emitEvent: false });
+      });
+  
+      this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+        if (date) {
+          if (this.authenticatedUser?.interviewer)
+            this.validateBlockOutDate(date);
+          this.updateDayLabel(date);
+        }
+      });
+  
+      this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
+        this.isModified = true;
+        this.profileType = '';
+        this.clearValidation();
+      });
+  
+      this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
+        this.isModified = true;
+        this.profileType = '';
+        this.clearValidation();
+      });
+  
+      this.shiftForm.get('user')?.valueChanges.subscribe(() => {
+        this.clearValidation();
+      });
+      this.authenticationService.authenticatedUser.subscribe(
+        (authenticatedUser) => {
+          this.authenticatedUser = authenticatedUser;
+          this.userObj = this.authenticatedUser;
+        }
+      );
+      setTimeout(() => {
+        this.loadScheduleData();
+        this.loadUserData();
+        // this.loadEditScheduleData();
+      }, 100);
+    }
+   
   }
   // loadEditScheduleData(){
   //   this.scheduleService.getScheduleEditData().subscribe((data) => {
@@ -296,15 +404,17 @@ export class ShiftScheduleComponent implements OnInit {
       if (data) {
         const selectedUser =
           this.userList.find((user) => user?.userId === data?.userid) || null;
-        if(this.authenticatedUser?.interviewer){
-          this.homeUser = selectedUser;
-        }
+        // if(this.authenticatedUser?.interviewer){
+        //   this.homeUser = selectedUser;
+        // }
+        this.homeUser = selectedUser;
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
           null;
-        if(this.authenticatedUser?.interviewer){
-          this.homeSelectedProject = selectedProject;
-        }
+        // if(this.authenticatedUser?.interviewer){
+        //   this.homeSelectedProject = selectedProject;
+        // }
+        this.homeSelectedProject = selectedProject;
         if (!this.selectedProject) {
           this.selectedProject = selectedProject;
         }
