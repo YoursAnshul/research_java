@@ -116,6 +116,12 @@ export class WeekDatepickerComponent implements OnInit {
     //console.log(normalizedDay);
   }
 
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+      this.onFinalWeekInput();
+    }
+  }
+  
   onFinalWeekInput(): void {
     const startInput = this.selectedDateRange.value.start;
     const endInput = this.selectedDateRange.value.end;

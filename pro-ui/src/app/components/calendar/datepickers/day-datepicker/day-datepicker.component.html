@@ -4,7 +4,7 @@
          [formControl]="selectedDate"
          (dateChange)="emitSelectedDate()"
          (blur)="onFinalDateInput($event)"
-         (keydown.enter)="onFinalDateInput($event)"
+         (keydown)="onKeydown($event)"
          autocomplete="off" />
   <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker

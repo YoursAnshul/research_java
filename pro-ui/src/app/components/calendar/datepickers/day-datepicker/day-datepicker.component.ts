@@ -72,6 +72,12 @@ export class DayDatepickerComponent implements OnInit {
     //console.log(normalizedDay);
   }
 
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+      this.onFinalDateInput(event);
+    }
+  }
+  
   onFinalDateInput(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
     const parsed = moment(input, 'MM/DD/YYYY', true);

@@ -81,6 +81,12 @@ export class MonthDatepickerComponent implements OnInit {
     //console.log(normalizedDay);
   }
 
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === 'Tab') {
+      this.onFinalMonthInput(event);
+    }
+  }
+  
   onFinalMonthInput(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value;
     const parsed = moment(inputValue, 'MM/YYYY', true);
