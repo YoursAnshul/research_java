@@ -93,6 +93,7 @@ export class ShifCalendarComponent implements OnInit {
   tabIndex = 0;
   userList: any[] = [];
   defaultUser = { userId: 0, userName: 'Any Users' };
+  defaultUser1 = { userId: 0, userName: 'Any Users' };
   defaultProject = { projectId: 0, projectName: 'Any Project' };
   selectedUser: any = this.defaultUser;
   selectedProject: any = this.defaultProject;
@@ -353,13 +354,12 @@ export class ShifCalendarComponent implements OnInit {
     }
     if (this.homeUser) {
       this.selectedUser = this.homeUser;
-      console.log('this.selectedUser--4444--', this.selectedUser);
-      this.getAuthor(0);
+      this.defaultUser = this.homeUser;
+      this.getAuthorNew(0);
       this.getProjectInfo(this.selectedUser?.dempoId);
     }
     if (this.homeSelectedProject) {
       this.selectedProject = this.homeSelectedProject;
-      console.log('this.selectedProject--4444--', this.selectedProject);
     }
     if (this.changeDate) {
       this.selectedDate.setValue(this.changeDate);
@@ -1015,6 +1015,39 @@ export class ShifCalendarComponent implements OnInit {
         const matchedUser = newUserList.find(user => user.userId === prevUserId);
   
         this.selectedUser = matchedUser || this.defaultUser;
+      },
+      error: (error) => console.error('Error fetching authors:', error),
+    });
+  }
+
+  getAuthorNew(projectId: number): void {
+    const prevUserId = this.selectedUser?.userId; // store the previous userId
+  
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        const newUserList = [
+          this.defaultUser,
+          ...(Array.isArray(data) ? data : []),
+        ];
+  
+        this.userList = newUserList;
+  
+        const matchedUser = newUserList.find(user => user.userId === prevUserId);
+  
+        this.selectedUser = matchedUser || this.defaultUser;
+        let foundOnce = false;
+        this.userList = [this.defaultUser1,...this.userList];
+        for (let i = 0; i < this.userList.length; i++) {
+          if (this.userList[i].userId === this.selectedUser.userId) {
+            if (foundOnce) {
+              this.userList.splice(i, 1); 
+              break;
+            } else {
+              foundOnce = true; 
+            }
+          }
+        }
       },
       error: (error) => console.error('Error fetching authors:', error),
     });

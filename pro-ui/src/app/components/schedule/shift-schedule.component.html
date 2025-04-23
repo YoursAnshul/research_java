@@ -41,7 +41,8 @@
             [(value)]="selectedUser"
             (selectionChange)="onUserSelectionChange($event)"
           >
-            <mat-option *ngFor="let user of userList" [value]="user">
+            <mat-option *ngFor="let user of userList" [value]="user"  [disabled]="isEdit && user.userId !== selectedUser?.userId"
+            >
               {{ user.userName }}
             </mat-option>
           </mat-select>
