@@ -1253,6 +1253,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
       this.scheduleService.clearSchedule();
       this.scheduleService.clearUser();
       this.scheduleService.clearTab();
+      this.scheduleService.clearType();
     });
   }
 }

@@ -334,7 +334,12 @@ export class ShifCalendarComponent implements OnInit {
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.tab && this.isEdit) {
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
+    if ((this.tab && this.isEdit) || this.profileType == 'user-profile') {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
       } else if (this.tab == 'Week') {

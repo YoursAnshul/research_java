@@ -197,6 +197,75 @@ export class ShiftScheduleComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  // ngOnInit(){
+  //   this.getBlockOutDates();
+  //     this.getAuthor('');
+  //     if (this.selectedUser) {
+  //       this.getProjectInfo(this.selectedUser.dempoId);
+  //     } else {
+  //       this.getProjectInfo('');
+  //     }
+  //     this.currentDay = new Intl.DateTimeFormat('en-US', {
+  //       weekday: 'long',
+  //     }).format(new Date());
+  
+  //     this.shiftForm = new FormGroup({
+  //       user: new FormControl(null, Validators.required),
+  //       projects: new FormControl([], Validators.required),
+  //       dayWiseDate: new FormControl(new Date(), Validators.required),
+  //       startTime: new FormControl(null, Validators.required),
+  //       endTime: new FormControl(null, Validators.required),
+  //       comments: new FormControl(''),
+  //       id: new FormControl(null),
+  //     });
+  
+  //     this.shiftForm.valueChanges.subscribe(() => {
+  //       if (this.authenticatedUser.admin) {
+  //         this.isModified = true;
+  //       }
+  //       this.updateDuration();
+  //       this.scheduleFetchStatus = this.shiftForm.valid;
+  //       this.clearValidation();
+  //       this.shiftForm.markAsPristine();
+  //       this.shiftForm.markAsUntouched();
+  //       this.shiftForm.updateValueAndValidity({ emitEvent: false });
+  //     });
+  
+  //     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+  //       if (date) {
+  //         if (this.authenticatedUser?.interviewer)
+  //           this.validateBlockOutDate(date);
+  //         this.updateDayLabel(date);
+  //       }
+  //     });
+  
+  //     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
+  //       this.isModified = true;
+  //       this.profileType = '';
+  //       this.clearValidation();
+  //     });
+  
+  //     this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
+  //       this.isModified = true;
+  //       this.profileType = '';
+  //       this.clearValidation();
+  //     });
+  
+  //     this.shiftForm.get('user')?.valueChanges.subscribe(() => {
+  //       this.clearValidation();
+  //     });
+  //     this.authenticationService.authenticatedUser.subscribe(
+  //       (authenticatedUser) => {
+  //         this.authenticatedUser = authenticatedUser;
+  //         this.userObj = this.authenticatedUser;
+  //       }
+  //     );
+  //     setTimeout(() => {
+  //       this.loadScheduleData();
+  //       this.loadUserData();
+  //       // this.loadEditScheduleData();
+  //     }, 100);
+  // }
   ngOnInit(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -208,7 +277,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.profileType = type;
       }
     });
-    if(this.isHomeRedirect){
+
       this.getBlockOutDates();
       this.shiftForm = new FormGroup({
         user: new FormControl(null, Validators.required),
@@ -228,13 +297,6 @@ export class ShiftScheduleComponent implements OnInit {
       ]).subscribe({
         next: ([userData, projectData]: any[]) => {
           this.userList = Array.isArray(userData) ? userData : [];
-          this.authenticationService.authenticatedUser.subscribe(authenticatedUser => {
-            this.authenticatedUser = authenticatedUser;
-            this.userObj = this.authenticatedUser;
-          });
-          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
-            this.getLoginUser(this.userObj.eppn);
-          }
           this.allProjects = Array.isArray(projectData) ? projectData : [];
           this.adminProjects = this.allProjects.filter((p) => p.projectType === 4);
     
@@ -245,12 +307,19 @@ export class ShiftScheduleComponent implements OnInit {
             }
           });
           this.otherProjects = Array.from(uniqueProjects.values());
-    
+          this.authenticationService.authenticatedUser.subscribe(authenticatedUser => {
+            this.authenticatedUser = authenticatedUser;
+            this.userObj = this.authenticatedUser;
+          });
+          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+            this.getLoginUser(this.userObj.eppn);
+          }
           if (this.selectedUser) {
             const defProjectId = this.allProjects.find(p => p.defualtProject > 0)?.defualtProject;
             this.selectedProject = this.allProjects.find(p => p.projectId === defProjectId) || null;
           }
           this.loadScheduleData();
+          this.loadUserData();
         },
         error: (error) => {
           console.error('Error loading authors/projects:', error);
@@ -293,79 +362,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('user')?.valueChanges.subscribe(() => {
         this.clearValidation();
       });
-    
-      this.loadUserData();
-        this.currentDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date());
-    } else{
-      this.getBlockOutDates();
-      this.getAuthor('');
-      if (this.selectedUser) {
-        this.getProjectInfo(this.selectedUser.dempoId);
-      } else {
-        this.getProjectInfo('');
-      }
-      this.currentDay = new Intl.DateTimeFormat('en-US', {
-        weekday: 'long',
-      }).format(new Date());
-  
-      this.shiftForm = new FormGroup({
-        user: new FormControl(null, Validators.required),
-        projects: new FormControl([], Validators.required),
-        dayWiseDate: new FormControl(new Date(), Validators.required),
-        startTime: new FormControl(null, Validators.required),
-        endTime: new FormControl(null, Validators.required),
-        comments: new FormControl(''),
-        id: new FormControl(null),
-      });
-  
-      this.shiftForm.valueChanges.subscribe(() => {
-        if (this.authenticatedUser.admin) {
-          this.isModified = true;
-        }
-        this.updateDuration();
-        this.scheduleFetchStatus = this.shiftForm.valid;
-        this.clearValidation();
-        this.shiftForm.markAsPristine();
-        this.shiftForm.markAsUntouched();
-        this.shiftForm.updateValueAndValidity({ emitEvent: false });
-      });
-  
-      this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-        if (date) {
-          if (this.authenticatedUser?.interviewer)
-            this.validateBlockOutDate(date);
-          this.updateDayLabel(date);
-        }
-      });
-  
-      this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
-        this.isModified = true;
-        this.profileType = '';
-        this.clearValidation();
-      });
-  
-      this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
-        this.isModified = true;
-        this.profileType = '';
-        this.clearValidation();
-      });
-  
-      this.shiftForm.get('user')?.valueChanges.subscribe(() => {
-        this.clearValidation();
-      });
-      this.authenticationService.authenticatedUser.subscribe(
-        (authenticatedUser) => {
-          this.authenticatedUser = authenticatedUser;
-          this.userObj = this.authenticatedUser;
-        }
-      );
-      setTimeout(() => {
-        this.loadScheduleData();
-        this.loadUserData();
-        // this.loadEditScheduleData();
-      }, 100);
-    }
-   
+    this.currentDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date());
   }
   // loadEditScheduleData(){
   //   this.scheduleService.getScheduleEditData().subscribe((data) => {
@@ -418,13 +415,11 @@ export class ShiftScheduleComponent implements OnInit {
         if (!this.selectedProject) {
           this.selectedProject = selectedProject;
         }
-        setTimeout(() => {
-          this.shiftForm.patchValue({
-            user: selectedUser,
-            projects: this.selectedProject,
-          });
-          this.cdr.detectChanges();
-        }, 0);
+        this.shiftForm.patchValue({
+          user: selectedUser,
+          projects: this.selectedProject,
+        }, { emitEvent: false });
+        this.cdr.detectChanges();
       }
     });
     this.scheduleService.getTab().subscribe((tab) => {
@@ -452,17 +447,15 @@ export class ShiftScheduleComponent implements OnInit {
           this.selectedProject = selectedProject;
         }
         this.homeSelectedDate = this.convertToLocalDate(data.scheduledate);
-        setTimeout(() => {
-          this.shiftForm.patchValue({
+        this.shiftForm.patchValue({
             user: selectedUser,
             projects: this.selectedProject,
             dayWiseDate: this.convertToLocalDate(data.scheduledate),
             startTime: this.convertTo12HourFormat(data.startTime),
             endTime: this.convertTo12HourFormat(data.endTime),
             comments: data.comments,
-          });
-          this.cdr.detectChanges();
-        }, 0);
+        });
+        this.cdr.detectChanges();
       }
     });
   }
