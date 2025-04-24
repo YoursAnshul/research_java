@@ -48,7 +48,8 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() sendDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
   @Input() isLoading!: boolean;
-
+  isHomeRedirect:boolean = false;
+  profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
 
   constructor(
@@ -266,21 +267,34 @@ export class ShiftDayViewComponent implements OnInit {
     // this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: ISchedule): void {
-    if (schedule.isEdit) {
-      schedule.isEdit = false;
-      this.previouslyEditedSchedule = null;
-    } else {
-      if (this.previouslyEditedSchedule) {
-        this.previouslyEditedSchedule.isEdit = false;
+  this.scheduleService.getSchedule().subscribe((data) => {
+    if (data) {
+      this.isHomeRedirect = data.isHomeRedirect;
+    }
+  });
+  this.scheduleService.getType().subscribe((type) => {
+    if (type) {
+      this.profileType = type;
+    }
+  });
+  if (!this.isHomeRedirect && this.profileType != 'user-profile') {
+      if (schedule.isEdit) {
+        schedule.isEdit = false;
+        this.previouslyEditedSchedule = null;
+      } else {
+        if (this.previouslyEditedSchedule) {
+          this.previouslyEditedSchedule.isEdit = false;
+        }
+    
+        schedule.isEdit = true;
+        this.previouslyEditedSchedule = schedule;
       }
-  
-      schedule.isEdit = true;
-      this.previouslyEditedSchedule = schedule;
+    
+      schedule.tab = 'Day';
+      console.log("schedule--->", schedule);
+      this.scheduleData.emit({ ...schedule });
     }
   
-    schedule.tab = 'Day';
-    console.log("schedule--->", schedule);
-    this.scheduleData.emit({ ...schedule });
   }
-  
+     
 }

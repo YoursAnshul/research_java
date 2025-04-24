@@ -41,7 +41,7 @@
             [(value)]="selectedUser"
             (selectionChange)="onUserSelectionChange($event)"
           >
-            <mat-option *ngFor="let user of userList" [value]="user"  [disabled]="isEdit && user.userId !== selectedUser?.userId"
+            <mat-option *ngFor="let user of userList" [value]="user"  [disabled]=" (user.userId !== selectedUser?.userId && (isEdit || isHomeRedirect || profileType == 'user-profile'))"
             >
               {{ user.userName }}
             </mat-option>
@@ -226,7 +226,7 @@
               </g>
             </svg>
           </div>
-          <div (click)="deleteSchedule()">
+          <div (click)="confirmationPopup()">
             <svg
               width="24"
               height="25"

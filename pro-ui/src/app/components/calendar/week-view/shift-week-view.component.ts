@@ -20,6 +20,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import moment from 'moment-timezone';
+import { ScheduleService } from '../../schedule/schedule.service';
 
 @Component({
   selector: 'app-shift-week-view',
@@ -46,14 +47,16 @@ export class ShiftWeekViewComponent implements OnInit {
   @Output() sendWeekDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
   @Input() isLoading!: boolean;
-
+  isHomeRedirect:boolean = false;
+  profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
 
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
     private authenticationService: AuthenticationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private scheduleService: ScheduleService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -344,17 +347,30 @@ export class ShiftWeekViewComponent implements OnInit {
     }
   }
   openScheduleData(schedule: ISchedule): void {
-    if (schedule.isEdit) {
-      schedule.isEdit = false;
-      this.previouslyEditedSchedule = null;
-    } else {
-      if (this.previouslyEditedSchedule) {
-        this.previouslyEditedSchedule.isEdit = false;
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        this.isHomeRedirect = data.isHomeRedirect;
       }
-      schedule.isEdit = true;
-      this.previouslyEditedSchedule = schedule;
+    });
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
+    if (!this.isHomeRedirect && this.profileType != 'user-profile') {
+      if (schedule.isEdit) {
+        schedule.isEdit = false;
+        this.previouslyEditedSchedule = null;
+      } else {
+        if (this.previouslyEditedSchedule) {
+          this.previouslyEditedSchedule.isEdit = false;
+        }
+        schedule.isEdit = true;
+        this.previouslyEditedSchedule = schedule;
+      }
+      schedule.tab = 'Week';
+      this.scheduleData.emit({ ...schedule });
     }
-    schedule.tab = 'Week';
-    this.scheduleData.emit({ ...schedule });
+    
   }
 }

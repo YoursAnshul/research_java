@@ -31,6 +31,7 @@ import {
 import { ScheduleService } from './schedule.service';
 import { Utils } from '../../classes/utils';
 import { forkJoin } from 'rxjs';
+import { ConfirmationShiftDialogComponent } from '../delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -332,7 +333,7 @@ export class ShiftScheduleComponent implements OnInit {
         }
         this.updateDuration();
         this.scheduleFetchStatus = this.shiftForm.valid;
-        this.clearValidation();
+        // this.clearValidation();
         this.shiftForm.markAsPristine();
         this.shiftForm.markAsUntouched();
         this.shiftForm.updateValueAndValidity({ emitEvent: false });
@@ -350,17 +351,19 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
         this.profileType = '';
         this.isModified = true;
-        this.clearValidation();
+        this.validateTimeRange();
+        // this.clearValidation();
       });
     
       this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
         this.profileType = '';
         this.isModified = true;
-        this.clearValidation();
+        this.validateTimeRange();
+        // this.clearValidation();
       });
     
       this.shiftForm.get('user')?.valueChanges.subscribe(() => {
-        this.clearValidation();
+        // this.clearValidation();
       });
     this.currentDay = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date());
   }
@@ -405,16 +408,22 @@ export class ShiftScheduleComponent implements OnInit {
         //   this.homeUser = selectedUser;
         // }
         this.homeUser = selectedUser;
+        this.selectedUser = this.homeUser;
+        if(this.selectedUser){
+          this.getProjectInfo(this.selectedUser.dempoId)
+        }
+        console.log("allProjects------->",this.allProjects);
+
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
           null;
+        console.log("selectedProject------->",selectedProject);
+
         // if(this.authenticatedUser?.interviewer){
         //   this.homeSelectedProject = selectedProject;
         // }
         this.homeSelectedProject = selectedProject;
-        if (!this.selectedProject) {
-          this.selectedProject = selectedProject;
-        }
+        this.selectedProject = selectedProject;
         this.shiftForm.patchValue({
           user: selectedUser,
           projects: this.selectedProject,
@@ -430,35 +439,50 @@ export class ShiftScheduleComponent implements OnInit {
   }
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
+      console.log("data====>", data);
+  
       if (data) {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
-        if(this.tab == 'Week' || this.tab == 'Month'){
+  
+        if (this.tab == 'Week' || this.tab == 'Month') {
           this.isEdit = true;
         }
-        const selectedUser =
-          this.userList.find((user) => user?.userId === data?.userid) || null;
+  
+        const selectedUser = this.userList.find(
+          (user) => user?.userId === data?.userid
+        ) || null;
         this.homeUser = selectedUser;
-        const selectedProject =
-          this.allProjects.find((p) => p?.projectId === data?.projectid) ||
-          null;
-        this.homeSelectedProject = selectedProject;
-        if (!this.selectedProject) {
-          this.selectedProject = selectedProject;
+        this.selectedUser = this.homeUser;
+  
+        if (this.selectedUser && !this.isHomeRedirect) {
+          this.getProjectInfo(this.selectedUser.dempoId);
         }
+  
+        const selectedProject = this.allProjects.find(
+          (p) => p?.projectId === data?.projectid
+        ) || null;
+  
+        console.log("selectedProject--->", selectedProject);
+        this.homeSelectedProject = selectedProject;
+        this.selectedProject = selectedProject;
+  
         this.homeSelectedDate = this.convertToLocalDate(data.scheduledate);
         this.shiftForm.patchValue({
-            user: selectedUser,
-            projects: this.selectedProject,
-            dayWiseDate: this.convertToLocalDate(data.scheduledate),
-            startTime: this.convertTo12HourFormat(data.startTime),
-            endTime: this.convertTo12HourFormat(data.endTime),
-            comments: data.comments,
+          user: selectedUser,
+          projects: selectedProject,
+          dayWiseDate: this.convertToLocalDate(data.scheduledate),
+          startTime: this.convertTo12HourFormat(data.startTime),
+          endTime: this.convertTo12HourFormat(data.endTime),
+          comments: data.comments,
         });
+  
+        // Manually trigger change detection after updating form
         this.cdr.detectChanges();
       }
     });
   }
+  
   
   convertToLocalDate(dateInput: string | Date): Date {
     if (typeof dateInput === 'string') {
@@ -741,7 +765,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.adminProjects = this.allProjects.filter(
           (project: { projectType: number }) => project.projectType === 4
         );
-
+       
         const uniqueProjects = new Map();
         this.allProjects.forEach(
           (project: { projectId: number; projectType: number }) => {
@@ -768,7 +792,7 @@ export class ShiftScheduleComponent implements OnInit {
               (project: { projectId: number }) =>
                 project.projectId === defaultProjectId
             ) || null;
-        }
+        }        
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
@@ -1326,6 +1350,9 @@ export class ShiftScheduleComponent implements OnInit {
             (user) => user?.userId === schedule?.user?.userId
           ) || null;
         this.selectedUser = selectedUser;
+        if(this.selectedUser){
+          this.getProjectInfo(this.selectedUser.dempoId);
+        }
         const selectedProject =
           this.allProjects.find(
             (p) => p?.projectId === schedule?.projects?.projectId
@@ -1385,5 +1412,54 @@ export class ShiftScheduleComponent implements OnInit {
     hour = hour % 12 || 12; 
     return `${hour}:${minute}`;
   }
+  validateTimeRange(): void {
+    const startControl = this.shiftForm.get('startTime');
+    const endControl = this.shiftForm.get('endTime');
   
+    const startTime = startControl?.value;
+    const endTime = endControl?.value;
+  
+    if (!startTime || !endTime) {
+      startControl?.setErrors(null);
+      endControl?.setErrors(null);
+      return;
+    }
+  
+    const normalizeTime = (time: string): string =>
+      time.replace(/\s+/g, '').replace(/(AM|PM)$/i, ' $1').toUpperCase();
+  
+    const toMinutes = (time: string): number => {
+      const [timePart, modifier] = time.split(' ');
+      let [hours, minutes] = timePart.split(':').map(Number);
+  
+      if (modifier === 'PM' && hours !== 12) hours += 12;
+      if (modifier === 'AM' && hours === 12) hours = 0;
+  
+      return hours * 60 + minutes;
+    };
+  
+    const start = toMinutes(normalizeTime(startTime));
+    const end = toMinutes(normalizeTime(endTime));
+  
+    if (end <= start) {
+      startControl?.setErrors({ invalidRange: true });
+      endControl?.setErrors({ invalidRange: true });
+      startControl?.markAsTouched();
+      endControl?.markAsTouched();
+    } else {
+      startControl?.setErrors(null);
+      endControl?.setErrors(null);
+    }
+  }
+  confirmationPopup(): void {
+      const dialogRef = this.dialog.open(ConfirmationShiftDialogComponent,{
+        panelClass: 'custom-dialog-container'
+      });
+      
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.deleteSchedule();
+        }
+      });
+  }
 }

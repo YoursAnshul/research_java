@@ -98,6 +98,7 @@ import { TextareaComponent } from './components/form-inputs/textarea/textarea.co
 import { ShiftWeekViewComponentV2 } from './components/calendar/week-view/shift-week-view.componentV2';
 import { ShiftWeekViewComponentV3 } from './components/calendar/week-view/shift-week-view.componentV3';
 import { BlockdateDialog } from './components/calendar/calendar-controls/block.date.dialog.component';
+import { ConfirmationShiftDialogComponent } from './components/delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -169,7 +170,8 @@ import { BlockdateDialog } from './components/calendar/calendar-controls/block.d
     TextareaComponent,
     ShiftWeekViewComponentV2,
     ShiftWeekViewComponentV3,
-    BlockdateDialog
+    BlockdateDialog,
+    ConfirmationShiftDialogComponent
   ],
   imports: [
     NgxMaterialTimepickerModule,
