@@ -352,13 +352,13 @@ export class ShifCalendarComponent implements OnInit {
     if (this.homeSelectedDate) {
       this.selectedDate.setValue(this.homeSelectedDate);
     }
-    if (this.homeUser) {
+    if (this.homeUser && !this.authenticatedUser?.interviewer ) {
       this.selectedUser = this.homeUser;
       this.defaultUser = this.homeUser;
       this.getAuthorNew(0);
       this.getProjectInfo(this.selectedUser?.dempoId);
     }
-    if (this.homeSelectedProject) {
+    if (this.homeSelectedProject && !this.authenticatedUser?.interviewer ) {
       this.selectedProject = this.homeSelectedProject;
     }
     if (this.changeDate) {
