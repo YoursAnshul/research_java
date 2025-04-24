@@ -129,17 +129,23 @@ export class WeekDatepickerComponent implements OnInit {
     const start = moment(startInput, 'MM/DD/YYYY', true);
     const end = moment(endInput, 'MM/DD/YYYY', true);
   
-    if (start.isValid() && end.isValid() && start.isSameOrBefore(end)) {
+    const isValidRange =
+      start.isValid() &&
+      end.isValid() &&
+      start.isSameOrBefore(end) &&
+      start.year() !== 1969 &&
+      end.year() !== 1969;
+  
+    if (isValidRange) {
       this.selectedDateRange.setValue({
         start: start.toDate(),
         end: end.toDate()
       });
       this.selectedDate.setValue(start.toDate());
     } else {
-      // Fallback to current week's Monday to Sunday
       const today = moment();
-      const weekStart = today.clone().startOf('isoWeek'); // Monday
-      const weekEnd = today.clone().endOf('isoWeek');     // Sunday
+      const weekStart = today.clone().startOf('isoWeek'); 
+      const weekEnd = today.clone().endOf('isoWeek');   
   
       this.selectedDateRange.setValue({
         start: weekStart.toDate(),
@@ -151,5 +157,6 @@ export class WeekDatepickerComponent implements OnInit {
     this.selectedDateRangeChange.emit(this.selectedDateRange);
     this.selectedDateChange.emit(this.selectedDate);
   }
+  
   
 }
