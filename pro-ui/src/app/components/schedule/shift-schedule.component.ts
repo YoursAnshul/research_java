@@ -311,7 +311,7 @@ export class ShiftScheduleComponent implements OnInit {
             this.authenticatedUser = authenticatedUser;
             this.userObj = this.authenticatedUser;
           });
-          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+          if (this.userObj?.eppn && this.authenticatedUser?.interviewer && !this.isHomeRedirect) {
             this.getLoginUser(this.userObj.eppn);
           }
           if (this.selectedUser) {
