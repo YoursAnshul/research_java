@@ -455,8 +455,8 @@ export class ShiftScheduleComponent implements OnInit {
         this.homeUser = selectedUser;
         this.selectedUser = this.homeUser;
   
-        if (this.selectedUser && !this.isHomeRedirect) {
-          this.getProjectInfo(this.selectedUser.dempoId);
+        if (this.selectedUser) {
+          this.getProjectInfoNew(this.selectedUser.dempoId);
         }
   
         const selectedProject = this.allProjects.find(
@@ -797,7 +797,41 @@ export class ShiftScheduleComponent implements OnInit {
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+ getProjectInfoNew(dempoId: string): void {
+    if (this.selectedUser) {
+      dempoId = this.selectedUser.dempoId;
+    }
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
 
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.allProjects = Array.isArray(data) ? data : [];
+        this.adminProjects = this.allProjects.filter(
+          (project: { projectType: number }) => project.projectType === 4
+        );
+       
+        const uniqueProjects = new Map();
+        this.allProjects.forEach(
+          (project: { projectId: number; projectType: number }) => {
+            if (
+              project.projectType != 4 &&
+              !uniqueProjects.has(project.projectId)
+            ) {
+              uniqueProjects.set(project.projectId, project);
+            }
+          }
+        );
+
+        this.otherProjects = Array.from(uniqueProjects.values());
+        this.selectedProject =
+        this.allProjects.find(
+          (project: { projectId: number }) =>
+            project.projectId === this.homeSelectedProject?.projectId
+        ) || null;      
+      },
+      error: (error) => console.error('Error fetching projects:', error),
+    });
+  }
   getAuthor(userId: any): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?user_id=${userId}`;
     this.http.get(apiUrl).subscribe({
