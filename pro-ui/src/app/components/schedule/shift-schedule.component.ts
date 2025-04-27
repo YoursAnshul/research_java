@@ -148,6 +148,8 @@ export class ShiftScheduleComponent implements OnInit {
   isHomeRedirect: boolean = false;
   isClose: boolean = false;
   profileType : string = '';
+  isUpdate: boolean = false;
+  isDelete: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -453,16 +455,13 @@ export class ShiftScheduleComponent implements OnInit {
           (user) => user?.userId === data?.userid
         ) || null;
         this.homeUser = selectedUser;
-        this.selectedUser = this.homeUser;
-  
-        if (this.selectedUser) {
-          this.getProjectInfoNew(this.selectedUser.dempoId);
-        }
-  
+        this.selectedUser = this.homeUser
         const selectedProject = this.allProjects.find(
           (p) => p?.projectId === data?.projectid
         ) || null;
-  
+        if (this.selectedUser) {
+          this.getProjectInfoNew(this.selectedUser.dempoId);
+        }
         console.log("selectedProject--->", selectedProject);
         this.homeSelectedProject = selectedProject;
         this.selectedProject = selectedProject;
@@ -1399,6 +1398,9 @@ export class ShiftScheduleComponent implements OnInit {
           this.userList.find((user) => user?.userId === schedule?.userid) ||
           null;
         this.selectedUser = selectedUser;
+        if(this.selectedUser){
+          this.getProjectInfo(this.selectedUser.dempoId);
+        }
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === schedule.projectId) ||
           null;
@@ -1496,4 +1498,12 @@ export class ShiftScheduleComponent implements OnInit {
         }
       });
   }
+  moveToDelete(){
+    this.isDelete = true;
+  }
+  moveToUpdate(){
+     this.isUpdate = true;
+  }
+ 
+  
 }

@@ -5,16 +5,28 @@
   <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
 
   <div class="d-flex" style="margin-left: auto">
-    <!-- <button
+    <button
+      *ngIf="isDelete"
       style="height: 25px"
       mat-raised-button
       color="primary"
       class="submit wd90"
-      (click)="saveSchedule()"
+      (click)="confirmationPopup()"
       [disabled]="shiftForm.invalid"
     >
       Save Calendar
-    </button> -->
+    </button>
+    <button
+    *ngIf="isUpdate"
+    style="height: 25px"
+    mat-raised-button
+    color="primary"
+    class="submit wd90"
+    (click)="editSchedule()"
+    [disabled]="shiftForm.invalid"
+  >
+    Save Calendar
+  </button>
     <button
       style="height: 25px"
       class="btn-outline ml-2"
@@ -199,7 +211,7 @@
             margin-left: 10px;
           "
         >
-          <div (click)="editSchedule()" style="margin-right: 10px">
+          <div (click)="moveToUpdate()" style="margin-right: 10px">
             <svg
               width="24"
               height="25"
@@ -226,7 +238,7 @@
               </g>
             </svg>
           </div>
-          <div (click)="confirmationPopup()">
+          <div (click)="moveToDelete()">
             <svg
               width="24"
               height="25"
