@@ -1383,9 +1383,6 @@ export class ShiftScheduleComponent implements OnInit {
             (user) => user?.userId === schedule?.user?.userId
           ) || null;
         this.selectedUser = selectedUser;
-        if(this.selectedUser){
-          this.getProjectInfo(this.selectedUser.dempoId);
-        }
         const selectedProject =
           this.allProjects.find(
             (p) => p?.projectId === schedule?.projects?.projectId
@@ -1398,9 +1395,6 @@ export class ShiftScheduleComponent implements OnInit {
           this.userList.find((user) => user?.userId === schedule?.userid) ||
           null;
         this.selectedUser = selectedUser;
-        if(this.selectedUser){
-          this.getProjectInfo(this.selectedUser.dempoId);
-        }
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === schedule.projectId) ||
           null;
