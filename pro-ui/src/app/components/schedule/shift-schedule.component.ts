@@ -460,7 +460,7 @@ export class ShiftScheduleComponent implements OnInit {
           (p) => p?.projectId === data?.projectid
         ) || null;
         if (this.selectedUser) {
-          this.getProjectInfoNew(this.selectedUser.dempoId);
+          this.getProjectInfo(this.selectedUser.dempoId);
         }
         console.log("selectedProject--->", selectedProject);
         this.homeSelectedProject = selectedProject;
@@ -796,41 +796,49 @@ export class ShiftScheduleComponent implements OnInit {
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
- getProjectInfoNew(dempoId: string): void {
+  getProjectInfoNew(dempoId: string, schedule: any): void {
     if (this.selectedUser) {
       dempoId = this.selectedUser.dempoId;
     }
+  
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
-
+  
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjects = Array.isArray(data) ? data : [];
         this.adminProjects = this.allProjects.filter(
           (project: { projectType: number }) => project.projectType === 4
         );
-       
+  
         const uniqueProjects = new Map();
-        this.allProjects.forEach(
-          (project: { projectId: number; projectType: number }) => {
-            if (
-              project.projectType != 4 &&
-              !uniqueProjects.has(project.projectId)
-            ) {
-              uniqueProjects.set(project.projectId, project);
-            }
+        this.allProjects.forEach((project: { projectId: number; projectType: number }) => {
+          if (project.projectType != 4 && !uniqueProjects.has(project.projectId)) {
+            uniqueProjects.set(project.projectId, project);
           }
-        );
-
+        });
         this.otherProjects = Array.from(uniqueProjects.values());
-        this.selectedProject =
-        this.allProjects.find(
-          (project: { projectId: number }) =>
-            project.projectId === this.homeSelectedProject?.projectId
-        ) || null;      
+  
+        this.selectedProject = this.allProjects.find(
+          (project: { projectId: number }) => 
+            project.projectId === (schedule?.projects?.projectId ?? schedule?.projectId)
+        ) || null;
+  
+        this.shiftForm.patchValue({
+          user: this.selectedUser,
+          projects: this.selectedProject,
+          dayWiseDate: schedule.dayWiseDate,
+          startTime: this.convertTo12HourFormat(schedule.startTime),
+          endTime: this.convertTo12HourFormat(schedule.endTime),
+          comments: schedule.comments,
+          id: schedule.preschedulekey,
+        });
+  
+        console.log('this.shiftForm value --->', this.shiftForm.value);
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
   }
+  
   getAuthor(userId: any): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?user_id=${userId}`;
     this.http.get(apiUrl).subscribe({
@@ -1388,6 +1396,9 @@ export class ShiftScheduleComponent implements OnInit {
             (p) => p?.projectId === schedule?.projects?.projectId
           ) || null;
         this.selectedProject = selectedProject;
+        if (this.selectedUser) {
+          this.getProjectInfoNew(this.selectedUser.dempoId, schedule);
+        }
         const [year, month, day] = schedule.dayWiseDate.split('-').map(Number);
         scheduleDate = new Date(year, month - 1, day);
       } else {
@@ -1399,6 +1410,9 @@ export class ShiftScheduleComponent implements OnInit {
           this.allProjects.find((p) => p?.projectId === schedule.projectId) ||
           null;
         this.selectedProject = selectedProject;
+        if (this.selectedUser) {
+          this.getProjectInfoNew(this.selectedUser.dempoId, schedule);
+        }
         scheduleDate = new Date(schedule.scheduledate);
       }
 
