@@ -1406,6 +1406,10 @@ export class ShiftScheduleComponent implements OnInit {
           this.userList.find((user) => user?.userId === schedule?.userid) ||
           null;
         this.selectedUser = selectedUser;
+        if (this.selectedUser) {
+          schedule.dayWiseDate = schedule.scheduledate;
+          this.getProjectInfoNew(this.selectedUser.dempoId,schedule);
+        }
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === schedule.projectId) ||
           null;
