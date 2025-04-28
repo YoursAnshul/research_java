@@ -91,14 +91,21 @@ export class MonthDatepickerComponent implements OnInit {
     const inputValue = (event.target as HTMLInputElement).value;
     const parsed = moment(inputValue, 'MM/YYYY', true);
   
-    if (parsed.isValid() && parsed.year() !== 1969) {
-      parsed.date(1); 
-      this.selectedDate.setValue(parsed.toDate()); 
+    if (parsed.isValid()) {
+      const year = parsed.year();
+  
+      if (year === 1969 || year < 2024 || year > 2026) {
+        console.warn('Restricted or invalid year in month input:', year);
+        const now = moment().date(1);
+        this.selectedDate.setValue(now.toDate());
+      } else {
+        parsed.date(1); 
+        this.selectedDate.setValue(parsed.toDate());
+      }
     } else {
-      console.warn('Invalid or restricted month input:', inputValue);
-      const now = moment(); 
-      now.date(1); 
-      this.selectedDate.setValue(now.toDate()); 
+      console.warn('Invalid month input format:', inputValue);
+      const now = moment().date(1);
+      this.selectedDate.setValue(now.toDate());
     }
   
     this.selectedDateChange.emit(this.selectedDate);

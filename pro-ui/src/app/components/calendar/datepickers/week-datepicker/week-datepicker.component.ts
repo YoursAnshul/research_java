@@ -129,12 +129,14 @@ export class WeekDatepickerComponent implements OnInit {
     const start = moment(startInput, 'MM/DD/YYYY', true);
     const end = moment(endInput, 'MM/DD/YYYY', true);
   
+    const validYear = (year: number) => year >= 2024 && year <= 2026 && year !== 1969;
+  
     const isValidRange =
       start.isValid() &&
       end.isValid() &&
       start.isSameOrBefore(end) &&
-      start.year() !== 1969 &&
-      end.year() !== 1969;
+      validYear(start.year()) &&
+      validYear(end.year());
   
     if (isValidRange) {
       this.selectedDateRange.setValue({
@@ -143,9 +145,14 @@ export class WeekDatepickerComponent implements OnInit {
       });
       this.selectedDate.setValue(start.toDate());
     } else {
+      console.warn('Invalid or restricted week range:', {
+        start: startInput,
+        end: endInput
+      });
+  
       const today = moment();
-      const weekStart = today.clone().startOf('isoWeek'); 
-      const weekEnd = today.clone().endOf('isoWeek');   
+      const weekStart = today.clone().startOf('isoWeek');
+      const weekEnd = today.clone().endOf('isoWeek');
   
       this.selectedDateRange.setValue({
         start: weekStart.toDate(),

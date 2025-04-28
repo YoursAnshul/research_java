@@ -1,11 +1,13 @@
 import {
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { Utils } from '../../../classes/utils';
 import {
@@ -37,6 +39,7 @@ export class ShiftWeekViewComponent implements OnInit {
   @Input() selectedUser: any = null;
   @Input() selectedProject: any = null;
   authenticatedUser!: IAuthenticatedUser;
+  @ViewChild('weekCalendar', { static: false }) weekCalendarRef: ElementRef | undefined;
   hoverMessage: HoverMessage = new HoverMessage();
   tooltipMessage: SafeHtml = ''; // New property to store tooltip content
   showTooltip: boolean = false;
@@ -335,7 +338,10 @@ export class ShiftWeekViewComponent implements OnInit {
 
     if (this.inputHeight !== newHeight) {
       this.inputHeight = newHeight;
-      this.updateWeekCalendarHeight(newHeight);
+      // this.updateWeekCalendarHeight(newHeight);
+      if (this.weekCalendarRef?.nativeElement) {
+        this.weekCalendarRef.nativeElement.style.height = newHeight;
+      }
       this.cdr.detectChanges();
     }
   }

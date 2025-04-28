@@ -97,13 +97,18 @@ export class DayDatepickerComponent implements OnInit {
     const input = (event.target as HTMLInputElement).value;
     const parsed = moment(input, 'MM/DD/YYYY', true);
   
-    if (parsed.isValid() && parsed.year() !== 1969) {
-      const newDate = parsed.toDate();
-      this.selectedDate.setValue(newDate);
+    if (parsed.isValid()) {
+      const year = parsed.year();
+  
+      if (year === 1969 || year < 2024 || year > 2026) {
+        console.warn('Restricted or invalid year detected:', year);
+        this.selectedDate.setValue(new Date());
+      } else {
+        this.selectedDate.setValue(parsed.toDate());
+      }
     } else {
-      console.warn('Invalid or restricted date input:', input);
-      const now = new Date();
-      this.selectedDate.setValue(now);
+      console.warn('Invalid date format or input:', input);
+      this.selectedDate.setValue(new Date());
     }
   
     this.selectedDateChange.emit(this.selectedDate);
