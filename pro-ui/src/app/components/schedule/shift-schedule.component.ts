@@ -826,7 +826,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.patchValue({
           user: this.selectedUser,
           projects: this.selectedProject,
-          dayWiseDate: schedule.dayWiseDate,
+          dayWiseDate: this.convertToLocalDate(schedule.dayWiseDate),
           startTime: this.convertTo12HourFormat(schedule.startTime),
           endTime: this.convertTo12HourFormat(schedule.endTime),
           comments: schedule.comments,
@@ -1410,9 +1410,6 @@ export class ShiftScheduleComponent implements OnInit {
           this.allProjects.find((p) => p?.projectId === schedule.projectId) ||
           null;
         this.selectedProject = selectedProject;
-        if (this.selectedUser) {
-          this.getProjectInfoNew(this.selectedUser.dempoId, schedule);
-        }
         scheduleDate = new Date(schedule.scheduledate);
       }
 
