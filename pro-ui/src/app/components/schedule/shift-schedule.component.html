@@ -6,7 +6,7 @@
 
   <div class="d-flex" style="margin-left: auto">
     <button
-      *ngIf="isDelete"
+      *ngIf="isDelete && isEdit"
       style="height: 25px"
       mat-raised-button
       color="primary"
@@ -17,16 +17,16 @@
       Save Calendar
     </button>
     <button
-    *ngIf="isUpdate"
-    style="height: 25px"
-    mat-raised-button
-    color="primary"
-    class="submit wd90"
-    (click)="editSchedule()"
-    [disabled]="shiftForm.invalid"
-  >
-    Save Calendar
-  </button>
+      *ngIf="isUpdate && isEdit"
+      style="height: 25px"
+      mat-raised-button
+      color="primary"
+      class="submit wd90"
+      (click)="editSchedule()"
+      [disabled]="shiftForm.invalid"
+    >
+      Save Calendar
+    </button>
     <button
       style="height: 25px"
       class="btn-outline ml-2"
@@ -53,7 +53,13 @@
             [(value)]="selectedUser"
             (selectionChange)="onUserSelectionChange($event)"
           >
-            <mat-option *ngFor="let user of userList" [value]="user"  [disabled]=" (user.userId !== selectedUser?.userId && (isEdit || isHomeRedirect || profileType == 'user-profile'))"
+            <mat-option
+              *ngFor="let user of userList"
+              [value]="user"
+              [disabled]="
+                user.userId !== selectedUser?.userId &&
+                (isEdit || isHomeRedirect || profileType == 'user-profile')
+              "
             >
               {{ user.userName }}
             </mat-option>

@@ -1494,9 +1494,11 @@ export class ShiftScheduleComponent implements OnInit {
   }
   moveToDelete(){
     this.isDelete = true;
+    this.isUpdate = false;
   }
   moveToUpdate(){
      this.isUpdate = true;
+     this.isDelete = false; 
   }
  
   
