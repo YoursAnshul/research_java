@@ -832,7 +832,8 @@ export class ShiftScheduleComponent implements OnInit {
           comments: schedule.comments,
           id: schedule.preschedulekey,
         });
-  
+        this.isDelete = false;
+        this.isUpdate = false;
         console.log('this.shiftForm value --->', this.shiftForm.value);
       },
       error: (error) => console.error('Error fetching projects:', error),
