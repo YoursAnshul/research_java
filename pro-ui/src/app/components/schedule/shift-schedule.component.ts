@@ -148,8 +148,6 @@ export class ShiftScheduleComponent implements OnInit {
   isHomeRedirect: boolean = false;
   isClose: boolean = false;
   profileType : string = '';
-  isUpdate: boolean = false;
-  isDelete: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -832,8 +830,6 @@ export class ShiftScheduleComponent implements OnInit {
           comments: schedule.comments,
           id: schedule.preschedulekey,
         });
-        this.isDelete = false;
-        this.isUpdate = false;
         console.log('this.shiftForm value --->', this.shiftForm.value);
       },
       error: (error) => console.error('Error fetching projects:', error),
@@ -1508,14 +1504,4 @@ export class ShiftScheduleComponent implements OnInit {
         }
       });
   }
-  moveToDelete(){
-    this.isDelete = true;
-    this.isUpdate = false;
-  }
-  moveToUpdate(){
-     this.isUpdate = true;
-     this.isDelete = false; 
-  }
- 
-  
 }

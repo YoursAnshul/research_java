@@ -54,7 +54,7 @@ export class ShiftMonthViewComponent implements OnInit {
   ngOnInit(): void {
     this.processShiftSchedules();
   }
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {    
     if (changes['isEdit']) {
       if (this.shiftSchedule?.length) {
         this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
@@ -72,9 +72,9 @@ export class ShiftMonthViewComponent implements OnInit {
   handleMonthDate(event: FormControl) {
     this.monthDate.emit(event);
   }
-  handleWeekSchedule(schedule: any) {
+  handleWeekSchedule(schedule: any) {    
     if (schedule) {
-      schedule.tab = 'Month';
+      schedule.tab = 'Month';''
       this.scheduleData.emit(schedule);
     }
   }

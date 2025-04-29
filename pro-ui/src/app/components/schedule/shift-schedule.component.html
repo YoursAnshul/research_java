@@ -6,28 +6,6 @@
 
   <div class="d-flex" style="margin-left: auto">
     <button
-      *ngIf="isDelete && isEdit"
-      style="height: 25px"
-      mat-raised-button
-      color="primary"
-      class="submit wd90"
-      (click)="confirmationPopup()"
-      [disabled]="shiftForm.invalid"
-    >
-      Save Calendar
-    </button>
-    <button
-      *ngIf="isUpdate && isEdit"
-      style="height: 25px"
-      mat-raised-button
-      color="primary"
-      class="submit wd90"
-      (click)="editSchedule()"
-      [disabled]="shiftForm.invalid"
-    >
-      Save Calendar
-    </button>
-    <button
       style="height: 25px"
       class="btn-outline ml-2"
       (click)="confirmatationClose()"
@@ -217,7 +195,7 @@
             margin-left: 10px;
           "
         >
-          <div (click)="moveToUpdate()" style="margin-right: 10px">
+          <div (click)="editSchedule()" style="margin-right: 10px">
             <svg
               width="24"
               height="25"
@@ -244,7 +222,7 @@
               </g>
             </svg>
           </div>
-          <div (click)="moveToDelete()">
+          <div (click)="confirmationPopup()">
             <svg
               width="24"
               height="25"
