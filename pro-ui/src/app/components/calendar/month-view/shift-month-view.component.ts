@@ -72,12 +72,36 @@ export class ShiftMonthViewComponent implements OnInit {
   handleMonthDate(event: FormControl) {
     this.monthDate.emit(event);
   }
-  handleWeekSchedule(schedule: any) {    
+  handleWeekSchedule(schedule: any) {  
     if (schedule) {
+      this.resetAllIsEditFlags(schedule);
       schedule.tab = 'Month';''
+      schedule.isEdit = true;
       this.scheduleData.emit(schedule);
     }
   }
+  resetAllIsEditFlags(scheduleToSkip: ISchedule): void {
+    if (!this.monthSchedules?.weekSchedules?.length) return;
+  
+    for (const week of this.monthSchedules.weekSchedules) {
+      for (let i = 1; i <= 7; i++) {
+        const daySchedules: ISchedule[] = (week as any)[`day${i}Schedules`] || [];
+        for (const schedule of daySchedules) {
+          if (
+            schedule &&
+            schedule.preschedulekey !== scheduleToSkip.preschedulekey &&
+            schedule.isEdit
+          ) {
+            schedule.isEdit = false;
+          }
+        }
+      }
+    }
+  }
+  
+  
+  
+  
   
   processShiftSchedules(): void {
     if (!this.monthSchedules) {
@@ -92,20 +116,8 @@ export class ShiftMonthViewComponent implements OnInit {
     const startOfCalendarView = new Date(weekStarts[0]);
     const endOfCalendarView = new Date(weekStarts[weekStarts.length - 1]);
     endOfCalendarView.setDate(endOfCalendarView.getDate() + 6);
-
-    // const endOfMonth = new Date(
-    //   referenceDate.getFullYear(),
-    //   referenceDate.getMonth() + 1,
-    //   0
-    // );
-
-    // startOfMonth.setHours(0, 0, 0, 0);
-    // endOfMonth.setHours(23, 59, 59, 999);
     startOfCalendarView.setHours(0, 0, 0, 0);
     endOfCalendarView.setHours(23, 59, 59, 999);
-
-    // const weekStarts = this.getWeekStarts(startOfMonth);
-
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
       for (const weekStart of weekStarts) {
         this.monthSchedules.weekSchedules.push(
@@ -114,46 +126,6 @@ export class ShiftMonthViewComponent implements OnInit {
       }
       return;
     }
-
-    // const filteredShifts = this.shiftSchedule.filter((shift) => {
-    //   const shiftDate = moment(shift.dayWiseDate)
-    //     .tz('America/New_York')
-    //     .startOf('day')
-    //     .toDate();
-    //   if (shiftDate < startOfMonth || shiftDate > endOfCalendarView) return false;
-
-    //   let isValid = true;
-
-    //   if (
-    //     this.selectedUser &&
-    //     this.selectedUser.userId &&
-    //     this.selectedUser.userId !== 0
-    //   ) {
-    //     isValid = isValid && shift.user?.userId === this.selectedUser.userId;
-    //   }
-    //   console.log(
-    //     'this.selectedProject.projectId===========',
-    //     this.selectedProject.projectId
-    //   );
-    //   this.scheduleService.getType().subscribe((type) => {
-    //     if (type) {
-    //       this.type = type;
-    //       console.log('this.type===========', this.type);
-    //     } else {
-    //       if (
-    //         this.selectedProject &&
-    //         this.selectedProject.projectId &&
-    //         this.selectedProject.projectId !== 0
-    //       ) {
-    //         isValid =
-    //           isValid &&
-    //           shift.projects?.projectId === this.selectedProject.projectId;
-    //       }
-    //     }
-    //   });
-
-    //   return isValid;
-    // });
 
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
 

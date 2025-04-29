@@ -1345,22 +1345,13 @@ export class ShiftScheduleComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
-          
           this.isEdit = false;
           this.scheduleFetchStatus = false;
-          if (!this.authenticatedUser?.interviewer){
           this.onResetShiftSchedule();
-        }
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
           localStorage.removeItem('shiftSchedule');
-         
           this.onSubmit();
-          if (this.authenticatedUser?.interviewer){
-           
-        this.shiftForm.get('startTime')?.setErrors({ required: false });
-        this.shiftForm.get('endTime')?.setErrors({ required: false });
-      }
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
