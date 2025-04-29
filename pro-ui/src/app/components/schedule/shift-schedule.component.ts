@@ -1345,24 +1345,13 @@ export class ShiftScheduleComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
+          this.onSubmit();
           this.isEdit = false;
           this.scheduleFetchStatus = false;
-
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
-
-          // fetch updated list
-          // this.getScheduleList(
-          //   Utils.formatDateOnlyToStringUTC(
-          //     dayWiseDate,
-          //     true,
-          //     true,
-          //     true
-          //   )
-          // );
           localStorage.removeItem('shiftSchedule');
-          this.onSubmit();
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
