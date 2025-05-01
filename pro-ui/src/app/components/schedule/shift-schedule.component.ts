@@ -13,6 +13,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import {
   IAuthenticatedUser,
   IBlockOutDate,
+  IRequest,
   IWeekSchedules,
 } from '../../interfaces/interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -32,6 +33,7 @@ import { ScheduleService } from './schedule.service';
 import { Utils } from '../../classes/utils';
 import { forkJoin } from 'rxjs';
 import { ConfirmationShiftDialogComponent } from '../delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
+import { RequestsService } from '../../services/requests/requests.service';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -149,6 +151,19 @@ export class ShiftScheduleComponent implements OnInit {
   isClose: boolean = false;
   profileType : string = '';
   isUpdateData: boolean = false;
+    newRequest: IRequest = {
+      invalidFields: [],
+      decisionId: null,
+      requestCodeId: null,
+      interviewerEmpId: null,
+      resourceTeamMemberId: null,
+      requestId: 0,
+      requestDate: new Date(),
+      requestDetails: '',
+      notes: '',
+      modBy: '',
+      entryBy: '',
+    };
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -157,7 +172,8 @@ export class ShiftScheduleComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private requestsService: RequestsService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -745,10 +761,53 @@ export class ShiftScheduleComponent implements OnInit {
       if(!this.isEdit){
         this.saveSchedule();
       }
+      if(this.selectedProject && this.authenticatedUser.interviewer){
+        this.saveNewRequest();
+      }
     }
     console.log('this.shiftSchedule---------', this.shiftSchedule);
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
+   saveNewRequest(): void {
+    if(!(this.selectedProject.projectName == 'Sick' ||this.selectedProject.projectName == 'Absent'||this.selectedProject.projectName == 'Arriving Late')){
+        return;
+    }
+    let requestCodeIdValue = 0;
+    if(this.selectedProject.projectName == 'Sick'){
+      requestCodeIdValue = 3;
+    } else if(this.selectedProject.projectName == 'Absent'){
+      requestCodeIdValue = 4;
+    } else if(this.selectedProject.projectName == 'Arriving Late'){
+      requestCodeIdValue = 7;
+    } 
+    this.newRequest = {
+      invalidFields: [],
+      decisionId: 1,
+      requestCodeId: requestCodeIdValue,
+      interviewerEmpId: this.authenticatedUser.netID,
+      resourceTeamMemberId: this.authenticatedUser.netID,
+      resourceTeamMemberName: this.authenticatedUser.displayName,
+      requestId: 0,
+      requestDate: new Date(),
+      requestDetails: '',
+      notes: '',
+      modBy: this.authenticatedUser.netID,
+      entryBy: this.authenticatedUser.netID,
+      changed: false
+    };
+      this.requestsService.saveRequests([this.newRequest]).subscribe(
+        response => {
+          if (response.Status == 'Success') {
+        
+          } else {
+           
+          }
+        },
+        error => {
+        }
+      );
+  
+    }
 
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');
