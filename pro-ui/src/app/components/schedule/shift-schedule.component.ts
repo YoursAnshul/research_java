@@ -148,7 +148,7 @@ export class ShiftScheduleComponent implements OnInit {
   isHomeRedirect: boolean = false;
   isClose: boolean = false;
   profileType : string = '';
-
+  isUpdateData: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -350,14 +350,22 @@ export class ShiftScheduleComponent implements OnInit {
     
       this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
         this.profileType = '';
-        this.isModified = true;
+        if(!this.isUpdateData){
+          this.isModified = true;
+        } else {
+          this.isModified = false;
+        }
         this.validateTimeRange();
         // this.clearValidation();
       });
     
       this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
         this.profileType = '';
-        this.isModified = true;
+        if(!this.isUpdateData){
+          this.isModified = true;
+        } else {
+          this.isModified = false;
+        }     
         this.validateTimeRange();
         // this.clearValidation();
       });
@@ -1348,6 +1356,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.onSubmit();
           this.isEdit = false;
+          this.isUpdateData = true;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
@@ -1428,6 +1437,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule = [];
           this.isEdit = false;
+          this.isUpdateData = true;
           this.onResetShiftSchedule();
         },
         error: (error) => {
