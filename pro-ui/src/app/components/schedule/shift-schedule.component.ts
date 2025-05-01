@@ -329,7 +329,11 @@ export class ShiftScheduleComponent implements OnInit {
     
       this.shiftForm.valueChanges.subscribe(() => {
         if (this.authenticatedUser?.admin) {
-          this.isModified = true;
+          if(!this.isUpdateData){
+            this.isModified = true;
+          } else {
+            this.isModified = false;
+          }
         }
         this.updateDuration();
         this.scheduleFetchStatus = this.shiftForm.valid;
