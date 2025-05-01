@@ -366,10 +366,6 @@ export class ShifCalendarComponent implements OnInit {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
       );
-    } else if(this.authenticatedUser?.admin && !this.isEdit) {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-      );
     } else if(!this.isEdit) {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
