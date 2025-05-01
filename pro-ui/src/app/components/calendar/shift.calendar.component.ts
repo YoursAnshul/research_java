@@ -361,7 +361,7 @@ export class ShifCalendarComponent implements OnInit {
     if (this.homeSelectedProject && !this.authenticatedUser?.interviewer && this.profileType != 'user-profile' ) {
       this.selectedProject = this.homeSelectedProject;
     }
-    if (this.changeDate) {
+    if (this.changeDate && !this.isEdit) {
       this.selectedDate.setValue(this.changeDate);
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)

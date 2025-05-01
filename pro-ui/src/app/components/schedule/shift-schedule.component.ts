@@ -730,7 +730,9 @@ export class ShiftScheduleComponent implements OnInit {
       // const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
       //   panelClass: 'custom-dialog-container',
       // });
-      this.saveSchedule();
+      if(!this.isEdit){
+        this.saveSchedule();
+      }
     }
     console.log('this.shiftSchedule---------', this.shiftSchedule);
     console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
@@ -1005,9 +1007,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.markAsPristine();
       this.shiftForm.get('endTime')?.markAsPristine();
       this.shiftForm.get('comments')?.markAsPristine();
-      
     }
-
   }
 
   getBlockOutDates(): void {
@@ -1345,13 +1345,13 @@ export class ShiftScheduleComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
-          this.isEdit = false;
           this.scheduleFetchStatus = false;
+          this.onSubmit();
+          this.isEdit = false;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
           localStorage.removeItem('shiftSchedule');
-          this.onSubmit();
         },
         error: (error) => {
           console.error('Error saving shifts:', error);
