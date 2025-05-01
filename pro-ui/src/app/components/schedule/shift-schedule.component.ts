@@ -756,8 +756,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
       // const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
-      //   panelClass: 'custom-dialog-container',
-      // });
+      //   panelClass: 'custom-dialog-container',      // });
       if(!this.isEdit){
         this.saveSchedule();
       }
@@ -773,12 +772,16 @@ export class ShiftScheduleComponent implements OnInit {
         return;
     }
     let requestCodeIdValue = 0;
+    let requestTypeValue = ""
     if(this.selectedProject.projectName == 'Sick'){
       requestCodeIdValue = 3;
+      requestTypeValue = "Unexcused Absence-Sick";
     } else if(this.selectedProject.projectName == 'Absent'){
       requestCodeIdValue = 4;
+      requestTypeValue = "Unexcused Absence-Other";
     } else if(this.selectedProject.projectName == 'Arriving Late'){
       requestCodeIdValue = 7;
+      requestTypeValue = "Tardy-Arriving Late";
     } 
     this.newRequest = {
       invalidFields: [],
@@ -788,12 +791,17 @@ export class ShiftScheduleComponent implements OnInit {
       resourceTeamMemberId: this.authenticatedUser.netID,
       resourceTeamMemberName: this.authenticatedUser.displayName,
       requestId: 0,
-      requestDate: new Date(),
+      requestDate: this.shiftForm?.value?.dayWiseDate,
       requestDetails: '',
       notes: '',
       modBy: this.authenticatedUser.netID,
       entryBy: this.authenticatedUser.netID,
-      changed: false
+      changed: false,
+      entryDt: new Date(),
+      decision:'Schedule updated',
+      requestType : requestTypeValue,
+      invalid: false,
+      modDt: new Date()
     };
       this.requestsService.saveRequests([this.newRequest]).subscribe(
         response => {
