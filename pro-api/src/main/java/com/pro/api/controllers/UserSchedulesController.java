@@ -745,4 +745,10 @@ public class UserSchedulesController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@GetMapping("/option-value")
+	public ResponseEntity<GeneralResponse> getOptionValue() {
+		GeneralResponse response = scheduleService.getOptionValue();
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
 }

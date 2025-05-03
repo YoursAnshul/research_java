@@ -23,6 +23,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.pro.api.controllers.GeneralResponse;
+import com.pro.api.models.dataaccess.AdminOption;
+import com.pro.api.models.dataaccess.repos.AdminOptionRepository;
 import com.pro.api.response.Projects;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
@@ -34,9 +36,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Value("${isLocal}")
 	private Boolean isLocal;
+
+	@Autowired
+	private AdminOptionRepository adminOptionRepository;
 
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
 		GeneralResponse response = new GeneralResponse();
@@ -81,12 +86,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 				ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
 				ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
-				if(isLocal) {
-					 utcStart = zonedStart.withZoneSameInstant(utcZone);
-					 utcEnd = zonedEnd.withZoneSameInstant(utcZone);	
-				}else {
-					 utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
-					 utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
+				if (isLocal) {
+					utcStart = zonedStart.withZoneSameInstant(utcZone);
+					utcEnd = zonedEnd.withZoneSameInstant(utcZone);
+				} else {
+					utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
+					utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
 				}
 
 				LocalDateTime startDateTimeUtc = utcStart.toLocalDateTime();
@@ -227,10 +232,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 			ZonedDateTime utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
 			ZonedDateTime utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
-			if(isLocal) {
+			if (isLocal) {
 				utcStart = zonedStart.withZoneSameInstant(utcZone);
-				utcEnd = zonedEnd.withZoneSameInstant(utcZone);	
-			}else {
+				utcEnd = zonedEnd.withZoneSameInstant(utcZone);
+			} else {
 				utcStart = zonedStart.withZoneSameInstant(utcZone).plusHours(4);
 				utcEnd = zonedEnd.withZoneSameInstant(utcZone).plusHours(4);
 			}
@@ -296,6 +301,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		return response;
+	}
+
+	@Override
+	public GeneralResponse getOptionValue() {
+		AdminOption obj = adminOptionRepository.findByAdminOptionsId(9);
+		GeneralResponse res = new GeneralResponse();
+		res.Subject = obj;
+		return res;
 	}
 
 }
