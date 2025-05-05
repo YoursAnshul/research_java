@@ -82,6 +82,7 @@
           appearance="outline"
           class="custom-form-field ml-2"
           style="width: 170px"
+          [ngClass]="{ 'mat-form-field-invalid': isDateBlockDate }"
         >
           <mat-label>{{ currentDay }}</mat-label>
           <input

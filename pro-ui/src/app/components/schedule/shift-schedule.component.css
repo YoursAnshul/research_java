@@ -68,3 +68,15 @@
 .disabled-field .mat-form-field-outline {
   border-color: #58595B !important;
 }
+::ng-deep .mat-form-field-invalid .mdc-notched-outline__leading,
+::ng-deep .mat-form-field-invalid .mdc-notched-outline__notch,
+::ng-deep .mat-form-field-invalid .mdc-notched-outline__trailing {
+  border-color: #f44336 !important; /* red */
+}
+
+::ng-deep .mat-form-field-invalid .mdc-floating-label,
+::ng-deep .mat-form-field-invalid .mdc-floating-label--float-above {
+  color: #f44336 !important;
+}
+
+

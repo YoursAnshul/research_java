@@ -166,6 +166,9 @@ export class ShiftScheduleComponent implements OnInit {
     entryBy: '',
   };
   dateOptionValue: number = 0;
+  isDateBlockDate: boolean = false;
+  private skipValidation = false;
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -380,13 +383,14 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (date) {
-        if (this.authenticatedUser?.interviewer) {
-          this.validateBlockOutDate(date);
-          this.validateDateOption(date);
-        }
-        this.updateDayLabel(date);
+      if (this.skipValidation || !date) return;
+      this.skipValidation = true;
+      if (this.authenticatedUser?.interviewer) {
+        this.validateBlockOutDate(date);
+        this.validateDateOption(date);
       }
+      this.updateDayLabel(date);
+      setTimeout(() => (this.skipValidation = false));
     });
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
@@ -548,31 +552,43 @@ export class ShiftScheduleComponent implements OnInit {
   }
   validateDateOption(selectedDate: any): void {
     const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+  
     const year = today.getFullYear();
     const month = today.getMonth();
+  
     const resultDate = new Date(year, month, this.dateOptionValue);
+    resultDate.setHours(0, 0, 0, 0);
+  
+    selectedDate.setHours(0, 0, 0, 0);
+  
+    this.isDateBlockDate = false;
+  
     if (resultDate >= today) {
-      let monthVal = selectedDate.getMonth();
-      let resultMonth = resultDate.getMonth();
-      if (resultMonth > monthVal) {
-        this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-        this.shiftForm.get('startTime')?.disable();
-        this.shiftForm.get('endTime')?.disable();
-        this.openMonthlyBlockDialog();
-        return;
-      }
-    } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
       if (resultMonth >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
+        this.isDateBlockDate = true;
+        this.openMonthlyBlockDialog();
+        return;
+      }
+    } else {
+      let monthVal = selectedDate.getMonth();
+      let resultMonth = resultDate.getMonth() + 1;
+      if (resultMonth >= monthVal) {
+        this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+        this.shiftForm.get('startTime')?.disable();
+        this.shiftForm.get('endTime')?.disable();
+        this.isDateBlockDate = true;
         this.openMonthlyBlockDialog();
         return;
       }
     }
   }
+  
   validateBlockOutDate(selectedDate: Date): void {
     console.log('Block Out Dates--->', this.blockOutDates);
 
