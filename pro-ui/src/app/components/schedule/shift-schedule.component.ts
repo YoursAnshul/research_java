@@ -291,6 +291,7 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     if(this.authenticatedUser.interviewer){
       this.getOptionValue();
+      this.getBlockOutDates();
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -303,7 +304,6 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
 
-    this.getBlockOutDates();
     this.shiftForm = new FormGroup({
       user: new FormControl(null, Validators.required),
       projects: new FormControl([], Validators.required),
@@ -589,7 +589,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   
-  validateBlockOutDate(selectedDate: Date): void {
+  validateBlockOutDate(selectedDate: any): void {
     console.log('Block Out Dates--->', this.blockOutDates);
 
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
@@ -631,6 +631,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.disable();
       this.shiftForm.get('endTime')?.disable();
       this.blockedTimeSlots = [];
+      this.isBlockDate = true;
       this.openBlockDialog(false); // date-only block
       return;
     }
@@ -1215,6 +1216,7 @@ export class ShiftScheduleComponent implements OnInit {
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.blockOutDates = <IBlockOutDate[]>response.Subject;
+          this.validateBlockOutDate(this.selectedDate.value);
         }
       },
       (error) => {
