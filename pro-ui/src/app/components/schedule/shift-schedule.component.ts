@@ -289,7 +289,7 @@ export class ShiftScheduleComponent implements OnInit {
   //     }, 100);
   // }
   ngOnInit(): void {
-    if(this.authenticatedUser.interviewer){
+    if (this.authenticatedUser.interviewer) {
       this.getOptionValue();
       this.getBlockOutDates();
     }
@@ -552,18 +552,18 @@ export class ShiftScheduleComponent implements OnInit {
   }
   validateDateOption(selectedDate: any): void {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-  
+    today.setHours(0, 0, 0, 0);
+
     const year = today.getFullYear();
     const month = today.getMonth();
-  
+
     const resultDate = new Date(year, month, this.dateOptionValue);
     resultDate.setHours(0, 0, 0, 0);
-  
+
     selectedDate.setHours(0, 0, 0, 0);
-  
+
     this.isDateBlockDate = false;
-  
+
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
@@ -588,7 +588,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     }
   }
-  
+
   validateBlockOutDate(selectedDate: any): void {
     console.log('Block Out Dates--->', this.blockOutDates);
 
@@ -636,12 +636,17 @@ export class ShiftScheduleComponent implements OnInit {
       return;
     }
 
-    // If there are blocked time ranges
     this.blockedTimeSlots = [];
     blockedEntries.forEach((blockOut) => {
+      console.log('blockOut---->', blockOut.startTime);
+      console.log('blockOut---->', blockOut.endTime);
+
       if (blockOut.startTime && blockOut.endTime) {
+        const normalizedStart = this.removeLeadingZero(blockOut.startTime);
+        const normalizedEnd = this.removeLeadingZero(blockOut.endTime);
+
         this.blockedTimeSlots.push(
-          ...this.generateBlockedTimeSlots(blockOut.startTime, blockOut.endTime)
+          ...this.generateBlockedTimeSlots(normalizedStart, normalizedEnd)
         );
       }
     });
@@ -655,6 +660,9 @@ export class ShiftScheduleComponent implements OnInit {
     // Enable fields (specific blocked times will be handled separately)
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
+  }
+  removeLeadingZero(time: string): string {
+    return time.replace(/^0(\d)/, '$1');
   }
 
   generateBlockedTimeSlots(startTime: string, endTime: string): string[] {
@@ -851,7 +859,8 @@ export class ShiftScheduleComponent implements OnInit {
       !(
         this.selectedProject.projectName == 'Sick' ||
         this.selectedProject.projectName == 'Absent' ||
-        this.selectedProject.projectName == 'Arriving Late'|| this.selectedProject.projectName == 'Leaving Early'
+        this.selectedProject.projectName == 'Arriving Late' ||
+        this.selectedProject.projectName == 'Leaving Early'
       )
     ) {
       return;
@@ -867,15 +876,15 @@ export class ShiftScheduleComponent implements OnInit {
     } else if (this.selectedProject.projectName == 'Arriving Late') {
       requestCodeIdValue = 7;
       requestTypeValue = 'Tardy-Arriving Late';
-    } else if(this.selectedProject.projectName == 'Leaving Early'){
+    } else if (this.selectedProject.projectName == 'Leaving Early') {
       requestCodeIdValue = 8;
       requestTypeValue = 'Tardy-Leaving Early';
     }
 
     const selectedDate: Date = this.shiftForm.value.dayWiseDate;
-    const formattedDate = this.formatDateForRequest(selectedDate); 
+    const formattedDate = this.formatDateForRequest(selectedDate);
     const requestDetailsValue = `${this.selectedProject.projectName}: ${formattedDate}: ${this.shiftForm.value.startTime}-${this.shiftForm.value.endTime}`;
-        this.newRequest = {
+    this.newRequest = {
       invalidFields: [],
       decisionId: 1,
       requestCodeId: requestCodeIdValue,
@@ -921,16 +930,14 @@ export class ShiftScheduleComponent implements OnInit {
     const options: Intl.DateTimeFormatOptions = {
       month: 'short',
       day: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     };
     const localeDate = date.toLocaleDateString('en-US', options);
     const [month, dayWithComma, year] = localeDate.split(' ');
-  
+
     const day = dayWithComma.replace(',', '');
     return `${month}-${day}, ${year}`;
   }
-  
-  
 
   combineDateAndTime(date: string, time: string): Date {
     const [timePart, period] = time.split(' ');
