@@ -296,14 +296,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
     }
-    if(this.selectedUser){
-      this.userService.getUserByNetId(this.selectedUser.dempoId).subscribe(response => {
-        this.canEdit = response?.Subject?.canedit; 
-      });
-      if(!this.canEdit){
-        this.getOptionValue();
-      }
-    }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
@@ -398,9 +390,9 @@ export class ShiftScheduleComponent implements OnInit {
       this.skipValidation = true;
       if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-      }
-      if(this.selectedUser &&  !this.canEdit){
-        this.validateDateOption(date);
+          if(!this.canEdit){
+            this.validateDateOption(date);
+          }
       }
       this.updateDayLabel(date);
       setTimeout(() => (this.skipValidation = false));
@@ -1269,6 +1261,12 @@ export class ShiftScheduleComponent implements OnInit {
         );
         if (this.selectedUser) {
           this.getProjectInfo(this.selectedUser.dempoId);
+          this.userService.getUserByNetId(this.selectedUser.dempoId).subscribe(response => {
+            this.canEdit = response?.Subject?.canedit; 
+            if(!this.canEdit) {
+              this.getOptionValue();
+            }
+          });
         } else {
           this.getProjectInfo('');
         }
@@ -1355,12 +1353,6 @@ export class ShiftScheduleComponent implements OnInit {
     const selectedUser = event.value;
     if (this.selectedUser) {
       this.getProjectInfo(event.value.dempoId);
-      this.userService.getUserByNetId(this.selectedUser.dempoId).subscribe(response => {
-        this.canEdit = response?.Subject?.canedit; 
-        if(!this.canEdit) {
-          this.getOptionValue();
-        }
-      });
     }
   }
   // getScheduleList(): void {
