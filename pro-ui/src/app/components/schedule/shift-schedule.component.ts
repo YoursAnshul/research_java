@@ -31,7 +31,7 @@ import {
 } from '@angular/material/snack-bar';
 import { ScheduleService } from './schedule.service';
 import { Utils } from '../../classes/utils';
-import { forkJoin } from 'rxjs';
+import { filter, forkJoin, pairwise, startWith } from 'rxjs';
 import { ConfirmationShiftDialogComponent } from '../delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
 import { RequestsService } from '../../services/requests/requests.service';
 import { MonthlyBlockDate } from '../calendar/calendar-controls/monthly.block.out.dialog.component';
@@ -169,7 +169,9 @@ export class ShiftScheduleComponent implements OnInit {
   dateOptionValue: number = 0;
   isDateBlockDate: boolean = false;
   private skipValidation = false;
-  canEdit:boolean = false;
+  canEdit: boolean = false;
+  isEditAble = false;
+  previousValue: any;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -185,8 +187,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
-        console.log(" this.authenticatedUser---->", this.authenticatedUser);
-        
+        console.log(' this.authenticatedUser---->', this.authenticatedUser);
       }
     );
   }
@@ -368,7 +369,20 @@ export class ShiftScheduleComponent implements OnInit {
         console.error('Error loading authors/projects:', error);
       },
     });
+    this.previousValue = { ...this.shiftForm.value }; // shallow clone
 
+    this.shiftForm.valueChanges.subscribe((currentValue) => {
+      const prevValueStr = JSON.stringify(this.previousValue);
+      const currentValueStr = JSON.stringify(currentValue);
+    
+      if (currentValueStr !== prevValueStr) {
+        this.isEditAble = true;
+      } else {
+        this.isEditAble = false;
+      }
+    
+      this.previousValue = { ...currentValue }; // clone to avoid reference issue
+    });
     this.shiftForm.valueChanges.subscribe(() => {
       if (this.authenticatedUser?.admin) {
         if (!this.isUpdateData) {
@@ -380,19 +394,19 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
       // this.clearValidation();
-      this.shiftForm.markAsPristine();
-      this.shiftForm.markAsUntouched();
-      this.shiftForm.updateValueAndValidity({ emitEvent: false });
+      // this.shiftForm.markAsPristine();
+      // this.shiftForm.markAsUntouched();
+      // this.shiftForm.updateValueAndValidity({ emitEvent: false });
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
       if (this.skipValidation || !date) return;
       this.skipValidation = true;
       if (this.authenticatedUser?.interviewer) {
-          this.validateBlockOutDate(date);
-          if(!this.canEdit){
-            this.validateDateOption(date);
-          }
+        this.validateBlockOutDate(date);
+        if (!this.canEdit) {
+          this.validateDateOption(date);
+        }
       }
       this.updateDayLabel(date);
       setTimeout(() => (this.skipValidation = false));
@@ -1261,12 +1275,14 @@ export class ShiftScheduleComponent implements OnInit {
         );
         if (this.selectedUser) {
           this.getProjectInfo(this.selectedUser.dempoId);
-          this.userService.getUserByNetId(this.selectedUser.dempoId).subscribe(response => {
-            this.canEdit = response?.Subject?.canedit; 
-            if(!this.canEdit) {
-              this.getOptionValue();
-            }
-          });
+          this.userService
+            .getUserByNetId(this.selectedUser.dempoId)
+            .subscribe((response) => {
+              this.canEdit = response?.Subject?.canedit;
+              if (!this.canEdit) {
+                this.getOptionValue();
+              }
+            });
         } else {
           this.getProjectInfo('');
         }

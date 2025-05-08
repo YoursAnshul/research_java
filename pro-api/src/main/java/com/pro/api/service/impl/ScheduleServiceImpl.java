@@ -122,7 +122,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		if (successCount > 0 && duplicateCount == 0) {
-			response.Message = "Schedules saved successfully!";
+			response.Message = "Schedule saved successfully!";
 		} else if (duplicateCount > 0) {
 			response.Message = "Schedule already exists for this user!";
 		} else {
@@ -294,7 +294,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			if (rowsDeleted == 0) {
 				response.Message = "No matching schedule found to delete.";
 			} else {
-				response.Message = "Schedule deleted successfully.";
+				response.Message = "Schedule deleted successfully!";
 			}
 		} catch (Exception e) {
 			response.Message = "Error deleting schedule: " + e.getMessage();

@@ -196,7 +196,7 @@
             margin-left: 10px;
           "
         >
-          <div (click)="editSchedule()" style="margin-right: 10px">
+          <div (click)="editSchedule()" style="margin-right: 10px" [ngClass]="{ 'disabled': !isEditAble }">
             <svg
               width="24"
               height="25"
