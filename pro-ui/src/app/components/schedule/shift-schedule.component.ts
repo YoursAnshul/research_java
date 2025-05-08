@@ -35,6 +35,7 @@ import { forkJoin } from 'rxjs';
 import { ConfirmationShiftDialogComponent } from '../delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
 import { RequestsService } from '../../services/requests/requests.service';
 import { MonthlyBlockDate } from '../calendar/calendar-controls/monthly.block.out.dialog.component';
+import { UsersService } from '../../services/users/users.service';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -168,7 +169,7 @@ export class ShiftScheduleComponent implements OnInit {
   dateOptionValue: number = 0;
   isDateBlockDate: boolean = false;
   private skipValidation = false;
-
+  canEdit:boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -178,11 +179,14 @@ export class ShiftScheduleComponent implements OnInit {
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
     private scheduleService: ScheduleService,
-    private requestsService: RequestsService
+    private requestsService: RequestsService,
+    private userService: UsersService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
+        console.log(" this.authenticatedUser---->", this.authenticatedUser);
+        
       }
     );
   }
@@ -290,8 +294,15 @@ export class ShiftScheduleComponent implements OnInit {
   // }
   ngOnInit(): void {
     if (this.authenticatedUser.interviewer) {
-      this.getOptionValue();
       this.getBlockOutDates();
+    }
+    if(this.selectedUser){
+      this.userService.getUserByNetId(this.selectedUser.dempoId).subscribe(response => {
+        this.canEdit = response?.Subject?.canedit; 
+      });
+      if(!this.canEdit){
+        this.getOptionValue();
+      }
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -386,7 +397,9 @@ export class ShiftScheduleComponent implements OnInit {
       if (this.skipValidation || !date) return;
       this.skipValidation = true;
       if (this.authenticatedUser?.interviewer) {
-        this.validateBlockOutDate(date);
+          this.validateBlockOutDate(date);
+      }
+      if(this.selectedUser &&  !this.canEdit){
         this.validateDateOption(date);
       }
       this.updateDayLabel(date);
@@ -1342,6 +1355,12 @@ export class ShiftScheduleComponent implements OnInit {
     const selectedUser = event.value;
     if (this.selectedUser) {
       this.getProjectInfo(event.value.dempoId);
+      this.userService.getUserByNetId(this.selectedUser.dempoId).subscribe(response => {
+        this.canEdit = response?.Subject?.canedit; 
+        if(!this.canEdit) {
+          this.getOptionValue();
+        }
+      });
     }
   }
   // getScheduleList(): void {
