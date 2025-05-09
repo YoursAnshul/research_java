@@ -48,7 +48,7 @@ export class ShiftDayViewComponent implements OnInit {
   @Output() sendDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<any>();
   @Input() isLoading!: boolean;
-  isHomeRedirect:boolean = false;
+  isHomeRedirect: boolean = false;
   profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
 
@@ -73,77 +73,84 @@ export class ShiftDayViewComponent implements OnInit {
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
-  
+
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;
-  
+
     const selectedUserId = this.selectedUser?.userId || 0;
     const selectedProjectId = this.selectedProject?.projectId || 0;
-  
-    this.filteredShiftSchedule = this.shiftSchedule?.map((schedule) => {
-      const scheduleDateUTC = new Date(schedule?.dayWiseDate);
-  
-      const scheduleDateET = new Date(
-        scheduleDateUTC.toLocaleString('en-US', {
-          timeZone: 'America/New_York',
-        })
-      );
-  
-      const formattedScheduleDate = scheduleDateET.toISOString().split('T')[0];
-  
-      const selectedDateET = selectedDateValue
-        ? new Date(
-            selectedDateValue.toLocaleString('en-US', {
-              timeZone: 'America/New_York',
-            })
-          )
-            .toISOString()
-            .split('T')[0]
-        : null;
-  
-      const isDateMatch = selectedDateET
-        ? formattedScheduleDate === selectedDateET
-        : true;
-      const isUserMatch = selectedUserId
-        ? schedule.user.userId === selectedUserId
-        : true;
-      const isProjectMatch = selectedProjectId
-        ? schedule.projects.projectId === selectedProjectId
-        : true;
-  
-      schedule.duration = parseFloat(schedule.duration) || 0;
-  
-      if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
-        const utcStart = new Date(
-          `${schedule.dayWiseDate} ${schedule.startTime} UTC`
+
+    this.filteredShiftSchedule = this.shiftSchedule
+      ?.map((schedule) => {
+        const scheduleDateUTC = new Date(schedule?.dayWiseDate);
+
+        const scheduleDateET = new Date(
+          scheduleDateUTC.toLocaleString('en-US', {
+            timeZone: 'America/New_York',
+          })
         );
-        const utcEnd = new Date(
-          `${schedule.dayWiseDate} ${schedule.endTime} UTC`
-        );
-  
-        const startET = new Date(
-          utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
-        );
-        const endET = new Date(
-          utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
-        );
-  
-        const timeOptions: Intl.DateTimeFormatOptions = {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true,
-          timeZone: 'America/New_York',
-        };
-  
-        schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
-        schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
-      }
-  
-      return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
-    }).filter(s => s);
-  
-    console.log("this.filteredShiftSchedule0000000000000", this.filteredShiftSchedule);
+
+        const formattedScheduleDate = scheduleDateET
+          .toISOString()
+          .split('T')[0];
+
+        const selectedDateET = selectedDateValue
+          ? new Date(
+              selectedDateValue.toLocaleString('en-US', {
+                timeZone: 'America/New_York',
+              })
+            )
+              .toISOString()
+              .split('T')[0]
+          : null;
+
+        const isDateMatch = selectedDateET
+          ? formattedScheduleDate === selectedDateET
+          : true;
+        const isUserMatch = selectedUserId
+          ? schedule.user.userId === selectedUserId
+          : true;
+        const isProjectMatch = selectedProjectId
+          ? schedule.projects.projectId === selectedProjectId
+          : true;
+
+        schedule.duration = parseFloat(schedule.duration) || 0;
+
+        if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
+          const utcStart = new Date(
+            `${schedule.dayWiseDate} ${schedule.startTime} UTC`
+          );
+          const utcEnd = new Date(
+            `${schedule.dayWiseDate} ${schedule.endTime} UTC`
+          );
+
+          const startET = new Date(
+            utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          );
+          const endET = new Date(
+            utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          );
+
+          const timeOptions: Intl.DateTimeFormatOptions = {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'America/New_York',
+          };
+
+          schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
+          schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
+        }
+
+        return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
+      })
+      .filter((s) => s);
+
+    console.log(
+      'this.filteredShiftSchedule0000000000000',
+      this.filteredShiftSchedule
+    );
   }
 
   customScheduleCard(startTime: string, endTime: string) {
@@ -267,34 +274,31 @@ export class ShiftDayViewComponent implements OnInit {
     // this.resetShiftSchedule.emit();
   }
   openScheduleData(schedule: ISchedule): void {
-  this.scheduleService.getSchedule().subscribe((data) => {
-    if (data) {
-      this.isHomeRedirect = data.isHomeRedirect;
-    }
-  });
-  this.scheduleService.getType().subscribe((type) => {
-    if (type) {
-      this.profileType = type;
-    }
-  });
-  if (!this.isHomeRedirect && this.profileType != 'user-profile') {
-      if (schedule.isEdit) {
-        schedule.isEdit = false;
-        this.previouslyEditedSchedule = null;
-      } else {
-        if (this.previouslyEditedSchedule) {
-          this.previouslyEditedSchedule.isEdit = false;
-        }
-    
-        schedule.isEdit = true;
-        this.previouslyEditedSchedule = schedule;
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        this.isHomeRedirect = data.isHomeRedirect;
       }
-    
-      schedule.tab = 'Day';
-      console.log("schedule--->", schedule);
-      this.scheduleData.emit({ ...schedule });
+    });
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
+
+    if (schedule.isEdit) {
+      schedule.isEdit = false;
+      this.previouslyEditedSchedule = null;
+    } else {
+      if (this.previouslyEditedSchedule) {
+        this.previouslyEditedSchedule.isEdit = false;
+      }
+
+      schedule.isEdit = true;
+      this.previouslyEditedSchedule = schedule;
     }
-  
+
+    schedule.tab = 'Day';
+    console.log('schedule--->', schedule);
+    this.scheduleData.emit({ ...schedule });
   }
-     
 }

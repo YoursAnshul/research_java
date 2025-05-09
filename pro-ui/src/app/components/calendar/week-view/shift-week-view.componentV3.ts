@@ -48,7 +48,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   @Output() scheduleData = new EventEmitter<any>();
   @Input() isLoading!: boolean;
   isHomeRedirect: boolean = false;
-  profileType: string ='';
+  profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
 
   constructor(
@@ -358,19 +358,18 @@ export class ShiftWeekViewComponentV3 implements OnInit {
         this.profileType = type;
       }
     });
-    if (!this.isHomeRedirect && this.profileType != 'user-profile') {
-      if (schedule.isEdit) {
-        schedule.isEdit = false;
-        this.previouslyEditedSchedule = null;
-      } else {
-        if (this.previouslyEditedSchedule) {
-          this.previouslyEditedSchedule.isEdit = false;
-        }
-        schedule.isEdit = true;
-        this.previouslyEditedSchedule = schedule;
+
+    if (schedule.isEdit) {
+      schedule.isEdit = false;
+      this.previouslyEditedSchedule = null;
+    } else {
+      if (this.previouslyEditedSchedule) {
+        this.previouslyEditedSchedule.isEdit = false;
       }
-      schedule.tab = 'Week';
-      this.scheduleData.emit({ ...schedule });
-     }
+      schedule.isEdit = true;
+      this.previouslyEditedSchedule = schedule;
     }
+    schedule.tab = 'Week';
+    this.scheduleData.emit({ ...schedule });
+  }
 }

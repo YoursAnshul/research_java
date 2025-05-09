@@ -48,7 +48,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   @Output() scheduleData = new EventEmitter<any>();
   @Input() isLoading!: boolean;
   isHomeRedirect: boolean = false;
-  profileType: string ='';
+  profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
   constructor(
     private globalsService: GlobalsService,
@@ -350,31 +350,35 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       );
     }
   }
-  private getDayKeyForSchedule(schedule: ISchedule): keyof IWeekSchedules | null {
-  if (!this.weekSchedules) return null;
+  private getDayKeyForSchedule(
+    schedule: ISchedule
+  ): keyof IWeekSchedules | null {
+    if (!this.weekSchedules) return null;
 
-  for (const key of Object.keys(this.weekSchedules) as (keyof IWeekSchedules)[]) {
-    const schedules = this.weekSchedules[key];
-    if (Array.isArray(schedules) && schedules.includes(schedule)) {
-      return key;
+    for (const key of Object.keys(
+      this.weekSchedules
+    ) as (keyof IWeekSchedules)[]) {
+      const schedules = this.weekSchedules[key];
+      if (Array.isArray(schedules) && schedules.includes(schedule)) {
+        return key;
+      }
     }
+
+    return null;
   }
 
-  return null;
-}
+  openScheduleData(schedule: ISchedule): void {
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        this.isHomeRedirect = data.isHomeRedirect;
+      }
+    });
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
 
-openScheduleData(schedule: ISchedule): void {
-  this.scheduleService.getSchedule().subscribe((data) => {
-    if (data) {
-      this.isHomeRedirect = data.isHomeRedirect;
-    }
-  });
-  this.scheduleService.getType().subscribe((type) => {
-    if (type) {
-      this.profileType = type;
-    }
-  });
-  if (!this.isHomeRedirect && this.profileType != 'user-profile') {
     if (schedule.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;
@@ -388,7 +392,4 @@ openScheduleData(schedule: ISchedule): void {
     schedule.tab = 'Week';
     this.scheduleData.emit({ ...schedule });
   }
- 
-}
-  
 }
