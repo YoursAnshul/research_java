@@ -145,7 +145,7 @@
       @for (schedule of weekSchedules?.day1Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
@@ -180,7 +180,7 @@
       @for (schedule of weekSchedules?.day2Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
@@ -215,7 +215,7 @@
       @for (schedule of weekSchedules?.day3Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
@@ -250,7 +250,7 @@
       @for (schedule of weekSchedules?.day4Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
@@ -285,7 +285,7 @@
       @for (schedule of weekSchedules?.day5Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
@@ -320,7 +320,7 @@
       @for (schedule of weekSchedules?.day6Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
@@ -355,7 +355,7 @@
       @for (schedule of weekSchedules?.day7Schedules; track schedule) {
       <div
         class="schedule-card"
-        (click)="openScheduleData(schedule)"
+        (click)="handleClick(schedule)"
         [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"

@@ -50,6 +50,8 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   isHomeRedirect: boolean = false;
   profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
+  clickTimer: any = null;
+  clickDelay = 250; 
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -366,7 +368,17 @@ export class ShiftWeekViewComponentV2 implements OnInit {
 
     return null;
   }
-
+  handleClick(schedule: ISchedule) {
+    if (this.clickTimer) {
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
+      return;
+    }
+    this.clickTimer = setTimeout(() => {
+      this.openScheduleData(schedule);
+      this.clickTimer = null;
+    }, this.clickDelay);
+  }
   openScheduleData(schedule: ISchedule): void {
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {

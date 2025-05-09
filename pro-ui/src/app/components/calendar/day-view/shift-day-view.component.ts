@@ -51,7 +51,9 @@ export class ShiftDayViewComponent implements OnInit {
   isHomeRedirect: boolean = false;
   profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
-
+  clickTimer: any = null;
+  clickDelay = 250;
+  
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -272,6 +274,18 @@ export class ShiftDayViewComponent implements OnInit {
   addShift(): void {
     this.sendDate.emit(this.selectedDate);
     // this.resetShiftSchedule.emit();
+  }
+
+  handleClick(schedule: any, event: MouseEvent) {
+    if (this.clickTimer) {
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
+      return;
+    }
+    this.clickTimer = setTimeout(() => {
+      this.openScheduleData(schedule);
+      this.clickTimer = null;
+    }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
     this.scheduleService.getSchedule().subscribe((data) => {
