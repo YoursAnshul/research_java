@@ -369,19 +369,9 @@ export class ShiftScheduleComponent implements OnInit {
         console.error('Error loading authors/projects:', error);
       },
     });
-    this.previousValue = { ...this.shiftForm.value }; // shallow clone
 
-    this.shiftForm.valueChanges.subscribe((currentValue) => {
-      const prevValueStr = JSON.stringify(this.previousValue);
-      const currentValueStr = JSON.stringify(currentValue);
-    
-      if (currentValueStr !== prevValueStr) {
-        this.isEditAble = true;
-      } else {
-        this.isEditAble = false;
-      }
-    
-      this.previousValue = { ...currentValue }; // clone to avoid reference issue
+    this.shiftForm.valueChanges.subscribe(() => {
+      this.isEditAble = this.shiftForm.dirty;
     });
     this.shiftForm.valueChanges.subscribe(() => {
       if (this.authenticatedUser?.admin) {
@@ -1059,6 +1049,7 @@ export class ShiftScheduleComponent implements OnInit {
           comments: schedule.comments,
           id: schedule.preschedulekey,
         });
+        this.isEditAble = false;
         console.log('this.shiftForm value --->', this.shiftForm.value);
       },
       error: (error) => console.error('Error fetching projects:', error),
@@ -1649,6 +1640,7 @@ export class ShiftScheduleComponent implements OnInit {
         comments: schedule.comments,
         id: schedule.preschedulekey,
       });
+      this.isEditAble = false;
       console.log('this.shiftForm---', this.shiftForm.value);
     }
   }

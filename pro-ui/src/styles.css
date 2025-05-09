@@ -1183,3 +1183,8 @@ html {
   align-items: center;
   height: 100px; /* Adjust height as needed */
 }
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
