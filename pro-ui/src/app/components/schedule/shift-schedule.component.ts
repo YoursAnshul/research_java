@@ -1551,6 +1551,11 @@ export class ShiftScheduleComponent implements OnInit {
   onUserSelectionChange(event: MatSelectChange): void {
     const selectedUser = event.value;
     if (this.selectedUser) {
+      this.userService
+        .getUserByNetId(this.selectedUser.dempoId)
+        .subscribe((response) => {
+          this.schedulinglevel = response?.Subject?.schedulinglevel;
+        });
       this.getProjectInfo(event.value.dempoId);
     }
   }
