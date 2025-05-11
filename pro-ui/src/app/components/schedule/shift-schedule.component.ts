@@ -790,8 +790,7 @@ export class ShiftScheduleComponent implements OnInit {
     return Math.floor(days / 7) % 2 === 0;
   }
   onSubmit(): void {
-    alert(this.schedulinglevel);
-    if (this.schedulinglevel == 1) {
+    if (this.schedulinglevel && this.schedulinglevel == 1) {
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
       const day = selectedDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
