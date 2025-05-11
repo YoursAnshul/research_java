@@ -76,7 +76,7 @@ export class ShiftMonthViewComponent implements OnInit {
     if (schedule) {
       this.resetAllIsEditFlags(schedule);
       schedule.tab = 'Month';''
-      schedule.isEdit = true;
+      // schedule.isEdit = true;
       this.scheduleData.emit(schedule);
     }
   }

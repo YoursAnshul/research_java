@@ -36,6 +36,7 @@ import { ConfirmationShiftDialogComponent } from '../delete-dialog/delete-shift-
 import { RequestsService } from '../../services/requests/requests.service';
 import { MonthlyBlockDate } from '../calendar/calendar-controls/monthly.block.out.dialog.component';
 import { UsersService } from '../../services/users/users.service';
+import { SchedulingLevelDialog } from '../calendar/calendar-controls/scheduling-lever-dialog';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -172,6 +173,7 @@ export class ShiftScheduleComponent implements OnInit {
   canEdit: boolean = false;
   isEditAble = false;
   previousValue: any;
+  schedulinglevel: number = 0;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -296,6 +298,7 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
+      this.getOptionValue();
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -372,6 +375,7 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.valueChanges.subscribe(() => {
       this.isEditAble = this.shiftForm.dirty;
+      this.isModified = this.shiftForm.dirty;
     });
     this.shiftForm.valueChanges.subscribe(() => {
       if (this.authenticatedUser?.admin) {
@@ -398,28 +402,39 @@ export class ShiftScheduleComponent implements OnInit {
           this.validateDateOption(date);
         }
       }
+      if (this.authenticatedUser?.admin) {
+        if (!this.isUpdateData) {
+          this.isModified = true;
+        } else {
+          this.isModified = false;
+        }
+      }
       this.updateDayLabel(date);
       setTimeout(() => (this.skipValidation = false));
     });
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
-      this.profileType = '';
-      if (!this.isUpdateData) {
-        this.isModified = true;
-      } else {
-        this.isModified = false;
+      if (this.authenticatedUser?.admin) {
+        if (!this.isUpdateData) {
+          this.isModified = true;
+        } else {
+          this.isModified = false;
+        }
       }
+      this.profileType = '';
       this.validateTimeRange();
       // this.clearValidation();
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
-      this.profileType = '';
-      if (!this.isUpdateData) {
-        this.isModified = true;
-      } else {
-        this.isModified = false;
+      if (this.authenticatedUser?.admin) {
+        if (!this.isUpdateData) {
+          this.isModified = true;
+        } else {
+          this.isModified = false;
+        }
       }
+      this.profileType = '';
       this.validateTimeRange();
       // this.clearValidation();
     });
@@ -507,7 +522,6 @@ export class ShiftScheduleComponent implements OnInit {
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
       console.log('data====>', data);
-
       if (data) {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
@@ -572,7 +586,6 @@ export class ShiftScheduleComponent implements OnInit {
     selectedDate.setHours(0, 0, 0, 0);
 
     this.isDateBlockDate = false;
-
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
@@ -585,8 +598,8 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     } else {
-      let monthVal = selectedDate.getMonth();
-      let resultMonth = resultDate.getMonth() + 1;
+      let monthVal = selectedDate.getMonth() - 1;
+      let resultMonth = resultDate.getMonth();
       if (resultMonth >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -637,6 +650,7 @@ export class ShiftScheduleComponent implements OnInit {
     );
 
     if (!hasTimeBlock) {
+      this.shiftForm.get('dayWiseDate')?.setErrors({ dateBlocked: true });
       this.shiftForm.get('startTime')?.disable();
       this.shiftForm.get('endTime')?.disable();
       this.blockedTimeSlots = [];
@@ -721,15 +735,24 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
   openMonthlyBlockDialog(): void {
-    const dialogRef = this.dialog.open(MonthlyBlockDate, {
-      panelClass: 'custom-dialog-container',
-    });
+    setTimeout(() => {
+      const existingDialog = this.dialog.openDialogs.find(
+        (dialog) => dialog.componentInstance instanceof MonthlyBlockDate
+      );
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.closeDialog();
+      if (existingDialog) {
+        return;
       }
-    });
+      const dialogRef = this.dialog.open(MonthlyBlockDate, {
+        panelClass: 'custom-dialog-container',
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.closeDialog();
+        }
+      });
+    }, 1000);
   }
 
   closeDialog(): void {
@@ -749,7 +772,181 @@ export class ShiftScheduleComponent implements OnInit {
       this.currentDay = '';
     }
   }
+  private getWeekStart(date: Date): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when Sunday
+    return new Date(d.setDate(diff));
+  }
+
+  private getWeekEnd(date: Date): Date {
+    const start = this.getWeekStart(date);
+    return new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+  }
+
+  private isEvenWeek(date: Date): boolean {
+    const firstJan = new Date(date.getFullYear(), 0, 1);
+    const days = Math.floor((+date - +firstJan) / (24 * 60 * 60 * 1000));
+    return Math.floor(days / 7) % 2 === 0;
+  }
   onSubmit(): void {
+    alert(this.schedulinglevel);
+    if (this.schedulinglevel == 1) {
+      const formData = this.shiftForm.value;
+      const selectedDate = new Date(formData.dayWiseDate);
+      const day = selectedDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
+      const startTime = this.combineDateAndTime(
+        formData.dayWiseDate,
+        formData.startTime
+      );
+      const endTime = this.combineDateAndTime(
+        formData.dayWiseDate,
+        formData.endTime
+      );
+      const durationInHours =
+        (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
+      const isInterviewer = this.authenticatedUser?.interviewer;
+
+      // Basic validations
+      if (durationInHours < 4) {
+        const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+          panelClass: 'custom-dialog-container',
+          data: { message: 'Shift must be at least 4 hours.' },
+        });
+        return;
+      }
+      if (durationInHours > 7) {
+        const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+          panelClass: 'custom-dialog-container',
+          data: { message: 'Shift must be no more than 7 hours.' },
+        });
+        return;
+      }
+
+      // Weekday/weekend start time constraints
+      const startHour = startTime.getHours();
+      if (day >= 1 && day <= 5 && startHour < 13) {
+        const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+          panelClass: 'custom-dialog-container',
+          data: { message: 'Weekday shifts must begin at or after 1 PM.' },
+        });
+        return;
+      }
+      if (day === 6 && startHour < 9) {
+        const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+          panelClass: 'custom-dialog-container',
+          data: { message: 'Saturday shifts must begin at or after 9 AM.' },
+        });
+        return;
+      }
+      if (day === 0 && startHour < 12) {
+        const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+          panelClass: 'custom-dialog-container',
+          data: { message: 'Sunday shifts must begin at or after 12 noon.' },
+        });
+        return;
+      }
+
+      // Saturday/Sunday shift duration
+      if ((day === 0 || day === 6) && durationInHours < 6) {
+        const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+          panelClass: 'custom-dialog-container',
+          data: { message: 'Weekend shifts must be at least 6 hours.' },
+        });
+        return;
+      }
+
+      // Friday night rule
+      if (day === 5 && startHour >= 17) {
+        const currentMonth = selectedDate.getMonth();
+        const fridayNightShifts = this.shiftSchedule.filter(
+          (s) =>
+            new Date(s.dayWiseDate).getDay() === 5 &&
+            this.combineDateAndTime(s.dayWiseDate, s.startTime).getHours() >=
+              17 &&
+            new Date(s.dayWiseDate).getMonth() === currentMonth &&
+            s.user.dempoId === formData.user.dempoId
+        );
+        if (fridayNightShifts.length >= 1) {
+          const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+            panelClass: 'custom-dialog-container',
+            data: {
+              message: 'Only one Friday night shift is allowed per month.',
+            },
+          });
+          return;
+        }
+      }
+
+      if (isInterviewer) {
+        const userId = formData.user.dempoId;
+        const weekStart = this.getWeekStart(selectedDate);
+        const weekEnd = this.getWeekEnd(selectedDate);
+        const weekShifts = this.shiftSchedule.filter((s) => {
+          const shiftDate = new Date(s.dayWiseDate);
+          return (
+            s.user.dempoId === userId &&
+            shiftDate >= weekStart &&
+            shiftDate <= weekEnd
+          );
+        });
+
+        // Total hours this week
+        const totalHours = weekShifts.reduce((sum, shift) => {
+          const st = this.combineDateAndTime(
+            shift.dayWiseDate,
+            shift.startTime
+          );
+          const et = this.combineDateAndTime(shift.dayWiseDate, shift.endTime);
+          return sum + (et.getTime() - st.getTime()) / (1000 * 60 * 60);
+        }, durationInHours); // include current shift
+
+        if (totalHours > 20) {
+          const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+            panelClass: 'custom-dialog-container',
+            data: {
+              message: 'Interviewer weekly schedule must not exceed 20 hours.',
+            },
+          });
+          return;
+        }
+
+        // Every other week rules (night & weekend)
+        const evenWeek = this.isEvenWeek(selectedDate);
+        const hasNightShift = weekShifts.some(
+          (shift) =>
+            this.combineDateAndTime(
+              shift.dayWiseDate,
+              shift.endTime
+            ).getHours() >= 21
+        );
+        const hasWeekendShift = weekShifts.some((shift) =>
+          [0, 6].includes(new Date(shift.dayWiseDate).getDay())
+        );
+
+        if (evenWeek && !hasNightShift && endTime.getHours() < 21) {
+          const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+            panelClass: 'custom-dialog-container',
+            data: {
+              message:
+                'You must include one night shift until or after 9 PM every other week.',
+            },
+          });
+
+          return;
+        }
+
+        if (evenWeek && !hasWeekendShift && ![0, 6].includes(day)) {
+          const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+            panelClass: 'custom-dialog-container',
+            data: {
+              message: 'You must include one weekend shift every other week.',
+            },
+          });
+          return;
+        }
+      }
+    }
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
@@ -851,8 +1048,6 @@ export class ShiftScheduleComponent implements OnInit {
       this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
-      // const dialogRef = this.dialog.open(CalendarSaveDialogComponent, {
-      //   panelClass: 'custom-dialog-container',      // });
       if (!this.isEdit) {
         this.saveSchedule();
       }
@@ -860,8 +1055,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.saveNewRequest();
       }
     }
-    console.log('this.shiftSchedule---------', this.shiftSchedule);
-    console.log('this.shiftSchedule1 --->', this.shiftSchedule1);
   }
   saveNewRequest(): void {
     if (
@@ -967,7 +1160,6 @@ export class ShiftScheduleComponent implements OnInit {
       dempoId = this.selectedUser.dempoId;
     }
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
-
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjects = Array.isArray(data) ? data : [];
@@ -1270,6 +1462,7 @@ export class ShiftScheduleComponent implements OnInit {
             .getUserByNetId(this.selectedUser.dempoId)
             .subscribe((response) => {
               this.canEdit = response?.Subject?.canedit;
+              this.schedulinglevel = response?.Subject?.schedulinglevel;
               if (!this.canEdit) {
                 this.getOptionValue();
               }

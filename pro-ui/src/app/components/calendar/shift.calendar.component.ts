@@ -127,7 +127,7 @@ export class ShifCalendarComponent implements OnInit {
   @Input() isClose: boolean = false;
   isTabChange: boolean = false;
   isHomeRedirect: boolean = false;
-  profileType : string = '';
+  profileType: string = '';
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -259,8 +259,8 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
   onReset(): void {
-    this.shiftSchedule=[]
-    this.shiftSchedule1=[]
+    this.shiftSchedule = [];
+    this.shiftSchedule1 = [];
     this.selectedDate.setValue(new Date());
     this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
       this.selectedDate = new FormControl(selectedDate.toISOString());
@@ -295,20 +295,19 @@ export class ShifCalendarComponent implements OnInit {
         this.profileType = type;
       }
     });
-    if(this.isHomeRedirect || this.profileType == 'user-profile'){
+    if (this.isHomeRedirect || this.profileType == 'user-profile') {
       this.defaultUser = { userId: 0, userName: 'Any Users' };
       this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
     }
-   
+
     this.selectedUser = this.defaultUser;
     this.selectedProject = this.defaultProject;
-   
+
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
     this.getAuthor(0);
     this.getProjectInfo('');
- 
   }
 
   getLoginUser(email: string): void {
@@ -352,13 +351,17 @@ export class ShifCalendarComponent implements OnInit {
     if (this.homeSelectedDate) {
       this.selectedDate.setValue(this.homeSelectedDate);
     }
-    if (this.homeUser && !this.authenticatedUser?.interviewer ) {
+    if (this.homeUser && !this.authenticatedUser?.interviewer) {
       this.selectedUser = this.homeUser;
       this.defaultUser = this.homeUser;
       this.getAuthorNew(0);
       this.getProjectInfo(this.selectedUser?.dempoId);
     }
-    if (this.homeSelectedProject && !this.authenticatedUser?.interviewer && this.profileType != 'user-profile' ) {
+    if (
+      this.homeSelectedProject &&
+      !this.authenticatedUser?.interviewer &&
+      this.profileType != 'user-profile'
+    ) {
       this.selectedProject = this.homeSelectedProject;
     }
     if (this.changeDate && !this.isEdit) {
@@ -366,9 +369,14 @@ export class ShifCalendarComponent implements OnInit {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
       );
-    } else if(!this.isEdit) {
+    } else if (!this.isEdit) {
       this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+        Utils.formatDateOnlyToStringUTC(
+          this.selectedDate.value,
+          true,
+          true,
+          true
+        )
       );
     }
     this.checkContext();
@@ -388,9 +396,9 @@ export class ShifCalendarComponent implements OnInit {
   }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
     if (this.shiftSchedule?.length) {
-      this.shiftSchedule = this.shiftSchedule.map(item => ({
+      this.shiftSchedule = this.shiftSchedule.map((item) => ({
         ...item,
-        isEdit: false
+        isEdit: false,
       }));
     }
     this.isEdit = false;
@@ -482,8 +490,8 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   public getAllUserSchedulesByAnchorDateNew(): void {
-    this.shiftSchedule=[]
-    this.shiftSchedule1=[]
+    this.shiftSchedule = [];
+    this.shiftSchedule1 = [];
     //----------------------------------------------------
     // get the first and last days of the selected week
     //----------------------------------------------------
@@ -1001,7 +1009,7 @@ export class ShifCalendarComponent implements OnInit {
   }
   getAuthor(projectId: number): void {
     const prevUserId = this.selectedUser?.userId; // store the previous userId
-  
+
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
@@ -1009,11 +1017,13 @@ export class ShifCalendarComponent implements OnInit {
           this.defaultUser,
           ...(Array.isArray(data) ? data : []),
         ];
-  
+
         this.userList = newUserList;
-  
-        const matchedUser = newUserList.find(user => user.userId === prevUserId);
-  
+
+        const matchedUser = newUserList.find(
+          (user) => user.userId === prevUserId
+        );
+
         this.selectedUser = matchedUser || this.defaultUser;
       },
       error: (error) => console.error('Error fetching authors:', error),
@@ -1022,7 +1032,7 @@ export class ShifCalendarComponent implements OnInit {
 
   getAuthorNew(projectId: number): void {
     const prevUserId = this.selectedUser?.userId; // store the previous userId
-  
+
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
@@ -1030,21 +1040,23 @@ export class ShifCalendarComponent implements OnInit {
           this.defaultUser,
           ...(Array.isArray(data) ? data : []),
         ];
-  
+
         this.userList = newUserList;
-  
-        const matchedUser = newUserList.find(user => user.userId === prevUserId);
-  
+
+        const matchedUser = newUserList.find(
+          (user) => user.userId === prevUserId
+        );
+
         this.selectedUser = matchedUser || this.defaultUser;
         let foundOnce = false;
-        this.userList = [this.defaultUser1,...this.userList];
+        this.userList = [this.defaultUser1, ...this.userList];
         for (let i = 0; i < this.userList.length; i++) {
           if (this.userList[i].userId === this.selectedUser.userId) {
             if (foundOnce) {
-              this.userList.splice(i, 1); 
+              this.userList.splice(i, 1);
               break;
             } else {
-              foundOnce = true; 
+              foundOnce = true;
             }
           }
         }
@@ -1052,7 +1064,6 @@ export class ShifCalendarComponent implements OnInit {
       error: (error) => console.error('Error fetching authors:', error),
     });
   }
-  
 
   getAuthor1(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
@@ -1099,7 +1110,7 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   onUserChange(user: any) {
-    this.selectedUser=''
+    this.selectedUser = '';
     this.selectedUser = user;
     this.getProjectInfo(user?.dempoId);
     this.getScheduleList(
@@ -1109,9 +1120,9 @@ export class ShifCalendarComponent implements OnInit {
   }
   onProjectChange(project: any) {
     console.log('project--->', project);
-    this.selectedProject=''
+    this.selectedProject = '';
     this.selectedProject = project;
-    this.getAuthor(project.projectId)
+    this.getAuthor(project.projectId);
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );

@@ -172,7 +172,7 @@
         </mat-form-field>
 
         <!-- Add to Calendar Button -->
-        <div class="ml-1 mr-1" *ngIf="!isEdit || shiftForm.invalid">
+        <div class="ml-1 mr-1" *ngIf="!isEdit">
           <button
             mat-raised-button
             color="primary"
@@ -180,7 +180,7 @@
               !scheduleFetchStatus ||
               shiftForm.invalid ||
               !shiftForm.get('startTime')?.value ||
-              !shiftForm.get('endTime')?.value
+              !shiftForm.get('endTime')?.value 
             "
           >
             <mat-icon>add</mat-icon> Add to Calendar
@@ -188,7 +188,7 @@
         </div>
         <div
           class="icon-container"
-          *ngIf="isEdit && !shiftForm.invalid"
+          *ngIf="isEdit"
           style="
             cursor: pointer;
             display: flex;
@@ -196,7 +196,7 @@
             margin-left: 10px;
           "
         >
-          <div (click)="editSchedule()" style="margin-right: 10px" [ngClass]="{ 'disabled': !isEditAble }">
+          <div (click)="editSchedule()" style="margin-right: 10px" [ngClass]="{ 'disabled': !isEditAble ||  shiftForm.invalid }">
             <svg
               width="24"
               height="25"
