@@ -223,7 +223,7 @@
               </g>
             </svg>
           </div>
-          <div (click)="confirmationPopup()">
+          <div (click)="confirmationPopup()" [ngClass]="{ 'disabled': isEditAble }">
             <svg
               width="24"
               height="25"
