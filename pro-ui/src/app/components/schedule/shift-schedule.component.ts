@@ -513,11 +513,11 @@ export class ShiftScheduleComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-    this.scheduleService.getTab().subscribe((tab) => {
-      if (tab) {
-        this.tab = tab;
-      }
-    });
+    // this.scheduleService.getTab().subscribe((tab) => {
+    //   if (tab) {
+    //     this.tab = tab;
+    //   }
+    // });
   }
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
@@ -526,8 +526,8 @@ export class ShiftScheduleComponent implements OnInit {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
 
-        if (this.tab == 'Week' || this.tab == 'Month') {
-          this.isEdit = true;
+       if ((this.tab == 'Week' || this.tab == 'Month') && !this.isHomeRedirect ) {
+            this.isEdit = true;
         }
 
         const selectedUser =
