@@ -513,11 +513,11 @@ export class ShiftScheduleComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-    // this.scheduleService.getTab().subscribe((tab) => {
-    //   if (tab) {
-    //     this.tab = tab;
-    //   }
-    // });
+    this.scheduleService.getTab().subscribe((tab) => {
+      if (tab) {
+        this.tab = tab;
+      }
+    });
   }
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {

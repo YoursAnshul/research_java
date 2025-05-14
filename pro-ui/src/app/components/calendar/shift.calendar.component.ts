@@ -1174,7 +1174,9 @@ export class ShifCalendarComponent implements OnInit {
 
         this.shiftSchedule.push(...missingSchedules);
         this.syncData(this.shiftSchedule);
-        this.isLoading = false;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 500);
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);
