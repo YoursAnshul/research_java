@@ -92,7 +92,7 @@
       >
         {{ us.user.userName }}
       </div>
-
+      <!-- [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''" -->
       @for (schedule of [us]; track schedule) {
       <div
         class="schedule-card"
@@ -100,7 +100,6 @@
         (mouseenter)="displayHoverMessage($event, schedule, us)"
         (mouseleave)="hideHoverMessage()"
         [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"
-        [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''"
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
       >
         <div class="center-align-container">
