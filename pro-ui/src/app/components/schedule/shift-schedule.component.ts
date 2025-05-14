@@ -597,9 +597,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     } else {
-      let monthVal = selectedDate.getMonth() - 1;
-      let resultMonth = resultDate.getMonth();
-      if (resultMonth >= monthVal) {
+      let monthVal = selectedDate.getMonth();
+      let resultMonth = resultDate.getMonth() ;
+      if (resultMonth != monthVal && resultMonth+1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
