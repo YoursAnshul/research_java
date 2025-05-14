@@ -357,8 +357,7 @@ export class ShiftScheduleComponent implements OnInit {
         );
         if (
           this.userObj?.eppn &&
-          this.authenticatedUser?.interviewer &&
-          !this.isHomeRedirect
+          this.authenticatedUser?.interviewer 
         ) {
           this.getLoginUser(this.userObj.eppn);
         }
@@ -397,6 +396,8 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+      if (this.skipValidation || !date) return;
+      this.skipValidation = true;
       if (this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
       } else {
