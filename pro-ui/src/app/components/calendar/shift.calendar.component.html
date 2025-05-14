@@ -28,7 +28,7 @@
     [(selectedIndex)]="tabIndex"
     (selectedTabChange)="onTabChanged($event)"
   >
-    <mat-tab label="Day" [disabled]="isLoading">
+    <mat-tab label="Day" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
         <div
           [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
@@ -118,7 +118,7 @@
       >
       </app-shift-day-view>
     </mat-tab>
-    <mat-tab label="Week" [disabled]="isLoading">
+    <mat-tab label="Week" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
         <div
           [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
@@ -210,7 +210,7 @@
         [isLoading]="isLoading"
       ></app-shift-week-view-v2>
     </mat-tab>
-    <mat-tab label="Month" [disabled]="isLoading">
+    <mat-tab label="Month" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
         <div
           [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"

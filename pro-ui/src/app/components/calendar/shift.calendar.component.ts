@@ -128,6 +128,7 @@ export class ShifCalendarComponent implements OnInit {
   isTabChange: boolean = false;
   isHomeRedirect: boolean = false;
   profileType: string = '';
+  isWeekTabDisabled: boolean = false;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -205,7 +206,14 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
 
+  disableWeekTabTemporarily(): void {
+    this.isWeekTabDisabled = true;
+    setTimeout(() => {
+      this.isWeekTabDisabled = false;
+    }, 500);
+  }
   ngOnInit(): void {
+    this.disableWeekTabTemporarily();
     // this.getScheduleList()
     //subscribe to scheduleFetchStatus
     this.getAuthor(0);
@@ -339,7 +347,7 @@ export class ShifCalendarComponent implements OnInit {
         this.profileType = type;
       }
     });
-    if ((this.tab && this.isEdit) || this.profileType == 'user-profile') {
+    if ((this.tab ) || this.profileType == 'user-profile') {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
       } else if (this.tab == 'Week') {
@@ -379,6 +387,8 @@ export class ShifCalendarComponent implements OnInit {
         )
       );
     }
+
+    
     this.checkContext();
   }
 
@@ -1137,7 +1147,9 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
+    // if(this.tab && this.tab!='Day'){
     this.isLoading = true;
+    // }
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     let url = '';
@@ -1174,9 +1186,13 @@ export class ShifCalendarComponent implements OnInit {
 
         this.shiftSchedule.push(...missingSchedules);
         this.syncData(this.shiftSchedule);
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 500);
+        // if(this.tab && this.tab!='Day'){
+        //   setTimeout(() => {
+        //     this.isLoading = false;
+        //   }, 500);
+        // }
+        this.isLoading = false;
+       
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);

@@ -353,8 +353,7 @@ export class ShiftScheduleComponent implements OnInit {
         );
         if (
           this.userObj?.eppn &&
-          this.authenticatedUser?.interviewer &&
-          !this.isHomeRedirect
+          this.authenticatedUser?.interviewer
         ) {
           this.getLoginUser(this.userObj.eppn);
         }
@@ -526,7 +525,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
 
-       if ((this.tab == 'Week' || this.tab == 'Month') && !this.isHomeRedirect ) {
+       if ((this.tab == 'Week' || this.tab == 'Month') ) {
             this.isEdit = true;
         }
 
