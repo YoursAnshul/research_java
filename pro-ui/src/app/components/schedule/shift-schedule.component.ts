@@ -353,7 +353,8 @@ export class ShiftScheduleComponent implements OnInit {
         );
         if (
           this.userObj?.eppn &&
-          this.authenticatedUser?.interviewer
+          this.authenticatedUser?.interviewer &&
+          !this.isHomeRedirect
         ) {
           this.getLoginUser(this.userObj.eppn);
         }
@@ -525,7 +526,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
 
-       if ((this.tab == 'Week' || this.tab == 'Month') ) {
+       if ((this.tab == 'Week' || this.tab == 'Month') && !this.isHomeRedirect ) {
             this.isEdit = true;
         }
 
@@ -588,7 +589,7 @@ export class ShiftScheduleComponent implements OnInit {
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      if (resultMonth >= monthVal) {
+      if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
@@ -598,8 +599,8 @@ export class ShiftScheduleComponent implements OnInit {
       }
     } else {
       let monthVal = selectedDate.getMonth();
-      let resultMonth = resultDate.getMonth() ;
-      if (resultMonth != monthVal && resultMonth+1 >= monthVal) {
+      let resultMonth = resultDate.getMonth();
+      if (resultMonth != monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
