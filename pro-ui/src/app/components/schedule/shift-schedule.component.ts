@@ -174,6 +174,10 @@ export class ShiftScheduleComponent implements OnInit {
   isEditAble = false;
   previousValue: any;
   schedulinglevel: number = 0;
+  private previousStartTime: string | null = null;
+  private previousEndTime: string | null = null;
+  private previousDate: Date | null = null;
+  private previousProjectName: string | null = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -375,7 +379,6 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.valueChanges.subscribe(() => {
       this.isEditAble = this.shiftForm.dirty;
-      this.isModified = this.shiftForm.dirty;
     });
     this.shiftForm.valueChanges.subscribe(() => {
       if (this.authenticatedUser?.admin) {
@@ -394,8 +397,12 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (this.skipValidation || !date) return;
-      this.skipValidation = true;
+      if (this.previousDate?.toString() !== new Date(date).toString()) {
+        this.isModified = true;
+      } else {
+        this.isModified = false;
+      }
+      this.previousDate = new Date(date);
       if (this.authenticatedUser?.interviewer) {
         this.validateBlockOutDate(date);
         if (!this.canEdit) {
@@ -412,8 +419,19 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDayLabel(date);
       setTimeout(() => (this.skipValidation = false));
     });
-
-    this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
+    this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
+      this.previousStartTime = startTime;
+      if (this.previousStartTime !== startTime) {
+        this.isModified = true;
+      } else {
+        this.isModified = false;
+      }
+      this.previousStartTime = startTime;
+      if (this.authenticatedUser.interviewer) {
+        this.isModified = true;
+      } else {
+        this.isModified = false;
+      }
       if (this.authenticatedUser?.admin) {
         if (!this.isUpdateData) {
           this.isModified = true;
@@ -426,7 +444,13 @@ export class ShiftScheduleComponent implements OnInit {
       // this.clearValidation();
     });
 
-    this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
+    this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
+      if (this.previousEndTime !== endTime) {
+        this.isModified = true;
+      } else {
+        this.isModified = false;
+      }
+      this.previousEndTime = endTime;
       if (this.authenticatedUser?.admin) {
         if (!this.isUpdateData) {
           this.isModified = true;
@@ -441,6 +465,18 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.get('user')?.valueChanges.subscribe(() => {
       // this.clearValidation();
+    });
+    this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
+      if (
+        this.previousProjectName &&
+        this.previousProjectName !== project.projectName
+      ) {
+        this.isModified = true;
+      } else {
+        this.isModified = false;
+      }
+      this.previousProjectName = project.projectName;
+      this.skipValidation = true;
     });
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
@@ -526,8 +562,11 @@ export class ShiftScheduleComponent implements OnInit {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
 
-       if ((this.tab == 'Week' || this.tab == 'Month') && !this.isHomeRedirect ) {
-            this.isEdit = true;
+        if (
+          (this.tab == 'Week' || this.tab == 'Month') &&
+          !this.isHomeRedirect
+        ) {
+          this.isEdit = true;
         }
 
         const selectedUser =
@@ -824,7 +863,7 @@ export class ShiftScheduleComponent implements OnInit {
 
       // Weekday/weekend start time constraints
       const startHour = startTime.getHours();
-      if (day == 1 || day == 4  || day == 5 && startHour < 13) {
+      if (day == 1 || day == 4 || (day == 5 && startHour < 13)) {
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Weekday shifts must begin at or after 1 PM.' },
