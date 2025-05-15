@@ -153,7 +153,6 @@ export class ShiftScheduleComponent implements OnInit {
   isHomeRedirect: boolean = false;
   isClose: boolean = false;
   profileType: string = '';
-  isUpdateData: boolean = false;
   newRequest: IRequest = {
     invalidFields: [],
     decisionId: null,
@@ -355,10 +354,7 @@ export class ShiftScheduleComponent implements OnInit {
             this.userObj = this.authenticatedUser;
           }
         );
-        if (
-          this.userObj?.eppn &&
-          this.authenticatedUser?.interviewer 
-        ) {
+        if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
           this.getLoginUser(this.userObj.eppn);
         }
         if (this.selectedUser) {
@@ -378,15 +374,6 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.valueChanges.subscribe(() => {
       this.isEditAble = this.shiftForm.dirty;
-    });
-    this.shiftForm.valueChanges.subscribe(() => {
-      if (this.authenticatedUser?.admin) {
-        if (!this.isUpdateData) {
-          this.isModified = true;
-        } else {
-          this.isModified = false;
-        }
-      }
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
       // this.clearValidation();
@@ -410,36 +397,16 @@ export class ShiftScheduleComponent implements OnInit {
           this.validateDateOption(date);
         }
       }
-      if (this.authenticatedUser?.admin) {
-        if (!this.isUpdateData) {
-          this.isModified = true;
-        } else {
-          this.isModified = false;
-        }
-      }
       this.updateDayLabel(date);
       setTimeout(() => (this.skipValidation = false));
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
-      this.previousStartTime = startTime;
       if (this.previousStartTime !== startTime) {
         this.isModified = true;
       } else {
         this.isModified = false;
       }
       this.previousStartTime = startTime;
-      if (this.authenticatedUser.interviewer) {
-        this.isModified = true;
-      } else {
-        this.isModified = false;
-      }
-      if (this.authenticatedUser?.admin) {
-        if (!this.isUpdateData) {
-          this.isModified = true;
-        } else {
-          this.isModified = false;
-        }
-      }
       this.profileType = '';
       this.validateTimeRange();
       // this.clearValidation();
@@ -452,13 +419,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.isModified = false;
       }
       this.previousEndTime = endTime;
-      if (this.authenticatedUser?.admin) {
-        if (!this.isUpdateData) {
-          this.isModified = true;
-        } else {
-          this.isModified = false;
-        }
-      }
       this.profileType = '';
       this.validateTimeRange();
       // this.clearValidation();
@@ -477,7 +437,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.isModified = false;
       }
       this.previousProjectName = project.projectName;
-      this.skipValidation = true;
     });
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
@@ -1671,12 +1630,12 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.authenticatedUser?.interviewer && this.selectedUser?.dempoId) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser?.dempoId}`;
     } else {
-       if (!this.authenticatedUser?.interviewer) {
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-      if (this.selectedUser && this.selectedUser?.dempoId) {
-        url += `?demId=${this.selectedUser?.dempoId}`;
+      if (!this.authenticatedUser?.interviewer) {
+        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+        if (this.selectedUser && this.selectedUser?.dempoId) {
+          url += `?demId=${this.selectedUser?.dempoId}`;
+        }
       }
-    }
     }
 
     this.http.get<any[]>(url).subscribe({
@@ -1814,7 +1773,6 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.onSubmit();
           this.isEdit = false;
-          this.isUpdateData = true;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
@@ -1895,7 +1853,6 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule = [];
           this.isEdit = false;
-          this.isUpdateData = true;
           this.onResetShiftSchedule();
         },
         error: (error) => {
