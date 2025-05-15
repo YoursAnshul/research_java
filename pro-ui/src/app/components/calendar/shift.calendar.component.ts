@@ -347,7 +347,7 @@ export class ShifCalendarComponent implements OnInit {
         this.profileType = type;
       }
     });
-    if ((this.tab ) || this.profileType == 'user-profile') {
+    if (this.tab || this.profileType == 'user-profile') {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
       } else if (this.tab == 'Week') {
@@ -388,7 +388,6 @@ export class ShifCalendarComponent implements OnInit {
       );
     }
 
-    
     this.checkContext();
   }
 
@@ -1156,10 +1155,12 @@ export class ShifCalendarComponent implements OnInit {
     if (this.authenticatedUser?.interviewer && this.selectedUser1?.dempoId) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
     } else {
+      if (!this.authenticatedUser?.interviewer) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
       if (this.selectedUser && this.selectedUser?.dempoId) {
         url += `?demId=${this.selectedUser?.dempoId}`;
       }
+    }
     }
 
     // Make the API call
@@ -1192,7 +1193,6 @@ export class ShifCalendarComponent implements OnInit {
         //   }, 500);
         // }
         this.isLoading = false;
-       
       },
       error: (error) => {
         console.error('Error fetching schedule list:', error);

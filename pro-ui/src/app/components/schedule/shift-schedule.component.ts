@@ -1671,10 +1671,12 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.authenticatedUser?.interviewer && this.selectedUser?.dempoId) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser?.dempoId}`;
     } else {
+       if (!this.authenticatedUser?.interviewer) {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
       if (this.selectedUser && this.selectedUser?.dempoId) {
         url += `?demId=${this.selectedUser?.dempoId}`;
       }
+    }
     }
 
     this.http.get<any[]>(url).subscribe({
