@@ -206,10 +206,10 @@ export class ShiftScheduleComponent implements OnInit {
     console.log('this.profileType--->', this.profileType);
     console.log('this.isHomeRedirect--->', this.isHomeRedirect);
 
-    if (this.isHomeRedirect || this.profileType == 'user-profile') {
-      this.onClose();
-      return;
-    }
+    // if (this.isHomeRedirect || this.profileType == 'user-profile') {
+    //   this.onClose();
+    //   return;
+    // }
     if (this.isModified) {
       const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
         panelClass: 'custom-dialog-container',
