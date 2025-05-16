@@ -179,6 +179,7 @@ export class ShiftScheduleComponent implements OnInit {
   private previousProjectName: string | null = null;
   isDateModified: boolean = false;
   previousShift: any = null;
+  private previousDempoId: string | null = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -425,14 +426,32 @@ export class ShiftScheduleComponent implements OnInit {
       // this.clearValidation();
     });
 
-    this.shiftForm.get('user')?.valueChanges.subscribe(() => {
-      // this.clearValidation();
+    this.shiftForm.get('user')?.valueChanges.subscribe((user) => {
+      if (
+        !this.authenticatedUser?.interviewer &&
+        !this.isHomeRedirect &&
+        this.profileType != 'user-profile'
+      ) {
+        if (this.previousDempoId !== user.dempoId) {
+          this.isModified = true;
+        } else {
+          this.isModified = false;
+        }
+        this.previousDempoId = user.dempoId;
+      }
     });
     this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
       if (
-        this.previousProjectName &&
-        this.previousProjectName !== project.projectName
+        !this.skipValidation &&
+        (this.authenticatedUser?.interviewer ||
+          this.isHomeRedirect ||
+          this.profileType == 'user-profile')
       ) {
+        this.skipValidation = true;
+        this.previousProjectName = project.projectName;
+        return;
+      }
+      if (this.previousProjectName !== project.projectName) {
         this.isModified = true;
       } else {
         this.isModified = false;
