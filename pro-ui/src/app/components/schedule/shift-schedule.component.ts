@@ -177,6 +177,7 @@ export class ShiftScheduleComponent implements OnInit {
   private previousEndTime: string | null = null;
   private previousDate: Date | null = null;
   private previousProjectName: string | null = null;
+  isDateModified: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -383,12 +384,12 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (this.skipValidation || !date) return;
-      this.skipValidation = true;
       if (this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
+        this.isDateModified = true;
       } else {
         this.isModified = false;
+        this.isDateModified = false;
       }
       this.previousDate = new Date(date);
       if (this.authenticatedUser?.interviewer) {
@@ -398,10 +399,9 @@ export class ShiftScheduleComponent implements OnInit {
         }
       }
       this.updateDayLabel(date);
-      setTimeout(() => (this.skipValidation = false));
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
-      if (this.previousStartTime !== startTime) {
+      if (this.previousStartTime !== startTime || this.isDateModified) {
         this.isModified = true;
       } else {
         this.isModified = false;
@@ -413,7 +413,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
-      if (this.previousEndTime !== endTime) {
+      if (this.previousEndTime !== endTime || this.isDateModified) {
         this.isModified = true;
       } else {
         this.isModified = false;
