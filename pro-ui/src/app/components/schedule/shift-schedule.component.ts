@@ -178,6 +178,7 @@ export class ShiftScheduleComponent implements OnInit {
   private previousDate: Date | null = null;
   private previousProjectName: string | null = null;
   isDateModified: boolean = false;
+  previousShift: any = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -599,7 +600,7 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      if (resultMonth < monthVal &&  resultMonth + 1 >= monthVal) {
+      if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
@@ -1241,6 +1242,7 @@ export class ShiftScheduleComponent implements OnInit {
         });
         this.isEditAble = false;
         console.log('this.shiftForm value --->', this.shiftForm.value);
+        this.previousShift = this.shiftForm.value;
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
@@ -1929,5 +1931,12 @@ export class ShiftScheduleComponent implements OnInit {
         this.validateDateOption(this.selectedDate.value);
       },
     });
+  }
+  undoSchedule(): void {
+    if (this.previousShift) {
+      this.shiftForm.patchValue(this.previousShift);
+      this.isEditAble = false;
+      this.isModified = false;
+    }
   }
 }
