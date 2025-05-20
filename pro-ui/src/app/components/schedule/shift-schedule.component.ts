@@ -1413,7 +1413,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onResetShiftSchedule(): void {
-    if (this.authenticatedUser?.admin) {
+    if (this.authenticatedUser?.admin && !this.isHomeRedirect) {
       this.shiftForm.reset({
         user: null,
         projects: [],
@@ -1958,6 +1958,7 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.previousShift) {
       this.shiftForm.patchValue(this.previousShift);
       this.isEditAble = false;
-      this.isModified = false;    }
+      this.isModified = false;
+    }
   }
 }

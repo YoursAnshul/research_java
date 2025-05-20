@@ -280,7 +280,7 @@ export class ShiftWeekViewComponent implements OnInit {
   addShift(date: any): void {
     console.log('Date:--------->', date);
     this.sendWeekDate.emit(date);
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {
     console.log(' sdfsdfds:');

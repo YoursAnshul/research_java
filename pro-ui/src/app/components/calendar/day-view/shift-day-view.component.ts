@@ -156,9 +156,9 @@ export class ShiftDayViewComponent implements OnInit {
       const result = this.filteredShiftSchedule.find(
         (item) => item.preschedulekey === this.pId
       );
-      if (result) {
-        this.openScheduleData(result);
-      }
+      // if (result) {
+      //   this.openScheduleData(result);
+      // }
     }
 
     console.log(
@@ -285,7 +285,7 @@ export class ShiftDayViewComponent implements OnInit {
   }
   addShift(): void {
     this.sendDate.emit(this.selectedDate);
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
 
   handleClick(schedule: any, event: MouseEvent) {
