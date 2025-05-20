@@ -53,7 +53,7 @@ export class ShiftDayViewComponent implements OnInit {
   private previouslyEditedSchedule: ISchedule | null = null;
   clickTimer: any = null;
   clickDelay = 250;
-  
+  @Input() pId: number = 0;
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -148,6 +148,18 @@ export class ShiftDayViewComponent implements OnInit {
         return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
       })
       .filter((s) => s);
+
+    if (this.pId > 0) {
+      this.filteredShiftSchedule
+        .filter((schedule) => schedule.preschedulekey === this.pId)
+        .forEach((schedule) => (schedule.isEdit = true));
+      const result = this.filteredShiftSchedule.find(
+        (item) => item.preschedulekey === this.pId
+      );
+      if (result) {
+        this.openScheduleData(result);
+      }
+    }
 
     console.log(
       'this.filteredShiftSchedule0000000000000',
@@ -298,7 +310,7 @@ export class ShiftDayViewComponent implements OnInit {
         this.profileType = type;
       }
     });
-
+    this.filteredShiftSchedule?.forEach((s) => (s.isEdit = false));
     if (schedule.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;

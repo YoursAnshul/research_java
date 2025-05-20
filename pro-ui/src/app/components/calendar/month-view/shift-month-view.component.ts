@@ -36,7 +36,7 @@ export class ShiftMonthViewComponent implements OnInit {
   @Output() monthDate = new EventEmitter<FormControl>();
   @Output() scheduleData = new EventEmitter<FormControl>();
   @Input() isLoading!: boolean;
-
+  @Input() pId: number = 0;
   authenticatedUser!: IAuthenticatedUser;
   type: any = null;
   @Input() isEdit: boolean = false;

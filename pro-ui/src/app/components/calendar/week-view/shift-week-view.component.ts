@@ -57,6 +57,7 @@ export class ShiftWeekViewComponent implements OnInit {
   private previouslyEditedSchedule: ISchedule | null = null;
   clickTimer: any = null;
   clickDelay = 250;
+  @Input() pId: number = 0;
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,

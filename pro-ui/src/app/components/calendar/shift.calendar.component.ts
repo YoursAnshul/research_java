@@ -129,6 +129,7 @@ export class ShifCalendarComponent implements OnInit {
   isHomeRedirect: boolean = false;
   profileType: string = '';
   isWeekTabDisabled: boolean = false;
+  @Input() pId: number = 0;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,

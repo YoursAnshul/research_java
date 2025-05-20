@@ -115,6 +115,7 @@
         (sendDate)="handleDate($event)"
         (scheduleData)="handleSchedule($event)"
         [isLoading]="isLoading"
+        [pId]="pId"
       >
       </app-shift-day-view>
     </mat-tab>
@@ -208,6 +209,7 @@
         (sendWeekDate)="handleWeekDate($event)"
         (scheduleData)="handleSchedule($event)"
         [isLoading]="isLoading"
+        [pId]="pId"
       ></app-shift-week-view-v2>
     </mat-tab>
     <mat-tab label="Month" [disabled]="isLoading || isWeekTabDisabled">
@@ -300,6 +302,7 @@
         (monthDate)="handleWeekDate($event)"
         (scheduleData)="handleSchedule($event)"
         [isLoading]="isLoading"
+        [pId]="pId"
       ></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>

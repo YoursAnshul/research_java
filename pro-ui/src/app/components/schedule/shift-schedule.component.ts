@@ -180,6 +180,8 @@ export class ShiftScheduleComponent implements OnInit {
   isDateModified: boolean = false;
   previousShift: any = null;
   private previousDempoId: string | null = null;
+  pId: number = 0;
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -309,6 +311,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
+        this.pId = data.preschedulekey;
       }
     });
     this.scheduleService.getType().subscribe((type) => {
@@ -376,7 +379,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
-      this.isEditAble = this.shiftForm.dirty;
+      // this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
       // this.clearValidation();
@@ -389,6 +392,7 @@ export class ShiftScheduleComponent implements OnInit {
       if (this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
         this.isDateModified = true;
+        this.isEditAble = this.shiftForm.dirty;
       } else {
         this.isModified = false;
         this.isDateModified = false;
@@ -405,6 +409,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (this.previousStartTime !== startTime || this.isDateModified) {
         this.isModified = true;
+        this.isEditAble = this.shiftForm.dirty;
       } else {
         this.isModified = false;
       }
@@ -417,6 +422,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
       if (this.previousEndTime !== endTime || this.isDateModified) {
         this.isModified = true;
+        this.isEditAble = this.shiftForm.dirty;
       } else {
         this.isModified = false;
       }
@@ -434,6 +440,7 @@ export class ShiftScheduleComponent implements OnInit {
       ) {
         if (this.previousDempoId !== user.dempoId) {
           this.isModified = true;
+          this.isEditAble = this.shiftForm.dirty;
         } else {
           this.isModified = false;
         }
@@ -453,6 +460,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
       if (this.previousProjectName !== project.projectName) {
         this.isModified = true;
+        this.isEditAble = this.shiftForm.dirty;
       } else {
         this.isModified = false;
       }
@@ -537,18 +545,16 @@ export class ShiftScheduleComponent implements OnInit {
   }
   loadScheduleData(): void {
     this.scheduleService.getSchedule().subscribe((data) => {
-      console.log('data====>', data);
       if (data) {
         this.tab = data.tab;
         this.isHomeRedirect = data.isHomeRedirect;
-
+        this.pId = data.preschedulekey;
         if (
           (this.tab == 'Week' || this.tab == 'Month') &&
           !this.isHomeRedirect
         ) {
           this.isEdit = true;
         }
-
         const selectedUser =
           this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;
@@ -559,7 +565,6 @@ export class ShiftScheduleComponent implements OnInit {
         if (this.selectedUser) {
           this.getProjectInfo(this.selectedUser.dempoId);
         }
-        console.log('selectedProject--->', selectedProject);
         this.homeSelectedProject = selectedProject;
         this.selectedProject = selectedProject;
 
@@ -572,8 +577,6 @@ export class ShiftScheduleComponent implements OnInit {
           endTime: this.convertTo12HourFormat(data.endTime),
           comments: data.comments,
         });
-
-        // Manually trigger change detection after updating form
         this.cdr.detectChanges();
       }
     });
@@ -1955,7 +1958,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.previousShift) {
       this.shiftForm.patchValue(this.previousShift);
       this.isEditAble = false;
-      this.isModified = false;
-    }
+      this.isModified = false;    }
   }
 }
