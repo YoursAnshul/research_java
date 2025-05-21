@@ -51,8 +51,10 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
   clickTimer: any = null;
-  clickDelay = 250; 
+  clickDelay = 250;
   @Input() pId: number = 0;
+  processedSchedules: ISchedule[] = [];
+
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -120,7 +122,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
 
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
-    console.log('selectedUserId-----------', selectedUserId);
+    this.processedSchedules = [];
 
     this.shiftSchedule?.forEach((shift) => {
       const shiftDate = moment(shift.dayWiseDate)
@@ -173,12 +175,21 @@ export class ShiftWeekViewComponentV3 implements OnInit {
           projectId: shift.projects?.projectId,
           isEdit: shift.isEdit,
         };
-
+        this.processedSchedules.push(schedule);
         (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
           schedule
         );
       }
     });
+    const firstFilteredSchedule = this.pId
+      ? this.processedSchedules.find(
+          (schedule) => schedule.preschedulekey === this.pId
+        )
+      : null;
+
+    if (firstFilteredSchedule) {
+      this.openScheduleData(firstFilteredSchedule);
+    }
   }
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
@@ -373,7 +384,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
         this.profileType = type;
       }
     });
-
+    this.processedSchedules?.forEach((s) => (s.isEdit = false));
     if (schedule.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;

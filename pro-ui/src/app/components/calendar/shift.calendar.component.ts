@@ -130,6 +130,7 @@ export class ShifCalendarComponent implements OnInit {
   profileType: string = '';
   isWeekTabDisabled: boolean = false;
   @Input() pId: number = 0;
+  private count: number = 0;
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -348,6 +349,9 @@ export class ShifCalendarComponent implements OnInit {
         this.profileType = type;
       }
     });
+    if(this.count > 0){
+      return;
+    }
     if (this.tab || this.profileType == 'user-profile') {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
@@ -405,6 +409,10 @@ export class ShifCalendarComponent implements OnInit {
       : project1 === project2;
   }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    this.count++;
+    if(this.count > 1){
+      return;
+    }
     if (this.shiftSchedule?.length) {
       this.shiftSchedule = this.shiftSchedule.map((item) => ({
         ...item,
@@ -415,7 +423,6 @@ export class ShifCalendarComponent implements OnInit {
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
     let baseDate = this.selectedDate?.value || null;
-
     if (!baseDate && this.shiftSchedule?.length) {
       const lastDate =
         this.shiftSchedule[this.shiftSchedule.length - 1]?.dayWiseDate;
@@ -1157,11 +1164,11 @@ export class ShifCalendarComponent implements OnInit {
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
     } else {
       if (!this.authenticatedUser?.interviewer) {
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-      if (this.selectedUser && this.selectedUser?.dempoId) {
-        url += `?demId=${this.selectedUser?.dempoId}`;
+        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+        if (this.selectedUser && this.selectedUser?.dempoId) {
+          url += `?demId=${this.selectedUser?.dempoId}`;
+        }
       }
-    }
     }
 
     // Make the API call
@@ -1188,11 +1195,6 @@ export class ShifCalendarComponent implements OnInit {
 
         this.shiftSchedule.push(...missingSchedules);
         this.syncData(this.shiftSchedule);
-        // if(this.tab && this.tab!='Day'){
-        //   setTimeout(() => {
-        //     this.isLoading = false;
-        //   }, 500);
-        // }
         this.isLoading = false;
       },
       error: (error) => {

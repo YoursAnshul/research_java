@@ -156,9 +156,9 @@ export class ShiftDayViewComponent implements OnInit {
       const result = this.filteredShiftSchedule.find(
         (item) => item.preschedulekey === this.pId
       );
-      // if (result) {
-      //   this.openScheduleData(result);
-      // }
+      if (result) {
+        this.openScheduleData(result);
+      }
     }
 
     console.log(

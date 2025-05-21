@@ -51,8 +51,9 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   profileType: string = '';
   private previouslyEditedSchedule: ISchedule | null = null;
   clickTimer: any = null;
-  clickDelay = 250; 
+  clickDelay = 250;
   @Input() pId: number = 0;
+  processedSchedules: ISchedule[] = [];
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -119,7 +120,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
 
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
-
+    this.processedSchedules = [];
     this.shiftSchedule?.forEach((shift) => {
       const shiftDate = moment(shift.dayWiseDate)
         .tz('America/New_York')
@@ -171,12 +172,21 @@ export class ShiftWeekViewComponentV2 implements OnInit {
           projectId: shift.projects?.projectId,
           isEdit: shift.isEdit,
         };
-
+        this.processedSchedules.push(schedule);
         (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
           schedule
         );
       }
     });
+    const firstFilteredSchedule = this.pId
+      ? this.processedSchedules.find(
+          (schedule) => schedule.preschedulekey === this.pId
+        )
+      : null;
+
+    if (firstFilteredSchedule) {
+      this.openScheduleData(firstFilteredSchedule);
+    }
   }
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
@@ -381,11 +391,14 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
+        tab = data.tab;
       }
     });
+    this.processedSchedules?.forEach((s) => (s.isEdit = false));
     this.scheduleService.getType().subscribe((type) => {
       if (type) {
         this.profileType = type;
@@ -402,7 +415,12 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
-    schedule.tab = 'Week';
+    if (tab != 'Day' && this.isHomeRedirect) {
+      schedule.tab = 'Week';
+      schedule.isEdit = true;
+    } else if(!this.isHomeRedirect){
+      schedule.tab = 'Week';
+    }
     this.scheduleData.emit({ ...schedule });
   }
 }
