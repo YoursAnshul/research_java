@@ -56,6 +56,7 @@ export class ShiftScheduleComponent implements OnInit {
   shiftSchedule: any[] = [];
   shiftSchedule1: any[] = [];
   weekSchedules: IWeekSchedules[] = []; // Data for Week View
+  isScheduleUpdate: boolean = false;
   timeSlots: string[] = [
     '8:00 AM',
     '8:30 AM',
@@ -382,6 +383,9 @@ export class ShiftScheduleComponent implements OnInit {
       this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
+      if(this.isScheduleUpdate){
+         this.onResetShiftSchedule();
+      }
       // this.clearValidation();
       // this.shiftForm.markAsPristine();
       // this.shiftForm.markAsUntouched();
@@ -1557,6 +1561,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.showToastMessage(res.Message, 'success');
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
+          this.isScheduleUpdate = true;
           // this.onResetShiftSchedule();
           if (res.Message == 'Schedule already exists for this user!') {
             this.shiftForm.get('startTime')?.setErrors({ required: true });
@@ -1799,6 +1804,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.onSubmit();
           this.isEdit = false;
+          this.isScheduleUpdate = true;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
