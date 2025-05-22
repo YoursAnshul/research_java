@@ -374,9 +374,11 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   }
 
   openScheduleData(schedule: ISchedule): void {
+    let tab = "";
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
+        tab = data.tab;
       }
     });
     this.scheduleService.getType().subscribe((type) => {
@@ -395,7 +397,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
-    schedule.tab = 'Week';
+    schedule.tab = tab;
     this.scheduleData.emit({ ...schedule });
   }
 }

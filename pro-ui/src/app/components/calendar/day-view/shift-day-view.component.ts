@@ -300,9 +300,11 @@ export class ShiftDayViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
+        tab = data.tab;
       }
     });
     this.scheduleService.getType().subscribe((type) => {
@@ -318,13 +320,15 @@ export class ShiftDayViewComponent implements OnInit {
       if (this.previouslyEditedSchedule) {
         this.previouslyEditedSchedule.isEdit = false;
       }
-
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
 
-    schedule.tab = 'Day';
-    console.log('schedule--->', schedule);
+    if (this.isHomeRedirect) {
+      schedule.tab = tab;
+    } else {
+      schedule.tab = 'Day';
+    }
     this.scheduleData.emit({ ...schedule });
   }
 }

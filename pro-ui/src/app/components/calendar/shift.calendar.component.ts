@@ -349,9 +349,7 @@ export class ShifCalendarComponent implements OnInit {
         this.profileType = type;
       }
     });
-    if(this.count > 0){
-      return;
-    }
+  
     if (this.tab || this.profileType == 'user-profile') {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
@@ -392,7 +390,6 @@ export class ShifCalendarComponent implements OnInit {
         )
       );
     }
-
     this.checkContext();
   }
 
@@ -409,10 +406,6 @@ export class ShifCalendarComponent implements OnInit {
       : project1 === project2;
   }
   onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
-    this.count++;
-    if(this.count > 1){
-      return;
-    }
     if (this.shiftSchedule?.length) {
       this.shiftSchedule = this.shiftSchedule.map((item) => ({
         ...item,
@@ -422,6 +415,7 @@ export class ShifCalendarComponent implements OnInit {
     this.isEdit = false;
     this.tabIndex = tabChangeEvent.index;
     this.tabName = tabChangeEvent.tab.textLabel;
+    this.tab = this.tabName;
     let baseDate = this.selectedDate?.value || null;
     if (!baseDate && this.shiftSchedule?.length) {
       const lastDate =

@@ -415,10 +415,11 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       schedule.isEdit = true;
       this.previouslyEditedSchedule = schedule;
     }
+
     if (tab != 'Day' && this.isHomeRedirect) {
-      schedule.tab = 'Week';
+      schedule.tab = tab;
       schedule.isEdit = true;
-    } else if(!this.isHomeRedirect){
+    } else if (!this.isHomeRedirect) {
       schedule.tab = 'Week';
     }
     this.scheduleData.emit({ ...schedule });

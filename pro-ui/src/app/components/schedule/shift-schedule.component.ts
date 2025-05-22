@@ -379,7 +379,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
-      // this.isEditAble = this.shiftForm.dirty;
+      this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
       // this.clearValidation();
@@ -1414,6 +1414,7 @@ export class ShiftScheduleComponent implements OnInit {
 
   onResetShiftSchedule(): void {
     this.isEdit = false;
+    this.isEditAble = false;
     if (this.authenticatedUser?.admin && !this.isHomeRedirect) {
       this.shiftForm.reset({
         user: null,
