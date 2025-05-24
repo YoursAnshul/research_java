@@ -380,16 +380,9 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
-      this.isEditAble = this.shiftForm.dirty;
+      // this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
-      if(this.isScheduleUpdate){
-         this.onResetShiftSchedule();
-      }
-      // this.clearValidation();
-      // this.shiftForm.markAsPristine();
-      // this.shiftForm.markAsUntouched();
-      // this.shiftForm.updateValueAndValidity({ emitEvent: false });
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
@@ -1442,9 +1435,9 @@ export class ShiftScheduleComponent implements OnInit {
       });
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.shiftForm.get('endTime')?.setErrors({ required: true });
-      this.shiftForm.get('startTime')?.markAsPristine();
-      this.shiftForm.get('endTime')?.markAsPristine();
-      this.shiftForm.get('comments')?.markAsPristine();
+      this.shiftForm.get('startTime')?.markAsTouched();
+      this.shiftForm.get('endTime')?.markAsTouched();
+      this.shiftForm.get('comments')?.markAsTouched();
     }
   }
 

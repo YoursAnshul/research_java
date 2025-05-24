@@ -54,6 +54,8 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   clickDelay = 250;
   @Input() pId: number = 0;
   processedSchedules: ISchedule[] = [];
+  @Input() isScheduleUpdate: boolean = false;
+
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -183,9 +185,18 @@ export class ShiftWeekViewComponentV2 implements OnInit {
           (schedule) => schedule.preschedulekey === this.pId
         )
       : null;
-
-    if (firstFilteredSchedule) {
+    if (
+      firstFilteredSchedule &&
+      (!this.previouslyEditedSchedule ||
+        this.previouslyEditedSchedule.preschedulekey !==
+          firstFilteredSchedule.preschedulekey)
+    ) {
       this.openScheduleData(firstFilteredSchedule);
+    }
+    if (this.isScheduleUpdate) {
+      this.processedSchedules.forEach((schedule) => {
+        schedule.isEdit = false;
+      });
     }
   }
 
@@ -398,6 +409,9 @@ export class ShiftWeekViewComponentV2 implements OnInit {
         tab = data.tab;
       }
     });
+    if (tab == 'Day') {
+      return;
+    }
     this.processedSchedules?.forEach((s) => (s.isEdit = false));
     this.scheduleService.getType().subscribe((type) => {
       if (type) {

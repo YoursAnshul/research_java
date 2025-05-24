@@ -40,6 +40,8 @@ export class ShiftMonthViewComponent implements OnInit {
   authenticatedUser!: IAuthenticatedUser;
   type: any = null;
   @Input() isEdit: boolean = false;
+  @Input() isScheduleUpdate: boolean = false;
+
   constructor(
     private authenticationService: AuthenticationService,
     private scheduleService: ScheduleService
@@ -54,7 +56,7 @@ export class ShiftMonthViewComponent implements OnInit {
   ngOnInit(): void {
     this.processShiftSchedules();
   }
-  ngOnChanges(changes: SimpleChanges): void {    
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['isEdit']) {
       if (this.shiftSchedule?.length) {
         this.shiftSchedule.forEach((sch) => (sch.isEdit = false));
@@ -72,20 +74,22 @@ export class ShiftMonthViewComponent implements OnInit {
   handleMonthDate(event: FormControl) {
     this.monthDate.emit(event);
   }
-  handleWeekSchedule(schedule: any) {  
+  handleWeekSchedule(schedule: any) {
     if (schedule) {
       this.resetAllIsEditFlags(schedule);
-      schedule.tab = 'Month';''
+      schedule.tab = 'Month';
+      ('');
       // schedule.isEdit = true;
       this.scheduleData.emit(schedule);
     }
   }
   resetAllIsEditFlags(scheduleToSkip: ISchedule): void {
     if (!this.monthSchedules?.weekSchedules?.length) return;
-  
+
     for (const week of this.monthSchedules.weekSchedules) {
       for (let i = 1; i <= 7; i++) {
-        const daySchedules: ISchedule[] = (week as any)[`day${i}Schedules`] || [];
+        const daySchedules: ISchedule[] =
+          (week as any)[`day${i}Schedules`] || [];
         for (const schedule of daySchedules) {
           if (
             schedule &&
@@ -98,11 +102,7 @@ export class ShiftMonthViewComponent implements OnInit {
       }
     }
   }
-  
-  
-  
-  
-  
+
   processShiftSchedules(): void {
     if (!this.monthSchedules) {
       this.monthSchedules = { weekSchedules: [] };
@@ -111,7 +111,11 @@ export class ShiftMonthViewComponent implements OnInit {
     this.monthSchedules.weekSchedules = [];
 
     const referenceDate = new Date(this.selectedDate?.value || new Date());
-    const startOfMonth = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1);
+    const startOfMonth = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      1
+    );
     const weekStarts = this.getWeekStarts(startOfMonth);
     const startOfCalendarView = new Date(weekStarts[0]);
     const endOfCalendarView = new Date(weekStarts[weekStarts.length - 1]);
@@ -135,26 +139,33 @@ export class ShiftMonthViewComponent implements OnInit {
         .startOf('day')
         .toDate();
       shiftDate.setHours(0, 0, 0, 0);
-      if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView) continue;
+      if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView)
+        continue;
       let isValid = true;
-  
-      if (this.selectedUser && this.selectedUser.userId && this.selectedUser.userId !== 0) {
+
+      if (
+        this.selectedUser &&
+        this.selectedUser.userId &&
+        this.selectedUser.userId !== 0
+      ) {
         isValid = isValid && shift.user?.userId === this.selectedUser.userId;
       }
-  
+
       if (
         this.selectedProject &&
         this.selectedProject.projectId &&
         this.selectedProject.projectId !== 0
       ) {
-        isValid = isValid && shift.projects?.projectId === this.selectedProject.projectId;
+        isValid =
+          isValid &&
+          shift.projects?.projectId === this.selectedProject.projectId;
       }
-  
+
       if (!isValid) continue;
 
       const weekStart = this.getWeekStart(shiftDate);
       const schedule: ISchedule = {
-        preschedulekey:shift?.preschedulekey || '',
+        preschedulekey: shift?.preschedulekey || '',
         displayName: shift.user?.userName || '',
         projectName: shift.projects?.projectName || '',
         projectColor: shift.projects?.projectColor || '',
@@ -182,7 +193,7 @@ export class ShiftMonthViewComponent implements OnInit {
         expr1: null,
         isNew: shift.isNew === true || !shift.preschedulekey,
         projectId: shift.projects?.projectId,
-        isEdit:shift.isEdit
+        isEdit: shift.isEdit,
       };
 
       const key = weekStart.toISOString();

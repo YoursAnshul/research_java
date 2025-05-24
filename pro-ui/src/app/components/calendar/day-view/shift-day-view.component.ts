@@ -54,6 +54,8 @@ export class ShiftDayViewComponent implements OnInit {
   clickTimer: any = null;
   clickDelay = 250;
   @Input() pId: number = 0;
+  @Input() isScheduleUpdate: boolean = false;
+
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -75,7 +77,6 @@ export class ShiftDayViewComponent implements OnInit {
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
-
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;
@@ -148,23 +149,28 @@ export class ShiftDayViewComponent implements OnInit {
         return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
       })
       .filter((s) => s);
-
     if (this.pId > 0) {
       this.filteredShiftSchedule
         .filter((schedule) => schedule.preschedulekey === this.pId)
         .forEach((schedule) => (schedule.isEdit = true));
-      const result = this.filteredShiftSchedule.find(
+
+      const targetSchedule = this.filteredShiftSchedule.find(
         (item) => item.preschedulekey === this.pId
       );
-      if (result) {
-        this.openScheduleData(result);
+      if (
+        targetSchedule &&
+        (!this.previouslyEditedSchedule ||
+          this.previouslyEditedSchedule.preschedulekey !==
+            targetSchedule.preschedulekey)
+      ) {
+        this.openScheduleData(targetSchedule);
       }
     }
-
-    console.log(
-      'this.filteredShiftSchedule0000000000000',
-      this.filteredShiftSchedule
-    );
+    if (this.isScheduleUpdate) {
+      this.filteredShiftSchedule.forEach((schedule) => {
+        schedule.isEdit = false;
+      });
+    }
   }
 
   customScheduleCard(startTime: string, endTime: string) {
@@ -190,7 +196,6 @@ export class ShiftDayViewComponent implements OnInit {
       totalHours = 16;
     }
     const slotWidth = (100 - leftOffset) / totalHours; // Remaining width for time slots
-
     return {
       left: `${leftOffset + (startHour - 8) * slotWidth}%`, // Calculate dynamic left position
       width: `${duration * slotWidth}%`, // Calculate dynamic width based on duration

@@ -131,6 +131,8 @@ export class ShifCalendarComponent implements OnInit {
   isWeekTabDisabled: boolean = false;
   @Input() pId: number = 0;
   private count: number = 0;
+  @Input() isScheduleUpdate: boolean = false;
+  
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
