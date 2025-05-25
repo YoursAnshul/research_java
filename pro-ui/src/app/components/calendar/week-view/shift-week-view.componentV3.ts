@@ -52,10 +52,6 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   private previouslyEditedSchedule: ISchedule | null = null;
   clickTimer: any = null;
   clickDelay = 250;
-  @Input() pId: number = 0;
-  processedSchedules: ISchedule[] = [];
-  @Input() isScheduleUpdate: boolean = false;
-
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -123,7 +119,6 @@ export class ShiftWeekViewComponentV3 implements OnInit {
 
     const selectedUserId = this.selectedUser?.userId ?? null;
     const selectedProjectId = this.selectedProject?.projectId ?? null;
-    this.processedSchedules = [];
 
     this.shiftSchedule?.forEach((shift) => {
       const shiftDate = moment(shift.dayWiseDate)
@@ -176,30 +171,8 @@ export class ShiftWeekViewComponentV3 implements OnInit {
           projectId: shift.projects?.projectId,
           isEdit: shift.isEdit,
         };
-        this.processedSchedules.push(schedule);
-        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
-          schedule
-        );
       }
     });
-    const firstFilteredSchedule = this.pId
-      ? this.processedSchedules.find(
-          (schedule) => schedule.preschedulekey === this.pId
-        )
-      : null;
-    if (
-      firstFilteredSchedule &&
-      (!this.previouslyEditedSchedule ||
-        this.previouslyEditedSchedule.preschedulekey !==
-          firstFilteredSchedule.preschedulekey)
-    ) {
-      this.openScheduleData(firstFilteredSchedule);
-    }
-    if (this.isScheduleUpdate) {
-      this.processedSchedules.forEach((schedule) => {
-        schedule.isEdit = false;
-      });
-    }
   }
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
@@ -396,7 +369,6 @@ export class ShiftWeekViewComponentV3 implements OnInit {
         this.profileType = type;
       }
     });
-    this.processedSchedules?.forEach((s) => (s.isEdit = false));
     if (schedule.isEdit) {
       schedule.isEdit = false;
       this.previouslyEditedSchedule = null;
