@@ -132,7 +132,7 @@ export class ShifCalendarComponent implements OnInit {
   @Input() pId: number = 0;
   private count: number = 0;
   @Input() isScheduleUpdate: boolean = false;
-
+  
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -351,7 +351,7 @@ export class ShifCalendarComponent implements OnInit {
         this.profileType = type;
       }
     });
-
+  
     if (this.tab || this.profileType == 'user-profile') {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
@@ -1211,10 +1211,7 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   handleSchedule(schedule: any) {
-    this.count++;
-    if (this.count > 2) {
-      return;
-    }
+    console.log('Received from A:', schedule);
     this.scheduleData.emit(schedule);
   }
 }

@@ -11,6 +11,7 @@
       (sendWeekDate)="handleMonthDate($event)"
       (scheduleData)="handleWeekSchedule($event)"
       [isLoading]="isLoading"
+      [isScheduleUpdate]="isScheduleUpdate"
     ></app-shift-week-view>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
@@ -31,6 +32,7 @@
       (sendWeekDate)="handleMonthDate($event)"
       (scheduleData)="handleWeekSchedule($event)"
       [isLoading]="isLoading"
+      [isScheduleUpdate]="isScheduleUpdate"
     ></app-shift-week-view>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
@@ -50,6 +52,7 @@
       (sendWeekDate)="handleMonthDate($event)"
       (scheduleData)="handleWeekSchedule($event)"
       [isLoading]="isLoading"
+      [isScheduleUpdate]="isScheduleUpdate"
     ></app-shift-week-view-v3>
   </div>
   } @if ([monthSchedules?.weekSchedules || []].length < 1) {
