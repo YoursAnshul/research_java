@@ -1153,6 +1153,7 @@ export class ShifCalendarComponent implements OnInit {
     console.log('project--->', project);
     this.selectedProject = '';
     this.selectedProject = project;
+    this.homeSelectedProject = null;
     this.getAuthor(project.projectId);
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
