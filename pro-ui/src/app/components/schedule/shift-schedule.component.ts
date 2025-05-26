@@ -631,8 +631,6 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   validateBlockOutDate(selectedDate: any): void {
-    console.log('Block Out Dates--->', this.blockOutDates);
-
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
       this.shiftForm.get('startTime')?.enable();
@@ -742,6 +740,14 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   openBlockDialog(isTimeSlot: boolean): void {
+    const existingDialog = this.dialog.openDialogs.find(
+      (dialog) => dialog.componentInstance instanceof BlockdateDialog
+    );
+
+    if (existingDialog) {
+      return;
+    }
+
     const dialogRef = this.dialog.open(BlockdateDialog, {
       panelClass: 'custom-dialog-container',
       data: { isTimeSlot },
@@ -753,6 +759,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
   }
+
   openMonthlyBlockDialog(): void {
     setTimeout(() => {
       const existingDialog = this.dialog.openDialogs.find(
@@ -1712,7 +1719,9 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onTabValueReceived(tab: any): void {
     this.tabValue = tab;
-    this.isEdit = false;
+    if (!this.isHomeRedirect) {
+      this.isEdit = false;
+    }
   }
 
   onSeletedDayDate(day: any): void {

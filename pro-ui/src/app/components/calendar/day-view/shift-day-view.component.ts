@@ -312,6 +312,9 @@ export class ShiftDayViewComponent implements OnInit {
         tab = data.tab;
       }
     });
+    if (tab == 'Week' || tab == 'Month') {
+      return;
+    }
     this.scheduleService.getType().subscribe((type) => {
       if (type) {
         this.profileType = type;
