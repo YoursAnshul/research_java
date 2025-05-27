@@ -399,7 +399,7 @@ export class ShiftScheduleComponent implements OnInit {
     }).format(new Date());
     setTimeout(() => {
       this.isDataLoaded = true;
-    }, 200);
+    }, 1000);
   }
   loadUserData(): void {
     this.scheduleService.getUser().subscribe((data) => {
