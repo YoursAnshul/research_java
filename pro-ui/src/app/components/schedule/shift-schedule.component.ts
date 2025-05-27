@@ -182,7 +182,7 @@ export class ShiftScheduleComponent implements OnInit {
   previousShift: any = null;
   private previousDempoId: string | null = null;
   pId: number = 0;
-
+  isDataLoaded: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -234,77 +234,8 @@ export class ShiftScheduleComponent implements OnInit {
     this.isClose = true;
     this.dialogRef.close();
   }
-
-  // ngOnInit(){
-  //   this.getBlockOutDates();
-  //     this.getAuthor('');
-  //     if (this.selectedUser) {
-  //       this.getProjectInfo(this.selectedUser.dempoId);
-  //     } else {
-  //       this.getProjectInfo('');
-  //     }
-  //     this.currentDay = new Intl.DateTimeFormat('en-US', {
-  //       weekday: 'long',
-  //     }).format(new Date());
-
-  //     this.shiftForm = new FormGroup({
-  //       user: new FormControl(null, Validators.required),
-  //       projects: new FormControl([], Validators.required),
-  //       dayWiseDate: new FormControl(new Date(), Validators.required),
-  //       startTime: new FormControl(null, Validators.required),
-  //       endTime: new FormControl(null, Validators.required),
-  //       comments: new FormControl(''),
-  //       id: new FormControl(null),
-  //     });
-
-  //     this.shiftForm.valueChanges.subscribe(() => {
-  //       if (this.authenticatedUser.admin) {
-  //         this.isModified = true;
-  //       }
-  //       this.updateDuration();
-  //       this.scheduleFetchStatus = this.shiftForm.valid;
-  //       this.clearValidation();
-  //       this.shiftForm.markAsPristine();
-  //       this.shiftForm.markAsUntouched();
-  //       this.shiftForm.updateValueAndValidity({ emitEvent: false });
-  //     });
-
-  //     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-  //       if (date) {
-  //         if (this.authenticatedUser?.interviewer)
-  //           this.validateBlockOutDate(date);
-  //         this.updateDayLabel(date);
-  //       }
-  //     });
-
-  //     this.shiftForm.get('startTime')?.valueChanges.subscribe(() => {
-  //       this.isModified = true;
-  //       this.profileType = '';
-  //       this.clearValidation();
-  //     });
-
-  //     this.shiftForm.get('endTime')?.valueChanges.subscribe(() => {
-  //       this.isModified = true;
-  //       this.profileType = '';
-  //       this.clearValidation();
-  //     });
-
-  //     this.shiftForm.get('user')?.valueChanges.subscribe(() => {
-  //       this.clearValidation();
-  //     });
-  //     this.authenticationService.authenticatedUser.subscribe(
-  //       (authenticatedUser) => {
-  //         this.authenticatedUser = authenticatedUser;
-  //         this.userObj = this.authenticatedUser;
-  //       }
-  //     );
-  //     setTimeout(() => {
-  //       this.loadScheduleData();
-  //       this.loadUserData();
-  //       // this.loadEditScheduleData();
-  //     }, 100);
-  // }
   ngOnInit(): void {
+    this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
       this.getOptionValue();
@@ -466,39 +397,10 @@ export class ShiftScheduleComponent implements OnInit {
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
+    setTimeout(() => {
+      this.isDataLoaded = true;
+    }, 200);
   }
-  // loadEditScheduleData(){
-  //   this.scheduleService.getScheduleEditData().subscribe((data) => {
-  //     console.log("load data----->",data);
-  //     // console.log("data.preschedulekey--->",data.preschedulekey);
-  //     if (data) {
-  //       this.isEdit = data.isEdit;
-  //       this.tab = data.tab;
-  //       const selectedUser =
-  //         this.userList.find((user) => user?.userId === data?.user?.userId) || null;
-  //       this.selectedUser = selectedUser;
-  //       this.homeUser = selectedUser;
-  //       const selectedProject =
-  //         this.allProjects.find((p) => p?.projectId === data?.projects?.projectId) ||
-  //         null;
-  //       this.selectedProject = selectedProject;
-  //       this.homeSelectedProject = selectedProject;
-  //       this.homeSelectedDate = new Date(data.dayWiseDate);
-  //       setTimeout(() => {
-  //         this.shiftForm.patchValue({
-  //           user: this.selectedUser,
-  //           projects: this.selectedProject,
-  //           dayWiseDate: new Date(data.dayWiseDate),
-  //           startTime: data.startTime,
-  //           endTime: data.endTime,
-  //           comments: data.comments,
-  //           id: data.preschedulekey
-  //         });
-  //         this.cdr.detectChanges();
-  //       }, 0);
-  //     }
-  //   });
-  // }
   loadUserData(): void {
     this.scheduleService.getUser().subscribe((data) => {
       if (data) {
