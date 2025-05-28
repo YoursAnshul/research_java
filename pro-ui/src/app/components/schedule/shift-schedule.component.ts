@@ -317,7 +317,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (date && this.previousDate?.toString() !== new Date(date).toString()) {
+      if (this.shiftForm.valid && this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
         this.isDateModified = true;
         this.isEditAble = this.shiftForm.dirty;
@@ -335,7 +335,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDayLabel(date);
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
-      if (startTime && (this.previousStartTime !== startTime || this.isDateModified)) {
+      if (this.shiftForm.valid && (this.previousStartTime !== startTime || this.isDateModified)) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -348,7 +348,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
-      if (endTime && (this.previousEndTime !== endTime || this.isDateModified)) {
+      if (this.shiftForm.valid && (this.previousEndTime !== endTime || this.isDateModified)) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -361,7 +361,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('user')?.valueChanges.subscribe((user) => {
-      if (user &&(
+      if (this.shiftForm.valid &&(
         !this.authenticatedUser?.interviewer &&
         !this.isHomeRedirect &&
         this.profileType != 'user-profile')
@@ -376,7 +376,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
     this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
-      if (project && (
+      if (this.shiftForm.valid && (
         !this.skipValidation &&
         (this.authenticatedUser?.interviewer ||
           this.isHomeRedirect ||
