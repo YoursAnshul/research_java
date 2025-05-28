@@ -317,7 +317,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (this.previousDate?.toString() !== new Date(date).toString()) {
+      if (date && this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
         this.isDateModified = true;
         this.isEditAble = this.shiftForm.dirty;
@@ -335,7 +335,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDayLabel(date);
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
-      if (this.previousStartTime !== startTime || this.isDateModified) {
+      if (startTime && (this.previousStartTime !== startTime || this.isDateModified)) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -348,7 +348,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
-      if (this.previousEndTime !== endTime || this.isDateModified) {
+      if (endTime && (this.previousEndTime !== endTime || this.isDateModified)) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -361,10 +361,10 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('user')?.valueChanges.subscribe((user) => {
-      if (
+      if (user &&(
         !this.authenticatedUser?.interviewer &&
         !this.isHomeRedirect &&
-        this.profileType != 'user-profile'
+        this.profileType != 'user-profile')
       ) {
         if (this.previousDempoId !== user.dempoId) {
           this.isModified = true;
@@ -376,11 +376,11 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
     this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
-      if (
+      if (project && (
         !this.skipValidation &&
         (this.authenticatedUser?.interviewer ||
           this.isHomeRedirect ||
-          this.profileType == 'user-profile')
+          this.profileType == 'user-profile'))
       ) {
         this.skipValidation = true;
         this.previousProjectName = project.projectName;
@@ -1124,6 +1124,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
+     this.previousShift = this.shiftForm.value;
   }
   getProjectInfoNew(dempoId: string, schedule: any): void {
     if (this.selectedUser) {
