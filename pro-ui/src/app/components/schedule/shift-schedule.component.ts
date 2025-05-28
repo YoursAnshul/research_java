@@ -235,7 +235,6 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onClose(): void {
     this.isClosed = true;
-    this.onResetShiftSchedule();
     this.dialogRef.close();
   }
   ngOnInit(): void {
@@ -365,12 +364,12 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('user')?.valueChanges.subscribe((user) => {
-      if (this.shiftForm.valid && user && (
+      if (
         !this.authenticatedUser?.interviewer &&
         !this.isHomeRedirect &&
-        this.profileType != 'user-profile')
+        this.profileType != 'user-profile'
       ) {
-        if (this.previousDempoId !== user.dempoId) {
+        if (this.shiftForm.valid && user && this.previousDempoId !== user.dempoId) {
           this.isModified = true;
           this.isEditAble = this.shiftForm.dirty;
         } else {
@@ -380,17 +379,17 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
     this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
-      if (this.shiftForm.valid && project && (
+      if (
         !this.skipValidation &&
         (this.authenticatedUser?.interviewer ||
           this.isHomeRedirect ||
-          this.profileType == 'user-profile'))
+          this.profileType == 'user-profile')
       ) {
         this.skipValidation = true;
         this.previousProjectName = project.projectName;
         return;
       }
-      if (this.previousProjectName !== project.projectName) {
+      if (this.shiftForm.valid && project && this.previousProjectName !== project.projectName) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
