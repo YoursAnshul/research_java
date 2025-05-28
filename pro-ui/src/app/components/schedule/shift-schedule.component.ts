@@ -6,6 +6,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -37,6 +38,7 @@ import { RequestsService } from '../../services/requests/requests.service';
 import { MonthlyBlockDate } from '../calendar/calendar-controls/monthly.block.out.dialog.component';
 import { UsersService } from '../../services/users/users.service';
 import { SchedulingLevelDialog } from '../calendar/calendar-controls/scheduling-lever-dialog';
+import { CalendarComponent } from '../calendar/calendar.component';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -183,6 +185,7 @@ export class ShiftScheduleComponent implements OnInit {
   private previousDempoId: string | null = null;
   pId: number = 0;
   isDataLoaded: boolean = false;
+  isClosed: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -231,7 +234,8 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onClose(): void {
-    this.isClose = true;
+    this.isClosed = true;
+    this.onResetShiftSchedule();
     this.dialogRef.close();
   }
   ngOnInit(): void {
@@ -317,7 +321,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (this.shiftForm.valid && this.previousDate?.toString() !== new Date(date).toString()) {
+      if (this.shiftForm.valid && date && this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
         this.isDateModified = true;
         this.isEditAble = this.shiftForm.dirty;
@@ -335,7 +339,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDayLabel(date);
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
-      if (this.shiftForm.valid && (this.previousStartTime !== startTime || this.isDateModified)) {
+      if (this.shiftForm.valid && startTime && (this.previousStartTime !== startTime || this.isDateModified)) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -348,7 +352,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
-      if (this.shiftForm.valid && (this.previousEndTime !== endTime || this.isDateModified)) {
+      if (this.shiftForm.valid && endTime && (this.previousEndTime !== endTime || this.isDateModified)) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -361,7 +365,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('user')?.valueChanges.subscribe((user) => {
-      if (this.shiftForm.valid &&(
+      if (this.shiftForm.valid && user && (
         !this.authenticatedUser?.interviewer &&
         !this.isHomeRedirect &&
         this.profileType != 'user-profile')
@@ -376,7 +380,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     });
     this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
-      if (this.shiftForm.valid && (
+      if (this.shiftForm.valid && project && (
         !this.skipValidation &&
         (this.authenticatedUser?.interviewer ||
           this.isHomeRedirect ||
@@ -790,7 +794,7 @@ export class ShiftScheduleComponent implements OnInit {
           (s) =>
             new Date(s.dayWiseDate).getDay() === 5 &&
             this.combineDateAndTime(s.dayWiseDate, s.startTime).getHours() >=
-              17 &&
+            17 &&
             new Date(s.dayWiseDate).getMonth() === currentMonth &&
             s.user.dempoId === formData.user.dempoId
         );
@@ -962,11 +966,11 @@ export class ShiftScheduleComponent implements OnInit {
           !this.shiftSchedule.some(
             (shift) =>
               formatDate(shift.dayWiseDate) ===
-                formatDate(newShift.dayWiseDate) &&
+              formatDate(newShift.dayWiseDate) &&
               shift.startTime.trim().toLowerCase() ===
-                newShift.startTime.trim().toLowerCase() &&
+              newShift.startTime.trim().toLowerCase() &&
               shift.endTime.trim().toLowerCase() ===
-                newShift.endTime.trim().toLowerCase() &&
+              newShift.endTime.trim().toLowerCase() &&
               shift.user.dempoId === newShift.user.dempoId
           )
       );
@@ -1052,7 +1056,7 @@ export class ShiftScheduleComponent implements OnInit {
         } else {
         }
       },
-      (error) => {}
+      (error) => { }
     );
   }
   formatDateForRequest(date: Date): string {
@@ -1124,7 +1128,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
-     this.previousShift = this.shiftForm.value;
+    this.previousShift = this.shiftForm.value;
   }
   getProjectInfoNew(dempoId: string, schedule: any): void {
     if (this.selectedUser) {
@@ -1266,7 +1270,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   // Emit selected date
-  emitSelectedDate(): void {}
+  emitSelectedDate(): void { }
 
   addDateUnitsToSelectedDate(unit: number): void {
     let selectedDt = new Date();
@@ -1312,8 +1316,8 @@ export class ShiftScheduleComponent implements OnInit {
       period === 'PM' && hours !== 12
         ? hours + 12
         : period === 'AM' && hours === 12
-        ? 0
-        : hours;
+          ? 0
+          : hours;
 
     date.setHours(hours, minutes, 0, 0);
     return date;

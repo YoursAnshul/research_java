@@ -409,9 +409,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
         tab = data.tab;
       }
     });
-    if (tab == 'Day') {
-      return;
-    }
+  
     this.processedSchedules?.forEach((s) => (s.isEdit = false));
     this.scheduleService.getType().subscribe((type) => {
       if (type) {

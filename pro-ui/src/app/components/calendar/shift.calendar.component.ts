@@ -400,7 +400,7 @@ export class ShifCalendarComponent implements OnInit {
           true
         )
       );
-    } else if (this.authenticatedUser.admin && this.tab == 'Day') {
+    } else if (this.isHomeRedirect && this.authenticatedUser.admin && this.tab == 'Day') {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(
           this.selectedDate.value,
