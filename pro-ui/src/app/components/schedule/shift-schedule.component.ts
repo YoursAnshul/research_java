@@ -201,7 +201,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
-        console.log(' this.authenticatedUser---->', this.authenticatedUser);
       }
     );
   }

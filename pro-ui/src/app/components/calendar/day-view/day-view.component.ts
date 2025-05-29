@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import {
+  IAuthenticatedUser,
   ILegend,
   ISchedule,
   IUserSchedule,
@@ -11,6 +12,7 @@ import { HoverMessage } from '../../../models/presentation/hover-message';
 import { ScheduleService } from '../../schedule/schedule.service';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-day-view',
@@ -20,17 +22,24 @@ import { MatDialog } from '@angular/material/dialog';
 export class DayViewComponent implements OnInit {
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
-
+  authenticatedUser!: IAuthenticatedUser;
   hoverMessage: HoverMessage = new HoverMessage();
+  hoverContent: string | null = null; // add this variable
 
   constructor(
     private globalsService: GlobalsService,
     private scheduleService: ScheduleService,
     private dialog: MatDialog,
-    
-  ) {}
+    private authenticationService: AuthenticationService
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+  }
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;
@@ -108,6 +117,7 @@ export class DayViewComponent implements OnInit {
     us: IUserSchedule
   ): void {
     let htmlMessage: string =
+      '<div class="hover-message-wrapper">' +
       '<p class="hover-message-title">' +
       us.user.displayName +
       ' (' +
@@ -119,16 +129,17 @@ export class DayViewComponent implements OnInit {
       schedule.endTime +
       ' - ' +
       Utils.formatDateOnlyToStringUTC(schedule.startdatetime) +
-      '<p>';
+      '</p>';
 
-    //comments
+    // comments
     if (schedule.comments) {
-      htmlMessage =
-        htmlMessage +
+      htmlMessage +=
         '<p class="bold">Comments:</p><p>' +
         schedule.comments +
         '</p>';
     }
+
+    htmlMessage += '</div>';
 
     this.hoverMessage.setAndShow(event, htmlMessage);
   }
@@ -137,6 +148,9 @@ export class DayViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   openScheduleData(schedule: any): void {
+    if (this.authenticatedUser.interviewer && this.authenticatedUser.netID != schedule.dempoid) {
+      return;
+    }
     schedule.tab = "Day";
     schedule.isHomeRedirect = true
     this.scheduleService.setSchedule(schedule);
