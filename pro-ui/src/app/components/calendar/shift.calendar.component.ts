@@ -271,6 +271,7 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
   onReset(): void {
+    this.count = 0;
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     this.selectedDate.setValue(new Date());
@@ -400,7 +401,11 @@ export class ShifCalendarComponent implements OnInit {
           true
         )
       );
-    } else if (this.isHomeRedirect && this.authenticatedUser.admin && this.tab == 'Day') {
+    } else if (
+      this.isHomeRedirect &&
+      this.authenticatedUser.admin &&
+      this.tab == 'Day'
+    ) {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(
           this.selectedDate.value,
@@ -592,37 +597,37 @@ export class ShifCalendarComponent implements OnInit {
         day1Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 1
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 1
         ),
         day2Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 2
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 2
         ),
         day3Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 3
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 3
         ),
         day4Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 4
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 4
         ),
         day5Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 5
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 5
         ),
         day6Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 6
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 6
         ),
         day7Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 7
+              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 7
         ),
       };
       this.monthSchedules.weekSchedules.push(weekSchedules);
@@ -1169,16 +1174,17 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-    // if(this.tab && this.tab!='Day'){
+    if (++this.count > 1) {
+      return;
+    }
     this.isLoading = true;
-    // }
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     let url = '';
     if (this.authenticatedUser?.interviewer) {
       if (!this.selectedUser1.dempoId) {
         this.getLoginUser(this.selectedUser.eppn);
-      } 
+      }
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
     } else {
       if (!this.authenticatedUser?.interviewer) {
