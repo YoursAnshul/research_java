@@ -20,18 +20,12 @@ export class HoverMessage {
 
     //set the hover message style and show it
     public setAndShow(event: any, htmlMessage: string): void {
-
         this.setGuid();
-
         this.htmlMessage = htmlMessage;
-
         this.showHoverMessage = true;
-
-        // this.styleTop = (event.clientY) + 'px';
-        // this.styleLeft = event.clientX + 'px';
-        // this.styleMarginTop = '-70px';
-        this.styleTop = '300px';      
-        this.styleLeft = 'calc(100vw - 1050px)';
+        this.styleLeft = (event.clientX + 30) + 'px';
+        this.styleTop = (event.clientY + 30) + 'px';
+        this.styleMarginTop = '-70px';
     }
 
     //hide the hover message

@@ -319,7 +319,11 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (this.shiftForm.valid && date && this.previousDate?.toString() !== new Date(date).toString()) {
+      if (
+        this.shiftForm.valid &&
+        date &&
+        this.previousDate?.toString() !== new Date(date).toString()
+      ) {
         this.isModified = true;
         this.isDateModified = true;
         this.isEditAble = this.shiftForm.dirty;
@@ -337,7 +341,11 @@ export class ShiftScheduleComponent implements OnInit {
       this.updateDayLabel(date);
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
-      if (this.shiftForm.valid && startTime && (this.previousStartTime !== startTime || this.isDateModified)) {
+      if (
+        this.shiftForm.valid &&
+        startTime &&
+        (this.previousStartTime !== startTime || this.isDateModified)
+      ) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -350,7 +358,11 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
-      if (this.shiftForm.valid && endTime && (this.previousEndTime !== endTime || this.isDateModified)) {
+      if (
+        this.shiftForm.valid &&
+        endTime &&
+        (this.previousEndTime !== endTime || this.isDateModified)
+      ) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -368,7 +380,11 @@ export class ShiftScheduleComponent implements OnInit {
         !this.isHomeRedirect &&
         this.profileType != 'user-profile'
       ) {
-        if (this.shiftForm.valid && user && this.previousDempoId !== user.dempoId) {
+        if (
+          this.shiftForm.valid &&
+          user &&
+          this.previousDempoId !== user.dempoId
+        ) {
           this.isModified = true;
           this.isEditAble = this.shiftForm.dirty;
         } else {
@@ -388,7 +404,11 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousProjectName = project.projectName;
         return;
       }
-      if (this.shiftForm.valid && project && this.previousProjectName !== project.projectName) {
+      if (
+        this.shiftForm.valid &&
+        project &&
+        this.previousProjectName !== project.projectName
+      ) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -532,6 +552,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     }
+    this.shiftForm.get('startTime')?.enable();
+    this.shiftForm.get('endTime')?.enable();
+    this.shiftForm.get('dayWiseDate')?.setErrors(null);
   }
 
   validateBlockOutDate(selectedDate: any): void {
@@ -792,7 +815,7 @@ export class ShiftScheduleComponent implements OnInit {
           (s) =>
             new Date(s.dayWiseDate).getDay() === 5 &&
             this.combineDateAndTime(s.dayWiseDate, s.startTime).getHours() >=
-            17 &&
+              17 &&
             new Date(s.dayWiseDate).getMonth() === currentMonth &&
             s.user.dempoId === formData.user.dempoId
         );
@@ -964,11 +987,11 @@ export class ShiftScheduleComponent implements OnInit {
           !this.shiftSchedule.some(
             (shift) =>
               formatDate(shift.dayWiseDate) ===
-              formatDate(newShift.dayWiseDate) &&
+                formatDate(newShift.dayWiseDate) &&
               shift.startTime.trim().toLowerCase() ===
-              newShift.startTime.trim().toLowerCase() &&
+                newShift.startTime.trim().toLowerCase() &&
               shift.endTime.trim().toLowerCase() ===
-              newShift.endTime.trim().toLowerCase() &&
+                newShift.endTime.trim().toLowerCase() &&
               shift.user.dempoId === newShift.user.dempoId
           )
       );
@@ -1054,7 +1077,7 @@ export class ShiftScheduleComponent implements OnInit {
         } else {
         }
       },
-      (error) => { }
+      (error) => {}
     );
   }
   formatDateForRequest(date: Date): string {
@@ -1268,7 +1291,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   // Emit selected date
-  emitSelectedDate(): void { }
+  emitSelectedDate(): void {}
 
   addDateUnitsToSelectedDate(unit: number): void {
     let selectedDt = new Date();
@@ -1314,8 +1337,8 @@ export class ShiftScheduleComponent implements OnInit {
       period === 'PM' && hours !== 12
         ? hours + 12
         : period === 'AM' && hours === 12
-          ? 0
-          : hours;
+        ? 0
+        : hours;
 
     date.setHours(hours, minutes, 0, 0);
     return date;

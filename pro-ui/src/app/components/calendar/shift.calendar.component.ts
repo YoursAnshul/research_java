@@ -461,9 +461,16 @@ export class ShifCalendarComponent implements OnInit {
     }
     // this.selectedProject = this.defaultProject;
     // this.selectedUser = this.defaultUser;
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
+    if (!this.isHomeRedirect) {
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(
+          this.selectedDate.value,
+          true,
+          true,
+          true
+        )
+      );
+    }
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
   }
@@ -1174,9 +1181,6 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-    if (++this.count > 1) {
-      return;
-    }
     this.isLoading = true;
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
@@ -1233,13 +1237,10 @@ export class ShifCalendarComponent implements OnInit {
     this.sendDate.emit(date);
   }
   handleWeekDate(date: FormControl) {
-    console.log('date000000>-=======>', date);
-
     this.sendWeekDate.emit(date);
   }
 
   handleSchedule(schedule: any) {
-    console.log('Received from A:', schedule);
     this.scheduleData.emit(schedule);
   }
 }
