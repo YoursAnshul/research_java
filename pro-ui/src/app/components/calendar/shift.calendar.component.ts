@@ -519,9 +519,9 @@ export class ShifCalendarComponent implements OnInit {
     // );
     console.log('this.selectedDate------------', this.selectedDate);
 
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
+    // this.getScheduleList(
+    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // );
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
