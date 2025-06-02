@@ -461,16 +461,10 @@ export class ShifCalendarComponent implements OnInit {
     }
     // this.selectedProject = this.defaultProject;
     // this.selectedUser = this.defaultUser;
-    if (!this.isHomeRedirect) {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(
-          this.selectedDate.value,
-          true,
-          true,
-          true
-        )
-      );
-    }
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
+
     this.tabValue.emit(this.tabName);
     this.selectedDateRangeValue.emit(this.selectedDateRange.value);
   }
