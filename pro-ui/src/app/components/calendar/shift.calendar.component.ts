@@ -522,6 +522,7 @@ export class ShifCalendarComponent implements OnInit {
     // this.getScheduleList(
     //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     // );
+    this.isLoading = false;
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -548,6 +549,7 @@ export class ShifCalendarComponent implements OnInit {
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
+    this.isLoading = false;
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
