@@ -511,7 +511,6 @@ export class ShifCalendarComponent implements OnInit {
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
 
-    this.isLoading = false;
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -526,7 +525,6 @@ export class ShifCalendarComponent implements OnInit {
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
-    this.isLoading = false;
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -1153,52 +1151,54 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-    this.isLoading = true;
-    this.shiftSchedule = [];
-    this.shiftSchedule1 = [];
-    let url = '';
-    if (this.authenticatedUser?.interviewer) {
-      if (!this.selectedUser1.dempoId) {
-        this.getLoginUser(this.selectedUser.eppn, true);
-      }
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
-    } else {
-      if (!this.authenticatedUser?.interviewer) {
-        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-        if (this.selectedUser && this.selectedUser?.dempoId) {
-          url += `?demId=${this.selectedUser?.dempoId}`;
+    setTimeout(() => {
+      this.isLoading = true;
+      this.shiftSchedule = [];
+      this.shiftSchedule1 = [];
+      let url = '';
+      if (this.authenticatedUser?.interviewer) {
+        if (!this.selectedUser1.dempoId) {
+          this.getLoginUser(this.selectedUser.eppn, true);
+        }
+        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
+      } else {
+        if (!this.authenticatedUser?.interviewer) {
+          url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+          if (this.selectedUser && this.selectedUser?.dempoId) {
+            url += `?demId=${this.selectedUser?.dempoId}`;
+          }
         }
       }
-    }
 
-    this.http.get<any[]>(url).subscribe({
-      next: (response) => {
-        this.shiftSchedule = response ?? [];
-        localStorage.setItem(
-          'shiftSchedule',
-          JSON.stringify(this.shiftSchedule)
-        );
-        const missingSchedules =
-          this.shiftSchedule1?.filter(
-            (item1) =>
-              !this.shiftSchedule?.some(
-                (item2) =>
-                  item1.startTime === item2.startTime &&
-                  item1.endTime === item2.endTime &&
-                  item1.duration === item2.duration
-              )
-          ) || [];
+      this.http.get<any[]>(url).subscribe({
+        next: (response) => {
+          this.shiftSchedule = response ?? [];
+          localStorage.setItem(
+            'shiftSchedule',
+            JSON.stringify(this.shiftSchedule)
+          );
+          const missingSchedules =
+            this.shiftSchedule1?.filter(
+              (item1) =>
+                !this.shiftSchedule?.some(
+                  (item2) =>
+                    item1.startTime === item2.startTime &&
+                    item1.endTime === item2.endTime &&
+                    item1.duration === item2.duration
+                )
+            ) || [];
 
-        this.shiftSchedule.push(...missingSchedules);
-        this.syncData(this.shiftSchedule);
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching schedule list:', error);
-        this.shiftSchedule = [];
-        this.isLoading = false;
-      },
-    });
+          this.shiftSchedule.push(...missingSchedules);
+          this.syncData(this.shiftSchedule);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching schedule list:', error);
+          this.shiftSchedule = [];
+          this.isLoading = false;
+        },
+      });
+    }, 1000);
   }
 
   handleDate(date: FormControl) {
