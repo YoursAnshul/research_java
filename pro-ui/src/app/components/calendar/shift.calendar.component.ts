@@ -155,7 +155,6 @@ export class ShifCalendarComponent implements OnInit {
     this.usersService.allUsersMin.subscribe(
       (allUsers) => {
         this.allUsers = allUsers;
-        // this.getAllUserSchedulesByAnchorDate();
         if (this.authenticatedUser?.interviewer) {
           this.getAuthor1();
         } else {
@@ -323,7 +322,7 @@ export class ShifCalendarComponent implements OnInit {
     this.getProjectInfo('');
   }
 
-  getLoginUser(email: string): void {
+  getLoginUser(email: string, isSkip?: boolean): void {
     if (!email) {
       console.error('Email is required to fetch login author');
       return;
@@ -339,7 +338,9 @@ export class ShifCalendarComponent implements OnInit {
         this.userList = this.userList.filter(
           (user) => user.userId === this.selectedUser1?.userId
         );
-        this.getAllUserSchedulesByAnchorDate();
+        if (!isSkip) {
+          this.getAllUserSchedulesByAnchorDate();
+        }
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -503,25 +504,13 @@ export class ShifCalendarComponent implements OnInit {
   //---------------------------------------------------
   //get user schedules based on the date that is selected
   public getAllUserSchedulesByAnchorDate(): void {
-    //----------------------------------------------------
-    // get the first and last days of the selected week
-    //----------------------------------------------------
-
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
 
-    //----------------------------------------------------
-    // set user schedules
-    //----------------------------------------------------
-    // this.userSchedulesService.setAllUserSchedulesByAnchorDate(
-    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    // );
-    console.log('this.selectedDate------------', this.selectedDate);
-
-    // this.getScheduleList(
-    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    // );
     this.isLoading = false;
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
@@ -530,22 +519,10 @@ export class ShifCalendarComponent implements OnInit {
   public getAllUserSchedulesByAnchorDateNew(): void {
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
-    //----------------------------------------------------
-    // get the first and last days of the selected week
-    //----------------------------------------------------
     this.refreshDate();
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
-
-    //----------------------------------------------------
-    // set user schedules
-    //----------------------------------------------------
-    // this.userSchedulesService.setAllUserSchedulesByAnchorDate(
-    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    // );
-    console.log('this.selectedDate------------', this.selectedDate);
-
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
@@ -1158,7 +1135,6 @@ export class ShifCalendarComponent implements OnInit {
     this.selectedUserChange.emit(this.selectedUser);
   }
   onProjectChange(project: any) {
-    console.log('project--->', project);
     this.selectedProject = '';
     this.selectedProject = project;
     this.homeSelectedProject = null;
@@ -1183,7 +1159,7 @@ export class ShifCalendarComponent implements OnInit {
     let url = '';
     if (this.authenticatedUser?.interviewer) {
       if (!this.selectedUser1.dempoId) {
-        this.getLoginUser(this.selectedUser.eppn);
+        this.getLoginUser(this.selectedUser.eppn, true);
       }
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
     } else {
@@ -1195,17 +1171,13 @@ export class ShifCalendarComponent implements OnInit {
       }
     }
 
-    // Make the API call
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        // Ensure this.shiftSchedule is always an array
         this.shiftSchedule = response ?? [];
         localStorage.setItem(
           'shiftSchedule',
           JSON.stringify(this.shiftSchedule)
         );
-
-        // Check for missing schedules and merge them
         const missingSchedules =
           this.shiftSchedule1?.filter(
             (item1) =>
