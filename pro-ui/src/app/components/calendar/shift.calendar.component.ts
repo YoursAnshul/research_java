@@ -511,7 +511,7 @@ export class ShifCalendarComponent implements OnInit {
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
-    if (this.authenticatedUser?.interviewer) {
+    if ((!this.isHomeRedirect ) || this.authenticatedUser?.interviewer) {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(
           this.selectedDate.value,
