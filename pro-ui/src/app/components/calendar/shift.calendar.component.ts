@@ -156,9 +156,10 @@ export class ShifCalendarComponent implements OnInit {
         this.allUsers = allUsers;
         if (this.authenticatedUser?.interviewer) {
           this.getAuthor1();
-        } else {
-          this.getAllUserSchedulesByAnchorDate();
-        }
+        } 
+        // else {
+        //   this.getAllUserSchedulesByAnchorDate();
+        // }
       },
       (error) => {
         this.errorMessage = <string>error.message;
@@ -511,16 +512,10 @@ export class ShifCalendarComponent implements OnInit {
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
-    if ((!this.isHomeRedirect ) || this.authenticatedUser?.interviewer) {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(
-          this.selectedDate.value,
-          true,
-          true,
-          true
-        )
-      );
-    }
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
+
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
