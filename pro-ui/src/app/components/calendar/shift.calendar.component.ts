@@ -216,10 +216,18 @@ export class ShifCalendarComponent implements OnInit {
   }
   ngOnInit(): void {
     this.disableWeekTabTemporarily();
-    // this.getScheduleList()
-    //subscribe to scheduleFetchStatus
     this.getAuthor(0);
     this.getProjectInfo('');
+    if (!this.isHomeRedirect && !this.authenticatedUser.interviewer) {
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(
+          this.selectedDate.value,
+          true,
+          true,
+          true
+        )
+      );
+    }
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       (scheduleFetchStatus) => {
         this.scheduleFetchStatus = scheduleFetchStatus;
@@ -320,7 +328,7 @@ export class ShifCalendarComponent implements OnInit {
     this.getProjectInfo('');
   }
 
-  getLoginUser(email: string, isSkip?: boolean): void {
+  getLoginUser(email: string): void {
     if (!email) {
       console.error('Email is required to fetch login author');
       return;
@@ -336,9 +344,7 @@ export class ShifCalendarComponent implements OnInit {
         this.userList = this.userList.filter(
           (user) => user.userId === this.selectedUser1?.userId
         );
-        if (!isSkip) {
-          this.getAllUserSchedulesByAnchorDate();
-        }
+        this.getAllUserSchedulesByAnchorDate();
       },
       error: (error: any) => {
         console.error('Error fetching user info:', error);
@@ -505,10 +511,16 @@ export class ShifCalendarComponent implements OnInit {
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
-
+    if (this.authenticatedUser?.interviewer) {
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(
+          this.selectedDate.value,
+          true,
+          true,
+          true
+        )
+      );
+    }
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -520,9 +532,9 @@ export class ShifCalendarComponent implements OnInit {
     this.userSchedulesService.selectedDate.next(
       new Date(this.selectedDate.value)
     );
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
+    // this.getScheduleList(
+    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // );
     this.seletedDayDate.emit(this.selectedDate?.value);
     this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
@@ -1149,13 +1161,13 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   getScheduleList(anchorDate: string | null): void {
-    this.isLoading = true;
+    this.isLoading = false;
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     let url = '';
     if (this.authenticatedUser?.interviewer) {
       if (!this.selectedUser1.dempoId) {
-        this.getLoginUser(this.selectedUser.eppn, true);
+        this.getLoginUser(this.selectedUser.eppn);
       }
       url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
     } else {
@@ -1166,7 +1178,6 @@ export class ShifCalendarComponent implements OnInit {
         }
       }
     }
-
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
         this.shiftSchedule = response ?? [];
