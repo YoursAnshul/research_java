@@ -319,11 +319,7 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (
-        this.shiftForm.valid &&
-        date &&
-        this.previousDate?.toString() !== new Date(date).toString()
-      ) {
+      if (date && this.previousDate?.toString() !== new Date(date).toString()) {
         this.isModified = true;
         this.isDateModified = true;
         this.isEditAble = this.shiftForm.dirty;
@@ -342,7 +338,6 @@ export class ShiftScheduleComponent implements OnInit {
     });
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (
-        this.shiftForm.valid &&
         startTime &&
         (this.previousStartTime !== startTime || this.isDateModified)
       ) {
@@ -359,7 +354,6 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
       if (
-        this.shiftForm.valid &&
         endTime &&
         (this.previousEndTime !== endTime || this.isDateModified)
       ) {
@@ -380,11 +374,7 @@ export class ShiftScheduleComponent implements OnInit {
         !this.isHomeRedirect &&
         this.profileType != 'user-profile'
       ) {
-        if (
-          this.shiftForm.valid &&
-          user &&
-          this.previousDempoId !== user.dempoId
-        ) {
+        if (user && this.previousDempoId !== user.dempoId) {
           this.isModified = true;
           this.isEditAble = this.shiftForm.dirty;
         } else {
@@ -404,11 +394,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousProjectName = project.projectName;
         return;
       }
-      if (
-        this.shiftForm.valid &&
-        project &&
-        this.previousProjectName !== project.projectName
-      ) {
+      if (project && this.previousProjectName !== project.projectName) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
