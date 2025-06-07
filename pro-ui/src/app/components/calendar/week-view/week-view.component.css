@@ -19,6 +19,8 @@
 #week-calendar-user-schedules {
   /*height: 600px;*/
   /*overflow-y: auto;*/
+  height: 140px !important;
+  min-height: 140px !important;
 }
 
 #week-calendar-user-schedules .user-card {
@@ -43,7 +45,8 @@
   background-color: white;
   /*white-space: nowrap;*/
   /* border: 0.5px solid #66AEFF; */
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
   cursor: pointer;
   user-select: none;
   margin-top: 5px;
@@ -71,7 +74,8 @@
   margin-right: 10px;
   padding-top: 5%;
   border: 1px solid lightskyblue;
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 25px 25px 0 rgb(0 0 0 / 14%), 0 1px 0px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 25px 25px 0 rgb(0 0 0 / 14%),
+    0 1px 0px 0 rgb(0 0 0 / 12%);
 }
 
 .project-time {
