@@ -347,7 +347,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.isModified = false;
       }
       this.previousStartTime = startTime;
-      this.profileType = '';
+      // this.profileType = '';
       this.validateTimeRange();
       // this.clearValidation();
     });
@@ -363,7 +363,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.isModified = false;
       }
       this.previousEndTime = endTime;
-      this.profileType = '';
+      // this.profileType = '';
       this.validateTimeRange();
       // this.clearValidation();
     });
@@ -1333,7 +1333,11 @@ export class ShiftScheduleComponent implements OnInit {
   onResetShiftSchedule(): void {
     this.isEdit = false;
     this.isEditAble = false;
-    if (this.authenticatedUser?.admin && !this.isHomeRedirect) {
+    if (
+      this.authenticatedUser?.admin &&
+      !this.isHomeRedirect &&
+      this.profileType != 'user-profile'
+    ) {
       this.shiftForm.reset({
         user: null,
         projects: [],
