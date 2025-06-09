@@ -156,7 +156,7 @@ export class ShifCalendarComponent implements OnInit {
         this.allUsers = allUsers;
         if (this.authenticatedUser?.interviewer) {
           this.getAuthor1();
-        } 
+        }
         // else {
         //   this.getAllUserSchedulesByAnchorDate();
         // }
@@ -359,7 +359,9 @@ export class ShifCalendarComponent implements OnInit {
       }
     });
 
-    if (this.tab || this.profileType == 'user-profile') {
+    if (this.profileType == 'user-profile') {
+      this.tabIndex = 2;
+    } else if (this.tab) {
       if (this.tab === 'Month') {
         this.tabIndex = 2;
       } else if (this.tab == 'Week') {
@@ -1161,10 +1163,14 @@ export class ShifCalendarComponent implements OnInit {
     this.shiftSchedule1 = [];
     let url = '';
     if (this.authenticatedUser?.interviewer) {
-      if (!this.selectedUser1.dempoId) {
+      if (!this.selectedUser1) {
         this.getLoginUser(this.selectedUser.eppn);
       }
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
+      if (this.selectedUser1) {
+        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1.dempoId}`;
+      } else {
+        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser.dempoId}`;
+      }
     } else {
       if (!this.authenticatedUser?.interviewer) {
         url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
