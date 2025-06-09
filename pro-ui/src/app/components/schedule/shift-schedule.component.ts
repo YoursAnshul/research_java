@@ -402,6 +402,11 @@ export class ShiftScheduleComponent implements OnInit {
       }
       this.previousProjectName = project.projectName;
     });
+    this.shiftForm.get('comments')?.valueChanges.subscribe((comment) => {
+      this.isModified = true;
+      this.isEditAble = this.shiftForm.dirty;
+    });
+
     this.currentDay = new Intl.DateTimeFormat('en-US', {
       weekday: 'long',
     }).format(new Date());
