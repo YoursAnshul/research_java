@@ -763,7 +763,7 @@ export class ShiftScheduleComponent implements OnInit {
 
       // Weekday/weekend start time constraints
       const startHour = startTime.getHours();
-      if (day == 1 || day == 4 || (day == 5 && startHour < 13)) {
+      if ((day == 1 || day == 4 || day == 5) && startHour < 13) {
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Weekday shifts must begin at or after 1 PM.' },
