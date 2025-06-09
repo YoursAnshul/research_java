@@ -17,10 +17,8 @@
 }
 
 #week-calendar-user-schedules {
-  /*height: 600px;*/
-  /*overflow-y: auto;*/
-  height: 140px !important;
-  min-height: 140px !important;
+  overflow-y: auto;
+  min-height: 180px !important;
 }
 
 #week-calendar-user-schedules .user-card {
@@ -54,7 +52,7 @@
 }
 
 #week-calendar-user-schedules .user-schedule-row {
-  height: 55px;
+  min-height: 55px;
 }
 
 .center-align-container {
