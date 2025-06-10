@@ -403,8 +403,14 @@ export class ShiftScheduleComponent implements OnInit {
       this.previousProjectName = project.projectName;
     });
     this.shiftForm.get('comments')?.valueChanges.subscribe((comment) => {
-      this.isModified = true;
-      this.isEditAble = this.shiftForm.dirty;
+      if (
+        comment &&
+        comment.trim() !== '' &&
+        this.previousShift?.comments !== comment
+      ) {
+        this.isModified = true;
+        this.isEditAble = this.shiftForm.dirty;
+      }
     });
 
     this.currentDay = new Intl.DateTimeFormat('en-US', {
@@ -679,24 +685,22 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   openMonthlyBlockDialog(): void {
-    setTimeout(() => {
-      const existingDialog = this.dialog.openDialogs.find(
-        (dialog) => dialog.componentInstance instanceof MonthlyBlockDate
-      );
+    const existingDialog = this.dialog.openDialogs.find(
+      (dialog) => dialog.componentInstance instanceof MonthlyBlockDate
+    );
 
-      if (existingDialog) {
-        return;
+    if (existingDialog) {
+      return;
+    }
+    const dialogRef = this.dialog.open(MonthlyBlockDate, {
+      panelClass: 'custom-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.closeDialog();
       }
-      const dialogRef = this.dialog.open(MonthlyBlockDate, {
-        panelClass: 'custom-dialog-container',
-      });
-
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          this.closeDialog();
-        }
-      });
-    }, 1000);
+    });
   }
 
   closeDialog(): void {
