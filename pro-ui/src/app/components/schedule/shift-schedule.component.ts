@@ -186,6 +186,7 @@ export class ShiftScheduleComponent implements OnInit {
   pId: number = 0;
   isDataLoaded: boolean = false;
   isClosed: boolean = false;
+  private previousComments: string | null = null;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -319,7 +320,11 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (date && this.previousDate?.toString() !== new Date(date).toString()) {
+      if (
+        date &&
+        this.shiftForm.valid &&
+        this.previousDate?.toString() !== new Date(date).toString()
+      ) {
         this.isModified = true;
         this.isDateModified = true;
         this.isEditAble = this.shiftForm.dirty;
@@ -339,6 +344,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (
         startTime &&
+        this.shiftForm.valid &&
         (this.previousStartTime !== startTime || this.isDateModified)
       ) {
         this.isModified = true;
@@ -355,6 +361,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
       if (
         endTime &&
+        this.shiftForm.valid &&
         (this.previousEndTime !== endTime || this.isDateModified)
       ) {
         this.isModified = true;
@@ -374,7 +381,11 @@ export class ShiftScheduleComponent implements OnInit {
         !this.isHomeRedirect &&
         this.profileType != 'user-profile'
       ) {
-        if (user && this.previousDempoId !== user.dempoId) {
+        if (
+          user &&
+          this.shiftForm.valid &&
+          this.previousDempoId !== user.dempoId
+        ) {
           this.isModified = true;
           this.isEditAble = this.shiftForm.dirty;
         } else {
@@ -394,7 +405,11 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousProjectName = project.projectName;
         return;
       }
-      if (project && this.previousProjectName !== project.projectName) {
+      if (
+        project &&
+        this.shiftForm.valid &&
+        this.previousProjectName !== project.projectName
+      ) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -406,11 +421,12 @@ export class ShiftScheduleComponent implements OnInit {
       if (
         comment &&
         comment.trim() !== '' &&
-        this.previousShift?.comments !== comment
+        this.previousComments !== comment
       ) {
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       }
+      this.previousComments = comment;
     });
 
     this.currentDay = new Intl.DateTimeFormat('en-US', {
@@ -738,7 +754,7 @@ export class ShiftScheduleComponent implements OnInit {
     return Math.floor(days / 7) % 2 === 0;
   }
   onSubmit(): void {
-    if (this.schedulinglevel && this.schedulinglevel == 1) {
+    if (this.schedulinglevel && this.schedulinglevel == 1 && !this.isScheduleUpdate) {
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
       const day = selectedDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
@@ -1811,6 +1827,7 @@ export class ShiftScheduleComponent implements OnInit {
       )
       .subscribe({
         next: (res: any) => {
+          this.isScheduleUpdate = true;
           this.showToastMessage(res.Message, 'success');
           this.scheduleFetchStatus = false;
           this.onSubmit();
