@@ -754,7 +754,11 @@ export class ShiftScheduleComponent implements OnInit {
     return Math.floor(days / 7) % 2 === 0;
   }
   onSubmit(): void {
-    if (this.schedulinglevel && this.schedulinglevel == 1 && !this.isScheduleUpdate) {
+    if (
+      this.schedulinglevel &&
+      this.schedulinglevel == 1 &&
+      !this.isScheduleUpdate
+    ) {
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
       const day = selectedDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
@@ -1014,9 +1018,6 @@ export class ShiftScheduleComponent implements OnInit {
       if (!this.isEdit) {
         this.saveSchedule();
       }
-      if (this.selectedProject && this.authenticatedUser.interviewer) {
-        this.saveNewRequest();
-      }
     }
   }
   saveNewRequest(): void {
@@ -1053,9 +1054,9 @@ export class ShiftScheduleComponent implements OnInit {
       invalidFields: [],
       decisionId: 1,
       requestCodeId: requestCodeIdValue,
-      interviewerEmpId: this.authenticatedUser.netID,
-      resourceTeamMemberId: this.authenticatedUser.netID,
-      resourceTeamMemberName: this.authenticatedUser.displayName,
+      interviewerEmpId: this.selectedUser.dempoId,
+      resourceTeamMemberId: this.selectedUser.dempoId,
+      resourceTeamMemberName: this.selectedUser.userName,
       requestId: 0,
       requestDate: new Date(),
       requestDetails: requestDetailsValue,
@@ -1505,12 +1506,13 @@ export class ShiftScheduleComponent implements OnInit {
           this.shiftSchedule1 = [];
           this.shiftSchedule = [];
           this.isScheduleUpdate = true;
-          this.onResetShiftSchedule();
           if (res.Message == 'Schedule already exists for this user!') {
             this.shiftForm.get('startTime')?.setErrors({ required: true });
             this.shiftForm.get('endTime')?.setErrors({ required: true });
+          } else if (this.selectedProject) {
+            this.saveNewRequest();
           }
-
+          this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
         },
         error: (error) => {
