@@ -757,7 +757,7 @@ export class ShiftScheduleComponent implements OnInit {
     if (
       this.schedulinglevel &&
       this.schedulinglevel == 1 &&
-      !this.isScheduleUpdate
+      !this.isScheduleUpdate && this.authenticatedUser.interviewer
     ) {
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
