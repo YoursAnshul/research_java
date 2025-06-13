@@ -168,6 +168,7 @@ export class ShiftScheduleComponent implements OnInit {
     notes: '',
     modBy: '',
     entryBy: '',
+    scheduleId: null,
   };
   dateOptionValue: number = 0;
   isDateBlockDate: boolean = false;
@@ -757,7 +758,8 @@ export class ShiftScheduleComponent implements OnInit {
     if (
       this.schedulinglevel &&
       this.schedulinglevel == 1 &&
-      !this.isScheduleUpdate && this.authenticatedUser.interviewer
+      !this.isScheduleUpdate &&
+      this.authenticatedUser.interviewer
     ) {
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
@@ -1020,7 +1022,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     }
   }
-  saveNewRequest(): void {
+  saveNewRequest(id: number): void {
     if (
       !(
         this.selectedProject.projectName == 'Sick' ||
@@ -1069,6 +1071,7 @@ export class ShiftScheduleComponent implements OnInit {
       requestType: requestTypeValue,
       invalid: false,
       modDt: new Date(),
+      scheduleId: id,
     };
     this.requestsService.saveRequests([this.newRequest]).subscribe(
       (response) => {
@@ -1085,12 +1088,103 @@ export class ShiftScheduleComponent implements OnInit {
             notes: '',
             modBy: '',
             entryBy: '',
+            scheduleId: null,
           };
         } else {
         }
       },
       (error) => {}
     );
+  }
+  updateNewRequest(id: number): void {
+    if (
+      !(
+        this.selectedProject.projectName == 'Sick' ||
+        this.selectedProject.projectName == 'Absent' ||
+        this.selectedProject.projectName == 'Arriving Late' ||
+        this.selectedProject.projectName == 'Leaving Early'
+      )
+    ) {
+      return;
+    }
+    let requestCodeIdValue = 0;
+    let requestTypeValue = '';
+    if (this.selectedProject.projectName == 'Sick') {
+      requestCodeIdValue = 3;
+      requestTypeValue = 'Unexcused Absence-Sick';
+    } else if (this.selectedProject.projectName == 'Absent') {
+      requestCodeIdValue = 4;
+      requestTypeValue = 'Unexcused Absence-Other';
+    } else if (this.selectedProject.projectName == 'Arriving Late') {
+      requestCodeIdValue = 7;
+      requestTypeValue = 'Tardy-Arriving Late';
+    } else if (this.selectedProject.projectName == 'Leaving Early') {
+      requestCodeIdValue = 8;
+      requestTypeValue = 'Tardy-Leaving Early';
+    }
+
+    const selectedDate: Date = this.shiftForm.value.dayWiseDate;
+    const formattedDate = this.formatDateForRequest(selectedDate);
+    const requestDetailsValue = `${this.selectedProject.projectName}: ${formattedDate}: ${this.shiftForm.value.startTime}-${this.shiftForm.value.endTime}`;
+    this.newRequest = {
+      invalidFields: [],
+      decisionId: 1,
+      requestCodeId: requestCodeIdValue,
+      interviewerEmpId: this.selectedUser.dempoId,
+      resourceTeamMemberId: this.selectedUser.dempoId,
+      resourceTeamMemberName: this.selectedUser.userName,
+      requestId: 0,
+      requestDate: new Date(),
+      requestDetails: requestDetailsValue,
+      notes: '',
+      modBy: this.authenticatedUser.netID,
+      entryBy: this.authenticatedUser.netID,
+      changed: false,
+      entryDt: new Date(),
+      decision: 'Schedule updated',
+      requestType: requestTypeValue,
+      invalid: false,
+      modDt: new Date(),
+      scheduleId: id,
+    };
+    this.requestsService.updateRequests([this.newRequest]).subscribe(
+      (response) => {
+        if (response.Status == 'Success') {
+          this.newRequest = {
+            invalidFields: [],
+            decisionId: null,
+            requestCodeId: null,
+            interviewerEmpId: null,
+            resourceTeamMemberId: null,
+            requestId: 0,
+            requestDate: new Date(),
+            requestDetails: '',
+            notes: '',
+            modBy: '',
+            entryBy: '',
+            scheduleId: null,
+          };
+        } else {
+        }
+      },
+      (error) => {}
+    );
+  }
+
+  deleteNewRequest(id: number): void {
+    this.http
+      .delete(
+        `${environment.DataAPIUrl}/api/requests/${id}`
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.showToastMessage(res.Message, 'success');
+        },
+        error: (error) => {
+          console.error('Error deleting schedule:', error);
+          this.showToastMessage('Failed to delete request.', 'error');
+        },
+      });
   }
   formatDateForRequest(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
@@ -1510,7 +1604,7 @@ export class ShiftScheduleComponent implements OnInit {
             this.shiftForm.get('startTime')?.setErrors({ required: true });
             this.shiftForm.get('endTime')?.setErrors({ required: true });
           } else if (this.selectedProject) {
-            this.saveNewRequest();
+            this.saveNewRequest(res.Subject.preschedulekey);
           }
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
@@ -1752,6 +1846,9 @@ export class ShiftScheduleComponent implements OnInit {
           this.onSubmit();
           this.isEdit = false;
           this.isScheduleUpdate = true;
+          if (this.selectedProject) {
+            this.updateNewRequest(shift.id);
+          }
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
@@ -1834,11 +1931,11 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.onSubmit();
           this.isEdit = false;
+          this.deleteNewRequest(shift.id);
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
           localStorage.removeItem('shiftSchedule');
-          this.onResetShiftSchedule();
         },
         error: (error) => {
           console.error('Error deleting schedule:', error);

@@ -122,6 +122,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		if (successCount > 0 && duplicateCount == 0) {
+			String sql = "SELECT preScheduleKey FROM core.schedules ORDER BY preScheduleKey DESC LIMIT 1";
+		    Long preScheduleKey = jdbcTemplate.queryForObject(sql, Long.class);
+		    ScheduleResponse res = new ScheduleResponse();
+		    res.setPreschedulekey(preScheduleKey);
+		    response.Subject = res;
 			response.Message = "Schedule saved successfully!";
 		} else if (duplicateCount > 0) {
 			response.Message = "Schedule already exists for this user!";

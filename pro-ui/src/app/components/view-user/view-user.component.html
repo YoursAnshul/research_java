@@ -461,7 +461,7 @@
     <!--requests-->
     @if (selectedTab === 'requests') {
     <div class="m-3" *ngIf="createForm">
-      <table id="user-requests-table" mat-table [dataSource]="paginatedRequests" class="mat-elevation-z8"
+      <table id="user-requests-table" mat-table [dataSource]="paginatedRequests" 
         *ngIf="requests.length > 0">
 
         <ng-container matColumnDef="RequestType">
