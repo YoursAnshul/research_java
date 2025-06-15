@@ -120,16 +120,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   public statuses: IFormFieldVariable | undefined = undefined;
 
-  length = 4;
   pageSize = 10;
-  pageIndex = 0;
-  pageSizeOptions = [2, 5, 10, 15];
-  hidePageSize = false;
-  showPageSizeOptions = true;
-  showFirstLastButtons = true;
-  disabled = false;
-  pageEvent!: PageEvent;
   paginatedRequests: IRequest[] = [];
+  public currentPage: number = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -353,9 +346,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
                 (response) => {
                   if (response.Status == 'Success') {
                     this.requests = <IRequest[]>response.Subject;
-                    this.length = this.requests.length;
-                    this.pageIndex = 0;
-                    this.updatePaginatedRequests();
+                    this.paginate();
                     this.setNoRequestsResultsMessage();
                     this.trySetRequestValues();
                   } else {
@@ -1551,16 +1542,27 @@ export class ViewUserComponent implements OnInit, OnChanges {
       this.scheduleService.clearType();
     });
   }
-  handlePageEvent(e: PageEvent) {
-    this.pageEvent = e;
-    this.length = e.length;
-    this.pageSize = e.pageSize;
-    this.pageIndex = e.pageIndex;
-    this.updatePaginatedRequests();
-  }
-  updatePaginatedRequests(): void {
-    const startIndex = this.pageIndex * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedRequests = this.requests.slice(startIndex, endIndex);
+  public paginate(): void {
+    if (this.requests) {
+      if (this.requests.length <= this.pageSize) {
+        this.currentPage = 1;
+      }
+      let maxPage: number = Math.floor(
+        (this.requests || []).length / this.pageSize
+      );
+      maxPage = maxPage == 0 ? 1 : maxPage;
+
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
+
+      if (this.currentPage > maxPage) {
+        this.currentPage = maxPage;
+      }
+
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.paginatedRequests = this.requests.slice(startIndex, endIndex);
+    }
   }
 }
