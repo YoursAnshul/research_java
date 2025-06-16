@@ -188,6 +188,8 @@ export class ShiftScheduleComponent implements OnInit {
   isDataLoaded: boolean = false;
   isClosed: boolean = false;
   private previousComments: string | null = null;
+  isStartTimeChanged: boolean = false;
+  isEndTimeChanged: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -345,9 +347,10 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (
         startTime &&
-        this.shiftForm.valid &&
+        this.previousStartTime &&
         (this.previousStartTime !== startTime || this.isDateModified)
       ) {
+        this.isStartTimeChanged = true;
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -362,9 +365,10 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('endTime')?.valueChanges.subscribe((endTime) => {
       if (
         endTime &&
-        this.shiftForm.valid &&
+        this.previousEndTime &&
         (this.previousEndTime !== endTime || this.isDateModified)
       ) {
+        this.isEndTimeChanged = true;
         this.isModified = true;
         this.isEditAble = this.shiftForm.dirty;
       } else {
@@ -758,8 +762,8 @@ export class ShiftScheduleComponent implements OnInit {
     if (
       this.schedulinglevel &&
       this.schedulinglevel == 1 &&
-      !this.isScheduleUpdate &&
-      this.authenticatedUser.interviewer
+      this.authenticatedUser.interviewer &&
+      (this.isStartTimeChanged || this.isEndTimeChanged)
     ) {
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
@@ -778,6 +782,9 @@ export class ShiftScheduleComponent implements OnInit {
 
       // Basic validations
       if (durationInHours < 4) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Shift must be at least 4 hours.' },
@@ -785,6 +792,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
       if (durationInHours > 7) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Shift must be no more than 7 hours.' },
@@ -795,6 +805,9 @@ export class ShiftScheduleComponent implements OnInit {
       // Weekday/weekend start time constraints
       const startHour = startTime.getHours();
       if ((day == 1 || day == 4 || day == 5) && startHour < 13) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Weekday shifts must begin at or after 1 PM.' },
@@ -802,6 +815,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
       if (day === 6 && startHour < 9) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Saturday shifts must begin at or after 9 AM.' },
@@ -809,6 +825,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
       if (day === 0 && startHour < 12) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Sunday shifts must begin at or after 12 noon.' },
@@ -818,6 +837,9 @@ export class ShiftScheduleComponent implements OnInit {
 
       // Saturday/Sunday shift duration
       if ((day === 0 || day === 6) && durationInHours < 6) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
           data: { message: 'Weekend shifts must be at least 6 hours.' },
@@ -827,6 +849,9 @@ export class ShiftScheduleComponent implements OnInit {
 
       // Friday night rule
       if (day === 5 && startHour >= 17) {
+        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+        this.shiftForm.markAllAsTouched();
         const currentMonth = selectedDate.getMonth();
         const fridayNightShifts = this.shiftSchedule.filter(
           (s) =>
@@ -871,6 +896,9 @@ export class ShiftScheduleComponent implements OnInit {
         }, durationInHours); // include current shift
 
         if (totalHours > 20) {
+          this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+          this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+          this.shiftForm.markAllAsTouched();
           const dialogRef = this.dialog.open(SchedulingLevelDialog, {
             panelClass: 'custom-dialog-container',
             data: {
@@ -894,6 +922,9 @@ export class ShiftScheduleComponent implements OnInit {
         );
 
         if (evenWeek && !hasNightShift && endTime.getHours() < 21) {
+          this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+          this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+          this.shiftForm.markAllAsTouched();
           const dialogRef = this.dialog.open(SchedulingLevelDialog, {
             panelClass: 'custom-dialog-container',
             data: {
@@ -906,6 +937,9 @@ export class ShiftScheduleComponent implements OnInit {
         }
 
         if (evenWeek && !hasWeekendShift && ![0, 6].includes(day)) {
+          this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+          this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+          this.shiftForm.markAllAsTouched();
           const dialogRef = this.dialog.open(SchedulingLevelDialog, {
             panelClass: 'custom-dialog-container',
             data: {
@@ -1019,6 +1053,8 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('endTime')?.setErrors(null);
       if (!this.isEdit) {
         this.saveSchedule();
+      } else {
+        this.editSchedule();
       }
     }
   }
@@ -1172,19 +1208,15 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   deleteNewRequest(id: number): void {
-    this.http
-      .delete(
-        `${environment.DataAPIUrl}/api/requests/${id}`
-      )
-      .subscribe({
-        next: (res: any) => {
-          this.showToastMessage(res.Message, 'success');
-        },
-        error: (error) => {
-          console.error('Error deleting schedule:', error);
-          this.showToastMessage('Failed to delete request.', 'error');
-        },
-      });
+    this.http.delete(`${environment.DataAPIUrl}/api/requests/${id}`).subscribe({
+      next: (res: any) => {
+        this.showToastMessage(res.Message, 'success');
+      },
+      error: (error) => {
+        console.error('Error deleting schedule:', error);
+        this.showToastMessage('Failed to delete request.', 'error');
+      },
+    });
   }
   formatDateForRequest(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
@@ -1843,7 +1875,6 @@ export class ShiftScheduleComponent implements OnInit {
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
           this.scheduleFetchStatus = false;
-          this.onSubmit();
           this.isEdit = false;
           this.isScheduleUpdate = true;
           if (this.selectedProject) {
@@ -2017,6 +2048,8 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.patchValue(this.previousShift);
       this.isEditAble = false;
       this.isModified = false;
+      this.isStartTimeChanged = false;
+      this.isEndTimeChanged = false;
     }
   }
 }
