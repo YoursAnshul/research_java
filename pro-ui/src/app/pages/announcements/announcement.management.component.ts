@@ -56,23 +56,16 @@ export class ManageAnnouncementsComponent implements OnInit {
 
   allProjectList: any[] = [];
   announcements: any[] = [];
-
-  length = 4;
-  pageSize = 10;
-  pageIndex = 0;
-  pageSizeOptions = [5, 10, 15];
-  hidePageSize = false;
-  showPageSizeOptions = true;
-  showFirstLastButtons = true;
-  disabled = false;
-  pageEvent!: PageEvent;
-
   sortBy: string = '';
   orderBy: string = '';
   searchTerm: string = '';
-
   isLoading = false;
   userObj: any;
+
+  pageSize = 10;
+  paginatedAnnouncements: any[] = [];
+  public currentPage: number = 1;
+
   public authores: IFormFieldVariable | undefined = undefined;
   public selectedAuthores: SelectedValue[] = [];
   public selectCommaSeparatedAuthores: string = '';
@@ -93,7 +86,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     );
     this.getAuthors();
     this.getProjectInfo();
-    this.getList(this.pageIndex + 1);
+    this.getList();
   }
 
   public headerItemsChange(headerItems: TableHeaderItem[]): void {
@@ -110,8 +103,7 @@ export class ManageAnnouncementsComponent implements OnInit {
       if (this.headerItems[i].sortDirection && this.headerItems[i].name) {
         this.sortBy = this.headerItems[i].name || '';
         this.orderBy = this.headerItems[i].sortDirection || '';
-        this.pageIndex = 0;
-        this.getList(this.pageIndex + 1);
+        this.getList();
       }
     }
     this.selectCommaSeparatedAuthores =
@@ -120,9 +112,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             .map((author) => `'${author.item?.dropDownItem || ''}'`)
             .join(', ')
         : '';
-
-    this.pageIndex = 0;
-    this.getList(this.pageIndex + 1);
+    this.getList();
   }
   getProjectInfo(): void {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects-v2`;
@@ -136,7 +126,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     });
   }
 
-  getList(page: number): void {
+  getList(): void {
     this.isLoading = true;
     let params = new HttpParams();
     if (this.pageSize) {
@@ -151,7 +141,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     if (this.selectCommaSeparatedAuthores) {
       params = params.set('authorName', this.selectCommaSeparatedAuthores);
     }
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/list/${page}`;
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/announcement/list`;
     this.http.get(apiUrl, { params }).subscribe({
       next: (data: any) => {
         this.announcements = data?.data?.map((item: any) => {
@@ -184,8 +174,7 @@ export class ManageAnnouncementsComponent implements OnInit {
             icon: item?.icon,
           };
         });
-        this.length = 0;
-        this.length = data?.count || data?.data?.length;
+        this.paginate();
         this.isLoading = false;
       },
       error: (error: any) => {
@@ -201,18 +190,11 @@ export class ManageAnnouncementsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.pageIndex = 0;
-        this.getList(this.pageIndex + 1);
+        this.getList();
       }
     });
   }
-  handlePageEvent(e: PageEvent) {
-    this.pageEvent = e;
-    this.length = e.length;
-    this.pageSize = e.pageSize;
-    this.pageIndex = e.pageIndex;
-    this.getList(this.pageIndex + 1);
-  }
+
   viewAnnouncement(announcement: any): void {
     this.dialog.open(PreviewComponent, {
       width: '600px',
@@ -226,8 +208,7 @@ export class ManageAnnouncementsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.pageIndex = 0;
-        this.getList(this.pageIndex + 1);
+        this.getList();
       }
     });
   }
@@ -239,8 +220,7 @@ export class ManageAnnouncementsComponent implements OnInit {
         const apiUrl = `${environment.DataAPIUrl}/manage-announement/${announcement.id}/${this.authenticatedUser.netID}`;
         this.http.delete(apiUrl).subscribe({
           next: (data: any) => {
-            this.pageIndex = 0;
-            this.getList(this.pageIndex + 1);
+            this.getList();
             this.showToastMessage('Delete successfully!', 'success');
           },
           error: (error: any) => {
@@ -289,5 +269,31 @@ export class ManageAnnouncementsComponent implements OnInit {
         console.error('Error fetching authors:', error);
       },
     });
+  }
+  public paginate(): void {
+    if (this.announcements) {
+      if (this.announcements.length <= this.pageSize) {
+        this.currentPage = 1;
+      }
+      let maxPage: number = Math.floor(
+        (this.announcements || []).length / this.pageSize
+      );
+      maxPage = maxPage == 0 ? 1 : maxPage;
+
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
+
+      if (this.currentPage > maxPage) {
+        this.currentPage = maxPage;
+      }
+
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.paginatedAnnouncements = this.announcements.slice(
+        startIndex,
+        endIndex
+      );
+    }
   }
 }

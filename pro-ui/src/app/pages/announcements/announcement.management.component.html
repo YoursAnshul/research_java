@@ -36,8 +36,8 @@
           [(headerItems)]="headerItems"
           (headerItemsChange)="headerItemsChange($event)"
         ></app-table-header>
-        @if (announcements !== undefined && announcements.length > 0) {
-        <div *ngFor="let announcement of announcements" class="table-row">
+        @if (paginatedAnnouncements !== undefined && paginatedAnnouncements.length > 0) {
+        <div *ngFor="let announcement of paginatedAnnouncements" class="table-row">
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
             style="width: 170px"
@@ -89,7 +89,7 @@
           </div>
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
-            style="width: 150px; display: flex;"
+            style="width: 150px; display: flex"
           >
             <button mat-icon-button (click)="viewAnnouncement(announcement)">
               <svg
@@ -118,7 +118,11 @@
                 </g>
               </svg>
             </button>
-            <button mat-icon-button (click)="editAnnouncement(announcement)" style="margin-left: -15px;">
+            <button
+              mat-icon-button
+              (click)="editAnnouncement(announcement)"
+              style="margin-left: -15px"
+            >
               <svg
                 width="17"
                 height="16"
@@ -145,7 +149,8 @@
                 </g>
               </svg>
             </button>
-            <button style="margin-left: -15px;"
+            <button
+              style="margin-left: -15px"
               mat-icon-button
               color="warn"
               (click)="deleteAnnouncement(announcement)"
@@ -185,18 +190,9 @@
   @if (announcements !== undefined && announcements.length === 0) {
   <div class="w-full text-sm">No announcement found</div>
   }
-  <mat-paginator
-    *ngIf="announcements.length > 0"
-    #paginator
-    (page)="handlePageEvent($event)"
-    [length]="length"
-    [pageSize]="pageSize"
-    [disabled]="disabled"
-    [showFirstLastButtons]="showFirstLastButtons"
-    [pageSizeOptions]="showPageSizeOptions ? pageSizeOptions : []"
-    [hidePageSize]="hidePageSize"
-    [pageIndex]="pageIndex"
-    aria-label="Select page"
-  >
-  </mat-paginator>
+  <app-table-paginator
+    [sourceData]="announcements"
+    [(currentPage)]="currentPage"
+    [(paginatedData)]="paginatedAnnouncements"
+  ></app-table-paginator>
 </div>
