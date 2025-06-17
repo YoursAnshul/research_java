@@ -4,7 +4,8 @@ header {
   width: 100%;
   color: white;
   background-color: #0078d4;
-  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
 }
 
 #logged-in-as-section {
@@ -34,8 +35,8 @@ header {
 }
 
 .pro-ep-role {
-    font-size: 0.8em;
-    text-align: right;
+  font-size: 0.8em;
+  text-align: right;
 }
 
 #wordmark-logo {
@@ -51,14 +52,14 @@ header {
 }
 
 .circle {
-  background-color: #0680CD;
-    border-radius: 50%;
-    height: 35px;
-    width: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+  background-color: #0680cd;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .flex-custom {
@@ -67,13 +68,12 @@ header {
   margin-right: 20px;
 }
 
-
-.quick-book-ref{
+.quick-book-ref {
   width: Hug(436px);
   /* height: Fixed(850px) ; */
   max-height: 80vh !important;
-  top:123px ;
-  left:1065px ;
+  top: 123px;
+  left: 1065px;
 
   border-radius: 15px 15px 15px;
   border: 2px;
@@ -81,7 +81,7 @@ header {
   gap: 15px;
 }
 
-.bg-yellow-500{
+.bg-yellow-500 {
   background-color: #f59e0b !important;
 }
 
@@ -215,7 +215,7 @@ body {
   display: flex;
   /* justify-content: space-between; */
   font-size: 14px;
-  line-height: 1.0;
+  line-height: 1;
   /* margin-left: 20px; */
   /* margin-right: 18px; */
 }
@@ -392,10 +392,13 @@ body {
   width: 13px !important;
   height: 13px !important;
 }
-::ng-deep .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab{
+::ng-deep
+  .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs
+  > .mat-mdc-tab-header
+  .mat-mdc-tab {
   max-height: 38px !important;
 }
-::ng-deep .mat-mdc-tab-label-container{
+::ng-deep .mat-mdc-tab-label-container {
   margin-top: -5px !important;
 }
 ::ng-deep .mat-mdc-checkbox {
@@ -447,13 +450,13 @@ body {
 }
 
 .email-text {
-display: inline-block;
-max-width: 100%;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-font-size: 11px;
-margin-bottom: 5px;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  margin-bottom: 5px;
 }
 
 .svg-align {
@@ -475,13 +478,13 @@ margin-bottom: 5px;
   z-index: 10;
 }
 .show-more-less {
-color: blue;
-cursor: pointer;
-text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-.contact-item-row-voice-mail-info{
-display: flex;
+.contact-item-row-voice-mail-info {
+  display: flex;
   align-items: center;
   /* margin-right: 45px; */
   margin-left: 12px;

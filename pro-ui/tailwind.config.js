@@ -1,8 +1,12 @@
 /** @type {import('tailwindcss').Config} */
+
+const defaultColors = require('tailwindcss/colors')
+
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: ["./src/**/*.{html,js,ts}"],
   theme: {
     colors: {
+      ...defaultColors,
       'white': '#ffffff',
       'black': '#000000',
       'warn-red': '#DC4A38',

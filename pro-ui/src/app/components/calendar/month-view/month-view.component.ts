@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { IMonthSchedules } from '../../../interfaces/interfaces';
+import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 
 
 @Component({
@@ -10,9 +11,33 @@ import { IMonthSchedules } from '../../../interfaces/interfaces';
 export class MonthViewComponent implements OnInit {
 
   @Input() monthSchedules!: IMonthSchedules;
-  
+  authenticatedUser: any;
+  monthPart: any;
+  scheduleService: any;
+  dialog: any;
+
   constructor() { }
-  
+
   ngOnInit(): void {
+  }
+
+  openScheduleData(schedule: any): void {
+    if (this.monthPart) {
+      schedule.tab = "Month";
+    } else {
+      schedule.tab = "Week";
+    }
+    schedule.isHomeRedirect = true;
+    console.log('Clicked Week schedule--for month view---->:', schedule);
+    this.scheduleService.setSchedule(schedule);
+    const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      width: '1900px',
+      height: '900px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Shift Schedule dialog was closed', result);
+      this.scheduleService.clearSchedule();
+    });
   }
 }

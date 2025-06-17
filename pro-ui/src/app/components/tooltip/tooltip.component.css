@@ -1,0 +1,4 @@
+/* Extra styles for smooth fade-in/out if needed */
+:host {
+  display: inline-block;
+} 

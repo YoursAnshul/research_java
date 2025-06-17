@@ -12,28 +12,33 @@
 .announcements-header {
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
 }
 
 .announcements-header h3 {
-  font-size: 15px;
-  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  /* margin: 0; */
   color: #00569b;
   white-space: nowrap;
+  margin-left: 8px;
+  margin-bottom: 0;
 }
 
 .manage-link {
   font-size: 14px;
   color: #0680cd;
   text-decoration: underline;
-  margin-left: auto;        /* Push the manage link to the right end */
+  margin-left: auto; /* Push the manage link to the right end */
 }
 
 .announcement-title {
   color: #0680cd;
   /* text-decoration: underline; */
   cursor: pointer;
-  margin-left: 8px;         
+  margin-left: 8px;+
 }
+
 .announcement {
   width: 380px;
   padding: 16px;
@@ -126,8 +131,8 @@
 }
 
 ::ng-deep .announcement-text a {
-  color: blue !important; 
-  text-decoration: underline !important; 
+  color: blue !important;
+  text-decoration: underline !important;
   cursor: pointer !important;
 }
 .announcement-body {

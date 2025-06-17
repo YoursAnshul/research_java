@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { Utils } from '../../../classes/utils';
-import { IAuthenticatedUser, ILegend, ISchedule, IWeekSchedules } from '../../../interfaces/interfaces';
+import { ILegend, ISchedule, IWeekSchedules, IAuthenticatedUser } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { ScheduleService } from '../../schedule/schedule.service';
@@ -19,12 +19,9 @@ export class WeekViewComponent implements OnInit {
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Input() monthPart: boolean = false;
   authenticatedUser!: IAuthenticatedUser;
-
   hoverMessage: HoverMessage = new HoverMessage();
 
-  constructor(private globalsService: GlobalsService, private scheduleService: ScheduleService, private dialog: MatDialog,
-    private authenticationService: AuthenticationService
-  ) {
+  constructor(private authenticationService: AuthenticationService, private globalsService: GlobalsService, private scheduleService: ScheduleService, private dialog: MatDialog) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;

@@ -9,20 +9,19 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ViUserScheduleRepository extends JpaRepository<ViUserSchedule, Integer> {
-	// code not to be push
-	@Query("SELECT us FROM ViUserSchedule us JOIN User u on us.userid = u.userid WHERE "
-			+ " (YEAR(us.startdatetime) = :year " + "OR YEAR(us.weekStart) = :year "
+	@Query("SELECT us FROM ViUserSchedule us JOIN User u on us.userid = u.userid WHERE u.status = 1 "
+			+ "AND (YEAR(us.startdatetime) = :year " + "OR YEAR(us.weekStart) = :year "
 			+ "OR YEAR(us.weekEnd) = :year) " + "AND (MONTH(us.startdatetime) = :month "
 			+ "OR MONTH(us.weekStart) = :month " + "OR MONTH(us.weekEnd) = :month) "
 			+ "ORDER BY us.startdatetime, us.enddatetime")
 	List<ViUserSchedule> findByYearAndMonth(@Param("year") int year, @Param("month") int month);
 
-	@Query("SELECT usc FROM ViUserSchedule usc JOIN User u on usc.userid = u.userid WHERE u.active = true "
+	@Query("SELECT usc FROM ViUserSchedule usc JOIN User u on usc.userid = u.userid WHERE u.status = 1 "
 			+ "AND usc.startdatetime >= :startDate AND usc.enddatetime <= :endDate "
 			+ "ORDER BY usc.startdatetime, usc.enddatetime")
 	List<ViUserSchedule> findUserSchedulesBetweenDates(OffsetDateTime startDate, OffsetDateTime endDate);
 
-	@Query("SELECT usc FROM ViUserSchedule usc JOIN User u on usc.userid = u.userid WHERE u.active = true "
+	@Query("SELECT usc FROM ViUserSchedule usc JOIN User u on usc.userid = u.userid WHERE u.status = 1 "
 			+ "AND LOWER(u.dempoid) = LOWER(:dempoid) AND (YEAR(usc.startdatetime) = :year "
 			+ "OR YEAR(usc.weekStart) = :year OR YEAR(usc.weekEnd) = :year) "
 			+ "AND (MONTH(usc.startdatetime) = :month OR MONTH(usc.weekStart) = :month "

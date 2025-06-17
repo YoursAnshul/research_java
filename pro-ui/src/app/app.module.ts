@@ -99,6 +99,9 @@ import { ShiftWeekViewComponentV2 } from './components/calendar/week-view/shift-
 import { ShiftWeekViewComponentV3 } from './components/calendar/week-view/shift-week-view.componentV3';
 import { BlockdateDialog } from './components/calendar/calendar-controls/block.date.dialog.component';
 import { ConfirmationShiftDialogComponent } from './components/delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
+import { UserCoreHoursComponent } from './pages/forecasting/user-core-hours/user-core-hours.component';
+import { ProjectForecastingComponent } from './pages/forecasting/project-forecasting/project-forecasting.component';
+import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { MonthlyBlockDate } from './components/calendar/calendar-controls/monthly.block.out.dialog.component';
 import { SchedulingLevelDialog } from './components/calendar/calendar-controls/scheduling-lever-dialog';
 @NgModule({
@@ -174,6 +177,9 @@ import { SchedulingLevelDialog } from './components/calendar/calendar-controls/s
     ShiftWeekViewComponentV3,
     BlockdateDialog,
     ConfirmationShiftDialogComponent,
+    UserCoreHoursComponent,
+    ProjectForecastingComponent,
+    TooltipComponent,
     MonthlyBlockDate,
     SchedulingLevelDialog
   ],

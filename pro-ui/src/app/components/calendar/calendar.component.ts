@@ -133,9 +133,9 @@ export class CalendarComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {    
-     //subscribe to scheduleFetchStatus
-     this.userSchedulesService.scheduleFetchStatus.subscribe(
+  ngOnInit(): void {
+    //subscribe to scheduleFetchStatus
+    this.userSchedulesService.scheduleFetchStatus.subscribe(
       scheduleFetchStatus => {
         this.scheduleFetchStatus = scheduleFetchStatus;
         if (!scheduleFetchStatus) {
@@ -260,13 +260,13 @@ export class CalendarComponent implements OnInit {
     for (var i = 0; i < weekStarts.length; i++) {
       let weekSchedules: IWeekSchedules = {
         weekStart: weekStarts[i],
-        day1Schedules: this.filteredUserSchedulesMonth,
-        day2Schedules: this.filteredUserSchedulesMonth,
-        day3Schedules: this.filteredUserSchedulesMonth,
-        day4Schedules: this.filteredUserSchedulesMonth,
-        day5Schedules: this.filteredUserSchedulesMonth,
-        day6Schedules: this.filteredUserSchedulesMonth,
-        day7Schedules: this.filteredUserSchedulesMonth,
+        day1Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 1),
+        day2Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 2),
+        day3Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 3),
+        day4Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 4),
+        day5Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 5),
+        day6Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 6),
+        day7Schedules: this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.weekStart) === Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 7),
       };
       this.monthSchedules.weekSchedules.push(weekSchedules);
     }
@@ -287,21 +287,9 @@ export class CalendarComponent implements OnInit {
     //-------------------------------
     // day view
     //-------------------------------
-    // code not to be push
     var tempUserSchedulesDay: IUserSchedule[] = [];
-    console.log("this.filteredUserSchedulesMonth----------",this.filteredUserSchedulesMonth);
 
-    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => {
-      let formattedStartDate = Utils.formatDateOnlyToStringUTC(x.startdatetime);
-      let formattedSelectedDate = Utils.formatDateOnlyToStringUTC(this.selectedDate.value);
-      
-      console.log("Start Date (formatted):", formattedStartDate);
-      console.log("Selected Date (formatted):", formattedSelectedDate);
-      
-      return formattedStartDate === formattedSelectedDate;
-  });
-
-    // var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
+    var tempSchedulesToday: ISchedule[] = this.filteredUserSchedulesMonth.filter(x => Utils.formatDateOnlyToStringUTC(x.startdatetime) === Utils.formatDateOnlyToStringUTC(this.selectedDate.value));
 
     //get user schedules for the selected day
     this.allUsers.forEach(function (user) {
@@ -380,9 +368,9 @@ export class CalendarComponent implements OnInit {
     let anyTrainedOnFilter: IAnyFilter = this.anyFilter(this.trainedOnFilter, this.anyTrainedOnToggle);
     this.trainedOnFilter.setValue(anyTrainedOnFilter.filterControl.value);
     this.anyTrainedOnToggle = anyTrainedOnFilter.anyToggle;
-    if(this.anyTrainedOnToggle){
+    if (this.anyTrainedOnToggle) {
       this.notTrainedOnFilter.disable();
-    }else{
+    } else {
       this.notTrainedOnFilter.enable();
     }
 
@@ -392,9 +380,9 @@ export class CalendarComponent implements OnInit {
     this.notTrainedOnFilter.setValue(anyNotTrainedOnFilter.filterControl.value);
     this.anyNotTrainedOnToggle = anyNotTrainedOnFilter.anyToggle;
 
-    if(this.anyNotTrainedOnToggle){
+    if (this.anyNotTrainedOnToggle) {
       this.trainedOnFilter.disable();
-    }else{
+    } else {
       this.trainedOnFilter.enable();
     }
 
@@ -442,7 +430,7 @@ export class CalendarComponent implements OnInit {
           this.languageFilter.value.includes('0')
           || Utils.arrayIncludesAny(this.pipeStringToArray(user.user.language), this.languageFilter.value)
         )
-          && keepUser
+        && keepUser
       )
     ) {
       keepUser = false;

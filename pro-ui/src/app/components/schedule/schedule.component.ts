@@ -4,7 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { scheduled } from 'rxjs';
 import { Utils } from '../../classes/utils';
-import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings} from '../../interfaces/interfaces';
+import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { GlobalsService } from '../../services/globals/globals.service';
@@ -26,7 +26,7 @@ export class ScheduleComponent implements OnInit {
     let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => (x.changed) || (x.markedForDeletion));
 
     if (changedSchedules.length > 0) {
-      if(e){
+      if (e) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -117,13 +117,13 @@ export class ScheduleComponent implements OnInit {
   anyProjectToggle: boolean = true;
 
   constructor(private userSchedulesService: UserSchedulesService,
-              private usersService: UsersService,
-              private projectsService: ProjectsService,
-              private globalsService: GlobalsService,
-              private authenticationService: AuthenticationService,
-              private requestsService: RequestsService,
-              private configurationService: ConfigurationService,
-              private logsService: LogsService) {
+    private usersService: UsersService,
+    private projectsService: ProjectsService,
+    private globalsService: GlobalsService,
+    private authenticationService: AuthenticationService,
+    private requestsService: RequestsService,
+    private configurationService: ConfigurationService,
+    private logsService: LogsService) {
 
     //set date and week defaults
     this.selectedDate = new Date();
@@ -160,7 +160,7 @@ export class ScheduleComponent implements OnInit {
       }
     );
 
-;
+    ;
 
     //subscribe to schedule tab index
     this.globalsService.scheduleTabIndex.subscribe(
@@ -371,22 +371,22 @@ export class ScheduleComponent implements OnInit {
 
         if (!previousDateIsSame) {
           //call validate schedules
-          // this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
-          //   response => {
-          //     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
+            response => {
+              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                 try {
                   this.getValidationMessages();
                   //this.validationMessages = <IValidationMessage[]>(response.Subject).filter(x => x.DempoId == this.authenticatedUser.NetID);
                 } catch (ex) {
                   console.log(ex);
                 }
-          //     }
-          //   },
-          //   error => {
-          //     this.errorMessage = <string>(error.message);
-          //     this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-          //   }
-          // )
+              }
+            },
+            error => {
+              this.errorMessage = <string>(error.message);
+              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            }
+          )
         }
 
         //set month start and end
@@ -865,12 +865,12 @@ export class ScheduleComponent implements OnInit {
     this.businessRulesValidation(schedule);
 
     //tab validation
-/*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
-    this.dayTabInvalid = this.filteredUserSchedulesDay.filter(x => x.invalid).length > 0;
-    this.weekTabInvalid = this.filteredUserSchedulesWeek.filter(x => x.invalid).length > 0;
-    this.monthTabInvalid = this.filteredUserSchedulesMonth.filter(x => x.invalid).length > 0;
-    this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;*/
-    console.log("invalid :-"+this.addTabInvalid,this.dayTabInvalid,this.weekTabInvalid,this.monthTabInvalid,this.customTabInvalid);
+    /*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
+        this.dayTabInvalid = this.filteredUserSchedulesDay.filter(x => x.invalid).length > 0;
+        this.weekTabInvalid = this.filteredUserSchedulesWeek.filter(x => x.invalid).length > 0;
+        this.monthTabInvalid = this.filteredUserSchedulesMonth.filter(x => x.invalid).length > 0;
+        this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;*/
+    console.log("invalid :-" + this.addTabInvalid, this.dayTabInvalid, this.weekTabInvalid, this.monthTabInvalid, this.customTabInvalid);
 
   }
 
@@ -1018,33 +1018,33 @@ export class ScheduleComponent implements OnInit {
 
 
     // Define a function that abstracts the complex date comparison.
-    function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any ): boolean {
+    function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any): boolean {
 
       //admin role , resourceGroup role and canEdit flag should be able to edit any schedule at any time
-/*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
-        return true;
-      }
+      /*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
+              return true;
+            }
 
 
-      const scheduleDate =  (date !== null && date !== undefined) ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : null;
-      scheduleDate?.setHours(0, 0, 0, 0 );
+            const scheduleDate =  (date !== null && date !== undefined) ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : null;
+            scheduleDate?.setHours(0, 0, 0, 0 );
 
-      const unlockDateTwo = (unlockDate !== null && unlockDate !== undefined) ? new Date(unlockDate.getFullYear(), unlockDate.getMonth() + 1, unlockDate.getDate()) : null;
-      unlockDateTwo?.setHours(0, 0, 0, 0 );
-      const currentDate = new Date();
-      currentDate?.setHours(0, 0, 0, 0 );
+            const unlockDateTwo = (unlockDate !== null && unlockDate !== undefined) ? new Date(unlockDate.getFullYear(), unlockDate.getMonth() + 1, unlockDate.getDate()) : null;
+            unlockDateTwo?.setHours(0, 0, 0, 0 );
+            const currentDate = new Date();
+            currentDate?.setHours(0, 0, 0, 0 );
 
-      //currentDate On or before lockDate, interviewers will be able to add/modify schedules for UnlockDate and later.
-      if (scheduleDate != null  && authenticatedUser.interviewer && currentDate <= lockDate) {
-        return  scheduleDate >= unlockDate ;
-      }
+            //currentDate On or before lockDate, interviewers will be able to add/modify schedules for UnlockDate and later.
+            if (scheduleDate != null  && authenticatedUser.interviewer && currentDate <= lockDate) {
+              return  scheduleDate >= unlockDate ;
+            }
 
-      //currentDate After lockDate, interviewers will only be able to add/modify schedules for unlockDateTwo and later.
-      if ( scheduleDate != null && unlockDate != null && unlockDateTwo != null  && authenticatedUser.interviewer && currentDate > lockDate ) {
-        return scheduleDate >= unlockDateTwo;
-      }
+            //currentDate After lockDate, interviewers will only be able to add/modify schedules for unlockDateTwo and later.
+            if ( scheduleDate != null && unlockDate != null && unlockDateTwo != null  && authenticatedUser.interviewer && currentDate > lockDate ) {
+              return scheduleDate >= unlockDateTwo;
+            }
 
-      return false;*/
+            return false;*/
       return date instanceof Date && !(authenticatedUser === null || authenticatedUser === undefined);
     }
 
@@ -1093,7 +1093,7 @@ export class ScheduleComponent implements OnInit {
         schedule.validationMessages = [];
       }
       const ult = (this.unlockDate !== null && this.unlockDate !== undefined) ? new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) : null;
-      if ( ult ) {
+      if (ult) {
         let unlockMessage: string = schedule.startdatetime < this.unlockDate ? Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToStringUTC(this.unlockDate)
           : Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToStringUTC(ult);
         if (!(schedule.validationMessages || []).includes(unlockMessage)) {
@@ -1125,7 +1125,7 @@ export class ScheduleComponent implements OnInit {
           schedule.validationMessages.push(blockOutMessage);
       } else if (!blockOutDate?.allDay
         && ((schedule.enddatetime !== null && schedule.startdatetime !== null && schedule.enddatetime !== undefined && schedule.startdatetime !== undefined)
-          && ((schedule.startdatetime >= blockOutStart) || (schedule.enddatetime > blockOutStart )))) {
+          && ((schedule.startdatetime >= blockOutStart) || (schedule.enddatetime > blockOutStart)))) {
         schedule.invalid = true;
         schedule.invalidFields.push('Date');
         const msg_undefined_time = 'Start Date Time or End Date Time is not defined .Please choose time between ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime;
@@ -1679,7 +1679,7 @@ export class ScheduleComponent implements OnInit {
     }
 
     let startDate: Date = new Date();
-    startDate?.setHours(0, 0, 0, 0 );
+    startDate?.setHours(0, 0, 0, 0);
 
     if (scheduleDate) {
       startDate = scheduleDate;
@@ -1690,8 +1690,8 @@ export class ScheduleComponent implements OnInit {
       && !this.authenticatedUser?.resourceGroup
       && !this.authenticatedUser?.admin) {
 
-      const unlockDateTwo = new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) ;
-      unlockDateTwo?.setHours(0, 0, 0, 0 );
+      const unlockDateTwo = new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate());
+      unlockDateTwo?.setHours(0, 0, 0, 0);
 
       if (startDate <= this.lockDate) {
         startDate = this.unlockDate;
@@ -1934,239 +1934,256 @@ export class ScheduleComponent implements OnInit {
     this.setPagedAddedSchedules();
   }
 
-  //set paging variables
-  setPagedAddedSchedules(): void {
-    this.pagedUsersAddedLength = this.addedSchedules.length;
-    const start = this.pageIndexAdded * this.pageSizeAdded;
-    const end = (this.pageIndexAdded + 1) * this.pageSizeAdded;
-    this.pagedUserSchedulesAdded = this.addedSchedules.slice(start, end);
-  }
-
-  getValidationMessages(): void {
-    console.log("Insisis");
-    
-    // if (!this.selectedDate || !this.authenticatedUser)
-    //   return;
-
-    //get validation messages
-    this.validationMessagesChecked = false;
-    // this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
-    //   response => {
-    //     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          // this.validationMessages = <IValidationMessage[]>response.Subject;
-          this.validationMessages = <IValidationMessage[]>[
-            {
-              validationMessagesId: 61888,
-              dempoId: "jmr110",
-              messageId: 10,
-              messageText: "An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: [] 
-            },
-            {
-              validationMessagesId: 61889,
-              dempoId: "jmr110",
-              messageId: 11,
-              messageText: "An Interviewer's schedule should include 1 weekend shift every other week.|- A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.| - A Saturday and/or Sunday shift schedule should be 6 hours minimum.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: []
-            },
-            {
-              validationMessagesId: 61888,
-              dempoId: "jmr110",
-              messageId: 10,
-              messageText: "An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: [] 
-            },
-            {
-              validationMessagesId: 61889,
-              dempoId: "jmr110",
-              messageId: 11,
-              messageText: "An Interviewer's schedule should include 1 weekend shift every other week.|- A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.|- A Saturday and/or Sunday shift schedule should be 6 hours minimum.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: []
-            }
-          ];
-          for (var x = 0; x < this.validationMessages.length; x++) {
-console.log("this.validationMessages.length---------- ",this.validationMessages.length);
-
-            if (this.validationMessages[x].schedules) {
-              for (var i = 0; i < (this.validationMessages[x].schedules || []).length; i++) {
-
-                this.validationMessages[x].validationMessagesId = 0;
-                (this.validationMessages[x].schedules || [])[i].startdatetime = new Date((this.validationMessages[x].schedules || [])[i].startdatetime || '');
-                (this.validationMessages[x].schedules || [])[i].enddatetime = new Date((this.validationMessages[x].schedules || [])[i].enddatetime || '');
-                (this.validationMessages[x].schedules || [])[i].startTime = Utils.formatDateToTimeString((this.validationMessages[x].schedules || [])[i].startdatetime, true) || '';
-                (this.validationMessages[x].schedules || [])[i].endTime = Utils.formatDateToTimeString((this.validationMessages[x].schedules || [])[i].enddatetime, true) || '';
-
-                let schedule: ISchedule = (this.validationMessages[x].schedules || [])[i];
-
-                let startHours: number = ((((schedule.startdatetime || new Date()).getHours() * 60) + (schedule.startdatetime || new Date()).getMinutes()) / 60);
-                let endHours: number = ((((schedule.enddatetime || new Date()).getHours() * 60) + (schedule.enddatetime || new Date()).getMinutes()) / 60);
-                (this.validationMessages[x].schedules || [])[i].scheduledHours = endHours - startHours;
-
-                if (this.allProjects) {
-                  let projectId: number = (this.validationMessages[x].schedules || [])[i].projectid as number;
-                  let scheduleProject: IProjectMin | undefined = this.allProjects.find(x => x.projectID == projectId);
-                  if (scheduleProject) {
-                    (this.validationMessages[x].schedules || [])[i].projectName = scheduleProject.projectName;
-                  }
-                }
-
-              }
-
-              const uniqueValue = (value: any, index: any, self: any) => {
-                return self.indexOf(value) === index
-              }
-
-              this.validationMessages = this.validationMessages.filter(uniqueValue);
-
-            }
-
-          }
-
-          this.validationMessagesChecked = true;
-        // }
-    //   },
-    //   error => {
-    //     this.errorMessage = <string>(error.message);
-    //     this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-    //   }
-    // );
-
-  }
-
-  formatDateOnlyWithMonthNameToString(dateToFormat: Date | null): string | null {
-    return Utils.formatDateOnlyWithMonthNameToString(dateToFormat);
-  }
-
-  formatDateMonthNameToString(dateToFormat: Date | null): string | null {
-    return Utils.formatDateMonthNameToString(dateToFormat);
-  }
-
-  expandValidationMessages(validationMessagesExpanded: boolean): void {
-    this.validationMessagesExpanded = validationMessagesExpanded;
-    Utils.schedulerPopupDynamicSize(validationMessagesExpanded);
-  }
-
-  requestAutomation(schedules: ISchedule[]) {
-    let requests: IRequest[] = [];
-
-    for (var i = 0; i < schedules.length; i++) {
-      //57 = absent
-      //58 = sick
-      //86 = Leaving Early
-      //89 = Arriving Late
-      let automatableProjects: number[] = [57, 58, 86, 89];
-
-      //only whitelisted projects can result in automated requests
-      //checking the project id against the initial project id allows us to skip schedules that did not have a change in the project so that we don't create duplicate requests
-      if (!(automatableProjects.includes(schedules[i].projectid as number)
-        && schedules[i].projectid !== schedules[i].initialProjectid)) {
-        continue;
-      }
-
-      //set request code and type
-      //4 = Unexcused Absence - Other
-      //3 = Unexcused Absence - Sick
-      //8 = Tardy - Leaving Early
-      //7 = Tardy - arriving Late
-      let requestCodeId: number = -999;
-      let requestType: string = '';
-
-      switch (schedules[i].projectid) {
-        case 57:
-          requestCodeId = 4;
-          requestType = 'Absent';
-          break;
-        case 58:
-          requestCodeId = 3;
-          requestType = 'Sick';
-          break;
-        case 86:
-          requestCodeId = 8;
-          requestType = 'Leaving Early';
-          break;
-        case 89:
-          requestCodeId = 7;
-          requestType = 'Arriving Late';
-          break;
-      }
-
-      let request: IRequest = {
-        invalidFields: [],
-        decisionId: 1,//schedule updated
-        requestCodeId: requestCodeId,
-        interviewerEmpId: schedules[i].dempoid,
-        resourceTeamMemberId: this.authenticatedUser.netID,
-        resourceTeamMemberName: this.authenticatedUser.displayName,
-        requestId: 0,
-        requestDate: new Date(),
-        requestDetails: requestType + ': ' + Utils.formatDateOnlyWithMonthNameToString(schedules[i].startdatetime) + ' ' + schedules[i].startTime + ' - ' + schedules[i].endTime,
-        notes: schedules[i].comments,
-        modBy: this.authenticatedUser.netID,
-        modDt: new Date(),
-        entryBy: this.authenticatedUser.netID,
-        entryDt: new Date()
-      };
-
-      requests.push(request);
+    //set paging variables
+    setPagedAddedSchedules(): void {
+      this.pagedUsersAddedLength = this.addedSchedules.length;
+      const start = this.pageIndexAdded * this.pageSizeAdded;
+      const end = (this.pageIndexAdded + 1) * this.pageSizeAdded;
+      this.pagedUserSchedulesAdded = this.addedSchedules.slice(start, end);
     }
 
-    if (requests.length > 0) {
-      this.requestsService.saveRequests(requests).subscribe(
+    getValidationMessages(): void {
+      if (!this.selectedDate || !this.authenticatedUser)
+        return;
+
+      //get validation messages
+      this.validationMessagesChecked = false;
+      this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
         response => {
-          if (response.Status == 'Success') {
-            //this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request(s) saved successfully', ['OK']));
-            let savedRequests: IRequest[] = <IRequest[]>response.Subject;
-            this.requestsService.setAllRequests();
-          } else {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save automated request(s)', ['OK']));
-            this.errorMessage = response.Message;
-            this.logsService.logError(this.errorMessage);
-            this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+            this.validationMessages = <IValidationMessage[]>response.Subject;
+
+            for (var x = 0; x < this.validationMessages.length; x++) {
+
+              if (this.validationMessages[x].schedules) {
+                for (var i = 0; i < (this.validationMessages[x].schedules || []).length; i++) {
+
+                  this.validationMessages[x].validationMessagesId = 0;
+                  (this.validationMessages[x].schedules || [])[i].startdatetime = new Date((this.validationMessages[x].schedules || [])[i].startdatetime || '');
+                  (this.validationMessages[x].schedules || [])[i].enddatetime = new Date((this.validationMessages[x].schedules || [])[i].enddatetime || '');
+                  (this.validationMessages[x].schedules || [])[i].startTime = Utils.formatDateToTimeString((this.validationMessages[x].schedules || [])[i].startdatetime, true) || '';
+                  (this.validationMessages[x].schedules || [])[i].endTime = Utils.formatDateToTimeString((this.validationMessages[x].schedules || [])[i].enddatetime, true) || '';
+
+                  let schedule: ISchedule = (this.validationMessages[x].schedules || [])[i];
+
+                  let startHours: number = ((((schedule.startdatetime || new Date()).getHours() * 60) + (schedule.startdatetime || new Date()).getMinutes()) / 60);
+                  let endHours: number = ((((schedule.enddatetime || new Date()).getHours() * 60) + (schedule.enddatetime || new Date()).getMinutes()) / 60);
+                  (this.validationMessages[x].schedules || [])[i].scheduledHours = endHours - startHours;
+
+                  if (this.allProjects) {
+                    let projectId: number = (this.validationMessages[x].schedules || [])[i].projectid as number;
+                    let scheduleProject: IProjectMin | undefined = this.allProjects.find(x => x.projectID == projectId);
+                    if (scheduleProject) {
+                      (this.validationMessages[x].schedules || [])[i].projectName = scheduleProject.projectName;
+                    }
+                  }
+
+                }
+
+                const uniqueValue = (value: any, index: any, self: any) => {
+                  return self.indexOf(value) === index
+                }
+
+                this.validationMessages = this.validationMessages.filter(uniqueValue);
+
+              }
+
+            }
+
+            this.validationMessagesChecked = true;
           }
         },
         error => {
           this.errorMessage = <string>(error.message);
           this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save automated request(s):<br />' + this.errorMessage, ['OK']));
         }
       );
+
     }
 
-  }
+    formatDateOnlyWithMonthNameToString(dateToFormat: Date | null): string | null {
+      return Utils.formatDateOnlyWithMonthNameToString(dateToFormat);
+    }
 
-  displayHoverMessage(event: any, schedule: ISchedule): void {
+    formatDateMonthNameToString(dateToFormat: Date | null): string | null {
+      return Utils.formatDateMonthNameToString(dateToFormat);
+    }
 
-    if (schedule.hoverMessage
-      || (schedule.validationMessages || []).length > 0) {
-      let htmlMessage: string = '';
+    expandValidationMessages(validationMessagesExpanded: boolean): void {
+      this.validationMessagesExpanded = validationMessagesExpanded;
+      Utils.schedulerPopupDynamicSize(validationMessagesExpanded);
+    }
 
-      if (schedule.hoverMessage) {
-        htmlMessage = htmlMessage + schedule.hoverMessage;
+    requestAutomation(schedules: ISchedule[]) {
+      let requests: IRequest[] = [];
+
+      for (var i = 0; i < schedules.length; i++) {
+        //57 = absent
+        //58 = sick
+        //86 = Leaving Early
+        //89 = Arriving Late
+        let automatableProjects: number[] = [57, 58, 86, 89];
+
+        //only whitelisted projects can result in automated requests
+        //checking the project id against the initial project id allows us to skip schedules that did not have a change in the project so that we don't create duplicate requests
+        if (!(automatableProjects.includes(schedules[i].projectid as number)
+          && schedules[i].projectid !== schedules[i].initialProjectid)) {
+          continue;
+        }
+
+        //set request code and type
+        //4 = Unexcused Absence - Other
+        //3 = Unexcused Absence - Sick
+        //8 = Tardy - Leaving Early
+        //7 = Tardy - arriving Late
+        let requestCodeId: number = -999;
+        let requestType: string = '';
+
+        switch (schedules[i].projectid) {
+          case 57:
+            requestCodeId = 4;
+            requestType = 'Absent';
+            break;
+          case 58:
+            requestCodeId = 3;
+            requestType = 'Sick';
+            break;
+          case 86:
+            requestCodeId = 8;
+            requestType = 'Leaving Early';
+            break;
+          case 89:
+            requestCodeId = 7;
+            requestType = 'Arriving Late';
+            break;
+        }
+
+        let request: IRequest = {
+          invalidFields: [],
+          decisionId: 1,//schedule updated
+          requestCodeId: requestCodeId,
+          interviewerEmpId: schedules[i].dempoid,
+          resourceTeamMemberId: this.authenticatedUser.netID,
+          resourceTeamMemberName: this.authenticatedUser.displayName,
+          requestId: 0,
+          requestDate: new Date(),
+          requestDetails: requestType + ': ' + Utils.formatDateOnlyWithMonthNameToString(schedules[i].startdatetime) + ' ' + schedules[i].startTime + ' - ' + schedules[i].endTime,
+          notes: schedules[i].comments,
+          modBy: this.authenticatedUser.netID,
+          modDt: new Date(),
+          entryBy: this.authenticatedUser.netID,
+          entryDt: new Date()
+        };
+
+        requests.push(request);
       }
 
-      //validaiton messages
-      if (schedule.validationMessages) {
-        console.log("schedule.validationMessages.length---------- ",schedule.validationMessages.length);
-        
-        if (schedule.validationMessages.length > 0) {
-          htmlMessage = htmlMessage + '<p class="bold">Validation Messages:</p>';
-          for (var i = 0; i < schedule.validationMessages.length; i++) {
-            htmlMessage = htmlMessage + '<p style="margin-left: 5px;">' + schedule.validationMessages[i] + '</p>';
+      if (requests.length > 0) {
+        this.requestsService.saveRequests(requests).subscribe(
+          response => {
+            if (response.Status == 'Success') {
+              //this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request(s) saved successfully', ['OK']));
+              let savedRequests: IRequest[] = <IRequest[]>response.Subject;
+              this.requestsService.setAllRequests();
+            } else {
+              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save automated request(s)', ['OK']));
+              this.errorMessage = response.Message;
+              this.logsService.logError(this.errorMessage);
+              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            }
+          },
+          error => {
+            this.errorMessage = <string>(error.message);
+            this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save automated request(s):<br />' + this.errorMessage, ['OK']));
+          }
+        );
+      }
 
+    }
+
+    displayHoverMessage(event: any, schedule: ISchedule): void {
+
+      if (schedule.hoverMessage
+        || (schedule.validationMessages || []).length > 0) {
+        let htmlMessage: string = '';
+
+        if (schedule.hoverMessage) {
+          htmlMessage = htmlMessage + schedule.hoverMessage;
+        }
+
+        //validaiton messages
+        if (schedule.validationMessages) {
+          if (schedule.validationMessages.length > 0) {
+            htmlMessage = htmlMessage + '<p class="bold">Validation Messages:</p>';
+            for (var i = 0; i < schedule.validationMessages.length; i++) {
+              htmlMessage = htmlMessage + '<p style="margin-left: 5px;">' + schedule.validationMessages[i] + '</p>';
+
+            }
           }
         }
+
+        let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
+        hoverMessage.innerHTML = htmlMessage;
+
+        this.globalsService.showHoverMessage.next(true);
+
+        hoverMessage.style.top = (event.screenY) + 'px';
+        hoverMessage.style.left = (event.screenX) + 'px';
+      }
+
+    }
+
+    hideHoverMessage(): void {
+      this.globalsService.showHoverMessage.next(false);
+    }
+
+    displaySchedulingLevelInfo(event: any): void {
+      let htmlMessage: string = '';
+
+      if (!this.currentUser) {
+        this.currentUser = {} as User;
+        htmlMessage = 'No scheduling level assigned.';
+      }
+
+      if (this.currentUser.schedulinglevel == 1) {
+        htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
+        htmlMessage = htmlMessage + "<p><ul>";
+        htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
+        htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
+        htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
+        htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
+        htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+        htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
+        htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
+        htmlMessage = htmlMessage + "</ul></p>";
+      }
+
+      if (this.currentUser.schedulinglevel == 2) {
+        htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
+        htmlMessage = htmlMessage + "<p><ul>";
+        htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
+        htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+        htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
+        htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
+        htmlMessage = htmlMessage + "</ul></p>";
+      }
+
+      if (this.currentUser.schedulinglevel == 3) {
+        htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
+        htmlMessage = htmlMessage + "<p><ul>";
+        htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+        htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+        htmlMessage = htmlMessage + "</ul></p>";
       }
 
       let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
@@ -2175,122 +2192,53 @@ console.log("this.validationMessages.length---------- ",this.validationMessages.
       this.globalsService.showHoverMessage.next(true);
 
       hoverMessage.style.top = (event.screenY) + 'px';
-      hoverMessage.style.left = (event.screenX) + 'px';
+      hoverMessage.style.left = event.clientX + 'px';
     }
 
-  }
-
-  hideHoverMessage(): void {
-    this.globalsService.showHoverMessage.next(false);
-  }
-
-  displaySchedulingLevelInfo(event: any): void {
-    let htmlMessage: string = '';
-    console.log("ghgfufbfgugffgufgh");
-    
-
-    // if (!this.currentUser) {
-    //   this.currentUser = {} as User;
-    //   htmlMessage = 'No scheduling level assigned.';
-    // }
-
-    // if (this.currentUser.schedulinglevel == 1) {
-      htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
-      htmlMessage = htmlMessage + "<p><ul>";
-      htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-      htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-      htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-      htmlMessage = htmlMessage + "</ul></p>";
-    // }
-
-    // if (this.currentUser.schedulinglevel == 2) {
-      htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
-      htmlMessage = htmlMessage + "<p><ul>";
-      htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-      htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-      htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-      htmlMessage = htmlMessage + "</ul></p>";
-    // }
-
-    // if (this.currentUser.schedulinglevel == 3) {
-      htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
-      htmlMessage = htmlMessage + "<p><ul>";
-      htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-      htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-      htmlMessage = htmlMessage + "</ul></p>";
-    // }
-
-    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
-    hoverMessage.innerHTML = htmlMessage;
-    console.log("hoverMessage.innerHTML---------- ",hoverMessage.innerHTML);
-    
-
-    this.globalsService.showHoverMessage.next(true);
-    console.log("this.globalsService.showHoverMessage----------",this.globalsService.showHoverMessage);
-    
-
-    hoverMessage.style.top = (event.screenY) + 'px';
-    hoverMessage.style.left = event.clientX + 'px';
-  }
-
-  hideSchedulingLevelInfo(): void {
-    this.globalsService.showHoverMessage.next(false);
-  }
-
-  checkReadOnly(schedule: ISchedule) {
-    //if we can't get your user info, you can't edit schedules
-    if (!this.authenticatedUser) {
-      return true;
+    hideSchedulingLevelInfo(): void {
+      this.globalsService.showHoverMessage.next(false);
     }
 
-    //before unlock date
-    if ((Utils.formatDateOnly(schedule.startdatetime) || new Date()) < this.unlockDate
-      && this.authenticatedUser.interviewer
-      && !this.authenticatedUser.resourceGroup
-      && !this.authenticatedUser.admin
-      && !this.currentUser.canEdit) {
-      return true;
+    checkReadOnly(schedule: ISchedule) {
+      //if we can't get your user info, you can't edit schedules
+      if (!this.authenticatedUser) {
+        return true;
+      }
+
+      //before unlock date
+      if ((Utils.formatDateOnly(schedule.startdatetime) || new Date()) < this.unlockDate
+        && this.authenticatedUser.interviewer
+        && !this.authenticatedUser.resourceGroup
+        && !this.authenticatedUser.admin
+        && !this.currentUser.canEdit) {
+        return true;
+      }
+
+      return false;
     }
 
-    return false;
-  }
+    blackFilterStyle() {
+      var body = document.body,
+        html = document.documentElement;
 
-  blackFilterStyle() {
-    var body = document.body,
-      html = document.documentElement;
+      var height = Math.max(body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight);
 
-    var height = Math.max(body.scrollHeight, body.offsetHeight,
-      html.clientHeight, html.scrollHeight, html.offsetHeight);
-
-    return {
-      'height': height + 'px',
-    }
-  }
-
-  closeModalPopup(): void {
-    this.globalsService.hidePopupMessage();
-  }
-
-  splitByPipe(stringToSplit: string): string[] {
-    if (!stringToSplit) {
-      return [];
+      return {
+        'height': height + 'px',
+      }
     }
 
-    return stringToSplit.split('|');
-  }
+    closeModalPopup(): void {
+      this.globalsService.hidePopupMessage();
+    }
+
+    splitByPipe(stringToSplit: string): string[] {
+      if (!stringToSplit) {
+        return [];
+      }
+
+      return stringToSplit.split('|');
+    }
 
 }

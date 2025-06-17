@@ -2,10 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Utils } from '../../../classes/utils';
 import {
-  IAuthenticatedUser,
   ILegend,
   ISchedule,
-  IUserSchedule,
+  IUserSchedule, IAuthenticatedUser,
 } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
@@ -22,24 +21,23 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 export class DayViewComponent implements OnInit {
   @Input() userSchedules!: IUserSchedule[];
   @Input() selectedDate!: FormControl;
-  authenticatedUser!: IAuthenticatedUser;
-  hoverMessage: HoverMessage = new HoverMessage();
-  hoverContent: string | null = null; // add this variable
 
+  hoverMessage: HoverMessage = new HoverMessage();
+  authenticatedUser!: IAuthenticatedUser;
   constructor(
     private globalsService: GlobalsService,
     private scheduleService: ScheduleService,
-    private dialog: MatDialog,
-    private authenticationService: AuthenticationService
-  ) { }
+    private dialog: MatDialog, private authenticationService: AuthenticationService,
 
-  ngOnInit(): void {
+  ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
       }
     );
   }
+
+  ngOnInit(): void { }
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;
@@ -117,7 +115,6 @@ export class DayViewComponent implements OnInit {
     us: IUserSchedule
   ): void {
     let htmlMessage: string =
-      '<div class="hover-message-wrapper">' +
       '<p class="hover-message-title">' +
       us.user.displayName +
       ' (' +
@@ -129,17 +126,16 @@ export class DayViewComponent implements OnInit {
       schedule.endTime +
       ' - ' +
       Utils.formatDateOnlyToStringUTC(schedule.startdatetime) +
-      '</p>';
+      '<p>';
 
-    // comments
+    //comments
     if (schedule.comments) {
-      htmlMessage +=
+      htmlMessage =
+        htmlMessage +
         '<p class="bold">Comments:</p><p>' +
         schedule.comments +
         '</p>';
     }
-
-    htmlMessage += '</div>';
 
     this.hoverMessage.setAndShow(event, htmlMessage);
   }

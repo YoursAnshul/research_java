@@ -14,7 +14,7 @@ public class UserMin {
 	private String Language;
 	private String Trainedon;
 	private List<String> TrainedOnArray;
-	private Boolean Active;
+	private Integer Status;
 	private Boolean CanEdit;
 	private String DisplayName;
 	private Integer Role;
@@ -27,7 +27,7 @@ public class UserMin {
 	}
 
 	public UserMin(short _userid, String _dempoid, String _fname, String _lname, String _language, String _trainedon,
-                   Boolean _active, Boolean _canEdit, String _preferredfname, String _preferredlname, Integer _role,
+                   Integer _status, Boolean _canEdit, String _preferredfname, String _preferredlname, Integer _role,
                    Boolean _buddy, Short _employmenttype, Integer _schedulinglevel) {
 		this.Userid = _userid;
 		this.Dempoid = _dempoid;
@@ -43,7 +43,7 @@ public class UserMin {
 				this.TrainedOnArray.add(_trainedon);
 			}
 		}
-		this.Active = _active;
+		this.Status = _status;
 		this.CanEdit = _canEdit;
 		this.Preferredfname = _preferredfname;
 		this.Preferredlname = _preferredlname;
@@ -131,12 +131,12 @@ public class UserMin {
 		TrainedOnArray = trainedOnArray;
 	}
 
-	public Boolean getActive() {
-		return Active;
+	public Integer getStatus() {
+		return Status;
 	}
 
-	public void setActive(Boolean active) {
-		Active = active;
+	public void setStatus(Integer status) {
+		Status = status;
 	}
 
 	public Boolean getCanEdit() {
