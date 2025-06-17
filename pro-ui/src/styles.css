@@ -3,380 +3,377 @@
 @tailwind utilities;
 
 html {
-    --mdc-outlined-text-field-label-text-color: #0680CD;
-    --mdc-outlined-text-field-caret-color: #0680CD;
-    --mdc-outlined-text-field-focus-outline-color: #0680CD;
-    --mdc-outlined-text-field-focus-label-text-color: #0680CD;
-    --mdc-filled-text-field-label-text-color: #0680CD;
-    --mdc-filled-text-field-hover-label-text-color: #0680CD;
-    --mdc-filled-text-field-disabled-label-text-color: #0680CD;
-    --mdc-filled-text-field-container-color: #fff;
-    --mat-sort-arrow-color: #0680CD;
-    --mdc-outlined-text-field-error-label-text-color: #DC4A38;
-    --mdc-outlined-text-field-label-text-size: 14px;
-    --mdc-checkbox-selected-focus-icon-color: #0680CD;
-    --mdc-checkbox-selected-hover-icon-color: #0680CD;
-    --mdc-checkbox-selected-icon-color: #0680CD;
-    --mdc-checkbox-selected-pressed-icon-color: #0680CD;
-    --mdc-checkbox-unselected-icon-color: #0680CD;
-    --mdc-checkbox-unselected-focus-icon-color: #0680CD;
-    --mdc-protected-button-disabled-container-color: #B5B5B5;
-    --mdc-protected-button-disabled-label-text-color: #FFFFFF;
-    --mdc-protected-button-container-color: #0680CD;
-    --mdc-filled-button-container-color: #0680CD;
-    --mdc-outlined-text-field-disabled-outline-color: #B5B5B5;
-    --mat-select-trigger-text-size: 12px;   
-    --mdc-outlined-text-field-disabled-input-text-color: rgba(0, 0, 0, 0.87);
-    --mdc-outlined-text-field-disabled-label-text-color:  #0680CD;
-    --mat-select-disabled-trigger-text-color: rgba(0, 0, 0, 0.87);
+  --mdc-outlined-text-field-label-text-color: #0680cd;
+  --mdc-outlined-text-field-caret-color: #0680cd;
+  --mdc-outlined-text-field-focus-outline-color: #0680cd;
+  --mdc-outlined-text-field-focus-label-text-color: #0680cd;
+  --mdc-filled-text-field-label-text-color: #0680cd;
+  --mdc-filled-text-field-hover-label-text-color: #0680cd;
+  --mdc-filled-text-field-disabled-label-text-color: #0680cd;
+  --mdc-filled-text-field-container-color: #fff;
+  --mat-sort-arrow-color: #0680cd;
+  --mdc-outlined-text-field-error-label-text-color: #dc4a38;
+  --mdc-outlined-text-field-label-text-size: 14px;
+  --mdc-checkbox-selected-focus-icon-color: #0680cd;
+  --mdc-checkbox-selected-hover-icon-color: #0680cd;
+  --mdc-checkbox-selected-icon-color: #0680cd;
+  --mdc-checkbox-selected-pressed-icon-color: #0680cd;
+  --mdc-checkbox-unselected-icon-color: #0680cd;
+  --mdc-checkbox-unselected-focus-icon-color: #0680cd;
+  --mdc-protected-button-disabled-container-color: #b5b5b5;
+  --mdc-protected-button-disabled-label-text-color: #ffffff;
+  --mdc-protected-button-container-color: #0680cd;
+  --mdc-filled-button-container-color: #0680cd;
+  --mdc-outlined-text-field-disabled-outline-color: #b5b5b5;
+  --mat-select-trigger-text-size: 12px;
+  --mdc-outlined-text-field-disabled-input-text-color: rgba(0, 0, 0, 0.87);
+  --mdc-outlined-text-field-disabled-label-text-color: #0680cd;
+  --mat-select-disabled-trigger-text-color: rgba(0, 0, 0, 0.87);
 }
 .mat-mdc-outlined-button:not(:disabled) {
-    --mdc-outlined-button-outline-color: #0680CD;
-    --mdc-outlined-button-label-text-color: #0680CD;
+  --mdc-outlined-button-outline-color: #0680cd;
+  --mdc-outlined-button-label-text-color: #0680cd;
 }
 .mat-mdc-unelevated-button:not(:disabled) {
-    --mdc-filled-button-container-color: #0680CD;
-
+  --mdc-filled-button-container-color: #0680cd;
 }
 .mat-mdc-raised-button.mat-primary {
-    --mdc-protected-button-container-color: #0680CD;
-    --mdc-filled-button-container-color: #0680CD;
+  --mdc-protected-button-container-color: #0680cd;
+  --mdc-filled-button-container-color: #0680cd;
 }
 .mat-mdc-tab-group,
 .mat-mdc-tab-nav-bar {
-    --mdc-tab-indicator-active-indicator-color: #0680CD;
-    --mat-tab-header-active-label-text-color: #0680CD;
-    --mat-tab-header-inactive-label-text-color: #0680CD;
-    --mat-tab-header-active-focus-label-text-color: #0680CD;
-    --mat-tab-header-active-hover-label-text-color: #0680CD;
-    --mat-tab-header-active-focus-indicator-color: #0680CD;
-    --mat-tab-header-active-hover-indicator-color: #0680CD;
-    --mdc-filled-text-field-container-color: white;
-    --mdc-protected-button-label-text-color: #0680CD;
-    /* Set the active indicator color to red */
+  --mdc-tab-indicator-active-indicator-color: #0680cd;
+  --mat-tab-header-active-label-text-color: #0680cd;
+  --mat-tab-header-inactive-label-text-color: #0680cd;
+  --mat-tab-header-active-focus-label-text-color: #0680cd;
+  --mat-tab-header-active-hover-label-text-color: #0680cd;
+  --mat-tab-header-active-focus-indicator-color: #0680cd;
+  --mat-tab-header-active-hover-indicator-color: #0680cd;
+  --mdc-filled-text-field-container-color: white;
+  --mdc-protected-button-label-text-color: #0680cd;
+  /* Set the active indicator color to red */
 }
 
 .btn-primary {
-    --bs-btn-bg: #0680CD;
+  --bs-btn-bg: #0680cd;
 }
 
 #pro-app .mat-mdc-tab.mdc-tab {
-    max-width: 100px !important;
+  max-width: 100px !important;
 }
 
 #pro-app .mat-mdc-form-field-subscript-wrapper {
-    display: none !important;
+  display: none !important;
 }
 
 #pro-app .invalid,
 #pro-ep-app .invalid .mat-select-value-text {
-    color: #f44336;
+  color: #f44336;
 }
 
-
 #pro-app .invalid-emphasis {
-    color: #f44336;
-    font-size: 1.2em;
+  color: #f44336;
+  font-size: 1.2em;
 }
 
 #pro-app .invalid-button {
-    background-color: #f44336;
-    border: 1px solid #f44336;
-    font-style: italic;
+  background-color: #f44336;
+  border: 1px solid #f44336;
+  font-style: italic;
 }
 
 .mdc-floating-label {
-    font-weight: 500;
-    color: #0078d4;
+  font-weight: 500;
+  color: #0078d4;
 }
 
 #pro-app .mat-form-field-wrapper .mat-form-field-flex {
-    padding-top: 2px;
-    padding-bottom: 0px;
+  padding-top: 2px;
+  padding-bottom: 0px;
 }
 
 .mat-mdc-tab-list {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .mdc-tab--active {
-    background-color: rgb(0 86 155 / .2) !important;
-    border-radius: 5px 5px 0px 0px !important;
+  background-color: rgb(0 86 155 / 0.2) !important;
+  border-radius: 5px 5px 0px 0px !important;
 }
 
 #pro-app .bold {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 #pro-app .italic {
-    font-style: italic;
+  font-style: italic;
 }
 
 .mat-mdc-tab-header {
-    margin: 5px 5px 0px 5px;
+  margin: 5px 5px 0px 5px;
 }
 
 #hover-message {
-    position: fixed;
-    padding: 25px;
-    background-color: white;
-    box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 18px 0 rgb(0 0 0 / 12%);
-    z-index: 1000;
+  position: fixed;
+  padding: 25px;
+  background-color: white;
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
+  z-index: 1000;
 }
 
 #hover-message .hover-message-title {
-    font-weight: 500;
-    font-size: 1.1em;
+  font-weight: 500;
+  font-size: 1.1em;
 }
 
 #schedule-modal {
-    background-color: #f2f2f2;
-    border-radius: 3px;
-    padding: 60px 30px;
-    min-width: 1085px;
-    box-shadow: 0 0px 25px rgb(57 63 72);
-    position: fixed;
-    top: 25%;
-    left: 20%;
-    z-index: 1000;
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  padding: 60px 30px;
+  min-width: 1085px;
+  box-shadow: 0 0px 25px rgb(57 63 72);
+  position: fixed;
+  top: 25%;
+  left: 20%;
+  z-index: 1000;
 }
 
 #day-calendar {
-    background-color: #f2f2f2 !important;
+  background-color: #f2f2f2 !important;
 }
 
-.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field .mdc-notched-outline__notch {
-    border-right: none !important;
+.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field.mat-mdc-form-field
+  .mdc-notched-outline__notch {
+  border-right: none !important;
 }
 
 .mat-mdc-form-field-subscript-wrapper {
-    display: none !important;
+  display: none !important;
 }
 
 .mat-mdc-raised-button .mdc-button__label {
-    font-size: 11px !important;
-    font-weight: 500;
-    line-height: 20px;
+  font-size: 11px !important;
+  font-weight: 500;
+  line-height: 20px;
 }
 
-.black.mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
-    color: #0680CD;
+.black.mat-mdc-form-field
+  .mdc-text-field--outlined
+  .mdc-notched-outline--upgraded
+  .mdc-floating-label--float-above {
+  color: #0680cd;
 }
 
 .round .mat-mdc-form-field-infix {
-    display: flex;
-    align-items: center;
-    gap: 3px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .round-orange .mat-mdc-form-field-infix::before {
-    content: '';
-    background: #FF9900;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+  content: "";
+  background: #ff9900;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
 
-
 .round-red .mat-mdc-form-field-infix::before {
-    content: '';
-    background: red;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+  content: "";
+  background: red;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
 
 .black {
-    font-size: 13px !important;
+  font-size: 13px !important;
 }
 
 /* Ensure the wrapper inside adapts to the height */
 .ctm .mat-mdc-text-field-wrapper {
-    height: 100% !important;
-    /* Inherit the parent height */
-    display: flex !important;
-    /* Flex layout for alignment */
-    align-items: center !important;
-    padding: 0px !important;
-    /* Center-align content */
+  height: 100% !important;
+  /* Inherit the parent height */
+  display: flex !important;
+  /* Flex layout for alignment */
+  align-items: center !important;
+  padding: 0px !important;
+  /* Center-align content */
 }
 
 /* Adjust the input height */
 .ctm .mat-mdc-form-field .mat-mdc-input-element {
-    height: 100% !important;
-    /* Match input to container height */
-    line-height: normal !important;
-    /* Reset line height */
-    padding: 0 8px !important;
-    /* Adjust padding if necessary */
-    box-sizing: border-box !important;
-    /* Ensure proper padding calculation */
+  height: 100% !important;
+  /* Match input to container height */
+  line-height: normal !important;
+  /* Reset line height */
+  padding: 0 8px !important;
+  /* Adjust padding if necessary */
+  box-sizing: border-box !important;
+  /* Ensure proper padding calculation */
 }
 
 /* Adjust the outline to fit the new height */
 .ctm .mdc-notched-outline {
-    height: 100% !important;
-    /* Match the container height */
-    display: flex !important;
-    align-items: center !important;
-    /* Center notch content */
+  height: 100% !important;
+  /* Match the container height */
+  display: flex !important;
+  align-items: center !important;
+  /* Center notch content */
 }
 
 /* Fix floating label alignment */
 .ctm .mdc-floating-label {
-    transform: translateY(-20px) !important;
-    /* Adjust label position */
+  transform: translateY(-20px) !important;
+  /* Adjust label position */
 }
 
-.ctm .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
-    --mat-mdc-form-field-label-transform: translateY(calc(calc(6.75px + var(--mat-form-field-container-height) / 2)* -1)) scale(var(--mat-mdc-form-field-floating-label-scale, 0.75));
-    transform: var(--mat-mdc-form-field-label-transform) !important;
+.ctm
+  .mat-mdc-text-field-wrapper.mdc-text-field--outlined
+  .mdc-notched-outline--upgraded
+  .mdc-floating-label--float-above {
+  --mat-mdc-form-field-label-transform: translateY(
+      calc(calc(6.75px + var(--mat-form-field-container-height) / 2) * -1)
+    )
+    scale(var(--mat-mdc-form-field-floating-label-scale, 0.75));
+  transform: var(--mat-mdc-form-field-label-transform) !important;
 }
 
 .ctm .mat-mdc-form-field-infix {
-    padding: 14px 10px 10px 13px !important;
-    min-height: 35px !important;
-    display: flex !important;
-    align-items: center !important;
+  padding: 14px 10px 10px 13px !important;
+  min-height: 35px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .ctm-select .mat-mdc-text-field-wrapper {
-    height: 100% !important;
-    /* Inherit the parent height */
-    display: flex !important;
-    /* Flex layout for alignment */
-    align-items: center !important;
-    padding: 0px !important;
-    /* Center-align content */
+  height: 100% !important;
+  /* Inherit the parent height */
+  display: flex !important;
+  /* Flex layout for alignment */
+  align-items: center !important;
+  padding: 0px !important;
+  /* Center-align content */
 }
 
 /* Adjust the wrapper to inherit the height */
 .ctm-select .mat-mdc-form-field-infix {
-    padding: 11px 10px 10px 13px !important;
-    min-height: 35px !important;
-    display: flex !important;
-    align-items: center !important;
+  padding: 11px 10px 10px 13px !important;
+  min-height: 35px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .ctm-select .mdc-floating-label--float-above {
-    display: none !important;
+  display: none !important;
 }
 
 .ctm-select .mdc-floating-label {
-    transform: translateY(-15px) !important;
-    /* Adjust label position */
+  transform: translateY(-15px) !important;
+  /* Adjust label position */
 }
 
 .ctm-select .mat-mdc-select-arrow {
-    height: 35px !important;
+  height: 35px !important;
 }
 
 .ctm-select .mat-mdc-select-arrow svg {
-    top: 65% !important;
+  top: 65% !important;
 }
 
-
 .add-user-tab .mat-mdc-tab-header {
-    padding: 0px 16px 8px 16px;
-    margin: 0px !important;
+  padding: 0px 16px 8px 16px;
+  margin: 0px !important;
 }
 
 .add-user-tab .mat-mdc-tab.mdc-tab {
-    padding: 5px 15px 5px 15px;
-
+  padding: 5px 15px 5px 15px;
 }
 
 .add-user-tab .mdc-tab__text-label {
-    font-family: Roboto;
-    font-size: 14px !important;
-    font-weight: 400;
-    line-height: 20px;
-    letter-spacing: 0.1px;
-    text-align: left;
-    text-underline-position: from-font;
-    text-decoration-skip-ink: none;
-    color: #262626 !important;
-
+  font-family: Roboto;
+  font-size: 14px !important;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+  text-align: left;
+  text-underline-position: from-font;
+  text-decoration-skip-ink: none;
+  color: #262626 !important;
 }
 
 .add-user-tab .mdc-tab--active .mdc-tab__text-label {
-    color: #1874CA !important;
-    font-weight: 600 !important;
-
+  color: #1874ca !important;
+  font-weight: 600 !important;
 }
 
 .add-user-tab .mat-mdc-tab-ripple {
-    background-color: #fff !important;
+  background-color: #fff !important;
 }
 
 .add-user-tab .mdc-tab-indicator {
-    background-color: #fff !important;
+  background-color: #fff !important;
 }
 
 #pro-app .add-user-tab .mat-mdc-tab-labels div:nth-child(1) {
-    max-width: 100px !important;
-
+  max-width: 100px !important;
 }
 
 #pro-app .add-user-tab .mat-mdc-tab-labels div:nth-child(2) {
-    max-width: 115px !important;
-
+  max-width: 115px !important;
 }
 
 #pro-app .add-user-tab .mat-mdc-tab-labels div:nth-child(3) {
-    max-width: 168px !important;
-
+  max-width: 168px !important;
 }
 
 .add-user-tab .mat-mdc-tab-list {
-    margin: 0px;
+  margin: 0px;
 }
 
 .mdc-floating-label--required {
-    color: #DC4A38 !important;
+  color: #dc4a38 !important;
 }
 
 .app-user .mdc-checkbox .mdc-checkbox__background {
-    left: 0px !important;
+  left: 0px !important;
 }
 
 .app-user .mdc-checkbox {
-    padding-left: 0px;
+  padding-left: 0px;
 }
 
 .app-user .mdc-label {
-    color: #00569B;
-    font-family: Roboto;
-    font-size: 14px;
-    font-weight: 400;
+  color: #00569b;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .mdc-text-field--disabled {
-    border: none !important;
-  }
+  border: none !important;
+}
 
 .mt5 {
-    margin-top: 2px;
+  margin-top: 2px;
 }
 
 .scheduling-info ul li::before {
-    content: '\2022'; /* Add custom bullet */
-    color: #000;      /* Bullet color */
-    font-size: 30px;  /* Increase bullet size */
-    margin-right: 5px;
-    vertical-align: middle; /* Align bullet properly with text */
+  content: "\2022"; /* Add custom bullet */
+  color: #000; /* Bullet color */
+  font-size: 30px; /* Increase bullet size */
+  margin-right: 5px;
+  vertical-align: middle; /* Align bullet properly with text */
 }
 
 .ft700 {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
 
 /* new  */
@@ -392,7 +389,7 @@ html {
 }
 
 .hour-header {
-  height: 50px; 
+  height: 50px;
   width: 5.25%;
   text-align: center;
   font-weight: bold;
@@ -401,7 +398,7 @@ html {
 }
 
 .total-hour-header {
-  height: 50px; 
+  height: 50px;
   width: 5.25%;
   text-align: center;
   font-weight: bold;
@@ -513,7 +510,7 @@ html {
   align-items: center;
   justify-content: space-between;
   min-height: 40px;
-  position: relative; 
+  position: relative;
   height: 0px;
 }
 
@@ -627,7 +624,7 @@ html {
   max-width: 600px;
   pointer-events: none;
 }
-.project-time{
+.project-time {
   margin-left: 1%;
   font-style: italic;
   display: inline-block;
@@ -649,7 +646,7 @@ html {
   top: 60%;
   transform: translateY(-45%);
 }
-.duration-circle-day{
+.duration-circle-day {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -733,8 +730,7 @@ html {
   display: inline-block;
 }
 
-
-.day-schedules-container{
+.day-schedules-container {
   display: inline-table;
   width: 14.28%;
   vertical-align: top;
@@ -743,7 +739,7 @@ html {
   justify-content: center; /* Centers items vertically */
 }
 
-.day-schedules-container-interviewer{
+.day-schedules-container-interviewer {
   display: inline-table;
   width: 13.48%;
   vertical-align: top;
@@ -931,7 +927,6 @@ html {
   }
 }
 
-
 /* shift */
 .tag {
   font-size: 10px;
@@ -957,10 +952,10 @@ html {
 .mat-pseudo-checkbox-full.mat-pseudo-checkbox-indeterminate {
   background-color: #0680cd !important;
 }
-::ng-deep .week-schedules-container{
+::ng-deep .week-schedules-container {
   margin-bottom: unset !important;
 }
-::ng-deep .day-schedules-container{
+::ng-deep .day-schedules-container {
   margin-bottom: unset !important;
 }
 .mat-pseudo-checkbox-full {
@@ -1028,7 +1023,6 @@ html {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
 
 #day-calendar-time-header {
   width: 100.6%;
@@ -1133,15 +1127,14 @@ html {
   padding: 3px;
   border: 1px solid #ccc;
   text-align: left;
-  width: 110px; 
+  width: 110px;
   gap: 5px;
-  background-color: #FFF5BF;
+  background-color: #fff5bf;
 }
 .bold-prefix {
   font-weight: 599;
   margin-right: 5px;
 }
-
 
 .add-to-calendar {
   height: 50px;
@@ -1166,15 +1159,29 @@ html {
   align-items: center;
   border-right: 1px solid #ccc;
 }
-
+.day-input-container {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+}
+.day-right-aligned-input {
+  padding: 3px;
+  font-size: 14px;
+  border: 1px solid #0078d4;
+  width: 36.4%;
+  height: 30px;
+  text-align: center;
+  margin-right: -7px;
+  margin-top: 10px;
+}
 .right-aligned-input {
   padding: 3px;
   font-size: 14px;
   border: 1px solid #0078d4;
-  width: 86%; 
+  width: 86%;
   height: 30px;
   text-align: center;
-  margin-left: 12px
+  margin-left: 12px;
 }
 .icon-input-container {
   display: flex;

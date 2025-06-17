@@ -339,4 +339,28 @@ export class ShiftDayViewComponent implements OnInit {
     }
     this.scheduleData.emit({ ...schedule });
   }
+  calculateTotalDuration(): number {
+    if (!this.filteredShiftSchedule) return 0;
+
+    let total = 0;
+    for (const us of this.filteredShiftSchedule) {
+      if (us.duration) {
+        total += us.duration;
+      } else if (us.schedules) {
+        for (const schedule of us.schedules) {
+          total += schedule.duration || 0;
+        }
+      } else {
+        total += us.duration || 0;
+      }
+    }
+    return total;
+  }
+  get inputHeight(): string {
+    const scheduleCount = this.filteredShiftSchedule?.length || 1;
+    const baseHeight = 30; // height per row
+    const maxHeight = 200; // optional limit
+
+    return Math.min(scheduleCount * baseHeight, maxHeight) + 'px';
+  }
 }
