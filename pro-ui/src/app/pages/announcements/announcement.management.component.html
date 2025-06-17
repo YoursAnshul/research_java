@@ -28,7 +28,7 @@
     <mat-spinner [diameter]="50" color="primary"></mat-spinner>
   </div>
 
-  <div class="table-container">
+  <div class="table-wrapper">
     <div class="table text-sm mt-2">
       <div class="table-body">
         <app-table-header
@@ -186,13 +186,15 @@
         }
       </div>
     </div>
+    <app-table-paginator
+      [sourceData]="announcements"
+      [(currentPage)]="currentPage"
+      [(paginatedData)]="paginatedAnnouncements"
+      class="custom-paginator"
+    ></app-table-paginator>
   </div>
   @if (announcements !== undefined && announcements.length === 0) {
   <div class="w-full text-sm">No announcement found</div>
   }
-  <app-table-paginator
-    [sourceData]="announcements"
-    [(currentPage)]="currentPage"
-    [(paginatedData)]="paginatedAnnouncements"
-  ></app-table-paginator>
+
 </div>
