@@ -12,13 +12,13 @@ import { Router } from '@angular/router';
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
-export class UserProfileComponent implements CanComponentDeactivate {
+export class UserProfileComponent implements CanComponentDeactivate  {
   selectedUser!: User;
   public isUnsavedChanges: boolean = false;
   public discardChanges: boolean = false;
   public nextUrl: string | null = null;
   constructor(private authenticationService: AuthenticationService,
-    private usersService: UsersService, private dialog: MatDialog,
+    private usersService: UsersService,     private dialog: MatDialog,
     private router: Router) {
     this.authenticationService.authenticatedUser.subscribe(
       authenticatedUser => {
@@ -32,39 +32,39 @@ export class UserProfileComponent implements CanComponentDeactivate {
       }
     );
   }
-  // Guard method
-  canDeactivate(nextUrl: string | null): boolean {
-    if (this.isUnsavedChanges) {
-      this.nextUrl = nextUrl;
-      this.openDialog({
-        dialogType: 'error',
-        isUserProfile: true
-      })
-      return false;
+// Guard method
+canDeactivate(nextUrl: string | null): boolean {
+  if (this.isUnsavedChanges) {
+    this.nextUrl = nextUrl;
+    this.openDialog({
+      dialogType: 'error',
+      isUserProfile: true
+    })
+    return false;
+  }
+  return true;
+}
+
+openDialog(data: any,): void {
+  const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+    width: '300px',
+    data: {
+      ...data
     }
-    return true;
-  }
+  });
 
-  openDialog(data: any,): void {
-    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
-      width: '300px',
-      data: {
-        ...data
+  dialogRef.afterClosed().subscribe(result => {
+    if (result == 'discardChanges') {
+     // this.discardChanges = true;
+     this.isUnsavedChanges = false;
+      if(this.nextUrl) {
+        this.router.navigateByUrl(this.nextUrl);
       }
-    });
+    }
+  });
+}
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == 'discardChanges') {
-        // this.discardChanges = true;
-        this.isUnsavedChanges = false;
-        if (this.nextUrl) {
-          this.router.navigateByUrl(this.nextUrl);
-        }
-      }
-    });
-  }
-
-  setUnsavedChanges(value: boolean) {
-    this.isUnsavedChanges = value;
-  }
+setUnsavedChanges(value:boolean) {
+  this.isUnsavedChanges = value;
+}
 }

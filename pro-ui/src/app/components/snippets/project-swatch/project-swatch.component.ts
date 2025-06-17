@@ -7,7 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ProjectSwatchComponent implements OnInit {
   @Input() projectColor: string = '';
-  @Input() projectAbbr: string = '';
+  @Input() projectAbbr: string | undefined = undefined;
+  @Input() size: string = '';
   @Input() customStyle: any = {};
   constructor() { }
 
@@ -16,6 +17,9 @@ export class ProjectSwatchComponent implements OnInit {
     if (this.projectColor) {
       if (!this.customStyle.hasOwnProperty('background-color')) {
         this.customStyle['background-color'] = this.projectColor;
+      }
+      if (this.size) {
+        this.customStyle['height'] = this.size;
       }
     }
   }

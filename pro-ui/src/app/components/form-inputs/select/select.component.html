@@ -15,7 +15,7 @@
             (click)="toggleDropdown()">
 
             <div class="w-full">
-                <div class="float-left pt-1">
+                <div class="float-left pt-1 text-black">
                     {{getSelectedValues()}}
                 </div>
                 <div class="float-right mt-1">
@@ -61,7 +61,7 @@
                             (change)="toggleSelectedValue(dv)"
                             [checked]="isValueSelected(dv)" />
                     }
-                    <div class="cursor-pointer w-full"
+                    <div class="cursor-pointer w-full text-black"
                         (click)="toggleSelectedValue(dv)">{{dv?.dropDownItem}}</div>
                 </div>
             }

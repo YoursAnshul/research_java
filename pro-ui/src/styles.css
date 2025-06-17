@@ -485,7 +485,11 @@ html {
   border-right: 0.5px solid gray;
   margin-bottom: 10px;
 }
-
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 #day-calendar-user-schedules .schedule-card {
   flex-grow: 1;
@@ -1183,8 +1187,23 @@ html {
   align-items: center;
   height: 100px; /* Adjust height as needed */
 }
-.disabled {
-  pointer-events: none;
-  opacity: 0.5;
-  cursor: not-allowed;
+
+/* temporary tailwind overrides of bootstrap classes */
+
+.border {
+  border-width: 1px !important;
+}
+
+.border-2 {
+  border-width: 2px !important;
+}
+
+.border-blue-400 {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(96 165 250 / var(--tw-border-opacity, 1)) !important;
+}
+
+.border-blue-600 {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(37 99 235 / var(--tw-border-opacity, 1)) !important;
 }

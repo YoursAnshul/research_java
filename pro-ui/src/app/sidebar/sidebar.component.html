@@ -26,9 +26,10 @@
           @if (isCollapsed) {
             <li
               [ngClass]="{'selected': isActiveRoute(item.route)}"
-              (click)="selectItem(item.id)" ngbTooltip="{{item.label}}"
-              placement="right">
-              <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+              (click)="selectItem(item.id)">
+              <app-tooltip [text]="item.label" position="right">
+                <mat-icon svgIcon="{{item.icon}}"></mat-icon>
+              </app-tooltip>
             </li>
           }
           @if (!isCollapsed) {

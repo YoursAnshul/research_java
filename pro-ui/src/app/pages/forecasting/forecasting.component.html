@@ -1,1 +1,27 @@
-<p>forecasting works!</p>
+<div class="p-4 bg-white rounded-lg border-2 border-gray-300">
+  <h2 class="text-xl font-semibold mb-2">Forecasting</h2>
+  <div class="mb-4">
+    <nav class="flex space-x-8" aria-label="Tabs">
+      <button class="px-4 py-2 font-medium focus:outline-none bg-white"
+        [class.border-b-2]="selectedTab === 'project-forecasting'"
+        [class.text-blue-600]="selectedTab === 'project-forecasting'"
+        [class.border-blue-600]="selectedTab === 'project-forecasting'"
+        [class.border-transparent]="selectedTab !== 'project-forecasting'"
+        [class.text-gray-500]="selectedTab !== 'project-forecasting'"
+        (click)="selectedTab = 'project-forecasting'">Project Forecasting</button>
+      <button class="px-4 py-2 font-medium focus:outline-none bg-white"
+      [class.border-b-2]="selectedTab === 'user-core-hours'"
+      [class.text-blue-600]="selectedTab === 'user-core-hours'"
+      [class.border-blue-600]="selectedTab === 'user-core-hours'"
+      [class.border-transparent]="selectedTab !== 'user-core-hours'"
+      [class.text-gray-500]="selectedTab !== 'user-core-hours'"
+        (click)="selectedTab = 'user-core-hours'">User Core Hours</button>
+    </nav>
+  </div>
+
+  @if (selectedTab === 'project-forecasting') {
+    <app-project-forecasting></app-project-forecasting>
+  } @else if (selectedTab === 'user-core-hours') {
+    <app-user-core-hours></app-user-core-hours>
+  }
+</div>

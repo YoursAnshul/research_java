@@ -247,72 +247,72 @@
       <div class="no-results bold italic" *ngIf="(pagedUserSchedulesWeek || []).length < 1">
         No matching schedules found for this date range...
       </div>
-      <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesWeek" [schedule]="s"
-        [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
-        [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
-        [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
-        (saveEvent)="scheduleSaved($event)" (deleteEvent)="scheduleDeleted($event)" (addEvent)="addSchedule($event)"
-        (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
-        (mouseleave)="hideHoverMessage()">
-      </app-schedule-line>
-    </div>
-
-    <mat-paginator #paginator [pageSize]="pageSizeWeek" [pageSizeOptions]="pageSizeOptions"
-      [showFirstLastButtons]="true" [length]="pagedUsersWeekLength" [pageIndex]="pageIndexWeek"
-      (page)="handleWeekPage($event)">
-    </mat-paginator>
-
-  </mat-tab>
-  <mat-tab label="Month">
-    <ng-template mat-tab-label>
-      <span [class.invalid-emphasis]="monthTabInvalid">Month</span>
-      <span class="invalid-emphasis" *ngIf="monthTabInvalid">&nbsp;<sup>**</sup></span>
-    </ng-template>
-
-    <div class="paginated-schedules">
-      <div class="no-results bold italic" *ngIf="(pagedUserSchedulesMonth || []).length < 1">
-        No matching schedules found for this date range...
+        <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesWeek" [schedule]="s"
+          [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
+          [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
+          [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
+          (saveEvent)="scheduleSaved($event)" (deleteEvent)="scheduleDeleted($event)" (addEvent)="addSchedule($event)"
+          (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
+          (mouseleave)="hideHoverMessage()">
+        </app-schedule-line>
       </div>
-      <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesMonth" [schedule]="s"
-        [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
-        [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
-        [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
-        (saveEvent)="scheduleSaved($event)" (deleteEvent)="scheduleDeleted($event)" (addEvent)="addSchedule($event)"
-        (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
-        (mouseleave)="hideHoverMessage()">
-      </app-schedule-line>
-    </div>
 
-    <mat-paginator #paginator [pageSize]="pageSizeMonth" [pageSizeOptions]="pageSizeOptions"
-      [showFirstLastButtons]="true" [length]="pagedUsersMonthLength" [pageIndex]="pageIndexMonth"
-      (page)="handleMonthPage($event)">
-    </mat-paginator>
+      <mat-paginator #paginator [pageSize]="pageSizeWeek" [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true" [length]="pagedUsersWeekLength" [pageIndex]="pageIndexWeek"
+        (page)="handleWeekPage($event)">
+      </mat-paginator>
 
-  </mat-tab>
-  <mat-tab label="Custom">
-    <ng-template mat-tab-label>
-      <span [class.invalid-emphasis]="customTabInvalid">Custom</span>
-      <span class="invalid-emphasis" *ngIf="customTabInvalid">&nbsp;<sup>**</sup></span>
-    </ng-template>
+    </mat-tab>
+    <mat-tab label="Month">
+      <ng-template mat-tab-label>
+        <span [class.invalid-emphasis]="monthTabInvalid">Month</span>
+        <span class="invalid-emphasis" *ngIf="monthTabInvalid">&nbsp;<sup>**</sup></span>
+      </ng-template>
 
-    <div class="paginated-schedules">
-      <div class="no-results bold italic" *ngIf="(pagedUserSchedulesCustom || []).length < 1">
-        No matching schedules found for this date range...
+      <div class="paginated-schedules">
+        <div class="no-results bold italic" *ngIf="(pagedUserSchedulesMonth || []).length < 1">
+          No matching schedules found for this date range...
+        </div>
+        <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesMonth" [schedule]="s"
+          [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
+          [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
+          [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
+          (saveEvent)="scheduleSaved($event)" (deleteEvent)="scheduleDeleted($event)" (addEvent)="addSchedule($event)"
+          (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
+          (mouseleave)="hideHoverMessage()">
+        </app-schedule-line>
       </div>
-      <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesCustom" [schedule]="s"
-        [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
-        [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
-        [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
-        (saveEvent)="scheduleSaved($event)" (deleteEvent)="scheduleDeleted($event)" (addEvent)="addSchedule($event)"
-        (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
-        (mouseleave)="hideHoverMessage()">
-      </app-schedule-line>
-    </div>
 
-    <mat-paginator #paginator [pageSize]="pageSizeCustom" [pageSizeOptions]="pageSizeOptions"
-      [showFirstLastButtons]="true" [length]="pagedUsersCustomLength" [pageIndex]="pageIndexCustom"
-      (page)="handleCustomPage($event)">
-    </mat-paginator>
+      <mat-paginator #paginator [pageSize]="pageSizeMonth" [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true" [length]="pagedUsersMonthLength" [pageIndex]="pageIndexMonth"
+        (page)="handleMonthPage($event)">
+      </mat-paginator>
 
-  </mat-tab>
+    </mat-tab>
+    <mat-tab label="Custom">
+      <ng-template mat-tab-label>
+        <span [class.invalid-emphasis]="customTabInvalid">Custom</span>
+        <span class="invalid-emphasis" *ngIf="customTabInvalid">&nbsp;<sup>**</sup></span>
+      </ng-template>
+
+      <div class="paginated-schedules">
+        <div class="no-results bold italic" *ngIf="(pagedUserSchedulesCustom || []).length < 1">
+          No matching schedules found for this date range...
+        </div>
+        <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesCustom" [schedule]="s"
+          [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
+          [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
+          [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
+          (saveEvent)="scheduleSaved($event)" (deleteEvent)="scheduleDeleted($event)" (addEvent)="addSchedule($event)"
+          (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
+          (mouseleave)="hideHoverMessage()">
+        </app-schedule-line>
+      </div>
+
+      <mat-paginator #paginator [pageSize]="pageSizeCustom" [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true" [length]="pagedUsersCustomLength" [pageIndex]="pageIndexCustom"
+        (page)="handleCustomPage($event)">
+      </mat-paginator>
+
+    </mat-tab>
 </mat-tab-group>
