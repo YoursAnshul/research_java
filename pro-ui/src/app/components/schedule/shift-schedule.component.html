@@ -1,15 +1,8 @@
-<div
-  class="d-flex align-items-center justify-content-between"
-  style="padding: 10px 15px"
->
+<div class="d-flex align-items-center justify-content-between" style="padding: 10px 15px">
   <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
 
   <div class="d-flex" style="margin-left: auto">
-    <button
-      style="height: 25px"
-      class="btn-outline ml-2"
-      (click)="confirmatationClose()"
-    >
+    <button style="height: 25px" class="btn-outline ml-2" (click)="confirmatationClose()">
       Close
     </button>
   </div>
@@ -20,54 +13,32 @@
     <div class="form-container">
       <div>
         <!-- User Dropdown -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field"
-          style="width: 185px"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field" style="width: 185px">
           <mat-label>User</mat-label>
-          <mat-select
-            formControlName="user"
-            [(value)]="selectedUser"
-            (selectionChange)="onUserSelectionChange($event)"
-          >
-            <mat-option
-              *ngFor="let user of userList"
-              [value]="user"
-              [disabled]="
-                user.userId !== selectedUser?.userId &&
-                (isEdit || isHomeRedirect || profileType == 'user-profile')
-              "
-            >
+          <mat-select formControlName="user" [(value)]="selectedUser" (selectionChange)="onUserSelectionChange($event)">
+            <mat-option *ngFor="let user of userList" [value]="user" [disabled]="
+                            user.userId !== selectedUser?.userId &&
+                            (isEdit || isHomeRedirect || profileType == 'user-profile')
+                          ">
               {{ user.userName }}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
         <!-- Project Multi-select -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
-          style="width: 185px"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 185px">
           <mat-label>Project</mat-label>
           <mat-select formControlName="projects" [(value)]="selectedProject">
             <!-- Other Projects -->
             <mat-optgroup label="Projects">
-              <mat-option
-                *ngFor="let project of otherProjects"
-                [value]="project"
-              >
+              <mat-option *ngFor="let project of otherProjects" [value]="project">
                 {{ project.projectName }}
               </mat-option>
             </mat-optgroup>
 
             <!-- Admin Projects -->
             <mat-optgroup label="Admin">
-              <mat-option
-                *ngFor="let project of adminProjects"
-                [value]="project"
-              >
+              <mat-option *ngFor="let project of adminProjects" [value]="project">
                 {{ project.projectName }}
               </mat-option>
             </mat-optgroup>
@@ -78,50 +49,23 @@
         <span class="ml-2">{{ currentDay }}</span>
 
         <!-- Day Wise Date Picker -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
-          style="width: 170px"
-          [ngClass]="{ 'mat-form-field-invalid': isDateBlockDate }"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 170px"
+          [ngClass]="{ 'mat-form-field-invalid': isDateBlockDate }">
           <mat-label>{{ currentDay }}</mat-label>
-          <input
-            matInput
-            [matDatepicker]="dayWisePicker"
-            formControlName="dayWiseDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="dayWisePicker"
-          ></mat-datepicker-toggle>
+          <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
+          <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
         <!-- Start Time Picker -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
-          [class.error-border]="
-            shiftForm.get('startTime')?.hasError('duplicate')
-          "
-          [class.disabled-field]="shiftForm.get('startTime')?.disabled"
-          style="width: 80px"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" [class.error-border]="
+                        shiftForm.get('startTime')?.hasError('duplicate')
+                      " [class.disabled-field]="shiftForm.get('startTime')?.disabled" style="width: 80px">
           <mat-label>Start Time</mat-label>
-          <mat-select
-            formControlName="startTime"
-            [disabled]="!!shiftForm.get('startTime')?.disabled"
-          >
-            <mat-option
-              *ngFor="let time of timeSlots"
-              [value]="time"
-              [disabled]="isTimeBlocked(time)"
-            >
-              <div
-                class="time-box"
-                [ngStyle]="{
-                  'background-color': getBackgroundColor(time)
-                }"
-              >
+          <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled">
+            <mat-option *ngFor="let time of timeSlots" [value]="time">
+              <div class="time-box" [ngStyle]="{
+                              'background-color': getBackgroundColor(time)
+                            }">
                 {{ time }}
               </div>
             </mat-option>
@@ -129,29 +73,15 @@
         </mat-form-field>
 
         <!-- End Time Picker -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
+        <mat-form-field appearance="outline" class="custom-form-field ml-2"
           [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
-          [class.disabled-field]="shiftForm.get('endTime')?.disabled"
-          style="width: 80px"
-        >
+          [class.disabled-field]="shiftForm.get('endTime')?.disabled" style="width: 80px">
           <mat-label>End Time</mat-label>
-          <mat-select
-            formControlName="endTime"
-            [disabled]="!!shiftForm.get('endTime')?.disabled"
-          >
-            <mat-option
-              *ngFor="let time of endtimeSlots"
-              [value]="time"
-              [disabled]="isTimeBlocked(time)"
-            >
-              <div
-                class="time-box"
-                [ngStyle]="{
-                  'background-color': getBackgroundColor(time)
-                }"
-              >
+          <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled">
+            <mat-option *ngFor="let time of endtimeSlots" [value]="time">
+              <div class="time-box" [ngStyle]="{
+                              'background-color': getBackgroundColor(time)
+                            }">
                 {{ time }}
               </div>
             </mat-option>
@@ -162,117 +92,53 @@
         <span class="ml-2">{{ duration }}</span>
 
         <!-- Comments (Optional) -->
-        <mat-form-field
-          appearance="outline"
-          class="custom-form-field ml-2"
-          style="width: 150px"
-        >
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
           <mat-label>Comments</mat-label>
           <input matInput formControlName="comments" />
         </mat-form-field>
 
         <!-- Add to Calendar Button -->
         <div class="ml-1 mr-1" *ngIf="!isEdit">
-          <button
-            mat-raised-button
-            color="primary"
-            [disabled]="
-              !scheduleFetchStatus ||
-              shiftForm.invalid ||
-              !shiftForm.get('startTime')?.value ||
-              !shiftForm.get('endTime')?.value
-            "
-          >
+          <button mat-raised-button color="primary" [disabled]="
+                          !scheduleFetchStatus ||
+                          shiftForm.invalid ||
+                          !shiftForm.get('startTime')?.value ||
+                          !shiftForm.get('endTime')?.value
+                        ">
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
-        <div
-          class="icon-container"
-          *ngIf="isEdit"
-          style="
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            margin-left: 10px;
-          "
-        >
-          <div
-            (click)="editSchedule()"
-            style="margin-right: 10px"
-            [ngClass]="{ disabled: !isEditAble || shiftForm.invalid }"
-          >
-            <svg
-              width="24"
-              height="25"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <mask
-                id="mask0_6864_14517"
-                style="mask-type: alpha"
-                maskUnits="userSpaceOnUse"
-                x="0"
-                y="0"
-                width="24"
-                height="25"
-              >
+        <div class="icon-container" *ngIf="isEdit" style="
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        margin-left: 10px;
+                      ">
+          <div (click)="editSchedule()" style="margin-right: 10px"
+            [ngClass]="{ disabled: !isEditAble || shiftForm.invalid }">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_6864_14517" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+                height="25">
                 <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
               </mask>
               <g mask="url(#mask0_6864_14517)">
                 <path
                   d="M15 22.5V20.5H19V10.5H5V14.5H3V6.5C3 5.95 3.19583 5.47917 3.5875 5.0875C3.97917 4.69583 4.45 4.5 5 4.5H6V2.5H8V4.5H16V2.5H18V4.5H19C19.55 4.5 20.0208 4.69583 20.4125 5.0875C20.8042 5.47917 21 5.95 21 6.5V20.5C21 21.05 20.8042 21.5208 20.4125 21.9125C20.0208 22.3042 19.55 22.5 19 22.5H15ZM8 24.5L6.6 23.1L9.175 20.5H1V18.5H9.175L6.6 15.9L8 14.5L13 19.5L8 24.5Z"
-                  fill="#0680CD"
-                />
+                  fill="#0680CD" />
               </g>
             </svg>
           </div>
-          <div
-            (click)="confirmationPopup()"
-            [ngClass]="{ disabled: isEditAble }"
-          >
-            <svg
-              width="24"
-              height="25"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <mask
-                id="mask0_6864_14520"
-                style="mask-type: alpha"
-                maskUnits="userSpaceOnUse"
-                x="0"
-                y="0"
-                width="24"
-                height="25"
-              >
+          <div (click)="confirmationPopup()" [ngClass]="{ disabled: isEditAble }">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_6864_14520" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+                height="25">
                 <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
               </mask>
               <g mask="url(#mask0_6864_14520)">
                 <path
                   d="M9.4 17L12 14.4L14.6 17L16 15.6L13.4 13L16 10.4L14.6 9L12 11.6L9.4 9L8 10.4L10.6 13L8 15.6L9.4 17ZM7 21.5C6.45 21.5 5.97917 21.3042 5.5875 20.9125C5.19583 20.5208 5 20.05 5 19.5V6.5H4V4.5H9V3.5H15V4.5H20V6.5H19V19.5C19 20.05 18.8042 20.5208 18.4125 20.9125C18.0208 21.3042 17.55 21.5 17 21.5H7Z"
-                  fill="#DC4A38"
-                />
+                  fill="#DC4A38" />
               </g>
-            </svg>
-          </div>
-          <div
-            style="margin-left: 10px"
-            *ngIf="isEditAble"
-            (click)="undoSchedule()"
-          >
-            <svg
-              width="14"
-              height="15"
-              viewBox="0 0 14 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.4 14.5L0 13.1L5.6 7.5L0 1.9L1.4 0.5L7 6.1L12.6 0.5L14 1.9L8.4 7.5L14 13.1L12.6 14.5L7 8.9L1.4 14.5Z"
-                fill="#58595B"
-              />
             </svg>
           </div>
         </div>
@@ -280,29 +146,14 @@
     </div>
 
     <!-- Shift Calendar Component -->
-    <app-shift-calendar
-      style="margin-top: -20px"
-      (resetShiftSchedule)="onResetShiftSchedule()"
-      (selectedUserChange)="handleUser($event)"
-      (selectedProjectChange)="handleProject($event)"
-      (selectedDateRangeValue)="onDateRangeReceived($event)"
-      (tabValue)="onTabValueReceived($event)"
-      (seletedDayDate)="onSeletedDayDate($event)"
-      (sendDate)="handleDate($event)"
-      (sendWeekDate)="handleWeekDate($event)"
-      [shiftSchedule1]="shiftSchedule"
-      [changeDate]="changeDate"
-      [homeUser]="homeUser"
-      [homeSelectedProject]="homeSelectedProject"
-      [homeSelectedDate]="homeSelectedDate"
-      [tab]="tab"
-      (scheduleData)="handleSchedule($event)"
-      [isEdit]="isEdit"
-      [isClose]="isClose"
-      [pId]="pId"
-      [isScheduleUpdate]="isScheduleUpdate"
-    >
-      > ></app-shift-calendar
-    >
+    <app-shift-calendar style="margin-top: -20px" (resetShiftSchedule)="onResetShiftSchedule()"
+      (selectedUserChange)="handleUser($event)" (selectedProjectChange)="handleProject($event)"
+      (selectedDateRangeValue)="onDateRangeReceived($event)" (tabValue)="onTabValueReceived($event)"
+      (seletedDayDate)="onSeletedDayDate($event)" (sendDate)="handleDate($event)"
+      (sendWeekDate)="handleWeekDate($event)" [shiftSchedule1]="shiftSchedule" [changeDate]="changeDate"
+      [homeUser]="homeUser" [homeSelectedProject]="homeSelectedProject" [homeSelectedDate]="homeSelectedDate"
+      [tab]="tab" (scheduleData)="handleSchedule($event)" [isEdit]="isEdit" [isClose]="isClose" [pId]="pId"
+      [isScheduleUpdate]="isScheduleUpdate">
+      > ></app-shift-calendar>
   </form>
 </div>

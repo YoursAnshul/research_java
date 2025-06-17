@@ -53,22 +53,14 @@ public class ManageAnnouncementsController {
 		return ResponseEntity.status(HttpStatus.OK).body(announcement);
 	}
 
-	@GetMapping("/list/{page}")
-	public ResponseEntity<PageResponse<AnnouncementResponse>> getAnnouncementList(@PathVariable Integer page,
+	@GetMapping("/announcement/list")
+	public ResponseEntity<PageResponse<AnnouncementResponse>> getAnnouncementList(
 			@RequestParam(required = false, value = "sortBy") String sortBy,
 			@RequestParam(required = false, value = "orderBy") String orderBy,
-			@RequestParam(required = false, value = "limit") Integer limit,
 			@RequestParam(required = false, value = "keyword") String keyword,
 			@RequestParam(required = false, value = "authorName") String authorName) {
-		int offset = 0;
-		if (limit == null) {
-			limit = 10;
-		}
-		if (page > 0) {
-			offset = (page - 1) * limit;
-		}
-		PageResponse<AnnouncementResponse> response = manageAnnouncements.getList(sortBy, orderBy, limit, offset,
-				keyword, authorName);
+
+		PageResponse<AnnouncementResponse> response = manageAnnouncements.getList(sortBy, orderBy, keyword, authorName);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 

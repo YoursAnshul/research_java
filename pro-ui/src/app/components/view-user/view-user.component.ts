@@ -1,21 +1,32 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { GlobalsService } from "../../services/globals/globals.service";
-import { LogsService } from "../../services/logs/logs.service";
-import { RequestsService } from "../../services/requests/requests.service";
-import { ProjectsService } from "../../services/projects/projects.service";
-import { ConfigurationService } from "../../services/configuration/configuration.service";
-import { UsersService } from "../../services/users/users.service";
-import { AuthenticationService } from "../../services/authentication/authentication.service";
+import { GlobalsService } from '../../services/globals/globals.service';
+import { LogsService } from '../../services/logs/logs.service';
+import { RequestsService } from '../../services/requests/requests.service';
+import { ProjectsService } from '../../services/projects/projects.service';
+import { ConfigurationService } from '../../services/configuration/configuration.service';
+import { UsersService } from '../../services/users/users.service';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 import {
   IAuthenticatedUser,
-  ICoreHours, IDropDownValue,
-  IFormFieldInstance, IFormFieldVariable,
+  ICoreHours,
+  IDropDownValue,
+  IFormFieldInstance,
+  IFormFieldVariable,
   IProjectMin,
   IRequest,
-  DefPro
-} from "../../interfaces/interfaces";
-import { Utils } from "../../classes/utils";
+  DefPro,
+} from '../../interfaces/interfaces';
+import { Utils } from '../../classes/utils';
 import { User } from '../../models/data/user';
 import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -28,6 +39,7 @@ import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { ScheduleService } from '../schedule/schedule.service';
 import { ShiftScheduleComponent } from '../schedule/shift-schedule.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-view-user',
@@ -36,7 +48,6 @@ import { ShiftScheduleComponent } from '../schedule/shift-schedule.component';
 })
 export class ViewUserComponent implements OnInit, OnChanges {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
-
     if (this.changed) {
       e.preventDefault();
       e.returnValue = '';
@@ -50,14 +61,14 @@ export class ViewUserComponent implements OnInit, OnChanges {
   @Output() userSaved = new EventEmitter<User>();
   @Output() setUnsavedChanges = new EventEmitter<boolean>();
   @Output() closewindow = new EventEmitter<void>();
-  @Input() showBreadcrum: boolean =  true;
+  @Input() showBreadcrum: boolean = true;
   @Input() discardChanges = true;
   @Input() isShow = false;
   authenticatedUser!: IAuthenticatedUser;
   selectedUser!: User;
   activeProjects!: IProjectMin[];
   defPro!: DefPro[];
-  changedTrainedOnProjects!:IProjectMin[];
+  changedTrainedOnProjects!: IProjectMin[];
   trainedOnProjects!: IProjectMin[];
   notTrainedOnProjects!: IProjectMin[];
   requestCodeDropDown!: IDropDownValue[];
@@ -86,7 +97,15 @@ export class ViewUserComponent implements OnInit, OnChanges {
   isStarFilled: boolean = false;
   defaultproject: number = 0;
 
-  requestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes'];
+  requestTableColumns: string[] = [
+    'RequestType',
+    'InterviewerEmpName',
+    'ResourceTeamMemberName',
+    'RequestDate',
+    'RequestDetails',
+    'Decision',
+    'Notes',
+  ];
   noRequestsResultsMessage: string = 'Loading requests...';
   invalid: boolean = true;
   isUserFormInvalid: boolean = false;
@@ -97,39 +116,52 @@ export class ViewUserComponent implements OnInit, OnChanges {
   isEdit: boolean = true;
   trainedOn: string = '';
   public selectedTab: string = 'scheduling';
-  isLoading = false; 
+  isLoading = false;
 
   public statuses: IFormFieldVariable | undefined = undefined;
 
-  constructor(private fb: FormBuilder, private globalsService: GlobalsService,
+  length = 4;
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [2, 5, 10, 15];
+  hidePageSize = false;
+  showPageSizeOptions = true;
+  showFirstLastButtons = true;
+  disabled = false;
+  pageEvent!: PageEvent;
+  paginatedRequests: IRequest[] = [];
+
+  constructor(
+    private fb: FormBuilder,
+    private globalsService: GlobalsService,
     private authenticationService: AuthenticationService,
     private usersService: UsersService,
     private configurationService: ConfigurationService,
     private projectsService: ProjectsService,
     private requestsService: RequestsService,
-    private logsService: LogsService, private dialog: MatDialog,
-    private snackBar: MatSnackBar,private router: Router, private scheduleService: ScheduleService) {
+    private logsService: LogsService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private scheduleService: ScheduleService
+  ) {
     if (this.viewUser) {
       this.selectedUser = this.viewUser;
-      this.trainedOn =this.selectedUser.trainedon;
+      this.trainedOn = this.selectedUser.trainedon;
     }
     this.changedTrainedOnProjects = [];
-    this.configurationService.getFormField('Role').subscribe(
-      response => {
-        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.roles = <IFormFieldVariable>response.Subject;
-        }
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+        this.roles = <IFormFieldVariable>response.Subject;
       }
-    );
+    });
 
     //get status values
-    this.configurationService.getFormField('Status').subscribe(
-      response => {
-        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.statuses = <IFormFieldVariable>response.Subject;
-        }
+    this.configurationService.getFormField('Status').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+        this.statuses = <IFormFieldVariable>response.Subject;
       }
-    );
+    });
 
     /*    if (!this.createForm) {
           this.selectedUser = this.blankUser();
@@ -137,56 +169,58 @@ export class ViewUserComponent implements OnInit, OnChanges {
         }*/
 
     //get user form fields to build the forms
-    this.configurationService.getUserFields().subscribe(
-      response => {
-        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          let userFields: IFormFieldVariable[] = <IFormFieldVariable[]>response.Subject;
-          this.userFields = userFields;
+    this.configurationService.getUserFields().subscribe((response) => {
+      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+        let userFields: IFormFieldVariable[] = <IFormFieldVariable[]>(
+          response.Subject
+        );
+        this.userFields = userFields;
 
-          //set selected user to a blank user object if creating a new object
-          if (!this.createForm) {
-            this.selectedUser = this.blankUser();
-            //this.selectedUser = {} as IUser;
-            //set trained/not trained on if not already set and if we have already populated active projects
-            if (this.activeProjects) {
-              this.setTrainedOn();
-              this.setNotTrainedOn();
-            }
-
-            //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
-            if (this.userFields) {
-              this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
-            }
+        //set selected user to a blank user object if creating a new object
+        if (!this.createForm) {
+          this.selectedUser = this.blankUser();
+          //this.selectedUser = {} as IUser;
+          //set trained/not trained on if not already set and if we have already populated active projects
+          if (this.activeProjects) {
+            this.setTrainedOn();
+            this.setNotTrainedOn();
           }
-          //if the selected user has been set but we haven't assigned user fields, let's map and assign the fields
-          else if (this.selectedUser) {
-            this.mapUserFieldsAndAssignTabs(this.selectedUser, userFields);
+
+          //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
+          if (this.userFields) {
+            this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
           }
         }
+        //if the selected user has been set but we haven't assigned user fields, let's map and assign the fields
+        else if (this.selectedUser) {
+          this.mapUserFieldsAndAssignTabs(this.selectedUser, userFields);
+        }
       }
-    );
+    });
 
     //get active projects
-    this.projectsService.allProjectsMin.subscribe(
-      allProjects => {
-        this.activeProjects = allProjects.filter(x => (x.active && x.projectType !== 'Administrative'));
-        //setup active projects as an iDropDownValue type
-        this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
-        this.setNotTrainedOn();
-      }
-    );
+    this.projectsService.allProjectsMin.subscribe((allProjects) => {
+      this.activeProjects = allProjects.filter(
+        (x) => x.active && x.projectType !== 'Administrative'
+      );
+      //setup active projects as an iDropDownValue type
+      this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(
+        this.activeProjects,
+        'projectID',
+        'projectName'
+      );
+      this.setNotTrainedOn();
+    });
 
     //get active users
-    this.usersService.allUsersMin.subscribe(
-      allUsers => {
-        this.allUsers = allUsers;
-        this.trySetRequestValues();
-      }
-    );
+    this.usersService.allUsersMin.subscribe((allUsers) => {
+      this.allUsers = allUsers;
+      this.trySetRequestValues();
+    });
 
     //subscribe to the authenticated user
     this.authenticationService.authenticatedUser.subscribe(
-      authenticatedUser => {
+      (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
 
         this.readOnly = this.isReadOnly();
@@ -195,32 +229,41 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
     //get requests dropdown configurations
     this.configurationService.getFormFieldsByTable('Requests').subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          let requestFormFields: IFormFieldVariable[] = <IFormFieldVariable[]>response.Subject;
+          let requestFormFields: IFormFieldVariable[] = <IFormFieldVariable[]>(
+            response.Subject
+          );
 
           this.requestFormFields = requestFormFields;
-          let requestCodeFormField: IFormFieldVariable | undefined = requestFormFields.find(x => x.formField?.columnName == 'requestCodeID');
+          let requestCodeFormField: IFormFieldVariable | undefined =
+            requestFormFields.find(
+              (x) => x.formField?.columnName == 'requestCodeID'
+            );
           if (requestCodeFormField) {
-            this.requestCodeDropDown = requestCodeFormField.dropDownValues || [];
+            this.requestCodeDropDown =
+              requestCodeFormField.dropDownValues || [];
           }
-          let decisionFormField: IFormFieldVariable | undefined = requestFormFields.find(x => x.formField?.columnName == 'decisionID');
+          let decisionFormField: IFormFieldVariable | undefined =
+            requestFormFields.find(
+              (x) => x.formField?.columnName == 'decisionID'
+            );
           if (decisionFormField) {
             this.decisionIdDropDown = decisionFormField.dropDownValues || [];
           }
           this.trySetRequestValues();
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
 
-    this.projectsService.isLoading.subscribe(loading => {
+    this.projectsService.isLoading.subscribe((loading) => {
       this.isLoading = loading;
     });
-
   }
 
   isCurrentMonth(month: Date | null): boolean {
@@ -239,105 +282,114 @@ export class ViewUserComponent implements OnInit, OnChanges {
       // Handle discardChanges dynamically
       this.setUnsavedChanges.emit(false);
       this.isEdit = true;
-      this.coreHours = { ... this.coreHoursResponse };
+      this.coreHours = { ...this.coreHoursResponse };
 
       this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
     }
   }
   ngOnInit(): void {
-
     this.isEdit = true;
     if (this.createForm) {
-
       //subscribe to the selected user
-      this.usersService.selectedUser.subscribe(
-        user => {
-          if (this.viewUser)
-            this.selectedUser = this.viewUser;
+      this.usersService.selectedUser.subscribe((user) => {
+        if (this.viewUser) this.selectedUser = this.viewUser;
 
-          if (this.selectedUser) {
+        if (this.selectedUser) {
+          let selectedDempoId: string = this.selectedUser.dempoid;
 
-            let selectedDempoId: string = this.selectedUser.dempoid;
+          //get core hours
+          this.usersService
+            .getUserCoreHoursByNetId(this.selectedUser.dempoid)
+            .subscribe((response) => {
+              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+                this.coreHours = <ICoreHours>response.Subject;
+                this.coreHoursResponse = { ...this.coreHours };
+                let rebuildCoreHours: boolean = false;
+                if (!this.coreHours) {
+                  rebuildCoreHours = true;
+                } else if (!this.coreHours.month1) {
+                  rebuildCoreHours = true;
+                }
 
-            //get core hours
-            this.usersService.getUserCoreHoursByNetId(this.selectedUser.dempoid).subscribe(
-              response => {
-                if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-                  this.coreHours = <ICoreHours>response.Subject;
-                  this.coreHoursResponse = { ...this.coreHours };
-                  let rebuildCoreHours: boolean = false;
-                  if (!this.coreHours) {
-                    rebuildCoreHours = true;
-                  } else if (!this.coreHours.month1) {
-                    rebuildCoreHours = true;
+                if (rebuildCoreHours) {
+                  this.coreHours = {} as ICoreHours;
+
+                  let ch: any = this.coreHours;
+                  let currentDate: Date = new Date();
+                  ch.month1 = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth() - 1,
+                    1
+                  );
+                  ch.coreHours1 = 0;
+                  ch.month2 = new Date(
+                    currentDate.getFullYear(),
+                    currentDate.getMonth(),
+                    1
+                  );
+                  ch.coreHours2 = 0;
+                  for (var i = 1; i < 13; i++) {
+                    ch['month' + (i + 2)] = new Date(
+                      currentDate.getFullYear(),
+                      currentDate.getMonth() + i,
+                      1
+                    );
+                    ch['coreHours' + (i + 2)] = 0;
                   }
-
-                  if (rebuildCoreHours) {
-
-                    this.coreHours = {} as ICoreHours;
-
-                    let ch: any = this.coreHours;
-                    let currentDate: Date = new Date();
-                    ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-                    ch.coreHours1 = 0;
-                    ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-                    ch.coreHours2 = 0;
-                    for (var i = 1; i < 13; i++) {
-                      ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
-                      ch['coreHours' + (i + 2)] = 0;
-                    }
-                    ch.dempoid = selectedDempoId;
-                    this.coreHours = ch;
-                  } else {
-                    //set current core hours
-                    this.setCurrentCoreHours();
-                  }
+                  ch.dempoid = selectedDempoId;
+                  this.coreHours = ch;
+                } else {
+                  //set current core hours
+                  this.setCurrentCoreHours();
                 }
               }
-            );
+            });
 
-            if (this.selectedUser.dempoid) {
-              //get requests for selected user
-              this.requestsService.getRequestsByNetId(this.selectedUser.dempoid).subscribe(
-                response => {
+          if (this.selectedUser.dempoid) {
+            //get requests for selected user
+            this.requestsService
+              .getRequestsByNetId(this.selectedUser.dempoid)
+              .subscribe(
+                (response) => {
                   if (response.Status == 'Success') {
                     this.requests = <IRequest[]>response.Subject;
+                    this.length = this.requests.length;
+                    this.pageIndex = 0;
+                    this.updatePaginatedRequests();
                     this.setNoRequestsResultsMessage();
                     this.trySetRequestValues();
                   } else {
-                    this.setNoRequestsResultsMessage('Error loading requests...');
+                    this.setNoRequestsResultsMessage(
+                      'Error loading requests...'
+                    );
                     this.errorMessage = response.Message;
                     this.logsService.logError(this.errorMessage);
                     console.log(this.errorMessage);
                   }
                 },
-                error => {
-                  this.errorMessage = <string>(error.message);
+                (error) => {
+                  this.errorMessage = <string>error.message;
                   this.logsService.logError(this.errorMessage);
                   console.log(this.errorMessage);
                   this.setNoRequestsResultsMessage('Error loading requests...');
                 }
               );
-            }
-
-          }
-
-          //set trained/not trained on if not already set and if we have already populated active projects
-          if (this.activeProjects) {
-            this.setTrainedOn();
-            this.setNotTrainedOn();
-          }
-
-          //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
-          if (this.userFields && !this.createForm) {
-            this.mapUserFieldsAndAssignTabs(user, this.userFields);
           }
         }
-      );
 
+        //set trained/not trained on if not already set and if we have already populated active projects
+        if (this.activeProjects) {
+          this.setTrainedOn();
+          this.setNotTrainedOn();
+        }
+
+        //every time we set the selected user we will remap the user fields and reassign to tabs, but only if we have userFields populated already
+        if (this.userFields && !this.createForm) {
+          this.mapUserFieldsAndAssignTabs(user, this.userFields);
+        }
+      });
     }
     if (!this.createForm) {
-
       if (this.viewUser) {
         this.selectedUser = this.viewUser;
       }
@@ -347,13 +399,25 @@ export class ViewUserComponent implements OnInit, OnChanges {
       //default core hours
       let ch: any = this.coreHours;
       let currentDate: Date = new Date();
-      ch.month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      ch.month1 = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        1
+      );
       ch.coreHours1 = 0;
-      ch.month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      ch.month2 = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
       ch.coreHours2 = 0;
       for (var i = 1; i < 13; i++) {
         console.log(ch);
-        ch['month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+        ch['month' + (i + 2)] = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() + i,
+          1
+        );
         ch['coreHours' + (i + 2)] = 0;
       }
       console.log(ch);
@@ -374,23 +438,23 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
     //get userImage
     this.usersService.getUserImage(this.selectedUser.dempoid).subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           this.selectedUser.userImage = response.Subject;
         } else {
           this.logsService.logError(response.Message);
           this.errorMessage = response.Message;
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
       }
     );
-
   }
-
 
   formatDateToShortMonthYear(dateToFormat: Date | null): string | null {
     if (!dateToFormat) {
@@ -398,7 +462,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
 
     return Utils.formatDateToShortMonthYearUTC(dateToFormat);
-
   }
 
   isReadOnly(): boolean {
@@ -411,7 +474,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   public getRoleDisplay(roleId: number): string {
     if (this.roles?.dropDownValues) {
-      let role: IDropDownValue | undefined = this.roles.dropDownValues.find(option => option.codeValues == roleId);
+      let role: IDropDownValue | undefined = this.roles.dropDownValues.find(
+        (option) => option.codeValues == roleId
+      );
       return role?.dropDownItem ? role.dropDownItem : '';
     }
     return '';
@@ -421,7 +486,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
     if (trainingData) {
       return trainingData
         .split('|')
-        .map(projectId => this.getProjectDisplayName(Number(projectId))).filter(x => x != "");
+        .map((projectId) => this.getProjectDisplayName(Number(projectId)))
+        .filter((x) => x != '');
     } else {
       return [];
     }
@@ -432,15 +498,21 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   public getProjectDisplay(projectId: number) {
-    return this.activeProjectsDv.find((project) => project.codeValues === projectId)?.dropDownItem || '';
+    return (
+      this.activeProjectsDv.find((project) => project.codeValues === projectId)
+        ?.dropDownItem || ''
+    );
   }
-
 
   trainedOnChange(project: IProjectMin): void {
     //sort new list of trained on
     this.changedTrainedOnProjects.push(project);
     this.trainedOnProjects.sort((x, y) => {
-      return (x.projectName < y.projectName) ? -1 : (x.projectName > y.projectName) ? 1 : 0;
+      return x.projectName < y.projectName
+        ? -1
+        : x.projectName > y.projectName
+        ? 1
+        : 0;
     });
 
     if (
@@ -456,14 +528,15 @@ export class ViewUserComponent implements OnInit, OnChanges {
       this.selectedUser.defaultproject = 0;
     }
 
-    this.selectedUser.trainedon = this.trainedOnProjects.map(x => x.projectID.toString()).join('|');
+    this.selectedUser.trainedon = this.trainedOnProjects
+      .map((x) => x.projectID.toString())
+      .join('|');
     this.setNotTrainedOn();
     this.changed = true;
     this.setUnsavedChanges.emit(true);
     this.globalsService.currentChanges.next(true);
     this.validateRequiredFields();
   }
-
 
   setNoRequestsResultsMessage(customMessage: string | null = null): void {
     if (customMessage) {
@@ -479,24 +552,24 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   setTrainedOn(): void {
-    
-   let trainedOnIds: string[] = [];
+    let trainedOnIds: string[] = [];
     if (this.selectedUser?.trainedon) {
       trainedOnIds = this.selectedUser.trainedon.split('|');
     }
-    this.trainedOnProjects = this.activeProjects.filter(x => trainedOnIds.includes(x.projectID.toString()));
+    this.trainedOnProjects = this.activeProjects.filter((x) =>
+      trainedOnIds.includes(x.projectID.toString())
+    );
     this.defPro = [
       { defaultproject: Number(this.selectedUser.defaultproject) },
     ];
-    
   }
 
   public getProjectId(item: string) {
     return (
       this.activeProjects.find((project) => project.projectName === item)
-        ?.projectID || ''
-    );
-  }
+        ?.projectID || ''
+    );
+  }
 
   setNotTrainedOn(): void {
     //  this.notTrainedOnProjects = this.activeProjects.filter(x => !this.trainedOnProjects.map(y => y.projectID).includes(x.projectID));
@@ -505,20 +578,40 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   //populate string values for coded fields in requests
   trySetRequestValues(): void {
-    if (!(this.requests.length > 0 && this.requestFormFields.length > 0 && this.allUsers.length > 0)) {
+    if (
+      !(
+        this.requests.length > 0 &&
+        this.requestFormFields.length > 0 &&
+        this.allUsers.length > 0
+      )
+    ) {
       return;
     }
 
     for (var i = 0; i < this.requests.length; i++) {
-      let requestTypeCode = this.requestCodeDropDown.find(x => x.codeValues == this.requests[i].requestCodeId);
-      let decisionCode = this.decisionIdDropDown.find(x => x.codeValues == this.requests[i].decisionId);
-      let interviewerUser = this.allUsers.find(x => x.dempoid == this.requests[i].interviewerEmpId);
-      let resourceUser = this.allUsers.find(x => x.dempoid == this.requests[i].resourceTeamMemberId);
+      let requestTypeCode = this.requestCodeDropDown.find(
+        (x) => x.codeValues == this.requests[i].requestCodeId
+      );
+      let decisionCode = this.decisionIdDropDown.find(
+        (x) => x.codeValues == this.requests[i].decisionId
+      );
+      let interviewerUser = this.allUsers.find(
+        (x) => x.dempoid == this.requests[i].interviewerEmpId
+      );
+      let resourceUser = this.allUsers.find(
+        (x) => x.dempoid == this.requests[i].resourceTeamMemberId
+      );
 
-      this.requests[i].requestType = (requestTypeCode ? requestTypeCode.dropDownItem : '');
-      this.requests[i].decision = (decisionCode ? decisionCode.dropDownItem : '');
-      this.requests[i].interviewerEmpName = (interviewerUser ? (interviewerUser.displayName || '') : '');
-      this.requests[i].resourceTeamMemberName = (resourceUser ? (resourceUser.displayName || '') : '');
+      this.requests[i].requestType = requestTypeCode
+        ? requestTypeCode.dropDownItem
+        : '';
+      this.requests[i].decision = decisionCode ? decisionCode.dropDownItem : '';
+      this.requests[i].interviewerEmpName = interviewerUser
+        ? interviewerUser.displayName || ''
+        : '';
+      this.requests[i].resourceTeamMemberName = resourceUser
+        ? resourceUser.displayName || ''
+        : '';
     }
   }
 
@@ -535,14 +628,12 @@ export class ViewUserComponent implements OnInit, OnChanges {
         { defaultproject: Number(this.selectedUser.defaultproject) },
       ];
       this.isUserCalendarVisible = true;
-
     } else if (tab == 'user-details') {
       this.isUserCalendarVisible = false;
 
       this.isUserFormInvalid = false;
     } else if (tab == 'personal-contact-info') {
       this.isUserCalendarVisible = false;
-
     } else {
       this.isUserCalendarVisible = false;
       this.defPro = [
@@ -552,12 +643,21 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   //map/assign user and user fields to tabs
-  mapUserFieldsAndAssignTabs(user: User, userFields: IFormFieldVariable[]): void {
+  mapUserFieldsAndAssignTabs(
+    user: User,
+    userFields: IFormFieldVariable[]
+  ): void {
     //assign values to form field instances
     this.userFormFields = [];
     let u: any = user;
     for (var property in u) {
-      let propertyFormFieldVariable: IFormFieldVariable | undefined = userFields.find(x => (x.formField?.columnName ? x.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
+      let propertyFormFieldVariable: IFormFieldVariable | undefined =
+        userFields.find(
+          (x) =>
+            (x.formField?.columnName
+              ? x.formField?.columnName.toLowerCase()
+              : null) == property.toLowerCase()
+        );
       if (propertyFormFieldVariable) {
         let value: any = u[property];
 
@@ -567,11 +667,15 @@ export class ViewUserComponent implements OnInit, OnChanges {
           invalid: false,
           missingRequired: false,
           validationError: false,
-          validationMessage: ''
-        }
+          validationMessage: '',
+        };
 
         //disable field requirements for interviewer-only roles
-        if (this.authenticatedUser.interviewer && !this.authenticatedUser.admin && !this.authenticatedUser.resourceGroup) {
+        if (
+          this.authenticatedUser.interviewer &&
+          !this.authenticatedUser.admin &&
+          !this.authenticatedUser.resourceGroup
+        ) {
           userFormField.formFieldVariable.formField.required = false;
         }
 
@@ -583,23 +687,48 @@ export class ViewUserComponent implements OnInit, OnChanges {
     this.setCurrentCoreHours();
 
     this.userFormFields.sort((x, y) => {
-      return x.formFieldVariable.formField.formOrder - y.formFieldVariable.formField.formOrder;
+      return (
+        x.formFieldVariable.formField.formOrder -
+        y.formFieldVariable.formField.formOrder
+      );
     });
 
-    this.activeFormField = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'active') as IFormFieldInstance;
+    this.activeFormField = this.userFormFields.find(
+      (x) => x.formFieldVariable.formField?.columnName == 'active'
+    ) as IFormFieldInstance;
     //assign to tab arrays
-    this.tab1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '1');
-    this.tab2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 0);
-    this.tab3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '5');
-    this.tab4UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '4');
-    this.tab2_1UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 1);
-    this.tab2_2UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 2);
-    this.tab2_3UserFields = this.userFormFields.filter(x => x.formFieldVariable.formField.tab == '2' && x.formFieldVariable.formField.formSection == 3);
+    this.tab1UserFields = this.userFormFields.filter(
+      (x) => x.formFieldVariable.formField.tab == '1'
+    );
+    this.tab2UserFields = this.userFormFields.filter(
+      (x) =>
+        x.formFieldVariable.formField.tab == '2' &&
+        x.formFieldVariable.formField.formSection == 0
+    );
+    this.tab3UserFields = this.userFormFields.filter(
+      (x) => x.formFieldVariable.formField.tab == '5'
+    );
+    this.tab4UserFields = this.userFormFields.filter(
+      (x) => x.formFieldVariable.formField.tab == '4'
+    );
+    this.tab2_1UserFields = this.userFormFields.filter(
+      (x) =>
+        x.formFieldVariable.formField.tab == '2' &&
+        x.formFieldVariable.formField.formSection == 1
+    );
+    this.tab2_2UserFields = this.userFormFields.filter(
+      (x) =>
+        x.formFieldVariable.formField.tab == '2' &&
+        x.formFieldVariable.formField.formSection == 2
+    );
+    this.tab2_3UserFields = this.userFormFields.filter(
+      (x) =>
+        x.formFieldVariable.formField.tab == '2' &&
+        x.formFieldVariable.formField.formSection == 3
+    );
 
     this.validateRequiredFields();
-
   }
-
 
   setCurrentCoreHours(): void {
     if (!this.coreHours) {
@@ -607,24 +736,36 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
 
     //set current core hours
-    let currentCoreHours = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'corehours');
+    let currentCoreHours = this.userFormFields.find(
+      (x) => x.formFieldVariable.formField?.columnName == 'corehours'
+    );
     if (currentCoreHours) {
       currentCoreHours.value = this.coreHours.corehours2;
     }
 
-
     let ch: any = this.coreHours;
     if (!ch.Month1) {
       let currentDate: Date = new Date();
-      ch.Month1 = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
-      ch.Month2 = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      ch.Month1 = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - 1,
+        1
+      );
+      ch.Month2 = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
       for (var i = 1; i < 13; i++) {
-        ch['Month' + (i + 2)] = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+        ch['Month' + (i + 2)] = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth() + i,
+          1
+        );
       }
     }
 
     this.coreHours = ch;
-
   }
 
   blankUser(): User {
@@ -636,9 +777,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   numberRestrict(event: any) {
-    var charCode = (event.which) ? event.which : event.keyCode;
+    var charCode = event.which ? event.which : event.keyCode;
     // Only Numbers 0-9
-    if ((charCode < 48 || charCode > 57)) {
+    if (charCode < 48 || charCode > 57) {
       event.preventDefault();
       return false;
     } else {
@@ -646,7 +787,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
   }
 
-  writeLog(item:any ){
+  writeLog(item: any) {
     console.log(item);
   }
 
@@ -676,18 +817,25 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   private validateRequiredFields() {
-    if(this.authenticatedUser.interviewer) {
+    if (this.authenticatedUser.interviewer) {
       return;
     }
     this.tab2Invalid = false;
     for (var i = 0; i < this.userFormFields.length; i++) {
-      if (this.userFormFields[i].formFieldVariable.formField.required && !this.disableRules(this.userFormFields[i])) {
+      if (
+        this.userFormFields[i].formFieldVariable.formField.required &&
+        !this.disableRules(this.userFormFields[i])
+      ) {
         //if null
         if (!this.userFormFields[i].value) {
           this.invalid = true;
           this.userFormFields[i].invalid = true;
-        } else if (this.userFormFields[i].formFieldVariable.formField.fieldType == 'textbox'
-          || this.userFormFields[i].formFieldVariable.formField.fieldType == 'longtextbox') {
+        } else if (
+          this.userFormFields[i].formFieldVariable.formField.fieldType ==
+            'textbox' ||
+          this.userFormFields[i].formFieldVariable.formField.fieldType ==
+            'longtextbox'
+        ) {
           //if text is blank or empty
           if (this.userFormFields[i].value.replace(/\s/g, '') == '') {
             this.invalid = true;
@@ -699,54 +847,72 @@ export class ViewUserComponent implements OnInit, OnChanges {
         } else {
           this.userFormFields[i].invalid = false;
         }
-
-
       }
 
       //make sure to correctly set invalid to false for default project when it's not required (it can be ruled invalid before determined that it shouldn't be required, but this above only looks at required fields to mark valid/invalid)
-      if (this.userFormFields[i].formFieldVariable.formField?.columnName == 'defaultproject'
-        && !this.userFormFields[i].formFieldVariable.formField.required) {
+      if (
+        this.userFormFields[i].formFieldVariable.formField?.columnName ==
+          'defaultproject' &&
+        !this.userFormFields[i].formFieldVariable.formField.required
+      ) {
         this.userFormFields[i].invalid = false;
       }
-
     }
-    if (this.tab2UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+    if (this.tab2UserFields.filter((x) => x.invalid).length > 0) {
+      this.tab2Invalid = true;
+    } else {
+      this.tab2Invalid = false;
+    }
     if (!this.tab2Invalid) {
-      if (this.tab2_1UserFields.filter(x => x.invalid).length > 0) { this.tab2Invalid = true; } else { this.tab2Invalid = false; }
+      if (this.tab2_1UserFields.filter((x) => x.invalid).length > 0) {
+        this.tab2Invalid = true;
+      } else {
+        this.tab2Invalid = false;
+      }
     }
-    
+
     //tab validation
-    this.invalid = this.userFormFields.filter(x => (x.formFieldVariable.formField.required && x.invalid)).length > 0;
-
+    this.invalid =
+      this.userFormFields.filter(
+        (x) => x.formFieldVariable.formField.required && x.invalid
+      ).length > 0;
   }
 
-  public editUser() {
-
-  }
+  public editUser() {}
 
   public getActiveStatus(selected: User) {
     let color: string = selected.active ? 'Green' : 'Gray';
     return {
-      'background-color': color
-    }
+      'background-color': color,
+    };
   }
 
   public getSwatchColor(item: string) {
-    let color: string = this.activeProjects.find((project) => project.projectName === item)?.projectColor || '';
+    let color: string =
+      this.activeProjects.find((project) => project.projectName === item)
+        ?.projectColor || '';
     return {
-      'background-color': color
-    }
+      'background-color': color,
+    };
   }
 
   public getDefaultProjectColor(projectId: Number) {
-    let color: string = this.activeProjects.find((project) => project.projectID === projectId)?.projectColor || '';
+    let color: string =
+      this.activeProjects.find((project) => project.projectID === projectId)
+        ?.projectColor || '';
     return {
-      'background-color': color
-    }
+      'background-color': color,
+    };
   }
 
-  validParentChild(parent: string, parentValue: string, valueIsDropdown: boolean = false): boolean {
-    let parentField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == parent);
+  validParentChild(
+    parent: string,
+    parentValue: string,
+    valueIsDropdown: boolean = false
+  ): boolean {
+    let parentField: IFormFieldInstance | undefined = this.userFormFields.find(
+      (x) => x.formFieldVariable.formField?.columnName == parent
+    );
     if (!parentField) {
       return false;
     }
@@ -755,7 +921,11 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
 
     if (valueIsDropdown) {
-      let parentDropdownValues: IDropDownValue | undefined = (parentField.formFieldVariable.dropDownValues || []).find(x => (x.dropDownItem || '').toUpperCase() == parentValue.toUpperCase());
+      let parentDropdownValues: IDropDownValue | undefined = (
+        parentField.formFieldVariable.dropDownValues || []
+      ).find(
+        (x) => (x.dropDownItem || '').toUpperCase() == parentValue.toUpperCase()
+      );
       if (parentDropdownValues) {
         parentValue = (parentDropdownValues.codeValues || '').toString();
       }
@@ -772,22 +942,28 @@ export class ViewUserComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
       width: '300px',
       data: {
-        ...data
-      }
+        ...data,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result == 'close') {
         this.closewindow.emit();
-      }if (result == 'discardChanges') {
+      }
+      if (result == 'discardChanges') {
         if (!this.isShow) {
           this.router.navigate(['/home']); // Navigate to /home if isShow is false
         }
         this.isEdit = true;
         this.changed = false;
         this.setUnsavedChanges.emit(false);
-        this.coreHours = { ... this.coreHoursResponse };
-        this.trainedOnProjects = this.trainedOnProjects.filter(project => !this.changedTrainedOnProjects.some(project_two => project.projectID === project_two.projectID));
+        this.coreHours = { ...this.coreHoursResponse };
+        this.trainedOnProjects = this.trainedOnProjects.filter(
+          (project) =>
+            !this.changedTrainedOnProjects.some(
+              (project_two) => project.projectID === project_two.projectID
+            )
+        );
         this.mapUserFieldsAndAssignTabs(this.selectedUser, this.userFields);
       } else if (result == 'save') {
         this.userSaved.emit(this.selectedUser);
@@ -795,31 +971,55 @@ export class ViewUserComponent implements OnInit, OnChanges {
     });
   }
 
-  getTabThreeFirstBatch():IFormFieldInstance[]{
-    return this.tab3UserFields.filter(item1 => {
-      return !this.getTabThreeSecondBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName)&&
-             !this.getTabThreeThirdBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName)&&
-             !this.getTabThreeFourthBatch().some(item2 => item1.formFieldVariable.formField.columnName === item2.formFieldVariable.formField.columnName);
+  getTabThreeFirstBatch(): IFormFieldInstance[] {
+    return this.tab3UserFields.filter((item1) => {
+      return (
+        !this.getTabThreeSecondBatch().some(
+          (item2) =>
+            item1.formFieldVariable.formField.columnName ===
+            item2.formFieldVariable.formField.columnName
+        ) &&
+        !this.getTabThreeThirdBatch().some(
+          (item2) =>
+            item1.formFieldVariable.formField.columnName ===
+            item2.formFieldVariable.formField.columnName
+        ) &&
+        !this.getTabThreeFourthBatch().some(
+          (item2) =>
+            item1.formFieldVariable.formField.columnName ===
+            item2.formFieldVariable.formField.columnName
+        )
+      );
     });
   }
 
-  getTabThreeSecondBatch():IFormFieldInstance[]{
-    return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'city' ||
-      field.formFieldVariable.formField.columnName === 'zipcode' ||
-      field.formFieldVariable.formField.columnName === 'state' || field.formFieldVariable.formField.columnName === 'homeaddress');
+  getTabThreeSecondBatch(): IFormFieldInstance[] {
+    return this.tab3UserFields.filter(
+      (field) =>
+        field.formFieldVariable.formField.columnName === 'city' ||
+        field.formFieldVariable.formField.columnName === 'zipcode' ||
+        field.formFieldVariable.formField.columnName === 'state' ||
+        field.formFieldVariable.formField.columnName === 'homeaddress'
+    );
   }
-  getTabThreeFourthBatch():IFormFieldInstance[]{
-    return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'emercontactnumber2' ||
-      field.formFieldVariable.formField.columnName === 'emercontactname2' ||
-      field.formFieldVariable.formField.columnName === 'emercontactrel2');
+  getTabThreeFourthBatch(): IFormFieldInstance[] {
+    return this.tab3UserFields.filter(
+      (field) =>
+        field.formFieldVariable.formField.columnName === 'emercontactnumber2' ||
+        field.formFieldVariable.formField.columnName === 'emercontactname2' ||
+        field.formFieldVariable.formField.columnName === 'emercontactrel2'
+    );
   }
-  getTabThreeThirdBatch():IFormFieldInstance[]{
-    return this.tab3UserFields.filter(field => field.formFieldVariable.formField.columnName === 'emercontactnumber' ||
-      field.formFieldVariable.formField.columnName === 'emercontactrel' ||
-      field.formFieldVariable.formField.columnName === 'emercontactname');
+  getTabThreeThirdBatch(): IFormFieldInstance[] {
+    return this.tab3UserFields.filter(
+      (field) =>
+        field.formFieldVariable.formField.columnName === 'emercontactnumber' ||
+        field.formFieldVariable.formField.columnName === 'emercontactrel' ||
+        field.formFieldVariable.formField.columnName === 'emercontactname'
+    );
   }
 
-  cancelEdits(){
+  cancelEdits() {
     this.closewindow.next();
   }
 
@@ -851,68 +1051,67 @@ export class ViewUserComponent implements OnInit, OnChanges {
     //set created metadata (if applicable)
     this.selectedUser.entryBy = this.authenticatedUser.netID;
     this.selectedUser.entryDt = new Date();
-    if(this.defaultproject == 0 && this.trainedOnProjects.length>0){
-      this.selectedUser.defaultproject =  this.selectedUser.defaultproject;
-    }else {
+    if (this.defaultproject == 0 && this.trainedOnProjects.length > 0) {
+      this.selectedUser.defaultproject = this.selectedUser.defaultproject;
+    } else {
       this.selectedUser.defaultproject = this.defaultproject;
     }
     //pass to save user api to save
 
+    this.usersService.saveUser(this.selectedUser).subscribe(
+      (response) => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          //make sure the netid is set or core hours won't save
+          this.coreHours.dempoid = this.selectedUser.dempoid;
+          for (var i = 1; i < 15; i++) {
+            this.coreHours[`coreHours${i}`] =
+              this.coreHours[`coreHours${i}`] || '0';
+          }
+          this.usersService
+            .saveUserCoreHoursWithAudit(
+              [this.coreHours],
+              this.authenticatedUser.netID
+            )
+            .subscribe((response) => {
+              //set changed to false to re-disable the save button
+              this.changed = false;
+              this.setUnsavedChanges.emit(false);
+              this.globalsService.currentChanges.next(false);
 
-      this.usersService.saveUser(this.selectedUser).subscribe(
-        response => {
-          if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-
-            //make sure the netid is set or core hours won't save
-            this.coreHours.dempoid = this.selectedUser.dempoid;
-            for (var i = 1; i < 15; i++) {
-              this.coreHours[`coreHours${i}`] = this.coreHours[`coreHours${i}`] || "0";
-            }
-            this.usersService.saveUserCoreHoursWithAudit([this.coreHours],this.authenticatedUser.netID).subscribe(
-              response => {
-                //set changed to false to re-disable the save button
-                this.changed = false;
-                this.setUnsavedChanges.emit(false);
-                this.globalsService.currentChanges.next(false);
-
-                //set ID for "selected" user if user is newly added
-                /**   if (this.selectedUser.userid < 1) {
+              //set ID for "selected" user if user is newly added
+              /**   if (this.selectedUser.userid < 1) {
                     let subject: User = <User>response.Subject;
                     this.selectedUser.userid = subject.userid;
                   } */
 
-                //sync users trained on
-                //this.usersService.setAllUsersMin();
+              //sync users trained on
+              //this.usersService.setAllUsersMin();
 
-                // this.usersService.setSelectedUser(this.selectedUser.dempoid);
+              // this.usersService.setSelectedUser(this.selectedUser.dempoid);
 
-                //this.userSaved.emit(this.selectedUser);
-                console.log('Added User Successfully:', response);
-                this.showToastMessage(
-                  'User update successfully!',
-                  'success'
-                );
-                this.userSaved.emit(this.selectedUser);
-              });
-          } else {
-            this.showToastMessage(
-              'Encountered an error while trying to save user',
-              'error'
-            );
-            this.logsService.logError(response.Message);
-          }
-
-        },
-        error => {
-          this.errorMessage = <string>(error.message);
+              //this.userSaved.emit(this.selectedUser);
+              console.log('Added User Successfully:', response);
+              this.showToastMessage('User update successfully!', 'success');
+              this.userSaved.emit(this.selectedUser);
+            });
+        } else {
           this.showToastMessage(
             'Encountered an error while trying to save user',
             'error'
           );
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+          this.logsService.logError(response.Message);
         }
-      );
-
+      },
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.showToastMessage(
+          'Encountered an error while trying to save user',
+          'error'
+        );
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
+      }
+    );
   }
 
   //map field values back to user
@@ -920,15 +1119,25 @@ export class ViewUserComponent implements OnInit, OnChanges {
     //assign values to user from form field instances
     let su: any = this.selectedUser;
     for (var property in su) {
-      let propertyFormFieldInstance: IFormFieldInstance | undefined = this.userFormFields.find(x => (x.formFieldVariable.formField?.columnName ? x.formFieldVariable.formField?.columnName.toLowerCase() : null) == property.toLowerCase());
+      let propertyFormFieldInstance: IFormFieldInstance | undefined =
+        this.userFormFields.find(
+          (x) =>
+            (x.formFieldVariable.formField?.columnName
+              ? x.formFieldVariable.formField?.columnName.toLowerCase()
+              : null) == property.toLowerCase()
+        );
 
       if (propertyFormFieldInstance) {
         let value: any = propertyFormFieldInstance.value;
 
         //turn arrays (comboboxes/multi-select types) into pipe-delimited strings
-        if (propertyFormFieldInstance.formFieldVariable.formField.fieldType.includes('combo')) {
+        if (
+          propertyFormFieldInstance.formFieldVariable.formField.fieldType.includes(
+            'combo'
+          )
+        ) {
           if (Array.isArray(value)) {
-            value = (<string[]>(value)).join('|');
+            value = (<string[]>value).join('|');
           }
         }
 
@@ -949,7 +1158,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   selectFile(): void {
     this.changed = true;
-    const profileImageFile = document.getElementById("profile-image-file");
+    const profileImageFile = document.getElementById('profile-image-file');
     if (profileImageFile) {
       profileImageFile.click();
     }
@@ -984,15 +1193,24 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   disableRules(formField: IFormFieldInstance): boolean {
     //netid
-    if (formField.formFieldVariable.formField?.columnName == 'dempoid' && this.createForm) {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'dempoid' &&
+      this.createForm
+    ) {
       return true;
     }
     if (formField.formFieldVariable.formField?.columnName == 'empstatus') {
-      let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
-      let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
+      let permStartDateField: IFormFieldInstance | undefined =
+        this.userFormFields.find(
+          (x) => x.formFieldVariable.formField?.columnName == 'permstartdate'
+        );
+      let tempStartDateField: IFormFieldInstance | undefined =
+        this.userFormFields.find(
+          (x) => x.formFieldVariable.formField?.columnName == 'tempstartdate'
+        );
 
       if (formField.value) {
-        if(formField.value == 1) {
+        if (formField.value == 1) {
           if (permStartDateField) {
             permStartDateField.formFieldVariable.formField.required = true;
             permStartDateField.invalid = false;
@@ -1001,7 +1219,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
             tempStartDateField.formFieldVariable.formField.required = false;
             tempStartDateField.invalid = false;
           }
-        } else if(formField.value == 2) {
+        } else if (formField.value == 2) {
           if (permStartDateField) {
             permStartDateField.formFieldVariable.formField.required = false;
             permStartDateField.invalid = false;
@@ -1015,11 +1233,22 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
 
     //shoehorn in required temp/perm date checking before anything that could return a true/false
-    if (formField.formFieldVariable.formField?.columnName == 'permstartdate' || formField.formFieldVariable.formField?.columnName == 'permstartdate') {
-      let empstatus: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'empstatus');
+    if (
+      formField.formFieldVariable.formField?.columnName == 'permstartdate' ||
+      formField.formFieldVariable.formField?.columnName == 'permstartdate'
+    ) {
+      let empstatus: IFormFieldInstance | undefined = this.userFormFields.find(
+        (x) => x.formFieldVariable.formField?.columnName == 'empstatus'
+      );
       if (empstatus && !empstatus.value) {
-        let permStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'permstartdate');
-        let tempStartDateField: IFormFieldInstance | undefined = this.userFormFields.find(x => x.formFieldVariable.formField?.columnName == 'tempstartdate');
+        let permStartDateField: IFormFieldInstance | undefined =
+          this.userFormFields.find(
+            (x) => x.formFieldVariable.formField?.columnName == 'permstartdate'
+          );
+        let tempStartDateField: IFormFieldInstance | undefined =
+          this.userFormFields.find(
+            (x) => x.formFieldVariable.formField?.columnName == 'tempstartdate'
+          );
         if (permStartDateField) {
           permStartDateField.formFieldVariable.formField.required = true;
           if (permStartDateField.value) {
@@ -1036,7 +1265,6 @@ export class ViewUserComponent implements OnInit, OnChanges {
         if (tempStartDateField) {
           tempStartDateField.formFieldVariable.formField.required = true;
           if (tempStartDateField.value) {
-
             if (permStartDateField) {
               permStartDateField.formFieldVariable.formField.required = false;
               permStartDateField.invalid = false;
@@ -1051,7 +1279,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
     }
 
     //employment type
-    if (formField.formFieldVariable.formField?.columnName == 'employmenttype' && this.activeFormField.value == true) {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'employmenttype' &&
+      this.activeFormField.value == true
+    ) {
       formField.value = null;
       return true;
     }
@@ -1065,17 +1296,23 @@ export class ViewUserComponent implements OnInit, OnChanges {
     // checkboxes/dates parent/child relationships
     //---------------------------------------------------------------------------
     //phone screen
-    if (formField.formFieldVariable.formField?.columnName == 'phonescreendate' && !this.validParentChild('phonescreen', '1')) {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'phonescreendate' &&
+      !this.validParentChild('phonescreen', '1')
+    ) {
       formField.value = null;
       return true;
     }
 
     //introduction email
-    if (formField.formFieldVariable.formField?.columnName == 'introemaildate' && !this.validParentChild('introemail', '1')) {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'introemaildate' &&
+      !this.validParentChild('introemail', '1')
+    ) {
       formField.value = null;
       return true;
     }
-   /**
+    /**
     //face to face
     if (formField.formFieldVariable.formField?.columnName == 'facetofacedate' && !this.validParentChild('facetoface', '1')) {
       formField.value = null;
@@ -1084,19 +1321,27 @@ export class ViewUserComponent implements OnInit, OnChanges {
       */
 
     //welcome email
-    if (formField.formFieldVariable.formField?.columnName == 'welcomeemaildate' && !this.validParentChild('welcomeemail', '1')) {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'welcomeemaildate' &&
+      !this.validParentChild('welcomeemail', '1')
+    ) {
       formField.value = null;
       return true;
     }
 
     //hiatus start date
-    if (formField.formFieldVariable.formField?.columnName == 'hiatusstartdate' && !this.validParentChild('employmenttype', 'hiatus', true)) {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'hiatusstartdate' &&
+      !this.validParentChild('employmenttype', 'hiatus', true)
+    ) {
       formField.value = null;
       return true;
     }
 
     //scheduling level
-    if (formField.formFieldVariable.formField?.columnName == 'schedulinglevel') {
+    if (
+      formField.formFieldVariable.formField?.columnName == 'schedulinglevel'
+    ) {
       if (!this.validParentChild('role', 'Interviewer', true)) {
         formField.value = null;
         formField.formFieldVariable.formField.required = false;
@@ -1105,19 +1350,20 @@ export class ViewUserComponent implements OnInit, OnChanges {
         return true;
       } else {
         formField.formFieldVariable.formField.required = true;
-      //  this.validateRequiredFields();
+        //  this.validateRequiredFields();
       }
     }
     return false;
   }
-
 
   clickOnEdit(): void {
     let trainedOnIds: string[] = [];
     if (this.selectedUser?.trainedon) {
       trainedOnIds = this.selectedUser.trainedon.split('|');
     }
-    this.trainedOnProjects = this.activeProjects.filter(x => trainedOnIds.includes(x.projectID.toString()));
+    this.trainedOnProjects = this.activeProjects.filter((x) =>
+      trainedOnIds.includes(x.projectID.toString())
+    );
     this.isEdit = false;
     this.changed = false;
     this.setUnsavedChanges.emit(false);
@@ -1125,10 +1371,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   closeWindow(): void {
-    if(!this.isEdit) {
+    if (!this.isEdit) {
       this.openDialog({
-        dialogType: 'error'
-      })
+        dialogType: 'error',
+      });
     } else {
       this.closewindow.emit();
     }
@@ -1166,40 +1412,86 @@ export class ViewUserComponent implements OnInit, OnChanges {
     let htmlMessage: string = '<div class="scheduling-info">';
 
     htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 1</p>';
-    htmlMessage = htmlMessage + "<ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be no more than 7 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for Saturday should begin at or after 9 AM.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule for Sunday should begin at or after 12 noon.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul>";
-    htmlMessage = htmlMessage + "<br />";
+    htmlMessage = htmlMessage + '<ul>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule should be at least 4 hours in length.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule should be no more than 7 hours in length.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule for Saturday should begin at or after 9 AM.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule for Sunday should begin at or after 12 noon.</li>';
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's weekly schedule should not exceed 20 hours total.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+    htmlMessage =
+      htmlMessage +
+      '<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>';
+    htmlMessage = htmlMessage + '</ul>';
+    htmlMessage = htmlMessage + '<br />';
     htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 2</p>';
-    htmlMessage = htmlMessage + "<ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
-    htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
-    htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
-    htmlMessage = htmlMessage + "</ul>";
-    htmlMessage = htmlMessage + "<br />";
+    htmlMessage = htmlMessage + '<ul>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule should be at least 4 hours in length.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule cannot be exactly 8 hours in length.</li>';
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's schedule should include 1 weekend shift every other week.</li>";
+    htmlMessage =
+      htmlMessage +
+      '<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>';
+    htmlMessage = htmlMessage + '</ul>';
+    htmlMessage = htmlMessage + '<br />';
     htmlMessage = htmlMessage + '<p class="ft700">Scheduling Level 3</p>';
-    htmlMessage = htmlMessage + "<ul>";
-    htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
-    htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
-    htmlMessage = htmlMessage + "</ul></div>";
+    htmlMessage = htmlMessage + '<ul>';
+    htmlMessage =
+      htmlMessage +
+      '<li>A shift schedule cannot be exactly 8 hours in length.</li>';
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
+    htmlMessage =
+      htmlMessage +
+      "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
+    htmlMessage = htmlMessage + '</ul></div>';
 
-    let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
+    let hoverMessage: HTMLElement = <HTMLElement>(
+      document.getElementById('hover-message')
+    );
     hoverMessage.innerHTML = htmlMessage;
 
     this.globalsService.showHoverMessage.next(true);
@@ -1207,7 +1499,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
     hoverMessage.style.top = '0px';
     hoverMessage.style.left = event.clientX + 'px';
     hoverMessage.style.zIndex = '1005';
-    hoverMessage.style.maxHeight ='calc(100vh - 10px)';
+    hoverMessage.style.maxHeight = 'calc(100vh - 10px)';
     hoverMessage.style.overflow = 'auto';
     hoverMessage.style.fontSize = '12px';
   }
@@ -1218,7 +1510,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
   moveToPage(event: MouseEvent): void {
     event.stopPropagation();
-    const url = "/scheduling-info";
+    const url = '/scheduling-info';
     const width = 350;
     const height = 1000;
     const left = window.screen.width / 2 - width / 2;
@@ -1226,7 +1518,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
     window.open(
       url,
-      "_blank",
+      '_blank',
       `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`
     );
   }
@@ -1234,15 +1526,18 @@ export class ViewUserComponent implements OnInit, OnChanges {
   //get the display value for a status
   public getStatusDisplay(statusId: string): string {
     if (this.statuses?.dropDownValues) {
-      let status: IDropDownValue | undefined = this.statuses.dropDownValues.find(option => option.codeValues == (parseInt(statusId) || 0));
+      let status: IDropDownValue | undefined =
+        this.statuses.dropDownValues.find(
+          (option) => option.codeValues == (parseInt(statusId) || 0)
+        );
       return status?.dropDownItem ? status.dropDownItem : '';
     }
     return '';
   }
-  openUserSchedule(){
+  openUserSchedule() {
     this.scheduleService.setUser(this.selectedUser);
-    this.scheduleService.setType('user-profile')
-    this.scheduleService.setTab("Month")
+    this.scheduleService.setType('user-profile');
+    this.scheduleService.setTab('Month');
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',
       height: '900px',
@@ -1255,5 +1550,17 @@ export class ViewUserComponent implements OnInit, OnChanges {
       this.scheduleService.clearTab();
       this.scheduleService.clearType();
     });
+  }
+  handlePageEvent(e: PageEvent) {
+    this.pageEvent = e;
+    this.length = e.length;
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    this.updatePaginatedRequests();
+  }
+  updatePaginatedRequests(): void {
+    const startIndex = this.pageIndex * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedRequests = this.requests.slice(startIndex, endIndex);
   }
 }

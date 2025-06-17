@@ -70,7 +70,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
@@ -90,115 +90,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     return schedules.length > 0;
   }
 
-  processShiftSchedules(): void {
-    if (
-      !this.selectedDateRange?.value?.start ||
-      !this.selectedDateRange?.value?.end
-    ) {
-      return;
-    }
-    const startOfWeek = moment(this.selectedDateRange.value.start)
-      .tz('America/New_York')
-      .startOf('day')
-      .toDate();
-    const endOfWeek = moment(this.selectedDateRange.value.end)
-      .tz('America/New_York')
-      .endOf('day')
-      .toDate();
 
-    startOfWeek.setHours(0, 0, 0, 0);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    this.weekSchedules = {
-      weekStart: startOfWeek,
-      day1Schedules: [],
-      day2Schedules: [],
-      day3Schedules: [],
-      day4Schedules: [],
-      day5Schedules: [],
-      day6Schedules: [],
-      day7Schedules: [],
-    };
-
-    const selectedUserId = this.selectedUser?.userId ?? null;
-    const selectedProjectId = this.selectedProject?.projectId ?? null;
-    this.processedSchedules = [];
-    this.shiftSchedule?.forEach((shift) => {
-      const shiftDate = moment(shift.dayWiseDate)
-        .tz('America/New_York')
-        .startOf('day')
-        .toDate();
-      shiftDate.setHours(0, 0, 0, 0);
-
-      const isWithinDateRange =
-        shiftDate >= startOfWeek && shiftDate <= endOfWeek;
-      const isUserMatch = selectedUserId
-        ? shift.user?.userId === selectedUserId
-        : true;
-      const isProjectMatch = selectedProjectId
-        ? shift.projects?.projectId === selectedProjectId
-        : true;
-
-      if (isWithinDateRange && isUserMatch && isProjectMatch) {
-        const dayIndex = shiftDate.getDay();
-        const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
-
-        const schedule: ISchedule = {
-          preschedulekey: shift?.preschedulekey || '',
-          displayName: shift.user?.userName || '',
-          projectName: shift.projects?.projectName || '',
-          projectColor: shift.projects?.projectColor || '',
-          scheduledate: shiftDate,
-          comments: shift.comments || '',
-          startTime: shift.startTime || '',
-          endTime: shift.endTime || '',
-          duration: parseFloat(shift.duration) || 0,
-          dayOfWeek: adjustedDayIndex,
-          weekStart: startOfWeek,
-          weekEnd: endOfWeek,
-          month: moment(shiftDate).format('MMMM'),
-          requestDetails: '',
-          requestCode: '',
-          userid: shift.user?.userId || '',
-          trainedon: '',
-          language: null,
-          entryBy: null,
-          dempoid: shift.user?.dempoId,
-          fname: null,
-          lname: null,
-          preferredfname: null,
-          preferredlname: null,
-          userName: null,
-          expr1: null,
-          isNew: shift.isNew === true || !shift.preschedulekey,
-          projectId: shift.projects?.projectId,
-          isEdit: shift.isEdit,
-        };
-        this.processedSchedules.push(schedule);
-        (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
-          schedule
-        );
-      }
-    });
-    const firstFilteredSchedule = this.pId
-      ? this.processedSchedules.find(
-          (schedule) => schedule.preschedulekey === this.pId
-        )
-      : null;
-    if (
-      firstFilteredSchedule &&
-      (!this.previouslyEditedSchedule ||
-        this.previouslyEditedSchedule.preschedulekey !==
-          firstFilteredSchedule.preschedulekey)
-    ) {
-      this.openScheduleData(firstFilteredSchedule);
-    }
-    if (this.isScheduleUpdate) {
-      this.processedSchedules.forEach((schedule) => {
-        schedule.isEdit = false;
-      });
-    }
-  }
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
     let workingDate: Date = new Date(weekStart || '');
@@ -293,149 +185,258 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   hideHoverMessage(): void {
     this.hoverMessage.hide();
   }
-  addShift(date: any): void {
-    console.log('Date:--------->', date);
-    this.sendWeekDate.emit(date);
-    this.resetShiftSchedule.emit();
-  }
-  onResetShiftSchedule(): void {
-    console.log(' sdfsdfds:');
-    this.resetShiftSchedule.emit();
-  }
-  calculateTotalDuration(): number {
-    if (!this.weekSchedules) return 0;
-
-    const days = [
-      this.weekSchedules.day1Schedules,
-      this.weekSchedules.day2Schedules,
-      this.weekSchedules.day3Schedules,
-      this.weekSchedules.day4Schedules,
-      this.weekSchedules.day5Schedules,
-      this.weekSchedules.day6Schedules,
-      this.weekSchedules.day7Schedules,
-    ];
-
-    let totalUserCards = 0;
-    this.totalDuration = days.reduce((total, schedules) => {
-      if (schedules?.length) {
-        totalUserCards += schedules.length; // Count user cards
-        total += schedules.reduce(
-          (sum, schedule) => sum + (schedule.duration || 0),
-          0
-        ); // Sum of durations
+    processShiftSchedules(): void {
+      if (
+        !this.selectedDateRange?.value?.start ||
+        !this.selectedDateRange?.value?.end
+      ) {
+        return;
       }
-      return total;
-    }, 0);
+      const startOfWeek = moment(this.selectedDateRange.value.start)
+        .tz('America/New_York')
+        .startOf('day')
+        .toDate();
+      const endOfWeek = moment(this.selectedDateRange.value.end)
+        .tz('America/New_York')
+        .endOf('day')
+        .toDate();
 
-    this.calculateInputHeight();
-    return this.totalDuration;
-  }
+      startOfWeek.setHours(0, 0, 0, 0);
+      endOfWeek.setHours(23, 59, 59, 999);
 
-  calculateInputHeight(): void {
-    const baseHeight = 30;
-    const userCardHeight = 62;
+      this.weekSchedules = {
+        weekStart: startOfWeek,
+        day1Schedules: [],
+        day2Schedules: [],
+        day3Schedules: [],
+        day4Schedules: [],
+        day5Schedules: [],
+        day6Schedules: [],
+        day7Schedules: [],
+      };
 
-    if (!this.weekSchedules) {
-      this.inputHeight = `${baseHeight}px`;
-      return;
+      const selectedUserId = this.selectedUser?.userId ?? null;
+      const selectedProjectId = this.selectedProject?.projectId ?? null;
+      this.processedSchedules = [];
+      this.shiftSchedule?.forEach((shift) => {
+        const shiftDate = moment(shift.dayWiseDate)
+          .tz('America/New_York')
+          .startOf('day')
+          .toDate();
+        shiftDate.setHours(0, 0, 0, 0);
+
+        const isWithinDateRange =
+          shiftDate >= startOfWeek && shiftDate <= endOfWeek;
+        const isUserMatch = selectedUserId
+          ? shift.user?.userId === selectedUserId
+          : true;
+        const isProjectMatch = selectedProjectId
+          ? shift.projects?.projectId === selectedProjectId
+          : true;
+
+        if (isWithinDateRange && isUserMatch && isProjectMatch) {
+          const dayIndex = shiftDate.getDay();
+          const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
+
+          const schedule: ISchedule = {
+            preschedulekey: shift?.preschedulekey || '',
+            displayName: shift.user?.userName || '',
+            projectName: shift.projects?.projectName || '',
+            projectColor: shift.projects?.projectColor || '',
+            scheduledate: shiftDate,
+            comments: shift.comments || '',
+            startTime: shift.startTime || '',
+            endTime: shift.endTime || '',
+            duration: parseFloat(shift.duration) || 0,
+            dayOfWeek: adjustedDayIndex,
+            weekStart: startOfWeek,
+            weekEnd: endOfWeek,
+            month: moment(shiftDate).format('MMMM'),
+            requestDetails: '',
+            requestCode: '',
+            userid: shift.user?.userId || '',
+            trainedon: '',
+            language: null,
+            entryBy: null,
+            dempoid: shift.user?.dempoId,
+            fname: null,
+            lname: null,
+            preferredfname: null,
+            preferredlname: null,
+            userName: null,
+            expr1: null,
+            isNew: shift.isNew === true || !shift.preschedulekey,
+            projectId: shift.projects?.projectId,
+            isEdit: shift.isEdit,
+          };
+          this.processedSchedules.push(schedule);
+          (this.weekSchedules as any)[`day${adjustedDayIndex}Schedules`].push(
+            schedule
+          );
+        }
+      });
+      const firstFilteredSchedule = this.pId
+        ? this.processedSchedules.find(
+          (schedule) => schedule.preschedulekey === this.pId
+        )
+        : null;
+      if (
+        firstFilteredSchedule &&
+        (!this.previouslyEditedSchedule ||
+          this.previouslyEditedSchedule.preschedulekey !==
+          firstFilteredSchedule.preschedulekey)
+      ) {
+        this.openScheduleData(firstFilteredSchedule);
+      }
+      if (this.isScheduleUpdate) {
+        this.processedSchedules.forEach((schedule) => {
+          schedule.isEdit = false;
+        });
+      }
+    }
+    addShift(date: any): void {
+      console.log('Date:--------->', date);
+      // this.sendWeekDate.emit(date);
+      // this.resetShiftSchedule.emit();
+    }
+    onResetShiftSchedule(): void {
+      console.log(' sdfsdfds:');
+      this.resetShiftSchedule.emit();
+    }
+    calculateTotalDuration(): number {
+      if (!this.weekSchedules) return 0;
+
+      const days = [
+        this.weekSchedules.day1Schedules,
+        this.weekSchedules.day2Schedules,
+        this.weekSchedules.day3Schedules,
+        this.weekSchedules.day4Schedules,
+        this.weekSchedules.day5Schedules,
+        this.weekSchedules.day6Schedules,
+        this.weekSchedules.day7Schedules,
+      ];
+
+      let totalUserCards = 0;
+      this.totalDuration = days.reduce((total, schedules) => {
+        if (schedules?.length) {
+          totalUserCards += schedules.length; // Count user cards
+          total += schedules.reduce(
+            (sum, schedule) => sum + (schedule.duration || 0),
+            0
+          ); // Sum of durations
+        }
+        return total;
+      }, 0);
+
+      this.calculateInputHeight();
+      return this.totalDuration;
     }
 
-    const days = [
-      this.weekSchedules.day1Schedules,
-      this.weekSchedules.day2Schedules,
-      this.weekSchedules.day3Schedules,
-      this.weekSchedules.day4Schedules,
-      this.weekSchedules.day5Schedules,
-      this.weekSchedules.day6Schedules,
-      this.weekSchedules.day7Schedules,
-    ];
+    calculateInputHeight(): void {
+      const baseHeight = 30;
+      const userCardHeight = 62;
 
-    let maxSchedulesPerDay = Math.max(
-      ...days.map((schedules) => (schedules ? schedules.length : 0))
-    );
+      if (!this.weekSchedules) {
+        this.inputHeight = `${baseHeight}px`;
+        return;
+      }
 
-    const newHeight = `${baseHeight + maxSchedulesPerDay * userCardHeight}px`;
+      const days = [
+        this.weekSchedules.day1Schedules,
+        this.weekSchedules.day2Schedules,
+        this.weekSchedules.day3Schedules,
+        this.weekSchedules.day4Schedules,
+        this.weekSchedules.day5Schedules,
+        this.weekSchedules.day6Schedules,
+        this.weekSchedules.day7Schedules,
+      ];
 
-    if (this.inputHeight !== newHeight) {
-      this.inputHeight = newHeight;
-      this.updateWeekCalendarHeight(newHeight);
-      this.cdr.detectChanges();
-    }
-  }
-
-  updateWeekCalendarHeight(height: string): void {
-    const weekCalendar = document.getElementById('week-calendar1');
-    if (weekCalendar) {
-      weekCalendar.style.height = '500px';
-      console.log(
-        'weekCalendar.style.height----------- ',
-        weekCalendar.style.height,
-        this.monthPart
+      let maxSchedulesPerDay = Math.max(
+        ...days.map((schedules) => (schedules ? schedules.length : 0))
       );
-    }
-  }
-  private getDayKeyForSchedule(
-    schedule: ISchedule
-  ): keyof IWeekSchedules | null {
-    if (!this.weekSchedules) return null;
 
-    for (const key of Object.keys(
-      this.weekSchedules
-    ) as (keyof IWeekSchedules)[]) {
-      const schedules = this.weekSchedules[key];
-      if (Array.isArray(schedules) && schedules.includes(schedule)) {
-        return key;
+      const newHeight = `${baseHeight + maxSchedulesPerDay * userCardHeight}px`;
+
+      if (this.inputHeight !== newHeight) {
+        this.inputHeight = newHeight;
+        this.updateWeekCalendarHeight(newHeight);
+        this.cdr.detectChanges();
       }
     }
 
-    return null;
-  }
-  handleClick(schedule: ISchedule) {
-    if (this.clickTimer) {
-      clearTimeout(this.clickTimer);
-      this.clickTimer = null;
-      return;
-    }
-    this.clickTimer = setTimeout(() => {
-      this.openScheduleData(schedule);
-      this.clickTimer = null;
-    }, this.clickDelay);
-  }
-  openScheduleData(schedule: ISchedule): void {
-    let tab = '';
-    this.scheduleService.getSchedule().subscribe((data) => {
-      if (data) {
-        this.isHomeRedirect = data.isHomeRedirect;
-        tab = data.tab;
+    updateWeekCalendarHeight(height: string): void {
+      const weekCalendar = document.getElementById('week-calendar1');
+      if (weekCalendar) {
+        weekCalendar.style.height = '500px';
+        console.log(
+          'weekCalendar.style.height----------- ',
+          weekCalendar.style.height,
+          this.monthPart
+        );
       }
-    });
-    if (tab == 'Day') {
-      return;
     }
-    this.processedSchedules?.forEach((s) => (s.isEdit = false));
-    this.scheduleService.getType().subscribe((type) => {
-      if (type) {
-        this.profileType = type;
-      }
-    });
+    private getDayKeyForSchedule(
+      schedule: ISchedule
+    ): keyof IWeekSchedules | null {
+      if (!this.weekSchedules) return null;
 
-    if (schedule.isEdit) {
-      schedule.isEdit = false;
-      this.previouslyEditedSchedule = null;
-    } else {
-      if (this.previouslyEditedSchedule) {
-        this.previouslyEditedSchedule.isEdit = false;
+      for (const key of Object.keys(
+        this.weekSchedules
+      ) as (keyof IWeekSchedules)[]) {
+        const schedules = this.weekSchedules[key];
+        if (Array.isArray(schedules) && schedules.includes(schedule)) {
+          return key;
+        }
       }
-      schedule.isEdit = true;
-      this.previouslyEditedSchedule = schedule;
-    }
 
-    if (tab != 'Day' && this.isHomeRedirect) {
-      schedule.tab = tab;
-      schedule.isEdit = true;
-    } else if (!this.isHomeRedirect) {
-      schedule.tab = 'Week';
+      return null;
     }
-    this.scheduleData.emit({ ...schedule });
-  }
+    handleClick(schedule: ISchedule) {
+      if (this.clickTimer) {
+        clearTimeout(this.clickTimer);
+        this.clickTimer = null;
+        return;
+      }
+      this.clickTimer = setTimeout(() => {
+        this.openScheduleData(schedule);
+        this.clickTimer = null;
+      }, this.clickDelay);
+    }
+    openScheduleData(schedule: ISchedule): void {
+      let tab = '';
+      this.scheduleService.getSchedule().subscribe((data) => {
+        if (data) {
+          this.isHomeRedirect = data.isHomeRedirect;
+          tab = data.tab;
+        }
+      });
+      if (tab == 'Day') {
+        return;
+      }
+      this.processedSchedules?.forEach((s) => (s.isEdit = false));
+      this.scheduleService.getType().subscribe((type) => {
+        if (type) {
+          this.profileType = type;
+        }
+      });
+
+      if (schedule.isEdit) {
+        schedule.isEdit = false;
+        this.previouslyEditedSchedule = null;
+      } else {
+        if (this.previouslyEditedSchedule) {
+          this.previouslyEditedSchedule.isEdit = false;
+        }
+        schedule.isEdit = true;
+        this.previouslyEditedSchedule = schedule;
+      }
+
+      if (tab != 'Day' && this.isHomeRedirect) {
+        schedule.tab = tab;
+        schedule.isEdit = true;
+      } else if (!this.isHomeRedirect) {
+        schedule.tab = 'Week';
+      }
+      this.scheduleData.emit({ ...schedule });
+    }
 }

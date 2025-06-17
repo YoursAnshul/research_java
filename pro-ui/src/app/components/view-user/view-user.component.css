@@ -35,6 +35,7 @@ mat-card {
   display: flex;
   gap: 10px;
 }
+
 .coreHoursInput {
   width: 55px;
   text-align: center;
@@ -105,11 +106,13 @@ mat-card {
   text-decoration-skip-ink: none;
   color: #00569b;
 }
+
 .upload {
   display: flex;
   gap: 8px;
   align-items: center;
 }
+
 .info-icon {
   width: 18px;
   height: 18px;
@@ -120,12 +123,14 @@ mat-card {
   height: 7.41px;
   background: #164b8b;
 }
+
 .divider_trained_on {
   height: 1.41px;
   background: #164b8b;
   width: 500px;
   margin-bottom: 50px;
 }
+
 .trained_on_box {
   height: 90px;
   overflow-y: auto;
@@ -165,14 +170,18 @@ mat-form-field {
 
 /* Set the height of the form field */
 .mat-mdc-form-field.ctm {
-  height: 35px; /* Desired height */
-  display: flex; /* Align content properly */
-  align-items: center; /* Center inner content vertically */
+  height: 35px;
+  /* Desired height */
+  display: flex;
+  /* Align content properly */
+  align-items: center;
+  /* Center inner content vertically */
 }
 
 .red {
   color: #dc4a38;
 }
+
 .mdc-floating-label--required {
   color: #dc4a38 !important;
 }
@@ -192,13 +201,16 @@ mat-form-field {
   border-right: 0.5px solid lightskyblue;
   border-radius: 4px 4px 0 0;
 }
+
 mat-checkbox {
   width: 250px;
   padding: 0px;
 }
+
 .mdc-label {
   color: red;
 }
+
 .schedule {
   display: flex;
   width: 273.5px;
@@ -271,6 +283,7 @@ mat-checkbox {
   margin-top: 10px;
   width: 100%;
 }
+
 .username-text {
   font-family: Arial;
   font-weight: normal;
@@ -523,6 +536,7 @@ app-form-field {
   font-size: 11px;
   font-weight: 500;
 }
+
 .section {
   padding: 0px;
   margin: 0px;
@@ -535,19 +549,25 @@ app-form-field {
 }
 
 .profile-image-container {
-  width: 60px; /* Fixed width */
+  width: 60px;
+  /* Fixed width */
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px; /* Optional: Rounded corners */
-  overflow: hidden; /* Ensures any overflow is trimmed */
+  border-radius: 10px;
+  /* Optional: Rounded corners */
+  overflow: hidden;
+  /* Ensures any overflow is trimmed */
   position: relative;
 }
 
 .profile-image-container img {
-  width: 100%; /* Make the image fill the container */
-  height: 100%; /* Maintain full height */
-  object-fit: cover; /* Ensures the image is cropped to fill the container */
+  width: 100%;
+  /* Make the image fill the container */
+  height: 100%;
+  /* Maintain full height */
+  object-fit: cover;
+  /* Ensures the image is cropped to fill the container */
 }
 
 .wd90 {
@@ -575,7 +595,7 @@ app-form-field {
   border-radius: 4px;
 }
 
-::ng-deep .mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input{
+::ng-deep .mdc-text-field--filled.mdc-text-field--disabled .mdc-text-field__input {
   color: initial !important;
 }
 

@@ -1,46 +1,27 @@
 <div id="calendar-container">
   <!--refresh-->
   <div id="refresh-calendar-container">
-    <svg
-      id="refresh-calendar"
-      (click)="getAllUserSchedulesByAnchorDateNew()"
-      [class.spin]="scheduleFetchStatus"
-      xmlns="http://www.w3.org/2000/svg"
-      width="25"
-      fill="green"
-      class="bi bi-arrow-repeat"
-      viewBox="0 0 16 16"
-    >
+    <svg id="refresh-calendar" (click)="getAllUserSchedulesByAnchorDateNew()" [class.spin]="scheduleFetchStatus"
+      xmlns="http://www.w3.org/2000/svg" width="25" fill="green" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
       <path
-        d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
-      ></path>
-      <path
-        fill-rule="evenodd"
-        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
-      ></path>
+        d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z">
+      </path>
+      <path fill-rule="evenodd"
+        d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z">
+      </path>
     </svg>
 
     <span id="refresh-calendar-message" class="italic">{{
       scheduleFetchMessage
-    }}</span>
+      }}</span>
   </div>
-  <mat-tab-group
-    [(selectedIndex)]="tabIndex"
-    (selectedTabChange)="onTabChanged($event)"
-  >
+  <mat-tab-group [(selectedIndex)]="tabIndex" (selectedTabChange)="onTabChanged($event)">
     <mat-tab label="Day" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
-        <div
-          [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
-          class="calendar-control-container center-container"
-        >
-          <app-shift-calendar-controls
-            id="day-calendar-controls"
-            [_selectedDate]="selectedDate"
-            (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
-            [_calendarType]="'DAY'"
-            [isClose]="isClose"
-          >
+        <div [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
+          class="calendar-control-container center-container">
+          <app-shift-calendar-controls id="day-calendar-controls" [_selectedDate]="selectedDate"
+            (selectedDateChange)="getAllUserSchedulesByAnchorDate()" [_calendarType]="'DAY'" [isClose]="isClose">
           </app-shift-calendar-controls>
         </div>
       </div>
@@ -48,10 +29,7 @@
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select
-              [(ngModel)]="selectedUser"
-              (selectionChange)="onUserChange($event.value)"
-            >
+            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -61,93 +39,56 @@
         <div class="ml-3">
           <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
-            <mat-select
-              [(ngModel)]="selectedProject"
-              (selectionChange)="onProjectChange($event.value)"
-              [compareWith]="compareProjects"
-            >
+            <mat-select [(ngModel)]="selectedProject" (selectionChange)="onProjectChange($event.value)"
+              [compareWith]="compareProjects">
               <!-- Permanent default option -->
               <mat-option [value]="defaultProject">
                 {{ defaultProject.projectName }}
               </mat-option>
-          
+
               <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of otherProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
-          
+
               <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of adminProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
             </mat-select>
           </mat-form-field>
-          
+
         </div>
         <div class="ml-3">
-          <button
-            type="button"
-            style="height: 25px"
-            mat-raised-button
-            color="primary"
-            (click)="onReset()"
-          >
+          <button type="button" style="height: 25px" mat-raised-button color="primary" (click)="onReset()">
             Reset
           </button>
         </div>
       </div>
-      <app-shift-day-view
-        [shiftSchedule]="shiftSchedule"
-        [selectedDate]="selectedDate"
-        [selectedUser]="selectedUser"
-        [selectedProject]="selectedProject"
-        (resetShiftSchedule)="onResetShiftSchedule()"
-        (selectedUserChange)="onSelectedUserChange($event)"
-        (selectedProjectChange)="onSelectedProjectChange($event)"
-        (sendDate)="handleDate($event)"
-        (scheduleData)="handleSchedule($event)"
-        [isLoading]="isLoading"
-        [pId]="pId"
-        [isScheduleUpdate]="isScheduleUpdate"
-      >
+      <app-shift-day-view [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate" [selectedUser]="selectedUser"
+        [selectedProject]="selectedProject" (resetShiftSchedule)="onResetShiftSchedule()"
+        (selectedUserChange)="onSelectedUserChange($event)" (selectedProjectChange)="onSelectedProjectChange($event)"
+        (sendDate)="handleDate($event)" (scheduleData)="handleSchedule($event)" [isLoading]="isLoading" [pId]="pId"
+        [isScheduleUpdate]="isScheduleUpdate">
       </app-shift-day-view>
     </mat-tab>
     <mat-tab label="Week" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
-        <div
-          [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
-          class="calendar-control-container center-container"
-        >
-          <app-shift-calendar-controls
-            id="week-calendar-controls"
-            [_selectedDate]="selectedDate"
-            [selectedDateRange]="selectedDateRange"
-            (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
-            [_calendarType]="'WEEK'"
-            [isClose]="isClose"
-          >
+        <div [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
+          class="calendar-control-container center-container">
+          <app-shift-calendar-controls id="week-calendar-controls" [_selectedDate]="selectedDate"
+            [selectedDateRange]="selectedDateRange" (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+            [_calendarType]="'WEEK'" [isClose]="isClose">
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div
-        class="center-container mb-3"
-        *ngIf="!authenticatedUser?.interviewer"
-      >
+      <div class="center-container mb-3" *ngIf="!authenticatedUser?.interviewer">
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select
-              [(ngModel)]="selectedUser"
-              (selectionChange)="onUserChange($event.value)"
-            >
+            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -157,90 +98,54 @@
         <div class="ml-3">
           <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
-            <mat-select
-              [(ngModel)]="selectedProject"
-              (selectionChange)="onProjectChange($event.value)"
-              [compareWith]="compareProjects"
-            >
+            <mat-select [(ngModel)]="selectedProject" (selectionChange)="onProjectChange($event.value)"
+              [compareWith]="compareProjects">
               <!-- Permanent default option -->
               <mat-option [value]="defaultProject">
                 {{ defaultProject.projectName }}
               </mat-option>
-          
+
               <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of otherProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
-          
+
               <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of adminProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
             </mat-select>
           </mat-form-field>
-          
+
         </div>
         <div class="ml-3">
-          <button
-            type="button"
-            style="height: 25px"
-            mat-raised-button
-            color="primary"
-            (click)="onReset()"
-          >
+          <button type="button" style="height: 25px" mat-raised-button color="primary" (click)="onReset()">
             Reset
           </button>
         </div>
       </div>
-      <app-shift-week-view-v2
-        [shiftSchedule]="shiftSchedule"
-        [selectedDate]="selectedDate"
-        [selectedDateRange]="selectedDateRange"
-        [selectedUser]="selectedUser"
-        [selectedProject]="selectedProject"
-        (resetShiftSchedule)="onResetShiftSchedule()"
-        (sendWeekDate)="handleWeekDate($event)"
-        (scheduleData)="handleSchedule($event)"
-        [isLoading]="isLoading"
-        [pId]="pId"
-        [isScheduleUpdate]="isScheduleUpdate"
-      ></app-shift-week-view-v2>
+      <app-shift-week-view-v2 [shiftSchedule]="shiftSchedule" [selectedDate]="selectedDate"
+        [selectedDateRange]="selectedDateRange" [selectedUser]="selectedUser" [selectedProject]="selectedProject"
+        (resetShiftSchedule)="onResetShiftSchedule()" (sendWeekDate)="handleWeekDate($event)"
+        (scheduleData)="handleSchedule($event)" [isLoading]="isLoading" [pId]="pId"
+        [isScheduleUpdate]="isScheduleUpdate"></app-shift-week-view-v2>
     </mat-tab>
     <mat-tab label="Month" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
-        <div
-          [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
-          class="calendar-control-container center-container"
-        >
-          <app-shift-calendar-controls
-            id="month-calendar-controls"
-            [_selectedDate]="selectedDate"
-            [_calendarType]="'MONTH'"
-            (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
-            [isClose]="isClose"
-          >
+        <div [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
+          class="calendar-control-container center-container">
+          <app-shift-calendar-controls id="month-calendar-controls" [_selectedDate]="selectedDate"
+            [_calendarType]="'MONTH'" (selectedDateChange)="getAllUserSchedulesByAnchorDate()" [isClose]="isClose">
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div
-        class="center-container mb-3"
-        *ngIf="!authenticatedUser?.interviewer"
-      >
+      <div class="center-container mb-3" *ngIf="!authenticatedUser?.interviewer">
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
-            <mat-select
-              [(ngModel)]="selectedUser"
-              (selectionChange)="onUserChange($event.value)"
-            >
+            <mat-select [(ngModel)]="selectedUser" (selectionChange)="onUserChange($event.value)">
               <mat-option *ngFor="let user of userList" [value]="user">
                 {{ user.userName }}
               </mat-option>
@@ -250,63 +155,39 @@
         <div class="ml-3">
           <mat-form-field appearance="outline" class="custom-form-field ml-2">
             <mat-label>Project</mat-label>
-            <mat-select
-              [(ngModel)]="selectedProject"
-              (selectionChange)="onProjectChange($event.value)"
-              [compareWith]="compareProjects"
-            >
+            <mat-select [(ngModel)]="selectedProject" (selectionChange)="onProjectChange($event.value)"
+              [compareWith]="compareProjects">
               <!-- Permanent default option -->
               <mat-option [value]="defaultProject">
                 {{ defaultProject.projectName }}
               </mat-option>
-          
+
               <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of otherProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
-          
+
               <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
+                <mat-option *ngFor="let project of adminProjects" [value]="project">
                   {{ project.projectName }}
                 </mat-option>
               </mat-optgroup>
             </mat-select>
           </mat-form-field>
-          
+
         </div>
         <div class="ml-3">
-          <button
-            type="button"
-            style="height: 25px"
-            mat-raised-button
-            color="primary"
-            (click)="onReset()"
-          >
+          <button type="button" style="height: 25px" mat-raised-button color="primary" (click)="onReset()">
             Reset
           </button>
         </div>
       </div>
-      <app-shift-month-view
-        [monthSchedules]="monthSchedules"
-        [shiftSchedule]="shiftSchedule"
-        [selectedDate]="selectedDate"
-        [selectedDateRange]="selectedDateRange"
-        [selectedUser]="selectedUser"
-        [selectedProject]="selectedProject"
-        (resetShiftSchedule)="onResetShiftSchedule()"
-        (monthDate)="handleWeekDate($event)"
-        (scheduleData)="handleSchedule($event)"
-        [isLoading]="isLoading"
-        [pId]="pId"
-        [isScheduleUpdate]="isScheduleUpdate"
-      ></app-shift-month-view>
+      <app-shift-month-view [monthSchedules]="monthSchedules" [shiftSchedule]="shiftSchedule"
+        [selectedDate]="selectedDate" [selectedDateRange]="selectedDateRange" [selectedUser]="selectedUser"
+        [selectedProject]="selectedProject" (resetShiftSchedule)="onResetShiftSchedule()"
+        (monthDate)="handleWeekDate($event)" (scheduleData)="handleSchedule($event)" [isLoading]="isLoading" [pId]="pId"
+        [isScheduleUpdate]="isScheduleUpdate"></app-shift-month-view>
     </mat-tab>
   </mat-tab-group>
 </div>

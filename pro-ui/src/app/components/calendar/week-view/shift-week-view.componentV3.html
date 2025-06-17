@@ -1,51 +1,43 @@
-<div id="week-calendar" style="background-color: #f2f2f2 !important">
-  <div id="week-calendar-header"></div>
+  <div id="week-calendar" style="background-color: #f2f2f2 !important">
+    <div id="week-calendar-header"></div>
 
-  <div id="week-calendar-time-header" class="week-calendar-time-header">
-    <div
-      *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
-      [ngStyle]="{
-          width: '14.14%',
-          'background-color': 'lightgoldenrodyellow',
-          color: 'black'
-        }"
-    >
-      {{ day }} {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
+    <div id="week-calendar-time-header" class="week-calendar-time-header">
+      <div
+        *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
+        [ngStyle]="{
+                      width: '14.14%',
+                      'background-color': 'lightgoldenrodyellow',
+                      color: 'black'
+                    }">
+        {{ day }} {{ GetDaysDate(weekSchedules?.weekStart, i + 1) }}
+      </div>
     </div>
-  </div>
 
-  <div *ngIf="isLoading" class="spinner-container">
-    <mat-spinner color="primary"  [diameter]="30"></mat-spinner>
-  </div>
-  <!-- Add Icons and Hour Inputs -->
-  <div id="week-calendar-add-icons" class="week-calendar-add-icons" *ngIf="!isLoading">
-    <div
-      *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
-      [ngStyle]="{
-          width: '14.14%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '8px'
-        }"
-    >
-      <mat-icon
-        style="cursor: pointer; color: #0078d4"
-        (click)="addShift(GetDaysDateAsDate(weekSchedules?.weekStart, i + 1))"
-      >
-        add
-      </mat-icon>
+    <div *ngIf="isLoading" class="spinner-container">
+      <mat-spinner color="primary" [diameter]="30"></mat-spinner>
     </div>
-  </div>
-  @if ((weekSchedules?.day1Schedules || []).length < 1 &&
-  (weekSchedules?.day2Schedules || []).length < 1 &&
-  (weekSchedules?.day3Schedules || []).length < 1 &&
-  (weekSchedules?.day4Schedules || []).length < 1 &&
-  (weekSchedules?.day5Schedules || []).length < 1 &&
-  (weekSchedules?.day6Schedules || []).length < 1 &&
-  (weekSchedules?.day7Schedules || []).length < 1) {
-  <div class="no-results bold italic">
-    No schedules found for this date range...
+    <!-- Add Icons and Hour Inputs -->
+    <div id="week-calendar-add-icons" class="week-calendar-add-icons" *ngIf="!isLoading">
+      <div
+        *ngFor="let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; let i = index"
+        [ngStyle]="{
+                      width: '14.14%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }">
+        <mat-icon style="cursor: pointer; color: #0078d4"
+          (click)="addShift(GetDaysDateAsDate(weekSchedules?.weekStart, i + 1))">
+          add
+        </mat-icon>
+      </div>
+    </div>
+    @if ((weekSchedules?.day1Schedules || []).length < 1 && (weekSchedules?.day2Schedules || []).length < 1 &&
+      (weekSchedules?.day3Schedules || []).length < 1 && (weekSchedules?.day4Schedules || []).length < 1 &&
+      (weekSchedules?.day5Schedules || []).length < 1 && (weekSchedules?.day6Schedules || []).length < 1 &&
+      (weekSchedules?.day7Schedules || []).length < 1) { <div class="no-results bold italic">
+      No schedules found for this date range...
   </div>
   }
 
@@ -55,17 +47,10 @@
   <div id="week-calendar-user-schedules" style="display: flex" *ngIf="!isLoading">
     <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day1Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -80,19 +65,12 @@
       }
     </div>
 
-    <div [ngClass]="'day-schedules-container'" >
+    <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day2Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -109,17 +87,10 @@
 
     <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day3Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -136,17 +107,10 @@
 
     <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day4Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -163,17 +127,10 @@
 
     <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day5Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -190,17 +147,10 @@
 
     <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day6Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -217,17 +167,10 @@
 
     <div [ngClass]="'day-schedules-container'">
       @for (schedule of weekSchedules?.day7Schedules; track schedule) {
-      <div
-        class="schedule-card"
-        (click)="handleClick(schedule)"
-        [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        (mouseenter)="displayHoverMessage($event, schedule)"
-        (mouseleave)="hideHoverMessage()"
-      >
+      <div class="schedule-card" (click)="handleClick(schedule)" [style.opacity]="schedule.isEdit ? 0.5 : 1"
+        (mouseenter)="displayHoverMessage($event, schedule)" (mouseleave)="hideHoverMessage()">
         <div class="center-align-container">
-          <app-project-swatch
-            [projectColor]="schedule.projectColor"
-          ></app-project-swatch>
+          <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
           <div>
             <div class="bold">{{schedule.displayName}}:</div>
             <div class="project-time">
@@ -245,20 +188,12 @@
 
   <!-- Display "No schedules found" message if no schedules -->
   <ng-template #noSchedules>
-    <div
-      class="user-schedule-row no-results bold italic"
-      style="text-align: center; padding: 10px"
-    >
+    <div class="user-schedule-row no-results bold italic" style="text-align: center; padding: 10px">
       No schedules found for this date range...
     </div>
   </ng-template>
-</div>
+  </div>
 
-<div
-  *ngIf="showTooltip"
-  class="custom-tooltip"
-  [ngStyle]="tooltipPosition"
-  [innerHTML]="tooltipMessage"
-></div>
+  <div *ngIf="showTooltip" class="custom-tooltip" [ngStyle]="tooltipPosition" [innerHTML]="tooltipMessage"></div>
 
-<app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>
+  <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>

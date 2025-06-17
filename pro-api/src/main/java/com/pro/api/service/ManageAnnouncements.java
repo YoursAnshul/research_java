@@ -21,8 +21,7 @@ public interface ManageAnnouncements {
 
 	public GeneralResponse getAnnouncement(Long id);
 
-	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset,
-			String keyword, String authorName);
+	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, String keyword, String authorName);
 
 	public AuthorResponse getLoginUser(String email);
 

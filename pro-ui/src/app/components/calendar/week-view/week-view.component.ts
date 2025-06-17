@@ -1,11 +1,12 @@
 import { Component, Input, OnInit, } from '@angular/core';
 import { Utils } from '../../../classes/utils';
-import {ILegend, ISchedule, IWeekSchedules} from '../../../interfaces/interfaces';
+import { ILegend, ISchedule, IWeekSchedules, IAuthenticatedUser } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { ScheduleService } from '../../schedule/schedule.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-week-view',
@@ -17,10 +18,16 @@ export class WeekViewComponent implements OnInit {
 
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Input() monthPart: boolean = false;
-  
+  authenticatedUser!: IAuthenticatedUser;
   hoverMessage: HoverMessage = new HoverMessage();
 
-  constructor(private globalsService: GlobalsService, private scheduleService: ScheduleService,  private dialog: MatDialog) { }
+  constructor(private authenticationService: AuthenticationService, private globalsService: GlobalsService, private scheduleService: ScheduleService, private dialog: MatDialog) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+  }
 
   ngOnInit(): void {
   }
@@ -82,22 +89,25 @@ export class WeekViewComponent implements OnInit {
   }
 
   openScheduleData(schedule: any): void {
-      if(this.monthPart){
-        schedule.tab = "Month";
-      } else {
-        schedule.tab = "Week";
-      }
-      schedule.isHomeRedirect = true;
-      console.log('Clicked Week schedule------->:', schedule);
-      this.scheduleService.setSchedule(schedule);
-      const dialogRef = this.dialog.open(ShiftScheduleComponent, {
-        width: '1900px',
-        height: '900px',
-        disableClose: true,
-      });
-      dialogRef.afterClosed().subscribe((result: any) => {
-        console.log('Shift Schedule dialog was closed', result);
-        this.scheduleService.clearSchedule();
-      });
+    if (this.authenticatedUser.interviewer && this.authenticatedUser.netID != schedule.dempoid) {
+      return;
+    }
+    if (this.monthPart) {
+      schedule.tab = "Month";
+    } else {
+      schedule.tab = "Week";
+    }
+    schedule.isHomeRedirect = true;
+    console.log('Clicked Week schedule------->:', schedule);
+    this.scheduleService.setSchedule(schedule);
+    const dialogRef = this.dialog.open(ShiftScheduleComponent, {
+      width: '1900px',
+      height: '900px',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      console.log('Shift Schedule dialog was closed', result);
+      this.scheduleService.clearSchedule();
+    });
   }
 }

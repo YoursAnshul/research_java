@@ -99,8 +99,7 @@ import { ShiftWeekViewComponentV2 } from './components/calendar/week-view/shift-
 import { ShiftWeekViewComponentV3 } from './components/calendar/week-view/shift-week-view.componentV3';
 import { BlockdateDialog } from './components/calendar/calendar-controls/block.date.dialog.component';
 import { ConfirmationShiftDialogComponent } from './components/delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
-import { MonthlyBlockDate } from './components/calendar/calendar-controls/monthly.block.out.dialog.component';
-import { SchedulingLevelDialog } from './components/calendar/calendar-controls/scheduling-lever-dialog';
+
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -173,9 +172,7 @@ import { SchedulingLevelDialog } from './components/calendar/calendar-controls/s
     ShiftWeekViewComponentV2,
     ShiftWeekViewComponentV3,
     BlockdateDialog,
-    ConfirmationShiftDialogComponent,
-    MonthlyBlockDate,
-    SchedulingLevelDialog
+    ConfirmationShiftDialogComponent
   ],
   imports: [
     NgxMaterialTimepickerModule,

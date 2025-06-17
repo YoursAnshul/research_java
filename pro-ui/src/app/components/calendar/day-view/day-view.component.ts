@@ -4,13 +4,14 @@ import { Utils } from '../../../classes/utils';
 import {
   ILegend,
   ISchedule,
-  IUserSchedule,
+  IUserSchedule, IAuthenticatedUser,
 } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { ScheduleService } from '../../schedule/schedule.service';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-day-view',
@@ -22,15 +23,21 @@ export class DayViewComponent implements OnInit {
   @Input() selectedDate!: FormControl;
 
   hoverMessage: HoverMessage = new HoverMessage();
-
+  authenticatedUser!: IAuthenticatedUser;
   constructor(
     private globalsService: GlobalsService,
     private scheduleService: ScheduleService,
-    private dialog: MatDialog,
-    
-  ) {}
+    private dialog: MatDialog, private authenticationService: AuthenticationService,
 
-  ngOnInit(): void {}
+  ) {
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
+  }
+
+  ngOnInit(): void { }
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;
@@ -137,6 +144,9 @@ export class DayViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   openScheduleData(schedule: any): void {
+    if (this.authenticatedUser.interviewer && this.authenticatedUser.netID != schedule.dempoid) {
+      return;
+    }
     schedule.tab = "Day";
     schedule.isHomeRedirect = true
     this.scheduleService.setSchedule(schedule);

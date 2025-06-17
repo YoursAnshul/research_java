@@ -1,79 +1,73 @@
-<div id="day-calendar">
-  <div id="day-calendar-header">
+  <div id="day-calendar">
+    <div id="day-calendar-header">
 
-  </div>
-  <div id="day-calendar-time-header">
-    <div style="width: 14.1%; border: none;"></div>
-    <div class="hour-header" style="width: 5.25%;">08:00 AM</div>
-    <div class="hour-header" style="width: 5.25%;">09:00 AM</div>
-    <div class="hour-header" style="width: 5.25%;">10:00 AM</div>
-    <div class="hour-header" style="width: 5.25%;">11:00 AM</div>
-    <div class="hour-header" style="width: 5.25%;">12:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">01:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">02:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">03:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">04:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">05:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">06:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">07:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">08:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">09:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">10:00 PM</div>
-    <div class="hour-header" style="width: 5.25%;">11:00 PM</div>
-    <div class="hour-header" style="width: 1.3%; border: none;"></div>
-    <!--<div style="width: 1%; border: none;"></div>-->
-  </div>
+    </div>
+    <div id="day-calendar-time-header">
+      <div style="width: 14.1%; border: none;"></div>
+      <div class="hour-header" style="width: 5.25%;">08:00 AM</div>
+      <div class="hour-header" style="width: 5.25%;">09:00 AM</div>
+      <div class="hour-header" style="width: 5.25%;">10:00 AM</div>
+      <div class="hour-header" style="width: 5.25%;">11:00 AM</div>
+      <div class="hour-header" style="width: 5.25%;">12:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">01:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">02:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">03:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">04:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">05:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">06:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">07:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">08:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">09:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">10:00 PM</div>
+      <div class="hour-header" style="width: 5.25%;">11:00 PM</div>
+      <div class="hour-header" style="width: 1.3%; border: none;"></div>
+      <!--<div style="width: 1%; border: none;"></div>-->
+    </div>
 
-  <div id="day-calendar-user-schedules">
-    @for (us of userSchedules; track us) {
+    <div id="day-calendar-user-schedules">
+      @for (us of userSchedules; track us) {
       <div class="user-schedule-row">
-        <app-user-card class="user-card"
-          [user]="us.user"
-        ></app-user-card>
+        <app-user-card class="user-card" [user]="us.user"></app-user-card>
         @for (schedule of us.schedules; track schedule) {
-          <!-- <div class="schedule-card"
-            (dblclick)="openUserSchedule(us.user.dempoid, schedule.projectName)"
-            (mouseenter)="displayHoverMessage($event, schedule, us)"
-            (mouseleave)="hideHoverMessage()"
-            [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
-            <div class="center-align-container">
-              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
-              <div
-                [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
-                <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</span>
-              </div>
-             
-          </div>
-        </div> -->
-        <div class="schedule-card"
-            (dblclick)="openScheduleData(schedule)"
-            (mouseenter)="displayHoverMessage($event, schedule, us)"
-            (mouseleave)="hideHoverMessage()"
-            [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
-            <div class="center-align-container">
-              <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
-              <!--<app-project-swatch [customStyle]="customProjectSwatch(schedule.ProjectColor, schedule.ScheduledHours)"></app-project-swatch>-->
-              <div
-                [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
-                <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</span>
-              </div>
-              <!--<font class="project-time" *ngIf="schedule.ScheduledHours > 1.5">
-              {{schedule.StartTime}} - {{schedule.EndTime}}
-            </font>-->
+        <!-- <div class="schedule-card"
+              (dblclick)="openUserSchedule(us.user.dempoid, schedule.projectName)"
+              (mouseenter)="displayHoverMessage($event, schedule, us)"
+              (mouseleave)="hideHoverMessage()"
+              [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
+              <div class="center-align-container">
+                <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+                <div
+                  [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
+                  <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} - {{schedule.endTime}}</span>
+                </div>
+              
+            </div>
+          </div> -->
+        <div class="schedule-card" (dblclick)="openScheduleData(schedule)"
+          (mouseenter)="displayHoverMessage($event, schedule, us)" (mouseleave)="hideHoverMessage()"
+          [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
+          <div class="center-align-container">
+            <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>
+            <!--<app-project-swatch [customStyle]="customProjectSwatch(schedule.ProjectColor, schedule.ScheduledHours)"></app-project-swatch>-->
+            <div [ngStyle]="customScheduleStyle(schedule.scheduledHours || 0)">
+              <span class="bold">{{schedule.displayName}}:</span> <span class="project-time">{{schedule.startTime}} -
+                {{schedule.endTime}}</span>
+            </div>
+            <!--<font class="project-time" *ngIf="schedule.ScheduledHours > 1.5">
+                {{schedule.StartTime}} - {{schedule.EndTime}}
+              </font>-->
           </div>
         </div>
+        }
+      </div>
       }
-    </div>
-  }
 
-  <div class="user-card"></div>
-  @if ((userSchedules || []).length < 1) {
-    <div class="no-results bold italic"
-      >
-      No schedules found for this day...
+      <div class="user-card"></div>
+      @if ((userSchedules || []).length < 1) { <div class="no-results bold italic">
+        No schedules found for this day...
     </div>
-  }
-</div>
-</div>
+    }
+  </div>
+  </div>
 
-<app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>
+  <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>

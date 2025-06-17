@@ -199,8 +199,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 	}
 
 	@Override
-	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, Integer limit, Integer offset,
-			String keyword, String authorName) {
+	public PageResponse<AnnouncementResponse> getList(String sortBy, String orderBy, String keyword,
+			String authorName) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT a.announcementid, CONCAT(u.fname, ' ', u.lname) AS userName,  a.icon, ");
 		sql.append(" a.titletext,  a.bodytext,  a.author, a.dispauthor, a.startdate, a.expiredate,  p.dispprojects ");
@@ -218,7 +218,6 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		if (authorName != null && !authorName.isEmpty() && !authorName.equals("''")) {
 			sql.append(" AND CONCAT(u.fname, ' ', u.lname) IN (" + authorName + ") ");
 		}
-		System.out.println(sql.toString());
 		if (sortBy != null && orderBy != null) {
 			if (sortBy.equals("startdate")) {
 				sql.append(" ORDER BY startdate " + orderBy + " ");
@@ -235,9 +234,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		} else {
 			sql.append(" ORDER BY a.startdate  desc ");
 		}
-		if (limit != null) {
-			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
-		}
+
 		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AnnouncementResponse announcement = new AnnouncementResponse();
 			announcement.setAnnouncementId(rs.getLong("announcementid"));

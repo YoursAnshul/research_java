@@ -36,13 +36,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.api.models.business.KeyValuePair;
+import com.pro.api.models.business.SessionUserEmail;
 import com.pro.api.models.business.ValidationMessagePlus;
 import com.pro.api.models.dataaccess.CoreHour;
+import com.pro.api.models.dataaccess.Request;
 import com.pro.api.models.dataaccess.Schedule;
 import com.pro.api.models.dataaccess.User;
 import com.pro.api.models.dataaccess.ValidationMessage;
 import com.pro.api.models.dataaccess.ViUserSchedule;
 import com.pro.api.models.dataaccess.repos.CoreHourRepository;
+import com.pro.api.models.dataaccess.repos.RequestRepository;
 import com.pro.api.models.dataaccess.repos.ScheduleRepository;
 import com.pro.api.models.dataaccess.repos.TimeCodeRepository;
 import com.pro.api.models.dataaccess.repos.UserRepository;
@@ -51,6 +54,7 @@ import com.pro.api.models.dataaccess.repos.ValidationMessageTextRepository;
 import com.pro.api.models.dataaccess.repos.ViUserScheduleRepository;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
+import com.pro.api.service.AuditService;
 import com.pro.api.service.ScheduleService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -78,6 +82,15 @@ public class UserSchedulesController {
 
 	@Autowired
 	private ScheduleService scheduleService;
+
+		@Autowired
+	private RequestRepository requestRepository;
+
+	@Autowired
+	private SessionUserEmail UserEmail;
+
+	@Autowired
+	private AuditService auditService;
 
 	@DeleteMapping
 	public GeneralResponse deleteSchedules(@RequestBody List<Schedule> schedules) {
@@ -751,4 +764,122 @@ public class UserSchedulesController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@PostMapping("/add-new-request")
+    public GeneralResponse saveRequests(HttpServletRequest httpServletRequest, @RequestBody List<Request> requests) {
+        GeneralResponse response = new GeneralResponse();
+        String netId = getNetIdFromSession(httpServletRequest);
+
+        List<Request> savedRequests = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
+
+        // Start process logging
+        System.out.println("Received request to save " + requests.size() + " entries from user: " + netId);
+
+        if (requests == null || requests.isEmpty()) {
+            response.Status = "Failure";
+            response.Message = "No request data provided.";
+            return response;
+        }
+
+        int requestIndex = 0;
+
+        for (Request request : requests) {
+            requestIndex++;
+            System.out.println("Processing request #" + requestIndex);
+
+            try {
+                validateRequest(request, requestIndex);
+                populateRequestMetadata(request, netId);
+
+                updateAuditTrail(request.getModBy());
+
+                Request savedRequest = saveRequestToDatabase(request);
+                savedRequests.add(savedRequest);
+
+                System.out.println("Request #" + requestIndex + " saved successfully.");
+
+            } catch (Exception ve) {
+                String errorMsg = "Validation failed for request #" + requestIndex + ": " + ve.getMessage();
+                errorMessages.add(errorMsg);
+                System.err.println(errorMsg);
+            }
+			//  catch (Exception ex) {
+            //     String errorMsg = "Unexpected error for request #" + requestIndex + ": " + ex.getMessage();
+            //     errorMessages.add(errorMsg);
+            //     System.err.println(errorMsg);
+            // }
+        }
+
+        // Final response assembly
+        if (!savedRequests.isEmpty()) {
+            response.Status = "Success";
+            response.Subject = savedRequests;
+
+            if (!errorMessages.isEmpty()) {
+                response.Message = String.format("%d request(s) saved, %d request(s) failed:\n%s",
+                        savedRequests.size(), errorMessages.size(), String.join("\n", errorMessages));
+            } else {
+                response.Message = "All requests saved successfully.";
+            }
+        } else {
+            response.Status = "Failure";
+            response.Message = "No request could be saved.\n" + String.join("\n", errorMessages);
+        }
+
+        return response;
+    }
+
+    private String getNetIdFromSession(HttpServletRequest request) {
+        Object netIdObj = request.getSession().getAttribute("NetId");
+        return (netIdObj != null) ? netIdObj.toString() : "Unknown";
+    }
+
+    private void validateRequest(Request request, int index) throws Exception {
+        // if (request.getProjectName() == null || request.getProjectName().trim().isEmpty()) {
+        //     throw new ValidationException("Project name is missing in request #" + index);
+        // }
+
+        // if (request.getModBy() == null || request.getModBy().trim().isEmpty()) {
+        //     throw new ValidationException("Modified by (modBy) is missing in request #" + index);
+        // }
+
+        // Add more validations as needed
+    }
+
+    private void populateRequestMetadata(Request request, String netId) {
+        String projectName = "";
+
+        // Mapping logic (this mimics your frontend logic)
+        if ("Sick".equalsIgnoreCase(projectName)) {
+            request.setRequestCodeId(3);
+            // request.setRequestType("Unexcused Absence-Sick");
+        } else if ("Absent".equalsIgnoreCase(projectName)) {
+            request.setRequestCodeId(4);
+            // request.setRequestType("Unexcused Absence-Other");
+        } else if ("Arriving Late".equalsIgnoreCase(projectName)) {
+            request.setRequestCodeId(7);
+            // request.setRequestType("Tardy-Arriving Late");
+        } else {
+            request.setRequestCodeId(999); // Default or unknown
+            // request.setRequestType("Unknown Type for project: " + projectName);
+        }
+
+        // Set metadata fields
+        // request.setCreatedBy(netId);
+        // request.setCreatedDate(LocalDateTime.now());
+    }
+
+	 private void updateAuditTrail(String modBy) {
+        auditService.updateNetId(modBy);
+    }
+
+    private Request saveRequestToDatabase(Request request) throws Exception {
+        try {
+            return requestRepository.save(request);
+        } catch (Exception ex) {
+            throw new Exception("Failed to save request with project" );
+        }
+    }
+
+	
 }

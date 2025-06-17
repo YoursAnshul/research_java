@@ -4,7 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { scheduled } from 'rxjs';
 import { Utils } from '../../classes/utils';
-import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings} from '../../interfaces/interfaces';
+import { IActionButton, IAdminOptionsVariable, IAnyFilter, IAuthenticatedUser, IBlockOutDate, IDateRange, IDropDownValue, IFormFieldVariable, IProjectMin, IRequest, ISchedule, IScheduleMin, ITimeCode, IUserSchedule, IUserTrainedOn, IValidationMessage, IWeekStartAndEnd, IWeekStartAndEndStrings } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
 import { GlobalsService } from '../../services/globals/globals.service';
@@ -26,7 +26,7 @@ export class ScheduleComponent implements OnInit {
     let changedSchedules: ISchedule[] = this.userSchedulesMonth.filter(x => (x.changed) || (x.markedForDeletion));
 
     if (changedSchedules.length > 0) {
-      if(e){
+      if (e) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -117,13 +117,13 @@ export class ScheduleComponent implements OnInit {
   anyProjectToggle: boolean = true;
 
   constructor(private userSchedulesService: UserSchedulesService,
-              private usersService: UsersService,
-              private projectsService: ProjectsService,
-              private globalsService: GlobalsService,
-              private authenticationService: AuthenticationService,
-              private requestsService: RequestsService,
-              private configurationService: ConfigurationService,
-              private logsService: LogsService) {
+    private usersService: UsersService,
+    private projectsService: ProjectsService,
+    private globalsService: GlobalsService,
+    private authenticationService: AuthenticationService,
+    private requestsService: RequestsService,
+    private configurationService: ConfigurationService,
+    private logsService: LogsService) {
 
     //set date and week defaults
     this.selectedDate = new Date();
@@ -160,7 +160,7 @@ export class ScheduleComponent implements OnInit {
       }
     );
 
-;
+    ;
 
     //subscribe to schedule tab index
     this.globalsService.scheduleTabIndex.subscribe(
@@ -371,22 +371,22 @@ export class ScheduleComponent implements OnInit {
 
         if (!previousDateIsSame) {
           //call validate schedules
-          // this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
-          //   response => {
-          //     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
+            response => {
+              if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                 try {
                   this.getValidationMessages();
                   //this.validationMessages = <IValidationMessage[]>(response.Subject).filter(x => x.DempoId == this.authenticatedUser.NetID);
                 } catch (ex) {
                   console.log(ex);
                 }
-          //     }
-          //   },
-          //   error => {
-          //     this.errorMessage = <string>(error.message);
-          //     this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-          //   }
-          // )
+              }
+            },
+            error => {
+              this.errorMessage = <string>(error.message);
+              this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            }
+          )
         }
 
         //set month start and end
@@ -865,12 +865,12 @@ export class ScheduleComponent implements OnInit {
     this.businessRulesValidation(schedule);
 
     //tab validation
-/*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
-    this.dayTabInvalid = this.filteredUserSchedulesDay.filter(x => x.invalid).length > 0;
-    this.weekTabInvalid = this.filteredUserSchedulesWeek.filter(x => x.invalid).length > 0;
-    this.monthTabInvalid = this.filteredUserSchedulesMonth.filter(x => x.invalid).length > 0;
-    this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;*/
-    console.log("invalid :-"+this.addTabInvalid,this.dayTabInvalid,this.weekTabInvalid,this.monthTabInvalid,this.customTabInvalid);
+    /*    this.addTabInvalid = this.addedSchedules.filter(x => (x.changed && x.invalid)).length > 0;
+        this.dayTabInvalid = this.filteredUserSchedulesDay.filter(x => x.invalid).length > 0;
+        this.weekTabInvalid = this.filteredUserSchedulesWeek.filter(x => x.invalid).length > 0;
+        this.monthTabInvalid = this.filteredUserSchedulesMonth.filter(x => x.invalid).length > 0;
+        this.customTabInvalid = this.filteredUserSchedulesCustom.filter(x => x.invalid).length > 0;*/
+    console.log("invalid :-" + this.addTabInvalid, this.dayTabInvalid, this.weekTabInvalid, this.monthTabInvalid, this.customTabInvalid);
 
   }
 
@@ -1018,33 +1018,33 @@ export class ScheduleComponent implements OnInit {
 
 
     // Define a function that abstracts the complex date comparison.
-    function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any ): boolean {
+    function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any): boolean {
 
       //admin role , resourceGroup role and canEdit flag should be able to edit any schedule at any time
-/*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
-        return true;
-      }
+      /*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
+              return true;
+            }
 
 
-      const scheduleDate =  (date !== null && date !== undefined) ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : null;
-      scheduleDate?.setHours(0, 0, 0, 0 );
+            const scheduleDate =  (date !== null && date !== undefined) ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : null;
+            scheduleDate?.setHours(0, 0, 0, 0 );
 
-      const unlockDateTwo = (unlockDate !== null && unlockDate !== undefined) ? new Date(unlockDate.getFullYear(), unlockDate.getMonth() + 1, unlockDate.getDate()) : null;
-      unlockDateTwo?.setHours(0, 0, 0, 0 );
-      const currentDate = new Date();
-      currentDate?.setHours(0, 0, 0, 0 );
+            const unlockDateTwo = (unlockDate !== null && unlockDate !== undefined) ? new Date(unlockDate.getFullYear(), unlockDate.getMonth() + 1, unlockDate.getDate()) : null;
+            unlockDateTwo?.setHours(0, 0, 0, 0 );
+            const currentDate = new Date();
+            currentDate?.setHours(0, 0, 0, 0 );
 
-      //currentDate On or before lockDate, interviewers will be able to add/modify schedules for UnlockDate and later.
-      if (scheduleDate != null  && authenticatedUser.interviewer && currentDate <= lockDate) {
-        return  scheduleDate >= unlockDate ;
-      }
+            //currentDate On or before lockDate, interviewers will be able to add/modify schedules for UnlockDate and later.
+            if (scheduleDate != null  && authenticatedUser.interviewer && currentDate <= lockDate) {
+              return  scheduleDate >= unlockDate ;
+            }
 
-      //currentDate After lockDate, interviewers will only be able to add/modify schedules for unlockDateTwo and later.
-      if ( scheduleDate != null && unlockDate != null && unlockDateTwo != null  && authenticatedUser.interviewer && currentDate > lockDate ) {
-        return scheduleDate >= unlockDateTwo;
-      }
+            //currentDate After lockDate, interviewers will only be able to add/modify schedules for unlockDateTwo and later.
+            if ( scheduleDate != null && unlockDate != null && unlockDateTwo != null  && authenticatedUser.interviewer && currentDate > lockDate ) {
+              return scheduleDate >= unlockDateTwo;
+            }
 
-      return false;*/
+            return false;*/
       return date instanceof Date && !(authenticatedUser === null || authenticatedUser === undefined);
     }
 
@@ -1093,7 +1093,7 @@ export class ScheduleComponent implements OnInit {
         schedule.validationMessages = [];
       }
       const ult = (this.unlockDate !== null && this.unlockDate !== undefined) ? new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) : null;
-      if ( ult ) {
+      if (ult) {
         let unlockMessage: string = schedule.startdatetime < this.unlockDate ? Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToStringUTC(this.unlockDate)
           : Utils.formatDateOnlyToStringUTC(schedule.startdatetime) + ' is before the end of the current lock period.<br />Please choose a date on or after ' + Utils.formatDateOnlyToStringUTC(ult);
         if (!(schedule.validationMessages || []).includes(unlockMessage)) {
@@ -1125,7 +1125,7 @@ export class ScheduleComponent implements OnInit {
           schedule.validationMessages.push(blockOutMessage);
       } else if (!blockOutDate?.allDay
         && ((schedule.enddatetime !== null && schedule.startdatetime !== null && schedule.enddatetime !== undefined && schedule.startdatetime !== undefined)
-          && ((schedule.startdatetime >= blockOutStart) || (schedule.enddatetime > blockOutStart )))) {
+          && ((schedule.startdatetime >= blockOutStart) || (schedule.enddatetime > blockOutStart)))) {
         schedule.invalid = true;
         schedule.invalidFields.push('Date');
         const msg_undefined_time = 'Start Date Time or End Date Time is not defined .Please choose time between ' + blockOutDate.startTime + ' - ' + blockOutDate.endTime;
@@ -1679,7 +1679,7 @@ export class ScheduleComponent implements OnInit {
     }
 
     let startDate: Date = new Date();
-    startDate?.setHours(0, 0, 0, 0 );
+    startDate?.setHours(0, 0, 0, 0);
 
     if (scheduleDate) {
       startDate = scheduleDate;
@@ -1690,8 +1690,8 @@ export class ScheduleComponent implements OnInit {
       && !this.authenticatedUser?.resourceGroup
       && !this.authenticatedUser?.admin) {
 
-      const unlockDateTwo = new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate()) ;
-      unlockDateTwo?.setHours(0, 0, 0, 0 );
+      const unlockDateTwo = new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate());
+      unlockDateTwo?.setHours(0, 0, 0, 0);
 
       if (startDate <= this.lockDate) {
         startDate = this.unlockDate;
@@ -1943,61 +1943,17 @@ export class ScheduleComponent implements OnInit {
   }
 
   getValidationMessages(): void {
-    console.log("Insisis");
-    
-    // if (!this.selectedDate || !this.authenticatedUser)
-    //   return;
+    if (!this.selectedDate || !this.authenticatedUser)
+      return;
 
     //get validation messages
     this.validationMessagesChecked = false;
-    // this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
-    //   response => {
-    //     if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          // this.validationMessages = <IValidationMessage[]>response.Subject;
-          this.validationMessages = <IValidationMessage[]>[
-            {
-              validationMessagesId: 61888,
-              dempoId: "jmr110",
-              messageId: 10,
-              messageText: "An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: [] 
-            },
-            {
-              validationMessagesId: 61889,
-              dempoId: "jmr110",
-              messageId: 11,
-              messageText: "An Interviewer's schedule should include 1 weekend shift every other week.|- A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.| - A Saturday and/or Sunday shift schedule should be 6 hours minimum.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: []
-            },
-            {
-              validationMessagesId: 61888,
-              dempoId: "jmr110",
-              messageId: 10,
-              messageText: "An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: [] 
-            },
-            {
-              validationMessagesId: 61889,
-              dempoId: "jmr110",
-              messageId: 11,
-              messageText: "An Interviewer's schedule should include 1 weekend shift every other week.|- A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.|- A Saturday and/or Sunday shift schedule should be 6 hours minimum.",
-              inMonth: new Date("2025-01-14"),  // Proper Date format
-              scheduleKeys: null,
-              details: null,
-              schedules: []
-            }
-          ];
+    this.userSchedulesService.getUserValidationMessages(new Date(this.selectedDate), this.authenticatedUser.netID).subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.validationMessages = <IValidationMessage[]>response.Subject;
+
           for (var x = 0; x < this.validationMessages.length; x++) {
-console.log("this.validationMessages.length---------- ",this.validationMessages.length);
 
             if (this.validationMessages[x].schedules) {
               for (var i = 0; i < (this.validationMessages[x].schedules || []).length; i++) {
@@ -2035,13 +1991,13 @@ console.log("this.validationMessages.length---------- ",this.validationMessages.
           }
 
           this.validationMessagesChecked = true;
-        // }
-    //   },
-    //   error => {
-    //     this.errorMessage = <string>(error.message);
-    //     this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-    //   }
-    // );
+        }
+      },
+      error => {
+        this.errorMessage = <string>(error.message);
+        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+      }
+    );
 
   }
 
@@ -2158,8 +2114,6 @@ console.log("this.validationMessages.length---------- ",this.validationMessages.
 
       //validaiton messages
       if (schedule.validationMessages) {
-        console.log("schedule.validationMessages.length---------- ",schedule.validationMessages.length);
-        
         if (schedule.validationMessages.length > 0) {
           htmlMessage = htmlMessage + '<p class="bold">Validation Messages:</p>';
           for (var i = 0; i < schedule.validationMessages.length; i++) {
@@ -2186,15 +2140,13 @@ console.log("this.validationMessages.length---------- ",this.validationMessages.
 
   displaySchedulingLevelInfo(event: any): void {
     let htmlMessage: string = '';
-    console.log("ghgfufbfgugffgufgh");
-    
 
-    // if (!this.currentUser) {
-    //   this.currentUser = {} as User;
-    //   htmlMessage = 'No scheduling level assigned.';
-    // }
+    if (!this.currentUser) {
+      this.currentUser = {} as User;
+      htmlMessage = 'No scheduling level assigned.';
+    }
 
-    // if (this.currentUser.schedulinglevel == 1) {
+    if (this.currentUser.schedulinglevel == 1) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 1</p>';
       htmlMessage = htmlMessage + "<p><ul>";
       htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
@@ -2209,9 +2161,9 @@ console.log("this.validationMessages.length---------- ",this.validationMessages.
       htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
       htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
       htmlMessage = htmlMessage + "</ul></p>";
-    // }
+    }
 
-    // if (this.currentUser.schedulinglevel == 2) {
+    if (this.currentUser.schedulinglevel == 2) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 2</p>';
       htmlMessage = htmlMessage + "<p><ul>";
       htmlMessage = htmlMessage + "<li>A shift schedule should be at least 4 hours in length.</li>";
@@ -2223,25 +2175,21 @@ console.log("this.validationMessages.length---------- ",this.validationMessages.
       htmlMessage = htmlMessage + "<ul><li>A Friday night shift schedule with majority of hours after 5 PM, can only have 1 Friday night per month.</li>";
       htmlMessage = htmlMessage + "<li>A Saturday and/or Sunday shift schedule should be 6 hours minimum.</li></ul>";
       htmlMessage = htmlMessage + "</ul></p>";
-    // }
+    }
 
-    // if (this.currentUser.schedulinglevel == 3) {
+    if (this.currentUser.schedulinglevel == 3) {
       htmlMessage = htmlMessage + '<p class="bold">Scheduling Level 3</p>';
       htmlMessage = htmlMessage + "<p><ul>";
       htmlMessage = htmlMessage + "<li>A shift schedule cannot be exactly 8 hours in length.</li>";
       htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should at a minimum match their core hours total.</li>";
       htmlMessage = htmlMessage + "<li>An Interviewer's weekly schedule should not exceed 40 hours total.</li>";
       htmlMessage = htmlMessage + "</ul></p>";
-    // }
+    }
 
     let hoverMessage: HTMLElement = <HTMLElement>document.getElementById('hover-message');
     hoverMessage.innerHTML = htmlMessage;
-    console.log("hoverMessage.innerHTML---------- ",hoverMessage.innerHTML);
-    
 
     this.globalsService.showHoverMessage.next(true);
-    console.log("this.globalsService.showHoverMessage----------",this.globalsService.showHoverMessage);
-    
 
     hoverMessage.style.top = (event.screenY) + 'px';
     hoverMessage.style.left = event.clientX + 'px';

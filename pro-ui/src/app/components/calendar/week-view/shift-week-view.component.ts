@@ -75,7 +75,7 @@ export class ShiftWeekViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
@@ -95,6 +95,34 @@ export class ShiftWeekViewComponent implements OnInit {
     return schedules.length > 0;
   }
 
+
+  public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
+    let workingDate: Date = new Date(weekStart || '');
+    workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
+    const options: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'numeric',
+    };
+
+    return workingDate.toLocaleString('en-US', options);
+  }
+
+  public GetDaysDateAsDate(
+    weekStart: Date | undefined,
+    dayOfWeek: number
+  ): Date {
+    let workingDate: Date = new Date(weekStart || '');
+    workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
+    return workingDate;
+  }
+
+  formatDateOnlyString(dateToFormat: Date | null | undefined): string | null {
+    if (!dateToFormat) {
+      return null;
+    }
+
+    return Utils.formatDateOnlyToStringUTC(dateToFormat);
+  }
   processShiftSchedules(): void {
     console.log('this.shiftSchedule--3--->', this.shiftSchedule);
     if (
@@ -188,14 +216,14 @@ export class ShiftWeekViewComponent implements OnInit {
     });
     const firstFilteredSchedule = this.pId
       ? this.processedSchedules.find(
-          (schedule) => schedule.preschedulekey === this.pId
-        )
+        (schedule) => schedule.preschedulekey === this.pId
+      )
       : null;
     if (
       firstFilteredSchedule &&
       (!this.previouslyEditedSchedule ||
         this.previouslyEditedSchedule.preschedulekey !==
-          firstFilteredSchedule.preschedulekey)
+        firstFilteredSchedule.preschedulekey)
     ) {
       this.openScheduleData(firstFilteredSchedule);
     }
@@ -204,34 +232,6 @@ export class ShiftWeekViewComponent implements OnInit {
         schedule.isEdit = false;
       });
     }
-  }
-
-  public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
-    let workingDate: Date = new Date(weekStart || '');
-    workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
-    const options: Intl.DateTimeFormatOptions = {
-      day: 'numeric',
-      month: 'numeric',
-    };
-
-    return workingDate.toLocaleString('en-US', options);
-  }
-
-  public GetDaysDateAsDate(
-    weekStart: Date | undefined,
-    dayOfWeek: number
-  ): Date {
-    let workingDate: Date = new Date(weekStart || '');
-    workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
-    return workingDate;
-  }
-
-  formatDateOnlyString(dateToFormat: Date | null | undefined): string | null {
-    if (!dateToFormat) {
-      return null;
-    }
-
-    return Utils.formatDateOnlyToStringUTC(dateToFormat);
   }
 
   //open contextual popup for the clicked user
@@ -299,9 +299,9 @@ export class ShiftWeekViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   addShift(date: any): void {
-    console.log('Date:--------->', date);
-    this.sendWeekDate.emit(date);
-    this.resetShiftSchedule.emit();
+    // console.log('Date:--------->', date);
+    // this.sendWeekDate.emit(date);
+    // this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {
     console.log(' sdfsdfds:');

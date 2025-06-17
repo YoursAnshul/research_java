@@ -210,6 +210,59 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
 
+
+  onReset(): void {
+    this.shiftSchedule = [];
+    this.shiftSchedule1 = [];
+    this.selectedDate.setValue(new Date());
+    this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
+      this.selectedDate = new FormControl(selectedDate.toISOString());
+
+      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
+        new Date(this.selectedDate.value)
+      );
+
+      this.selectedDateRange = new FormGroup({
+        start: new FormControl(
+          new Date(this.selectedWeekStartAndEnd.weekStart)
+        ),
+        end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
+      });
+    });
+
+    this.userSchedulesService.selectedDate.next(new Date());
+
+    this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(new Date());
+
+    this.selectedDateRange = new FormGroup({
+      start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
+      end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
+    });
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+        this.isHomeRedirect = data.isHomeRedirect;
+      }
+    });
+    this.scheduleService.getType().subscribe((type) => {
+      if (type) {
+        this.profileType = type;
+      }
+    });
+    if (this.isHomeRedirect || this.profileType == 'user-profile') {
+      this.defaultUser = { userId: 0, userName: 'Any Users' };
+      this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
+    }
+
+    this.selectedUser = this.defaultUser;
+    this.selectedProject = this.defaultProject;
+
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
+    this.getAuthor(0);
+    this.getProjectInfo('');
+  }
+
   disableWeekTabTemporarily(): void {
     this.isWeekTabDisabled = true;
     setTimeout(() => {
@@ -270,57 +323,6 @@ export class ShifCalendarComponent implements OnInit {
       }
     );
   }
-  onReset(): void {
-    this.shiftSchedule = [];
-    this.shiftSchedule1 = [];
-    this.selectedDate.setValue(new Date());
-    this.userSchedulesService.selectedDate.subscribe((selectedDate) => {
-      this.selectedDate = new FormControl(selectedDate.toISOString());
-
-      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
-        new Date(this.selectedDate.value)
-      );
-
-      this.selectedDateRange = new FormGroup({
-        start: new FormControl(
-          new Date(this.selectedWeekStartAndEnd.weekStart)
-        ),
-        end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
-      });
-    });
-
-    this.userSchedulesService.selectedDate.next(new Date());
-
-    this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(new Date());
-
-    this.selectedDateRange = new FormGroup({
-      start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
-      end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
-    });
-    this.scheduleService.getSchedule().subscribe((data) => {
-      if (data) {
-        this.isHomeRedirect = data.isHomeRedirect;
-      }
-    });
-    this.scheduleService.getType().subscribe((type) => {
-      if (type) {
-        this.profileType = type;
-      }
-    });
-    if (this.isHomeRedirect || this.profileType == 'user-profile') {
-      this.defaultUser = { userId: 0, userName: 'Any Users' };
-      this.defaultProject = { projectId: 0, projectName: 'Any Projects' };
-    }
-
-    this.selectedUser = this.defaultUser;
-    this.selectedProject = this.defaultProject;
-
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
-    this.getAuthor(0);
-    this.getProjectInfo('');
-  }
 
   getLoginUser(email: string): void {
     if (!email) {
@@ -377,30 +379,12 @@ export class ShifCalendarComponent implements OnInit {
     ) {
       this.selectedProject = this.homeSelectedProject;
     }
-    this.scheduleService.getSchedule().subscribe((data) => {
-      if (data) {
-        this.isHomeRedirect = data.isHomeRedirect;
-      }
-    });
     if (this.changeDate && !this.isEdit) {
       this.selectedDate.setValue(this.changeDate);
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
       );
-    } else if (
-      !this.isEdit &&
-      !this.isHomeRedirect &&
-      this.authenticatedUser.interviewer
-    ) {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(
-          this.selectedDate.value,
-          true,
-          true,
-          true
-        )
-      );
-    } else if (this.authenticatedUser.admin && this.tab == 'Day') {
+    } else if (!this.isEdit) {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(
           this.selectedDate.value,
@@ -413,6 +397,77 @@ export class ShifCalendarComponent implements OnInit {
     this.checkContext();
   }
 
+
+  getScheduleList(anchorDate: string | null): void {
+    // if(this.tab && this.tab!='Day'){
+    this.isLoading = true;
+    // }
+    this.shiftSchedule = [];
+    this.shiftSchedule1 = [];
+    let url = '';
+    if (this.authenticatedUser?.interviewer && this.selectedUser1?.dempoId) {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
+    } else {
+      // if (!this.authenticatedUser?.interviewer) {
+      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
+      if (this.selectedUser && this.selectedUser?.dempoId) {
+        url += `?demId=${this.selectedUser?.dempoId}`;
+      }
+      // }
+    }
+
+    // Make the API call
+    this.http.get<any[]>(url).subscribe({
+      next: (response) => {
+        // Ensure this.shiftSchedule is always an array
+        this.shiftSchedule = response ?? [];
+        localStorage.setItem(
+          'shiftSchedule',
+          JSON.stringify(this.shiftSchedule)
+        );
+
+        // Check for missing schedules and merge them
+        const missingSchedules =
+          this.shiftSchedule1?.filter(
+            (item1) =>
+              !this.shiftSchedule?.some(
+                (item2) =>
+                  item1.startTime === item2.startTime &&
+                  item1.endTime === item2.endTime &&
+                  item1.duration === item2.duration
+              )
+          ) || [];
+
+        this.shiftSchedule.push(...missingSchedules);
+        this.syncData(this.shiftSchedule);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching schedule list:', error);
+        this.shiftSchedule = [];
+        this.isLoading = false;
+      },
+    });
+  }
+  onUserChange(user: any) {
+    this.selectedUser = '';
+    this.selectedUser = user;
+    this.getProjectInfo(user?.dempoId);
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
+    this.selectedUserChange.emit(this.selectedUser);
+  }
+  onProjectChange(project: any) {
+    console.log('project--->', project);
+    this.selectedProject = '';
+    this.selectedProject = project;
+    this.getAuthor(project.projectId);
+    this.getScheduleList(
+      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    );
+    this.selectedProjectChange.emit(this.selectedProject);
+  }
   findProjectInLists(projectToFind: any): any {
     return (
       this.otherProjects.find((p) => p.projectId === projectToFind.projectId) ||
@@ -592,37 +647,37 @@ export class ShifCalendarComponent implements OnInit {
         day1Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 1
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 1
         ),
         day2Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 2
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 2
         ),
         day3Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 3
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 3
         ),
         day4Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 4
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 4
         ),
         day5Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 5
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 5
         ),
         day6Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 6
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 6
         ),
         day7Schedules: this.filteredUserSchedulesMonth.filter(
           (x) =>
             Utils.formatDateOnlyToStringUTC(x.weekStart) ===
-              Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 7
+            Utils.formatDateOnlyToStringUTC(weekStarts[i]) && x.dayOfWeek == 7
         ),
       };
       this.monthSchedules.weekSchedules.push(weekSchedules);
@@ -893,6 +948,156 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   //filter logic per-user - day only
+
+  getAuthor(projectId: number): void {
+    const prevUserId = this.selectedUser?.userId; // store the previous userId
+
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        const newUserList = [
+          this.defaultUser,
+          ...(Array.isArray(data) ? data : []),
+        ];
+
+        this.userList = newUserList;
+
+        const matchedUser = newUserList.find(
+          (user) => user.userId === prevUserId
+        );
+
+        this.selectedUser = matchedUser || this.defaultUser;
+      },
+      error: (error) => console.error('Error fetching authors:', error),
+    });
+  }
+
+
+
+  //handle select, deselect and auto-select of the "any" values in multi-selects
+
+  //filter logic per-schedule - alt week/month
+
+  //unset filter defaults or reset the filter default if selected --bug - can't get it to reset to default
+  //public unsetResetFilterDefaults(filterArray: string[], defaultValue: string): string[] {
+  //  if (filterArray.length > 1) {
+  //    if (filterArray.includes(defaultValue)) {
+  //      filterArray = filterArray.filter(x => x !== defaultValue);
+  //    }
+  //  }
+
+  //  return filterArray;
+  //}
+  getAuthorNew(projectId: number): void {
+    const prevUserId = this.selectedUser?.userId; // store the previous userId
+
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        const newUserList = [
+          this.defaultUser,
+          ...(Array.isArray(data) ? data : []),
+        ];
+
+        this.userList = newUserList;
+
+        const matchedUser = newUserList.find(
+          (user) => user.userId === prevUserId
+        );
+
+        this.selectedUser = matchedUser || this.defaultUser;
+        let foundOnce = false;
+        this.userList = [this.defaultUser1, ...this.userList];
+        for (let i = 0; i < this.userList.length; i++) {
+          if (this.userList[i].userId === this.selectedUser.userId) {
+            if (foundOnce) {
+              this.userList.splice(i, 1);
+              break;
+            } else {
+              foundOnce = true;
+            }
+          }
+        }
+      },
+      error: (error) => console.error('Error fetching authors:', error),
+    });
+  }
+
+  getAuthor1(): void {
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        if (this.authenticatedUser?.interviewer) {
+          this.userList = Array.isArray(data) ? data : [];
+          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+            this.getLoginUser(this.userObj.eppn);
+          }
+        }
+      },
+      error: (error) => console.error('Error fetching authors:', error),
+    });
+  }
+  getProjectInfo(dempoId: string): void {
+    const validDempoId = dempoId ?? '';
+    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${validDempoId}`;
+
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.allProjects = Array.isArray(data) ? data : [];
+
+        this.adminProjects = this.allProjects.filter(
+          (project: { projectType: number }) => project.projectType === 4
+        );
+
+        const uniqueProjects = new Map();
+        this.allProjects.forEach(
+          (project: { projectId: number; projectType: number }) => {
+            if (
+              project.projectType != 4 &&
+              !uniqueProjects.has(project.projectId)
+            ) {
+              uniqueProjects.set(project.projectId, project);
+            }
+          }
+        );
+        this.otherProjects = Array.from(uniqueProjects.values());
+      },
+
+      error: (error) => console.error('Error fetching projects:', error),
+    });
+  }
+  onSelectedUserChange(user: any) {
+    this.selectedUser = user;
+  }
+  onSelectedProjectChange(project: any) {
+    this.selectedProject = project;
+  }
+  handleDate(date: FormControl) {
+    this.sendDate.emit(date);
+  }
+  handleWeekDate(date: FormControl) {
+    console.log('date000000>-=======>', date);
+
+    this.sendWeekDate.emit(date);
+  }
+
+  handleSchedule(schedule: any) {
+    console.log('Received from A:', schedule);
+    this.scheduleData.emit(schedule);
+  }
+  //set default filters
+  public setDefaultFilters(applyFilters: boolean): void {
+    this.userFilter = new FormControl('2');
+    this.languageFilter = new FormControl(['0']);
+    this.projectFilter = new FormControl(['0']);
+    this.conditionalOperatorFilter = new FormControl('1');
+    this.trainedOnFilter = new FormControl(['0']);
+    this.notTrainedOnFilter = new FormControl(['0']);
+
+    if (applyFilters) {
+      this.applyFilters();
+    }
+  }
   public filterScheduleByUser(schedule: ISchedule): boolean {
     let keepUser: boolean = false;
     let user = this.allUsers.find((x) => x.dempoid == schedule.dempoid);
@@ -978,36 +1183,6 @@ export class ShifCalendarComponent implements OnInit {
 
     return keepUser;
   }
-
-  //handle select, deselect and auto-select of the "any" values in multi-selects
-
-  //filter logic per-schedule - alt week/month
-
-  //unset filter defaults or reset the filter default if selected --bug - can't get it to reset to default
-  //public unsetResetFilterDefaults(filterArray: string[], defaultValue: string): string[] {
-  //  if (filterArray.length > 1) {
-  //    if (filterArray.includes(defaultValue)) {
-  //      filterArray = filterArray.filter(x => x !== defaultValue);
-  //    }
-  //  }
-
-  //  return filterArray;
-  //}
-
-  //set default filters
-  public setDefaultFilters(applyFilters: boolean): void {
-    this.userFilter = new FormControl('2');
-    this.languageFilter = new FormControl(['0']);
-    this.projectFilter = new FormControl(['0']);
-    this.conditionalOperatorFilter = new FormControl('1');
-    this.trainedOnFilter = new FormControl(['0']);
-    this.notTrainedOnFilter = new FormControl(['0']);
-
-    if (applyFilters) {
-      this.applyFilters();
-    }
-  }
-
   //---------------------------------------------------
   // Array Handling
   //---------------------------------------------------
@@ -1038,199 +1213,10 @@ export class ShifCalendarComponent implements OnInit {
   onResetShiftSchedule(): void {
     this.resetShiftSchedule.emit();
   }
-  getAuthor(projectId: number): void {
-    const prevUserId = this.selectedUser?.userId; // store the previous userId
 
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        const newUserList = [
-          this.defaultUser,
-          ...(Array.isArray(data) ? data : []),
-        ];
 
-        this.userList = newUserList;
 
-        const matchedUser = newUserList.find(
-          (user) => user.userId === prevUserId
-        );
 
-        this.selectedUser = matchedUser || this.defaultUser;
-      },
-      error: (error) => console.error('Error fetching authors:', error),
-    });
-  }
 
-  getAuthorNew(projectId: number): void {
-    const prevUserId = this.selectedUser?.userId; // store the previous userId
 
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?project_id=${projectId}`;
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        const newUserList = [
-          this.defaultUser,
-          ...(Array.isArray(data) ? data : []),
-        ];
-
-        this.userList = newUserList;
-
-        const matchedUser = newUserList.find(
-          (user) => user.userId === prevUserId
-        );
-
-        this.selectedUser = matchedUser || this.defaultUser;
-        let foundOnce = false;
-        this.userList = [this.defaultUser1, ...this.userList];
-        for (let i = 0; i < this.userList.length; i++) {
-          if (this.userList[i].userId === this.selectedUser.userId) {
-            if (foundOnce) {
-              this.userList.splice(i, 1);
-              break;
-            } else {
-              foundOnce = true;
-            }
-          }
-        }
-      },
-      error: (error) => console.error('Error fetching authors:', error),
-    });
-  }
-
-  getAuthor1(): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        if (this.authenticatedUser?.interviewer) {
-          this.userList = Array.isArray(data) ? data : [];
-          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
-            this.getLoginUser(this.userObj.eppn);
-          }
-        }
-      },
-      error: (error) => console.error('Error fetching authors:', error),
-    });
-  }
-  getProjectInfo(dempoId: string): void {
-    const validDempoId = dempoId ?? '';
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${validDempoId}`;
-
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        this.allProjects = Array.isArray(data) ? data : [];
-
-        this.adminProjects = this.allProjects.filter(
-          (project: { projectType: number }) => project.projectType === 4
-        );
-
-        const uniqueProjects = new Map();
-        this.allProjects.forEach(
-          (project: { projectId: number; projectType: number }) => {
-            if (
-              project.projectType != 4 &&
-              !uniqueProjects.has(project.projectId)
-            ) {
-              uniqueProjects.set(project.projectId, project);
-            }
-          }
-        );
-        this.otherProjects = Array.from(uniqueProjects.values());
-      },
-
-      error: (error) => console.error('Error fetching projects:', error),
-    });
-  }
-
-  onUserChange(user: any) {
-    this.selectedUser = '';
-    this.selectedUser = user;
-    this.getProjectInfo(user?.dempoId);
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
-    this.selectedUserChange.emit(this.selectedUser);
-  }
-  onProjectChange(project: any) {
-    console.log('project--->', project);
-    this.selectedProject = '';
-    this.selectedProject = project;
-    this.homeSelectedProject = null;
-    this.getAuthor(project.projectId);
-    this.getScheduleList(
-      Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-    );
-    this.selectedProjectChange.emit(this.selectedProject);
-  }
-
-  onSelectedUserChange(user: any) {
-    this.selectedUser = user;
-  }
-  onSelectedProjectChange(project: any) {
-    this.selectedProject = project;
-  }
-
-  getScheduleList(anchorDate: string | null): void {
-    // if(this.tab && this.tab!='Day'){
-    this.isLoading = true;
-    // }
-    this.shiftSchedule = [];
-    this.shiftSchedule1 = [];
-    let url = '';
-    if (this.authenticatedUser?.interviewer && this.selectedUser1?.dempoId) {
-      url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser1?.dempoId}`;
-    } else {
-      if (!this.authenticatedUser?.interviewer) {
-        url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
-        if (this.selectedUser && this.selectedUser?.dempoId) {
-          url += `?demId=${this.selectedUser?.dempoId}`;
-        }
-      }
-    }
-
-    // Make the API call
-    this.http.get<any[]>(url).subscribe({
-      next: (response) => {
-        // Ensure this.shiftSchedule is always an array
-        this.shiftSchedule = response ?? [];
-        localStorage.setItem(
-          'shiftSchedule',
-          JSON.stringify(this.shiftSchedule)
-        );
-
-        // Check for missing schedules and merge them
-        const missingSchedules =
-          this.shiftSchedule1?.filter(
-            (item1) =>
-              !this.shiftSchedule?.some(
-                (item2) =>
-                  item1.startTime === item2.startTime &&
-                  item1.endTime === item2.endTime &&
-                  item1.duration === item2.duration
-              )
-          ) || [];
-
-        this.shiftSchedule.push(...missingSchedules);
-        this.syncData(this.shiftSchedule);
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error fetching schedule list:', error);
-        this.shiftSchedule = [];
-        this.isLoading = false;
-      },
-    });
-  }
-
-  handleDate(date: FormControl) {
-    this.sendDate.emit(date);
-  }
-  handleWeekDate(date: FormControl) {
-    console.log('date000000>-=======>', date);
-
-    this.sendWeekDate.emit(date);
-  }
-
-  handleSchedule(schedule: any) {
-    console.log('Received from A:', schedule);
-    this.scheduleData.emit(schedule);
-  }
 }
