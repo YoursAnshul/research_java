@@ -77,6 +77,25 @@
         disabled="true"
       />
     </div>
+      <div
+      class="day-input-container"
+      *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
+      style="
+        position: absolute;
+        top: -3px;
+        right: 0;
+        z-index: 10;
+      "
+    >
+      <input
+        type="text"
+        [value]="calculateTotalDuration() + ' hr'"
+        class="day-right-aligned-input"
+        [readonly]="true"
+        [style.height]="inputHeight"
+        disabled="true"
+      />
+    </div>
     <div
       id="day-calendar-user-schedules"
       style="margin-top: 4px"
