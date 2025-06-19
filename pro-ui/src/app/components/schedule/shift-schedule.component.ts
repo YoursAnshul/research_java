@@ -501,9 +501,9 @@ export class ShiftScheduleComponent implements OnInit {
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.projectid) ||
           null;
-        if (this.selectedUser) {
-          this.getProjectInfo(this.selectedUser.dempoId);
-        }
+        // if (this.selectedUser) {
+        //   this.getProjectInfo(this.selectedUser.dempoId);
+        // }
         this.homeSelectedProject = selectedProject;
         this.selectedProject = selectedProject;
 

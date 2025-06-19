@@ -59,10 +59,10 @@
         <!-- Start Time Picker -->
         <mat-form-field appearance="outline" class="custom-form-field ml-2" [class.error-border]="
             shiftForm.get('startTime')?.hasError('duplicate')
-          " [class.disabled-field]="shiftForm.get('startTime')?.disabled" style="width: 80px">
+          " [class.disabled-field]="shiftForm.get('startTime')?.disabled ||isBlockDate" style="width: 80px">
           <mat-label>Start Time</mat-label>
           <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled">
-            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
+            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time) || isBlockDate">
               <div class="time-box" [ngStyle]="{
                   'background-color': getBackgroundColor(time)
                 }">
@@ -77,8 +77,9 @@
           [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
           [class.disabled-field]="shiftForm.get('endTime')?.disabled" style="width: 80px">
           <mat-label>End Time</mat-label>
-          <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled">
-            <mat-option *ngFor="let time of endtimeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
+          <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled || isBlockDate">
+            <mat-option *ngFor="let time of endtimeSlots" [value]="time"
+              [disabled]="isTimeBlocked(time) || isBlockDate">
               <div class="time-box" [ngStyle]="{
                   'background-color': getBackgroundColor(time)
                 }">
@@ -162,6 +163,6 @@
       [tab]="tab" (scheduleData)="handleSchedule($event)" [isEdit]="isEdit" [isClose]="isClose" [pId]="pId"
       [isScheduleUpdate]="isScheduleUpdate">
       > ></app-shift-calendar>
-    <app-calendar  *ngIf="isClosed" [authenticatedUser]="authenticatedUser"></app-calendar>
+    <app-calendar *ngIf="isClosed" [authenticatedUser]="authenticatedUser"></app-calendar>
   </form>
 </div>
