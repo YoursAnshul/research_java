@@ -4,7 +4,8 @@ import { Utils } from '../../../classes/utils';
 import {
   ILegend,
   ISchedule,
-  IUserSchedule, IAuthenticatedUser,
+  IUserSchedule,
+  IAuthenticatedUser,
 } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
@@ -27,8 +28,8 @@ export class DayViewComponent implements OnInit {
   constructor(
     private globalsService: GlobalsService,
     private scheduleService: ScheduleService,
-    private dialog: MatDialog, private authenticationService: AuthenticationService,
-
+    private dialog: MatDialog,
+    private authenticationService: AuthenticationService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -37,7 +38,7 @@ export class DayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;
@@ -116,7 +117,9 @@ export class DayViewComponent implements OnInit {
   ): void {
     let htmlMessage: string =
       '<p class="hover-message-title">' +
-      us.user.displayName +
+      us.user.fname +
+      ' ' +
+      us.user.lname +
       ' (' +
       schedule.projectName +
       '): ' +
@@ -144,11 +147,14 @@ export class DayViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   openScheduleData(schedule: any): void {
-    if (this.authenticatedUser.interviewer && this.authenticatedUser.netID != schedule.dempoid) {
+    if (
+      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.netID != schedule.dempoid
+    ) {
       return;
     }
-    schedule.tab = "Day";
-    schedule.isHomeRedirect = true
+    schedule.tab = 'Day';
+    schedule.isHomeRedirect = true;
     this.scheduleService.setSchedule(schedule);
     const dialogRef = this.dialog.open(ShiftScheduleComponent, {
       width: '1900px',
