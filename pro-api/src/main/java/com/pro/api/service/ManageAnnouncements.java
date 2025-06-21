@@ -36,5 +36,6 @@ public interface ManageAnnouncements {
 	public List<ProjectResponse> getUserProjects(String dempoId);
 
 	public List<ProjectResponse> getAllProjectsV2();
-
+public PageResponse<AnnouncementResponse> getListV2(String sortBy, String orderBy, Integer limit, Integer offset,
+			String keyword, String authorName);
 }

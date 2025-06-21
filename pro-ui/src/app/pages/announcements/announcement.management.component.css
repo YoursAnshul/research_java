@@ -86,7 +86,19 @@
 ::ng-deep .mat-sort-header-container {
   position: relative;
 }
+.table-wrapper {
+  width: fit-content; 
+}
 
+.custom-paginator, app-table-paginator, .mat-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  position: static !important;
+}
 ::ng-deep .mat-sort-header-container:not(.mat-sort-header-sorted):after {
   content: "↑↓";
   font-size: 12px;

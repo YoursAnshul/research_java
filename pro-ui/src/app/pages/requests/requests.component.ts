@@ -1,4 +1,11 @@
-import {Component, HostListener, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Utils } from '../../classes/utils';
@@ -9,7 +16,7 @@ import {
   IFormFieldVariable,
   IRequest,
   IUserMin,
-  IWeekStartAndEnd
+  IWeekStartAndEnd,
 } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfigurationService } from '../../services/configuration/configuration.service';
@@ -18,19 +25,19 @@ import { RequestsService } from '../../services/requests/requests.service';
 import { UsersService } from '../../services/users/users.service';
 import * as html2pdf from 'html2pdf.js';
 import { LogsService } from '../../services/logs/logs.service';
-import {User} from "../../models/data/user";
-import {CanComponentDeactivate} from "../../guards/unsaved-changes.guard";
-import {UnsavedChangesDialogComponent} from "../../components/unsaved-changes-dialog/unsaved-changes-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {Router} from "@angular/router";
+import { User } from '../../models/data/user';
+import { CanComponentDeactivate } from '../../guards/unsaved-changes.guard';
+import { UnsavedChangesDialogComponent } from '../../components/unsaved-changes-dialog/unsaved-changes-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { SelectedValue } from '../../models/presentation/selected-value';
 
 @Component({
   selector: 'app-requests',
   templateUrl: './requests.component.html',
-  styleUrls: ['./requests.component.css']
+  styleUrls: ['./requests.component.css'],
 })
-export class RequestsComponent implements OnInit,CanComponentDeactivate {
+export class RequestsComponent implements OnInit, CanComponentDeactivate {
   @HostListener('window:beforeunload') onBeforeUnload(e: any) {
     if (this.newRequest.changed || this.requestsChanged) {
       e.preventDefault();
@@ -48,8 +55,25 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   allUsers: User[] = [];
   activeUsers: User[] = [];
   filteredUsersDv: IDropDownValue[] = [];
-  interViewerRequestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes'];
-  requestTableColumns: string[] = ['RequestType', 'InterviewerEmpName', 'ResourceTeamMemberName', 'RequestDate', 'RequestDetails', 'Decision', 'Notes', 'Actions'];
+  interViewerRequestTableColumns: string[] = [
+    'RequestType',
+    'InterviewerEmpName',
+    'ResourceTeamMemberName',
+    'RequestDate',
+    'RequestDetails',
+    'Decision',
+    'Notes',
+  ];
+  requestTableColumns: string[] = [
+    'RequestType',
+    'InterviewerEmpName',
+    'ResourceTeamMemberName',
+    'RequestDate',
+    'RequestDetails',
+    'Decision',
+    'Notes',
+    'Actions',
+  ];
   allRequests: IRequest[] = [];
   filteredRequests: IRequest[] = [];
   newRequest: IRequest = {
@@ -67,9 +91,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   };
   requestsChanged: boolean = false;
   requestsInvalid: boolean = false;
-  
-  selectedRange: {startDate: string, endDate: string} | null = null;
-  weeklySelectedRange: {startDate: string, endDate: string} | null = null;
+
+  selectedRange: { startDate: string; endDate: string } | null = null;
+  weeklySelectedRange: { startDate: string; endDate: string } | null = null;
 
   //filters
   requestTypeFilter: FormControl = new FormControl(['0']);
@@ -77,26 +101,26 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   decisionFilter: FormControl = new FormControl(['0']);
 
   //date filter
-  selectedWeekStartAndEnd: IWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(new Date());
+  selectedWeekStartAndEnd: IWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
+    new Date()
+  );
   selectedDate: FormControl = new FormControl(new Date());
   selectedDateRange: FormGroup;
-
-  //request pagination
-  pageSizeOptions = [5, 10, 20, 50, 100];
-  //added
-  pageIndex = 0;
-  pageSize = 10;
-  pagedLength = 0;
-  pagedRequests: IRequest[] = [];
   public nextUrl: string | null = null;
-  constructor(private globalsService: GlobalsService,
-              private requestsService: RequestsService,
-              private configurationService: ConfigurationService,
-              private usersService: UsersService,
-              private authenticationService: AuthenticationService,
-              private logsService: LogsService,private dialog: MatDialog,
-              private router: Router) {
 
+  pageSize = 10;
+  paginatedRequests: IRequest[] = [];
+  public currentPage: number = 1;
+  constructor(
+    private globalsService: GlobalsService,
+    private requestsService: RequestsService,
+    private configurationService: ConfigurationService,
+    private usersService: UsersService,
+    private authenticationService: AuthenticationService,
+    private logsService: LogsService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {
     this.selectedDateRange = new FormGroup({
       start: new FormControl(new Date(this.selectedWeekStartAndEnd.weekStart)),
       end: new FormControl(new Date(this.selectedWeekStartAndEnd.weekEnd)),
@@ -106,49 +130,59 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
 
     //subscribe to the authenticated user
     this.authenticationService.authenticatedUser.subscribe(
-      authenticatedUser => {
+      (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
         this.newRequest.resourceTeamMemberId = this.authenticatedUser.netID;
-        this.newRequest.resourceTeamMemberName = this.authenticatedUser.displayName;
+        this.newRequest.resourceTeamMemberName =
+          this.authenticatedUser.displayName;
       }
     );
 
     //get active users
-    this.usersService.allUsersMin.subscribe(
-      allUsers => {
-        this.allUsers = allUsers;
-        this.activeUsers = allUsers.filter(x => x.status == "1");
-        this.trySetRequestValues();
-        this.filteredUsersDv = Utils.convertObjectArrayToDropDownValues(this.activeUsers, 'dempoid', 'displayName');
-      }
-    );
+    this.usersService.allUsersMin.subscribe((allUsers) => {
+      this.allUsers = allUsers;
+      this.activeUsers = allUsers.filter((x) => x.status == '1');
+      this.trySetRequestValues();
+      this.filteredUsersDv = Utils.convertObjectArrayToDropDownValues(
+        this.activeUsers,
+        'dempoid',
+        'displayName'
+      );
+    });
 
-    this.globalsService.showPopupMessage.subscribe(
-      showPopupMessage => {
-        this.showPopupMessage = showPopupMessage;
-      }
-    );
+    this.globalsService.showPopupMessage.subscribe((showPopupMessage) => {
+      this.showPopupMessage = showPopupMessage;
+    });
 
     //get requests dropdown configurations
     this.configurationService.getFormFieldsByTable('Requests').subscribe(
-      response => {
+      (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          let requestFormFields: IFormFieldVariable[] = <IFormFieldVariable[]>response.Subject;
+          let requestFormFields: IFormFieldVariable[] = <IFormFieldVariable[]>(
+            response.Subject
+          );
 
           this.requestFormFields = requestFormFields;
-          let requestCodeFormField: IFormFieldVariable | undefined = requestFormFields.find(x => x.formField?.columnName == 'requestCodeID');
+          let requestCodeFormField: IFormFieldVariable | undefined =
+            requestFormFields.find(
+              (x) => x.formField?.columnName == 'requestCodeID'
+            );
           if (requestCodeFormField) {
-            this.requestCodeDropDown = requestCodeFormField.dropDownValues || [];
+            this.requestCodeDropDown =
+              requestCodeFormField.dropDownValues || [];
           }
-          let decisionFormField: IFormFieldVariable | undefined = requestFormFields.find(x => x.formField?.columnName == 'decisionID');
+          let decisionFormField: IFormFieldVariable | undefined =
+            requestFormFields.find(
+              (x) => x.formField?.columnName == 'decisionID'
+            );
           if (decisionFormField) {
             this.decisionIdDropDown = decisionFormField.dropDownValues || [];
           }
           this.trySetRequestValues();
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
+      (error) => {
+        this.errorMessage = <string>error.message;
         this.logsService.logError(this.errorMessage);
         console.log(this.errorMessage);
       }
@@ -158,7 +192,7 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
 
     //subscribe to all requests
     this.requestsService.requests.subscribe(
-      requests => {
+      (requests) => {
         this.allRequests = requests;
         if (this.allRequests.length > 0) {
           this.trySetRequestValues();
@@ -169,17 +203,15 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
           this.setNoResultsMessage('Loading requests...');
         }
       },
-      error => {
+      (error) => {
         this.setNoResultsMessage('Error loading requests...');
       }
     );
-
   }
 
   ngOnInit(): void {
     //set current page for navigation menu to track
     this.globalsService.selectedPage.next('requests');
-
   }
 
   setAllRequests(): void {
@@ -189,7 +221,13 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
 
   //populate string values for coded fields in requests
   trySetRequestValues(): void {
-    if (!(this.allRequests.length > 0 && this.requestFormFields.length > 0 && this.allUsers.length > 0)) {
+    if (
+      !(
+        this.allRequests.length > 0 &&
+        this.requestFormFields.length > 0 &&
+        this.allUsers.length > 0
+      )
+    ) {
       return;
     }
 
@@ -200,15 +238,27 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
 
   //populate string values for coded fields in a single request
   setRequestValues(request: IRequest): void {
-    let requestTypeCode = this.requestCodeDropDown.find(x => x.codeValues == request.requestCodeId);
-    let decisionCode = this.decisionIdDropDown.find(x => x.codeValues == request.decisionId);
-    let interviewerUser = this.allUsers.find(x => x.dempoid == request.interviewerEmpId);
-    let resourceUser = this.allUsers.find(x => x.dempoid == request.resourceTeamMemberId);
+    let requestTypeCode = this.requestCodeDropDown.find(
+      (x) => x.codeValues == request.requestCodeId
+    );
+    let decisionCode = this.decisionIdDropDown.find(
+      (x) => x.codeValues == request.decisionId
+    );
+    let interviewerUser = this.allUsers.find(
+      (x) => x.dempoid == request.interviewerEmpId
+    );
+    let resourceUser = this.allUsers.find(
+      (x) => x.dempoid == request.resourceTeamMemberId
+    );
 
-    request.requestType = (requestTypeCode ? requestTypeCode.dropDownItem : '');
-    request.decision = (decisionCode ? decisionCode.dropDownItem : '');
-    request.interviewerEmpName = (interviewerUser ? (interviewerUser.displayName || '') : '');
-    request.resourceTeamMemberName = (resourceUser ? (resourceUser.displayName || '') : '');
+    request.requestType = requestTypeCode ? requestTypeCode.dropDownItem : '';
+    request.decision = decisionCode ? decisionCode.dropDownItem : '';
+    request.interviewerEmpName = interviewerUser
+      ? interviewerUser.displayName || ''
+      : '';
+    request.resourceTeamMemberName = resourceUser
+      ? resourceUser.displayName || ''
+      : '';
     request.requestDate = new Date(request.requestDate || '');
   }
 
@@ -242,9 +292,15 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   applyFilters(): void {
     //make sure requests are sorted by date
     this.filteredRequests = this.allRequests.sort(function (x, y) {
-      if ((Utils.formatDateOnly(new Date(x.requestDate || '')) || new Date()) < (Utils.formatDateOnly(new Date(y.requestDate || '')) || new Date())) {
+      if (
+        (Utils.formatDateOnly(new Date(x.requestDate || '')) || new Date()) <
+        (Utils.formatDateOnly(new Date(y.requestDate || '')) || new Date())
+      ) {
         return 1;
-      } else if ((Utils.formatDateOnly(new Date(x.requestDate || '')) || new Date()) > (Utils.formatDateOnly(new Date(y.requestDate || '')) || new Date())) {
+      } else if (
+        (Utils.formatDateOnly(new Date(x.requestDate || '')) || new Date()) >
+        (Utils.formatDateOnly(new Date(y.requestDate || '')) || new Date())
+      ) {
         return -1;
       } else {
         if (x.requestId < y.requestId) return 1;
@@ -258,29 +314,49 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
 
     //request type
     if (!this.requestTypeFilter.value.includes('0')) {
-      this.filteredRequests = this.filteredRequests.filter(x => this.requestTypeFilter.value.includes((x.requestCodeId ? x.requestCodeId.toString() : '')));
+      this.filteredRequests = this.filteredRequests.filter((x) =>
+        this.requestTypeFilter.value.includes(
+          x.requestCodeId ? x.requestCodeId.toString() : ''
+        )
+      );
     }
 
     //interviewer
     if (!this.interviewerFilter.value.includes('0')) {
-      this.filteredRequests = this.filteredRequests.filter(x => this.interviewerFilter.value.includes(x.interviewerEmpId));
+      this.filteredRequests = this.filteredRequests.filter((x) =>
+        this.interviewerFilter.value.includes(x.interviewerEmpId)
+      );
     }
 
     //decision
     if (!this.decisionFilter.value.includes('0')) {
-      this.filteredRequests = this.filteredRequests.filter(x => this.decisionFilter.value.includes((x.decisionId ? x.decisionId.toString() : '')));
+      this.filteredRequests = this.filteredRequests.filter((x) =>
+        this.decisionFilter.value.includes(
+          x.decisionId ? x.decisionId.toString() : ''
+        )
+      );
     }
 
     //date range filtering
     if (this.selectedDateRange.value) {
-      if (this.selectedDateRange.value.start && this.selectedDateRange.value.end) {
-        this.filteredRequests = this.filteredRequests.filter(x => ((Utils.formatDateOnly(x.requestDate) || new Date()) >= (Utils.formatDateOnly(this.selectedDateRange.value.start) || new Date())
-          && (Utils.formatDateOnly(x.requestDate) || new Date()) <= (Utils.formatDateOnly(this.selectedDateRange.value.end) || new Date())));
+      if (
+        this.selectedDateRange.value.start &&
+        this.selectedDateRange.value.end
+      ) {
+        this.filteredRequests = this.filteredRequests.filter(
+          (x) =>
+            (Utils.formatDateOnly(x.requestDate) || new Date()) >=
+              (Utils.formatDateOnly(this.selectedDateRange.value.start) ||
+                new Date()) &&
+            (Utils.formatDateOnly(x.requestDate) || new Date()) <=
+              (Utils.formatDateOnly(this.selectedDateRange.value.end) ||
+                new Date())
+        );
       }
     }
 
     //set paging
-    this.setPagedRequests();
+    this.paginate();
   }
 
   requestsFilterChange(selectedValues: FormControl): void {
@@ -320,7 +396,7 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     });
 
     this.applyFilters();
-  };
+  }
 
   validateRequirement(request: IRequest): void {
     //reset invalid status and fields
@@ -346,8 +422,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     }
 
     //request date
-    if (!request.requestDate
-      || request.requestDate.toString() == 'Invalid Date'
+    if (
+      !request.requestDate ||
+      request.requestDate.toString() == 'Invalid Date'
     ) {
       request.invalid = true;
       request.invalidFields.push('RequestDate');
@@ -390,24 +467,21 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   setChanged(request: IRequest): void {
     request.changed = true;
 
-    if (request.requestId > -1)
-      this.requestsChanged = true;
+    if (request.requestId > -1) this.requestsChanged = true;
 
     this.globalsService.currentChanges.next(true);
     this.setRequestValues(request);
 
     //set/unset global validation
-    if (this.allRequests.filter(x => x.invalid).length > 0) {
+    if (this.allRequests.filter((x) => x.invalid).length > 0) {
       this.requestsInvalid = true;
     } else {
       this.requestsInvalid = false;
     }
-
   }
 
   //save a new request
   saveNewRequest(): void {
-
     //set user/date metadata
     this.newRequest.modBy = this.authenticatedUser.netID;
     this.newRequest.modDt = new Date();
@@ -415,9 +489,15 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     this.newRequest.entryDt = new Date();
 
     this.requestsService.saveRequests([this.newRequest]).subscribe(
-      response => {
+      (response) => {
         if (response.Status == 'Success') {
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request saved successfully', ['OK']));
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage(
+              'Success',
+              'Request saved successfully',
+              ['OK']
+            )
+          );
           let savedRequests: IRequest[] = <IRequest[]>response.Subject;
 
           if (savedRequests) {
@@ -426,7 +506,9 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
             }
           }
 
-          let promotedRequest: IRequest = JSON.parse(JSON.stringify(this.newRequest));
+          let promotedRequest: IRequest = JSON.parse(
+            JSON.stringify(this.newRequest)
+          );
           this.setRequestValues(promotedRequest);
           this.allRequests.push(promotedRequest);
           this.newRequest = {
@@ -442,7 +524,7 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
             notes: '',
             modBy: '',
             entryBy: '',
-            changed: false
+            changed: false,
           };
 
           if (!this.requestsChanged) {
@@ -450,26 +532,43 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
           }
 
           this.applyFilters();
-
         } else {
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save new request', ['OK']));
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage(
+              'Error',
+              'Encountered an error while trying to save new request',
+              ['OK']
+            )
+          );
           this.logsService.logError(response.Message);
           this.errorMessage = response.Message;
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
         }
       },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-        this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save new request:<br />' + this.errorMessage, ['OK']));
+      (error) => {
+        this.errorMessage = <string>error.message;
+        this.logsService.logError(this.errorMessage);
+        console.log(this.errorMessage);
+        this.globalsService.displayPopupMessage(
+          Utils.generatePopupMessage(
+            'Error',
+            'Encountered an error while trying to save new request:<br />' +
+              this.errorMessage,
+            ['OK']
+          )
+        );
       }
     );
-
   }
 
   saveRequestChanges(): void {
-    let changedRequests: IRequest[] = this.allRequests.filter(x => (x.changed && !x.markedForDeletion));
-    let deleteRequests: IRequest[] = this.allRequests.filter(x => x.markedForDeletion);
+    let changedRequests: IRequest[] = this.allRequests.filter(
+      (x) => x.changed && !x.markedForDeletion
+    );
+    let deleteRequests: IRequest[] = this.allRequests.filter(
+      (x) => x.markedForDeletion
+    );
 
     //set mod by/date metadata
     for (var i = 0; i < changedRequests.length; i++) {
@@ -479,8 +578,7 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
 
     if (changedRequests.length > 0) {
       this.requestsService.saveRequests(changedRequests).subscribe(
-        response => {
-
+        (response) => {
           if (response.Status == 'Success') {
             this.requestsChanged = false;
             if (this.newRequest.changed !== true) {
@@ -491,74 +589,105 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
               this.commitDeletions(true);
               this.setAllRequests();
             } else {
-              this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request(s) saved successfully', ['OK']));
+              this.globalsService.displayPopupMessage(
+                Utils.generatePopupMessage(
+                  'Success',
+                  'Request(s) saved successfully',
+                  ['OK']
+                )
+              );
               this.setAllRequests();
             }
-
           } else {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save request(s)', ['OK']));
+            this.globalsService.displayPopupMessage(
+              Utils.generatePopupMessage(
+                'Error',
+                'Encountered an error while trying to save request(s)',
+                ['OK']
+              )
+            );
             this.logsService.logError(response.Message);
             this.errorMessage = response.Message;
-            this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+            this.logsService.logError(this.errorMessage);
+            console.log(this.errorMessage);
           }
         },
-        error => {
-          this.errorMessage = <string>(error.message);
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to save request(s):<br />' + this.errorMessage, ['OK']));
+        (error) => {
+          this.errorMessage = <string>error.message;
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage(
+              'Error',
+              'Encountered an error while trying to save request(s):<br />' +
+                this.errorMessage,
+              ['OK']
+            )
+          );
         }
       );
     } else if (deleteRequests.length > 0) {
       this.commitDeletions();
     }
-
   }
 
   commitDeletions(afterSave: boolean = false): void {
-    this.requestsService.deleteRequests(this.allRequests.filter(x => x.markedForDeletion)).subscribe(
-      response => {
-        if (response.Status == 'Success') {
-          if (afterSave) {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request(s) saved/deleted successfully', ['OK']));
-          } else {
-            this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Success', 'Request(s) deleted successfully', ['OK']));
-            this.requestsChanged = false;
-            if (this.newRequest.changed !== true) {
-              this.globalsService.currentChanges.next(false);
+    this.requestsService
+      .deleteRequests(this.allRequests.filter((x) => x.markedForDeletion))
+      .subscribe(
+        (response) => {
+          if (response.Status == 'Success') {
+            if (afterSave) {
+              this.globalsService.displayPopupMessage(
+                Utils.generatePopupMessage(
+                  'Success',
+                  'Request(s) saved/deleted successfully',
+                  ['OK']
+                )
+              );
+            } else {
+              this.globalsService.displayPopupMessage(
+                Utils.generatePopupMessage(
+                  'Success',
+                  'Request(s) deleted successfully',
+                  ['OK']
+                )
+              );
+              this.requestsChanged = false;
+              if (this.newRequest.changed !== true) {
+                this.globalsService.currentChanges.next(false);
+              }
             }
+
+            this.setAllRequests();
+          } else {
+            this.globalsService.displayPopupMessage(
+              Utils.generatePopupMessage(
+                'Error',
+                'Encountered an error while trying to delete request(s)',
+                ['OK']
+              )
+            );
+            this.logsService.logError(response.Message);
+            this.errorMessage = response.Message;
+            this.logsService.logError(this.errorMessage);
+            console.log(this.errorMessage);
           }
-
-          this.setAllRequests();
-
-        } else {
-          this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to delete request(s)', ['OK']));
-          this.logsService.logError(response.Message);
-          this.errorMessage = response.Message;
-          this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
+        },
+        (error) => {
+          this.errorMessage = <string>error.message;
+          this.logsService.logError(this.errorMessage);
+          console.log(this.errorMessage);
+          this.globalsService.displayPopupMessage(
+            Utils.generatePopupMessage(
+              'Error',
+              'Encountered an error while trying to delete request(s):<br />' +
+                this.errorMessage,
+              ['OK']
+            )
+          );
         }
-      },
-      error => {
-        this.errorMessage = <string>(error.message);
-        this.logsService.logError(this.errorMessage); console.log(this.errorMessage);
-        this.globalsService.displayPopupMessage(Utils.generatePopupMessage('Error', 'Encountered an error while trying to delete request(s):<br />' + this.errorMessage, ['OK']));
-      }
-    );
-
-  }
-
-  //handle paging event
-  handlePage(e: PageEvent): void {
-    this.pageIndex = e.pageIndex;
-    this.pageSize = e.pageSize;
-    this.setPagedRequests();
-  }
-
-  //set paging variables
-  setPagedRequests(): void {
-    this.pagedLength = this.filteredRequests.length;
-    const start = this.pageIndex * this.pageSize;
-    const end = (this.pageIndex + 1) * this.pageSize;
-    this.pagedRequests = this.filteredRequests.slice(start, end);
+      );
   }
 
   generatePdf(): void {
@@ -566,12 +695,15 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     window.scrollTo(0, 0);
 
     //set filename
-    let fileName: string = 'Requests_' + Utils.formatDateOnlyToString(new Date(), true);// + Utils.formatDateOnlyToString(this.projectTotalsDateRange.value.start, true) + '_' + Utils.formatDateOnlyToString(this.projectTotalsDateRange.value.end, true);
+    let fileName: string =
+      'Requests_' + Utils.formatDateOnlyToString(new Date(), true); // + Utils.formatDateOnlyToString(this.projectTotalsDateRange.value.start, true) + '_' + Utils.formatDateOnlyToString(this.projectTotalsDateRange.value.end, true);
 
     Utils.hideShowClasses('actions');
     //Utils.hideShowClasses('delete-request-row');
 
-    let pageElement: HTMLElement = <HTMLElement>document.getElementById('requests-table');
+    let pageElement: HTMLElement = <HTMLElement>(
+      document.getElementById('requests-table')
+    );
 
     if (pageElement) {
       //setup options
@@ -580,59 +712,61 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
         margin: 0.25,
         filename: fileName + '.pdf',
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' },
       };
 
       //create pdf
       //html2pdf().set(options).from(pageElement).save();
       html2pdf.default(pageElement, options).then(function () {
-
         Utils.hideShowClasses('actions', false);
         //Utils.hideShowClasses('delete-request-row', false);
-
       });
-
     }
   }
 
   selectedDateChange(): void {
-    if (this.selectedDateRange.value.start && this.selectedDateRange.value.end) {
-      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(new Date(this.selectedDateRange.value));
+    if (
+      this.selectedDateRange.value.start &&
+      this.selectedDateRange.value.end
+    ) {
+      this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(
+        new Date(this.selectedDateRange.value)
+      );
       this.applyFilters();
     }
   }
 
   getRtmDisplayName(resourceTeamMemberId: string): string {
-    return this.allUsers.find(x => x.dempoid == resourceTeamMemberId)?.displayName || '';
+    return (
+      this.allUsers.find((x) => x.dempoid == resourceTeamMemberId)
+        ?.displayName || ''
+    );
   }
 
   canDeactivate(nextUrl: string | null): boolean {
-
-    if(this.requestsChanged){
+    if (this.requestsChanged) {
       this.nextUrl = nextUrl;
       this.openDialog({
         dialogType: 'error',
-        isUserProfile: true
-      })
+        isUserProfile: true,
+      });
       return false;
     }
 
-
     return true;
-
   }
 
-  openDialog(data: any,): void {
+  openDialog(data: any): void {
     const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
       width: '300px',
       data: {
-        ...data
-      }
+        ...data,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result == 'discardChanges') {
-        this.requestsChanged=false;
+        this.requestsChanged = false;
         if (this.nextUrl) {
           this.router.navigateByUrl(this.nextUrl);
         }
@@ -640,17 +774,20 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
     });
   }
 
-  onDateRangeSelected(dateRange: {startDate: string, endDate: string}): void {
+  onDateRangeSelected(dateRange: { startDate: string; endDate: string }): void {
     this.selectedRange = dateRange;
     console.log('Standard date range selected:', dateRange);
-    
+
     // You can make API calls or update other components with the selected range
   }
-  
-  onWeeklyRangeSelected(dateRange: {startDate: string, endDate: string}): void {
+
+  onWeeklyRangeSelected(dateRange: {
+    startDate: string;
+    endDate: string;
+  }): void {
     this.weeklySelectedRange = dateRange;
     console.log('Weekly date range selected:', dateRange);
-    
+
     // You can make API calls or update other components with the selected range
   }
 
@@ -661,5 +798,27 @@ export class RequestsComponent implements OnInit,CanComponentDeactivate {
   public log(e: any): void {
     console.log(e);
   }
+    public paginate(): void {
+    if (this.filteredRequests) {
+      if (this.filteredRequests.length <= this.pageSize) {
+        this.currentPage = 1;
+      }
+      let maxPage: number = Math.floor(
+        (this.filteredRequests || []).length / this.pageSize
+      );
+      maxPage = maxPage == 0 ? 1 : maxPage;
 
+      if (this.currentPage < 1) {
+        this.currentPage = 1;
+      }
+
+      if (this.currentPage > maxPage) {
+        this.currentPage = maxPage;
+      }
+
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.paginatedRequests = this.filteredRequests.slice(startIndex, endIndex);
+    }
+  }
 }

@@ -216,8 +216,21 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
 
+  getBlockOutDates(): void {
+    this.configurationService.getBlockOutDates().subscribe(
+      (response) => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          this.blockOutDates = <IBlockOutDate[]>response.Subject;
+          this.validateBlockOutDate(this.selectedDate.value);
+        }
+      },
+      (error) => {
+        console.error('Error fetching block out dates:', error);
+      }
+    );
+  }
 
-  validateBlockOutDate(selectedDate: any): void {
+ validateBlockOutDate(selectedDate: any): void {
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
       this.shiftForm.get('startTime')?.enable();
@@ -262,6 +275,28 @@ export class ShiftScheduleComponent implements OnInit {
       this.openBlockDialog(false); // date-only block
       return;
     }
+
+    this.blockedTimeSlots = [];
+    blockedEntries.forEach((blockOut) => {
+      console.log('blockOut---->', blockOut.startTime);
+      console.log('blockOut---->', blockOut.endTime);
+
+      if (blockOut.startTime && blockOut.endTime) {
+        const normalizedStart = this.removeLeadingZero(blockOut.startTime);
+        const normalizedEnd = this.removeLeadingZero(blockOut.endTime);
+
+        this.blockedTimeSlots.push(
+          ...this.generateBlockedTimeSlots(normalizedStart, normalizedEnd)
+        );
+      }
+    });
+
+    if (this.blockedTimeSlots.length > 0) {
+      // this.openBlockDialog(true); // time slot block
+    }
+
+    console.log('Blocked Time Slots:', this.blockedTimeSlots);
+
     // Enable fields (specific blocked times will be handled separately)
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
@@ -334,7 +369,9 @@ export class ShiftScheduleComponent implements OnInit {
   ngOnInit(): void {
     this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
+      this.getBlockOutDates();
       this.getOptionValue();
+
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -497,9 +534,6 @@ export class ShiftScheduleComponent implements OnInit {
       this.isDataLoaded = true;
     }, 1000);
   }
-
-
-
 
   convertToLocalDate(dateInput: string | Date): Date {
     if (typeof dateInput === 'string') {
