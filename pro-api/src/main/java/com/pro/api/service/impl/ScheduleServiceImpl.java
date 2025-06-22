@@ -145,10 +145,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 				"SELECT s.preschedulekey, u.language, u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
 		query.append("p.projectid, p.projectcolor, p.projectname, ");
 		query.append("s.startdatetime, s.enddatetime, ");
-		query.append("s.comments, s.scheduleDate AS daywisedate ");
+		query.append("s.comments, s.scheduleDate AS daywisedate, ch.corehours1 ");
 		query.append("FROM core.schedules s ");
 		query.append("JOIN core.projects p ON s.projectid = p.projectid ");
 		query.append("LEFT JOIN core.users u ON s.dempoid = u.dempoid ");
+		query.append("LEFT JOIN core.corehours ch ON s.dempoid = ch.dempoid ");
 		query.append("WHERE p.active = 1  ");
 		List<Object> params = new ArrayList<>();
 
@@ -178,7 +179,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 					rs.getDate("daywisedate"),
 					new User(rs.getString("dempoid"), rs.getInt("userid"), rs.getString("userName")),
 					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")),
-					rs.getLong("preschedulekey"), rs.getString("language"));
+					rs.getLong("preschedulekey"), rs.getString("language"), rs.getInt("corehours1"));
 		}, params.toArray());
 	}
 
