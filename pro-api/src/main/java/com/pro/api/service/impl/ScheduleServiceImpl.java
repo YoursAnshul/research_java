@@ -123,10 +123,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 		if (successCount > 0 && duplicateCount == 0) {
 			String sql = "SELECT preScheduleKey FROM core.schedules ORDER BY preScheduleKey DESC LIMIT 1";
-		    Long preScheduleKey = jdbcTemplate.queryForObject(sql, Long.class);
-		    ScheduleResponse res = new ScheduleResponse();
-		    res.setPreschedulekey(preScheduleKey);
-		    response.Subject = res;
+			Long preScheduleKey = jdbcTemplate.queryForObject(sql, Long.class);
+			ScheduleResponse res = new ScheduleResponse();
+			res.setPreschedulekey(preScheduleKey);
+			response.Subject = res;
 			response.Message = "Schedule saved successfully!";
 		} else if (duplicateCount > 0) {
 			response.Message = "Schedule already exists for this user!";
@@ -141,7 +141,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
 			LocalDate startDate, LocalDate endDate, int year, int month) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT s.preschedulekey, u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
+		query.append(
+				"SELECT s.preschedulekey, u.language, u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
 		query.append("p.projectid, p.projectcolor, p.projectname, ");
 		query.append("s.startdatetime, s.enddatetime, ");
 		query.append("s.comments, s.scheduleDate AS daywisedate ");
@@ -171,15 +172,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");
-			System.out.println("startTime------------" + startTime);
-			System.out.println("endTime------------" + endTime);
 			double duration = calculateDuration(startTime, endTime);
 
 			return new ScheduleResponse(rs.getString("comments"), formatTime(startTime), formatTime(endTime), duration,
 					rs.getDate("daywisedate"),
 					new User(rs.getString("dempoid"), rs.getInt("userid"), rs.getString("userName")),
 					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")),
-					rs.getLong("preschedulekey"));
+					rs.getLong("preschedulekey"), rs.getString("language"));
 		}, params.toArray());
 	}
 

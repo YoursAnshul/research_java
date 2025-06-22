@@ -171,6 +171,8 @@ export class ShiftDayViewComponent implements OnInit {
         schedule.isEdit = false;
       });
     }
+    console.log("filteredShiftSchedule--->",this.filteredShiftSchedule);
+    
   }
 
   customScheduleCard(startTime: string, endTime: string) {

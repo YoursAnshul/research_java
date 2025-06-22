@@ -11,12 +11,13 @@ public class ScheduleResponse {
 	private User user;
 	private Projects projects;
 	private Long preschedulekey;
+	private String language;
 
 	public ScheduleResponse() {
 	}
 
 	public ScheduleResponse(String comments, String startTime, String endTime, Double duration, Date dayWiseDate,
-			User user, Projects projects, Long preschedulekey) {
+			User user, Projects projects, Long preschedulekey, String language) {
 		this.comments = comments;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -25,6 +26,7 @@ public class ScheduleResponse {
 		this.user = user;
 		this.projects = projects;
 		this.preschedulekey = preschedulekey;
+		this.setLanguage(language);
 	}
 
 	public Long getPreschedulekey() {
@@ -89,6 +91,14 @@ public class ScheduleResponse {
 
 	public void setProjects(Projects projects) {
 		this.projects = projects;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
 }

@@ -61,12 +61,7 @@
     <div
       class="day-input-container"
       *ngIf="authenticatedUser?.interviewer"
-      style="
-        position: absolute;
-        top: -3px;
-        right: 0;
-        z-index: 10;
-      "
+      style="position: absolute; top: -3px; right: 0; z-index: 10"
     >
       <input
         type="text"
@@ -77,15 +72,10 @@
         disabled="true"
       />
     </div>
-      <div
+    <div
       class="day-input-container"
       *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-      style="
-        position: absolute;
-        top: -3px;
-        right: 0;
-        z-index: 10;
-      "
+      style="position: absolute; top: -3px; right: 0; z-index: 10"
     >
       <input
         type="text"
@@ -111,6 +101,9 @@
           }"
         >
           {{ us.user.userName }}
+          @for (language of us.language.split('|'); track language) {
+          <app-language-icon [language]="language"></app-language-icon>
+          }
         </div>
 
         <div
@@ -121,6 +114,9 @@
           }"
         >
           {{ us.user.userName }}
+          @for (language of us.language.split('|'); track language) {
+          <app-language-icon [language]="language"></app-language-icon>
+          }
         </div>
 
         <div
@@ -131,6 +127,9 @@
           }"
         >
           {{ us.user.userName }}
+          @for (language of us.language.split('|'); track language) {
+          <app-language-icon [language]="language"></app-language-icon>
+          }
         </div>
         <!-- [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''" -->
         @for (schedule of [us]; track schedule) {

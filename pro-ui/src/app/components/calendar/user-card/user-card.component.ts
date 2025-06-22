@@ -13,8 +13,8 @@ export class UserCardComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-    this.languages = this.user?.language?.split('|');
+  ngOnInit(): void {    
+    this.languages = this.user?.language?.split('|');    
   }
 
 }
