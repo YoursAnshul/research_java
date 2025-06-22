@@ -19,7 +19,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 	@Override
 	public PageResponse<ForecastingResponse> getList() {
 		StringBuilder sql = new StringBuilder(
-				"SELECT c.dempoid, u.fname, u.lname, SUM(COALESCE(corehours1, 0)) AS corehours1, "
+				"SELECT u.dempoid, u.fname, u.lname, SUM(COALESCE(corehours1, 0)) AS corehours1, "
 						+ "SUM(COALESCE(corehours2, 0)) AS corehours2, "
 						+ "SUM(COALESCE(corehours3, 0)) AS corehours3, "
 						+ "SUM(COALESCE(corehours4, 0)) AS corehours4, "
@@ -32,9 +32,9 @@ public class ForecastingServiceImpl implements ForecastingService {
 						+ "SUM(COALESCE(corehours11, 0)) AS corehours11, "
 						+ "SUM(COALESCE(corehours12, 0)) AS corehours12, "
 						+ "SUM(COALESCE(corehours13, 0)) AS corehours13, "
-						+ "SUM(COALESCE(corehours14, 0)) AS corehours14 " + "FROM core.corehours c "
-						+ "JOIN core.users u ON c.dempoid = u.dempoid " + "WHERE u.active = 'true' "
-						+ "GROUP BY c.dempoid, u.fname, u.lname");
+						+ "SUM(COALESCE(corehours14, 0)) AS corehours14 " + "FROM core.users u "
+						+ " LEFT JOIN core.corehours c ON u.dempoid = c.dempoid "
+						+ "WHERE u.active = 'true' AND u.status = '1' GROUP BY u.dempoid, u.fname, u.lname");
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();

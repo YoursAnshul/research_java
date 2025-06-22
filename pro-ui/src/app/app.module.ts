@@ -104,6 +104,7 @@ import { ProjectForecastingComponent } from './pages/forecasting/project-forecas
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { MonthlyBlockDate } from './components/calendar/calendar-controls/monthly.block.out.dialog.component';
 import { SchedulingLevelDialog } from './components/calendar/calendar-controls/scheduling-lever-dialog';
+import { UserCoreHoursComponentV2 } from './pages/forecasting/user-core-hours/user-core-hours.component-v2';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -181,7 +182,8 @@ import { SchedulingLevelDialog } from './components/calendar/calendar-controls/s
     ProjectForecastingComponent,
     TooltipComponent,
     MonthlyBlockDate,
-    SchedulingLevelDialog
+    SchedulingLevelDialog,
+    UserCoreHoursComponentV2
   ],
   imports: [
     NgxMaterialTimepickerModule,
