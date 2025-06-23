@@ -38,7 +38,7 @@
         </td>
         <td *ngFor="let month of monthsHeader; index as i" class="px-3 py-2 border text-center">
           <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white" [value]="getCoreHour(res, i)"
-            readonly />
+            (input)="onCoreHourChange($event, monthKeys[i], res)" />
         </td>
       </tr>
 

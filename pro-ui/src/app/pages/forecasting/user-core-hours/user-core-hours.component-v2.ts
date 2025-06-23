@@ -86,7 +86,7 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
   getCoreHour(res: any, monthIndex: number): number {
     const key = this.monthKeys[monthIndex];
-    return res.coreHoursByMonth?.[key] ??0;
+    return res.coreHoursByMonth?.[key] ?? 0;
   }
 
   calculateTotals(): void {
@@ -101,5 +101,16 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
   onPageChanged(): void {
     this.calculateTotals();
+  }
+  onCoreHourChange(event: Event, monthKey: string, res: any): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+
+    const parsedValue = parseInt(value, 10);
+    if (!isNaN(parsedValue)) {
+      console.log('Updated core hour:', parsedValue);
+      console.log('For month:', monthKey);
+      console.log('User:', res.dempoid);
+    }
   }
 }
