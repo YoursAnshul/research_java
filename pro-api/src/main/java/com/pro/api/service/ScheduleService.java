@@ -19,6 +19,8 @@ public interface ScheduleService {
 	public GeneralResponse updateSchedule(ShiftScheduleRequest request);
 
 	public GeneralResponse deleteSchedule(Long id);
-	
+
 	public GeneralResponse getOptionValue();
+
+	public GeneralResponse getCoreHours(LocalDate scheduleDate, String dempoId);
 }

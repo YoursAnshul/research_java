@@ -1,6 +1,10 @@
 package com.pro.api.service.impl;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,43 +22,30 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Override
 	public PageResponse<ForecastingResponse> getList() {
-		StringBuilder sql = new StringBuilder(
-				"SELECT u.dempoid, u.fname, u.lname, SUM(COALESCE(corehours1, 0)) AS corehours1, "
-						+ "SUM(COALESCE(corehours2, 0)) AS corehours2, "
-						+ "SUM(COALESCE(corehours3, 0)) AS corehours3, "
-						+ "SUM(COALESCE(corehours4, 0)) AS corehours4, "
-						+ "SUM(COALESCE(corehours5, 0)) AS corehours5, "
-						+ "SUM(COALESCE(corehours6, 0)) AS corehours6, "
-						+ "SUM(COALESCE(corehours7, 0)) AS corehours7, "
-						+ "SUM(COALESCE(corehours8, 0)) AS corehours8, "
-						+ "SUM(COALESCE(corehours9, 0)) AS corehours9, "
-						+ "SUM(COALESCE(corehours10, 0)) AS corehours10, "
-						+ "SUM(COALESCE(corehours11, 0)) AS corehours11, "
-						+ "SUM(COALESCE(corehours12, 0)) AS corehours12, "
-						+ "SUM(COALESCE(corehours13, 0)) AS corehours13, "
-						+ "SUM(COALESCE(corehours14, 0)) AS corehours14 " + "FROM core.users u "
-						+ " LEFT JOIN core.corehours c ON u.dempoid = c.dempoid "
-						+ "WHERE u.active = 'true' AND u.status = '1' GROUP BY u.dempoid, u.fname, u.lname");
+		String sql = "SELECT u.dempoid, u.fname, u.lname, " + "c.month1, c.corehours1, " + "c.month2, c.corehours2, "
+				+ "c.month3, c.corehours3, " + "c.month4, c.corehours4, " + "c.month5, c.corehours5, "
+				+ "c.month6, c.corehours6, " + "c.month7, c.corehours7, " + "c.month8, c.corehours8, "
+				+ "c.month9, c.corehours9, " + "c.month10, c.corehours10, " + "c.month11, c.corehours11, "
+				+ "c.month12, c.corehours12, " + "c.month13, c.corehours13, " + "c.month14, c.corehours14 "
+				+ "FROM core.users u " + "LEFT JOIN core.corehours c ON u.dempoid = c.dempoid "
+				+ "WHERE u.active = 'true' AND u.status = '1'";
 
-		List<ForecastingResponse> result = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setDempoid(rs.getString("dempoid"));
 			response.setFname(rs.getString("fname"));
 			response.setLname(rs.getString("lname"));
-			response.setCorehours1(rs.getDouble("corehours1"));
-			response.setCorehours2(rs.getDouble("corehours2"));
-			response.setCorehours3(rs.getDouble("corehours3"));
-			response.setCorehours4(rs.getDouble("corehours4"));
-			response.setCorehours5(rs.getDouble("corehours5"));
-			response.setCorehours6(rs.getDouble("corehours6"));
-			response.setCorehours7(rs.getDouble("corehours7"));
-			response.setCorehours8(rs.getDouble("corehours8"));
-			response.setCorehours9(rs.getDouble("corehours9"));
-			response.setCorehours10(rs.getDouble("corehours10"));
-			response.setCorehours11(rs.getDouble("corehours11"));
-			response.setCorehours12(rs.getDouble("corehours12"));
-			response.setCorehours13(rs.getDouble("corehours13"));
-			response.setCorehours14(rs.getDouble("corehours14"));
+
+			Map<LocalDate, Integer> monthHoursMap = new LinkedHashMap<>();
+			for (int i = 1; i <= 14; i++) {
+				Date date = rs.getDate("month" + i);
+				Integer hours = rs.getObject("corehours" + i, Integer.class);
+				if (date != null && hours != null) {
+					monthHoursMap.put(date.toLocalDate(), hours);
+				}
+			}
+
+			response.setCoreHoursByMonth(monthHoursMap);
 			return response;
 		});
 

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -24,7 +25,9 @@ import org.springframework.stereotype.Service;
 
 import com.pro.api.controllers.GeneralResponse;
 import com.pro.api.models.dataaccess.AdminOption;
+import com.pro.api.models.dataaccess.CoreHour;
 import com.pro.api.models.dataaccess.repos.AdminOptionRepository;
+import com.pro.api.models.dataaccess.repos.CoreHourRepository;
 import com.pro.api.response.Projects;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
@@ -42,6 +45,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Autowired
 	private AdminOptionRepository adminOptionRepository;
+
+	@Autowired
+	private CoreHourRepository coreHourRepository;
 
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
 		GeneralResponse response = new GeneralResponse();
@@ -314,6 +320,56 @@ public class ScheduleServiceImpl implements ScheduleService {
 		GeneralResponse res = new GeneralResponse();
 		res.Subject = obj;
 		return res;
+	}
+
+	@Override
+	public GeneralResponse getCoreHours(LocalDate scheduleDate, String dempoId) {
+		int month = scheduleDate.getMonthValue();
+		int year = scheduleDate.getYear();
+
+		CoreHour coreHour = coreHourRepository.findFirstByDempoidAndMonthYear(dempoId, month, year);
+		GeneralResponse response = new GeneralResponse();
+		Integer coreHoursValue = 0;
+
+		if (coreHour == null) {
+			response.Subject = coreHoursValue;
+			return response;
+		}
+
+		YearMonth target = YearMonth.from(scheduleDate);
+
+		if (coreHour.getMonth1() != null && YearMonth.from(coreHour.getMonth1()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours1();
+		} else if (coreHour.getMonth2() != null && YearMonth.from(coreHour.getMonth2()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours2();
+		} else if (coreHour.getMonth3() != null && YearMonth.from(coreHour.getMonth3()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours3();
+		} else if (coreHour.getMonth4() != null && YearMonth.from(coreHour.getMonth4()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours4();
+		} else if (coreHour.getMonth5() != null && YearMonth.from(coreHour.getMonth5()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours5();
+		} else if (coreHour.getMonth6() != null && YearMonth.from(coreHour.getMonth6()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours6();
+		} else if (coreHour.getMonth7() != null && YearMonth.from(coreHour.getMonth7()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours7();
+		} else if (coreHour.getMonth8() != null && YearMonth.from(coreHour.getMonth8()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours8();
+		} else if (coreHour.getMonth9() != null && YearMonth.from(coreHour.getMonth9()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours9();
+		} else if (coreHour.getMonth10() != null && YearMonth.from(coreHour.getMonth10()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours10();
+		} else if (coreHour.getMonth11() != null && YearMonth.from(coreHour.getMonth11()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours11();
+		} else if (coreHour.getMonth12() != null && YearMonth.from(coreHour.getMonth12()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours12();
+		} else if (coreHour.getMonth13() != null && YearMonth.from(coreHour.getMonth13()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours13();
+		} else if (coreHour.getMonth14() != null && YearMonth.from(coreHour.getMonth14()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours14();
+		}
+
+		response.Subject = coreHoursValue;
+		return response;
 	}
 
 }
