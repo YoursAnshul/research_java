@@ -190,7 +190,6 @@ export class ShiftScheduleComponent implements OnInit {
   private previousComments: string | null = null;
   isStartTimeChanged: boolean = false;
   isEndTimeChanged: boolean = false;
-  coreHours: number = 0;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -577,6 +576,8 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   validateBlockOutDate(selectedDate: any): void {
+    this.blockedTimeSlots = [];
+    this.isBlockDate = false;
     if (!this.blockOutDates || this.blockOutDates.length === 0) {
       console.log('Block out dates not loaded yet.');
       this.shiftForm.get('startTime')?.enable();
@@ -947,6 +948,12 @@ export class ShiftScheduleComponent implements OnInit {
             shiftDate <= weekEnd
           );
         });
+        let coreHours = 0;
+        this.shiftSchedule.filter((s) => {
+          if (s.user.dempoId === userId) {
+            coreHours = s.coreHours1;
+          }
+        });
 
         // Total hours this week
         const totalHours = weekShifts.reduce((sum, shift) => {
@@ -970,7 +977,19 @@ export class ShiftScheduleComponent implements OnInit {
           });
           return;
         }
-        this.coreHoursValidation(selectedDate, userId, totalHours);
+        if (coreHours && totalHours >= coreHours) {
+          this.shiftForm.get('startTime')?.setErrors({ coreMismatch: true });
+          this.shiftForm.get('endTime')?.setErrors({ coreMismatch: true });
+          this.shiftForm.markAllAsTouched();
+          const dialogRef = this.dialog.open(SchedulingLevelDialog, {
+            panelClass: 'custom-dialog-container',
+            data: {
+              message:
+                'Interviewer weekly schedule must at least match their core hours.',
+            },
+          });
+          return;
+        }
 
         // Every other week rules (night & weekend)
         // ─────────────────────────────────────────────────────────────
@@ -1703,8 +1722,8 @@ export class ShiftScheduleComponent implements OnInit {
           if (res.Message == 'Schedule already exists for this user!') {
             this.shiftForm.get('startTime')?.setErrors({ required: true });
             this.shiftForm.get('endTime')?.setErrors({ required: true });
-          } else if (this.selectedProject) {
-            this.saveNewRequest(res.Subject.preschedulekey);
+          } else if (this.authenticatedUser.interviewer) {
+            this.saveNewRequest(res?.Subject?.preschedulekey);
           }
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
@@ -1945,7 +1964,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.isEdit = false;
           this.isScheduleUpdate = true;
-          if (this.selectedProject) {
+          if (this.authenticatedUser.interviewer) {
             this.updateNewRequest(shift.id);
           }
           this.onResetShiftSchedule();
@@ -2028,7 +2047,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.isScheduleUpdate = true;
           this.showToastMessage(res.Message, 'success');
           this.scheduleFetchStatus = false;
-          // this.onSubmit();
+          this.onSubmit();
           this.isEdit = false;
           this.deleteNewRequest(shift.id);
           this.onResetShiftSchedule();
@@ -2119,33 +2138,5 @@ export class ShiftScheduleComponent implements OnInit {
       this.isStartTimeChanged = false;
       this.isEndTimeChanged = false;
     }
-  }
-  coreHoursValidation(date: Date, dempoId: string, totalHours: number): void {
-    if (!date) {
-      return;
-    }
-    const formattedDate = date.toISOString().split('T')[0];
-    const apiUrl = `${environment.DataAPIUrl}/api/userSchedules/core-hours?scheduleDate=${formattedDate}&dempoId=${dempoId}`;
-
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        const coreHours = data?.Subject ?? 0;
-        if (coreHours && coreHours > 0 && totalHours > coreHours) {
-          this.shiftForm.get('startTime')?.setErrors({ coreMismatch: true });
-          this.shiftForm.get('endTime')?.setErrors({ coreMismatch: true });
-          this.shiftForm.markAllAsTouched();
-          this.dialog.open(SchedulingLevelDialog, {
-            panelClass: 'custom-dialog-container',
-            data: {
-              message:
-                'Interviewer weekly schedule must at least match their core hours.',
-            },
-          });
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching core hours:', error);
-      },
-    });
   }
 }
