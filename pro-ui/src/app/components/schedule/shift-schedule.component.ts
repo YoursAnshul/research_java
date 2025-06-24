@@ -949,6 +949,7 @@ export class ShiftScheduleComponent implements OnInit {
           );
         });
 
+
         // Total hours this week
         const totalHours = weekShifts.reduce((sum, shift) => {
           const st = this.combineDateAndTime(
@@ -971,8 +972,7 @@ export class ShiftScheduleComponent implements OnInit {
           });
           return;
         }
-
-        this.coreHoursValidation(selectedDate, userId, totalHours);
+      //  this.coreHoursValidation(selectedDate, userId, totalHours);
 
         // Every other week rules (night & weekend)
         // ─────────────────────────────────────────────────────────────
@@ -1947,7 +1947,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.isEdit = false;
           this.isScheduleUpdate = true;
-          if (this.authenticatedUser.interviewer) {
+          if (this.selectedProject) {
             this.updateNewRequest(shift.id);
           }
           this.onResetShiftSchedule();
@@ -2122,32 +2122,33 @@ export class ShiftScheduleComponent implements OnInit {
       this.isEndTimeChanged = false;
     }
   }
-  coreHoursValidation(date: Date, dempoId: string, totalHours: number): void {
-    if (!date) {
-      return;
-    }
-    const formattedDate = date.toISOString().split('T')[0];
-    const apiUrl = `${environment.DataAPIUrl}/api/userSchedules/core-hours?scheduleDate=${formattedDate}&dempoId=${dempoId}`;
 
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        const coreHours = data?.Subject ?? 0;
-        if (coreHours && coreHours > 0 && totalHours > coreHours) {
-          this.shiftForm.get('startTime')?.setErrors({ coreMismatch: true });
-          this.shiftForm.get('endTime')?.setErrors({ coreMismatch: true });
-          this.shiftForm.markAllAsTouched();
-          this.dialog.open(SchedulingLevelDialog, {
-            panelClass: 'custom-dialog-container',
-            data: {
-              message:
-                'Interviewer weekly schedule must at least match their core hours.',
-            },
-          });
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching core hours:', error);
-      },
-    });
-  }
+  // coreHoursValidation(date: Date, dempoId: string, totalHours: number): void {
+  //   if (!date) {
+  //     return;
+  //   }
+  //   const formattedDate = date.toISOString().split('T')[0];
+  //   const apiUrl = `${environment.DataAPIUrl}/api/userSchedules/core-hours?scheduleDate=${formattedDate}&dempoId=${dempoId}`;
+
+  //   this.http.get(apiUrl).subscribe({
+  //     next: (data: any) => {
+  //       const coreHours = data?.Subject ?? 0;
+  //       if (coreHours && coreHours > 0 && totalHours > coreHours) {
+  //         this.shiftForm.get('startTime')?.setErrors({ coreMismatch: true });
+  //         this.shiftForm.get('endTime')?.setErrors({ coreMismatch: true });
+  //         this.shiftForm.markAllAsTouched();
+  //         this.dialog.open(SchedulingLevelDialog, {
+  //           panelClass: 'custom-dialog-container',
+  //           data: {
+  //             message:
+  //               'Interviewer weekly schedule must at least match their core hours.',
+  //           },
+  //         });
+  //       }
+  //     },
+  //     error: (error) => {
+  //       console.error('Error fetching core hours:', error);
+  //     },
+  //   });
+  // }
 }
