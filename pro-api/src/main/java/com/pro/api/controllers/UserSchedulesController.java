@@ -751,4 +751,12 @@ public class UserSchedulesController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@GetMapping("/core-hours")
+	public ResponseEntity<GeneralResponse> getCoreHours(
+			@RequestParam(required = false, value = "dempoId") String dempoId,
+			@RequestParam(required = false, value = "scheduleDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate) {
+		GeneralResponse response = scheduleService.getCoreHours(scheduleDate, dempoId);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
 }

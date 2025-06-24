@@ -1,6 +1,6 @@
 package com.pro.api.service;
 
-import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -13,5 +13,5 @@ public interface ForecastingService {
 
 	public PageResponse<ForecastingResponse> getList();
 
-	public GeneralResponse updateCoreHours(String dempoId, LocalDate date, int coreHours);
+	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests);
 }

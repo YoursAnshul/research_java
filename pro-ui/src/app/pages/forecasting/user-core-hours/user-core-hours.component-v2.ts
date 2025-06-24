@@ -3,19 +3,29 @@ import { SelectedValue } from '../../../models/presentation/selected-value';
 import { IDropDownValue } from '../../../interfaces/interfaces';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user-core-hours',
   templateUrl: './user-core-hours.component-v2.html',
-  styleUrl: './user-core-hours.component.css',
+  styleUrls: ['./user-core-hours.component.css'],
 })
 export class UserCoreHoursComponentV2 implements OnInit {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly snackBar: MatSnackBar
+  ) {}
+
   monthsHeader: string[] = [];
+  monthKeys: string[] = []; // "YYYY-MM-01" for accessing the map
   list: any[] = [];
-  pageSize = 10;
   paginatedList: any[] = [];
-  public currentPage: number = 1;
+  currentPage = 1;
+  pageSize = 10;
   totalCoreHours: number[] = [];
 
   dropDownValues: IDropDownValue[] = [
@@ -25,31 +35,43 @@ export class UserCoreHoursComponentV2 implements OnInit {
   selectedValues: SelectedValue[] = [
     new SelectedValue(1, { codeValues: 1, dropDownItem: 'Interviewer' }),
   ];
-
+  editedCoreHours: {
+    dempoId: string;
+    date: string;
+    coreHours: number;
+  }[] = [];
   ngOnInit(): void {
     this.getMonths();
     this.getList();
   }
 
-  userRoleChange(event: any) {
-    console.log(event);
-  }
   getMonths() {
     const now = new Date();
     for (let i = 0; i < 14; i++) {
-      const date = new Date(now.getFullYear(), now.getMonth() + i);
-      const month = date.toLocaleString('default', { month: 'short' });
-      const year = date.getFullYear().toString().slice(-2);
-      this.monthsHeader.push(`${month}-${year}`);
+      const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const label =
+        date.toLocaleString('default', { month: 'short' }) +
+        '-' +
+        date.getFullYear().toString().slice(-2);
+      this.monthsHeader.push(label);
+
+      const key = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-01`;
+      this.monthKeys.push(key);
     }
   }
-  getList(): void {
-    let params = new HttpParams();
 
+  userRoleChange(event: any) {
+    console.log('Role changed:', event);
+    // Optionally re-fetch list based on role
+  }
+
+  getList(): void {
     const apiUrl = `${environment.DataAPIUrl}/forecasting/list`;
-    this.http.get(apiUrl, { params }).subscribe({
+    this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        this.list = data?.data;
+        this.list = data?.data || [];
         this.paginate();
       },
       error: (error: any) => {
@@ -57,46 +79,95 @@ export class UserCoreHoursComponentV2 implements OnInit {
       },
     });
   }
-  public paginate(): void {
-    if (this.list) {
-      if (this.list.length <= this.pageSize) {
-        this.currentPage = 1;
-      }
-      let maxPage: number = Math.floor(
-        (this.list || []).length / this.pageSize
-      );
-      maxPage = maxPage == 0 ? 1 : maxPage;
 
-      if (this.currentPage < 1) {
-        this.currentPage = 1;
-      }
-
-      if (this.currentPage > maxPage) {
-        this.currentPage = maxPage;
-      }
-
-      const startIndex = (this.currentPage - 1) * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.paginatedList = this.list.slice(startIndex, endIndex);
-      this.calculateTotals();
+  paginate(): void {
+    if (this.list.length <= this.pageSize) {
+      this.currentPage = 1;
     }
+
+    const maxPage = Math.max(1, Math.ceil(this.list.length / this.pageSize));
+
+    if (this.currentPage < 1) this.currentPage = 1;
+    if (this.currentPage > maxPage) this.currentPage = maxPage;
+
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+
+    this.paginatedList = this.list.slice(start, end);
+    this.calculateTotals();
+  }
+
+  getCoreHour(res: any, monthIndex: number): number {
+    const key = this.monthKeys[monthIndex];
+    return res.coreHoursByMonth?.[key] ?? 0;
   }
 
   calculateTotals(): void {
-    const totals = Array(14).fill(0);
-
-    for (const res of this.paginatedList) {
-      for (let i = 0; i < 14; i++) {
-        const val = Number(res[`corehours${i + 1}`]);
-        if (!isNaN(val)) {
-          totals[i] += val;
-        }
+    const totals = Array(this.monthsHeader.length).fill(0);
+    for (let i = 0; i < this.monthsHeader.length; i++) {
+      for (const res of this.paginatedList) {
+        totals[i] += this.getCoreHour(res, i);
       }
     }
-
     this.totalCoreHours = totals;
   }
+
   onPageChanged(): void {
     this.calculateTotals();
+  }
+  onCoreHourChange(event: Event, monthKey: string, res: any): void {
+    const input = event.target as HTMLInputElement;
+    const value = parseInt(input.value, 0);
+    if (isNaN(value)) return;
+    res.coreHoursByMonth ??= {};
+    res.coreHoursByMonth[monthKey] = value;
+    const existing = this.editedCoreHours.find(
+      (e) => e.dempoId === res.dempoid && e.date === monthKey
+    );
+    if (existing) {
+      existing.coreHours = value;
+    } else {
+      this.editedCoreHours.push({
+        dempoId: res.dempoid,
+        date: monthKey,
+        coreHours: value,
+      });
+    }
+  }
+
+  saveCoreHours(): void {
+    if (this.editedCoreHours.length === 0) {
+      this.showToastMessage('No changes to save.', 'error');
+      return;
+    }
+    console.log('Saving core hours:', this.editedCoreHours);
+
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
+    this.http.put(apiUrl, this.editedCoreHours).subscribe({
+      next: (response: any) => {
+        this.showToastMessage('Core hours saved successfully!', 'success');
+        this.editedCoreHours = [];
+        this.getList(); 
+      },
+      error: (error: any) => {
+        console.error('Error saving core hours:', error);
+      },
+    });
+  }
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+    });
   }
 }

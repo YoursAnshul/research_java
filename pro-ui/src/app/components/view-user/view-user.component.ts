@@ -1058,6 +1058,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
             this.coreHours[`coreHours${i}`] =
               this.coreHours[`coreHours${i}`] || '0';
           }
+          console.log("this.coreHours-->",this.coreHours);
+          
           this.usersService
             .saveUserCoreHoursWithAudit(
               [this.coreHours],
