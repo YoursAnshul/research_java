@@ -103,23 +103,19 @@
         <mat-form-field
           appearance="outline"
           class="custom-form-field ml-2"
-          [class.error-border]="
-            shiftForm.get('startTime')?.hasError('duplicate')
-          "
-          [class.disabled-field]="
-            shiftForm.get('startTime')?.disabled || isBlockDate
-          "
+          [class.error-border]="shiftForm.get('startTime')?.hasError('duplicate')"
+          [class.disabled-field]="shiftForm.get('startTime')?.disabled || isBlockDate"
           style="width: 80px"
         >
           <mat-label>Start Time</mat-label>
           <mat-select
             formControlName="startTime"
-            [disabled]="!!shiftForm.get('startTime')?.disabled"
+            [disabled]="!!shiftForm.get('startTime')?.disabled || isBlockDate"
           >
             <mat-option
               *ngFor="let time of timeSlots"
               [value]="time"
-              [disabled]="isTimeBlocked(time) || isBlockDate"
+              [disabled]="isTimeBlocked(time)"
             >
               <div
                 class="time-box"
@@ -138,7 +134,7 @@
           appearance="outline"
           class="custom-form-field ml-2"
           [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
-          [class.disabled-field]="shiftForm.get('endTime')?.disabled"
+          [class.disabled-field]="shiftForm.get('endTime')?.disabled || isBlockDate"
           style="width: 80px"
         >
           <mat-label>End Time</mat-label>

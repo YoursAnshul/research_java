@@ -101,7 +101,7 @@
           }"
         >
           {{ us.user.userName }}
-          @for (language of us.language.split('|'); track language) {
+          @for (language of us?.language?.split('|'); track language) {
           <app-language-icon [language]="language"></app-language-icon>
           }
         </div>

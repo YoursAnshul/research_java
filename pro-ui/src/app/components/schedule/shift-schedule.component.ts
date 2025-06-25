@@ -647,6 +647,7 @@ export class ShiftScheduleComponent implements OnInit {
     // Enable fields (specific blocked times will be handled separately)
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
+    this.shiftForm.get('dayWiseDate')?.enable();
   }
   removeLeadingZero(time: string): string {
     return time.replace(/^0(\d)/, '$1');
