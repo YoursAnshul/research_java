@@ -242,6 +242,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.dialogRef.close();
   }
   ngOnInit(): void {
+    this.tab = 'Month';
     this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
