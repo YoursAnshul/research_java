@@ -14,4 +14,10 @@ public interface ForecastingService {
 	public PageResponse<ForecastingResponse> getList();
 
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests);
+
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList();
+
+	public List<Long> getUserTotalHours();
+
+	public List<Long> getProjectTotalHours();
 }

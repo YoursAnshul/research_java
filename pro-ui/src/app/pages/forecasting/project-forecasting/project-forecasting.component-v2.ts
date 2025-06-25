@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedValue } from '../../../models/presentation/selected-value';
 import { IDropDownValue } from '../../../interfaces/interfaces';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-user-core-hours-v2',
-  templateUrl: './user-core-hours.component-v2.html',
-  styleUrls: ['./user-core-hours.component.css'],
+  selector: 'app-project-forecasting-v2',
+  templateUrl: './project-forecasting.component-v2.html',
+  styleUrl: './project-forecasting.component.css',
 })
-export class UserCoreHoursComponentV2 implements OnInit {
+export class ProjectForecastingComponentV2 implements OnInit {
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar
   ) {}
-
+  filterData: any[] = [];
   monthsHeader: string[] = [];
   monthKeys: string[] = [];
   list: any[] = [];
@@ -28,7 +28,11 @@ export class UserCoreHoursComponentV2 implements OnInit {
   pageSize = 10;
   totalCoreHours: number[] = [];
   projectTotalCorehours: number[] = [];
-
+  editedCoreHours: {
+    dempoId: string;
+    date: string;
+    coreHours: number;
+  }[] = [];
   dropDownValues: IDropDownValue[] = [
     { codeValues: 1, dropDownItem: 'Interviewer' },
     { codeValues: 2, dropDownItem: 'Resource Group' },
@@ -36,18 +40,16 @@ export class UserCoreHoursComponentV2 implements OnInit {
   selectedValues: SelectedValue[] = [
     new SelectedValue(1, { codeValues: 1, dropDownItem: 'Interviewer' }),
   ];
-  editedCoreHours: {
-    dempoId: string;
-    date: string;
-    coreHours: number;
-  }[] = [];
+
   ngOnInit(): void {
     this.getMonths();
     this.getList();
     this.calculateProjectTotals();
     this.calculateTotals();
   }
-
+  userRoleChange(event: any) {
+    console.log('Role changed:', event);
+  }
   getMonths() {
     const now = new Date();
     for (let i = 0; i < 14; i++) {
@@ -65,13 +67,8 @@ export class UserCoreHoursComponentV2 implements OnInit {
     }
   }
 
-  userRoleChange(event: any) {
-    console.log('Role changed:', event);
-    // Optionally re-fetch list based on role
-  }
-
   getList(): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/list`;
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
@@ -154,20 +151,22 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
   saveCoreHours(): void {
     if (this.editedCoreHours.length === 0) {
-      // this.showToastMessage('No changes to save.', 'error');
+      this.showToastMessage('No changes to save.', 'error');
       return;
     }
-    // const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
-    // this.http.put(apiUrl, this.editedCoreHours).subscribe({
-    //   next: (response: any) => {
-    //     this.showToastMessage('Core hours saved successfully!', 'success');
-    //     this.editedCoreHours = [];
-    //     this.getList();
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error saving core hours:', error);
-    //   },
-    // });
+    console.log('Saving core hours:', this.editedCoreHours);
+
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
+    this.http.put(apiUrl, this.editedCoreHours).subscribe({
+      next: (response: any) => {
+        this.showToastMessage('Core hours saved successfully!', 'success');
+        this.editedCoreHours = [];
+        this.getList();
+      },
+      error: (error: any) => {
+        console.error('Error saving core hours:', error);
+      },
+    });
   }
   showToastMessage(message: string, type: string): void {
     let snackBarClass = 'success-snackbar';
