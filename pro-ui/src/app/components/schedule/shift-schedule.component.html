@@ -17,9 +17,9 @@
           <mat-label>User</mat-label>
           <mat-select formControlName="user" [(value)]="selectedUser" (selectionChange)="onUserSelectionChange($event)">
             <mat-option *ngFor="let user of userList" [value]="user" [disabled]="
-                            user.userId !== selectedUser?.userId &&
-                            (isEdit || isHomeRedirect || profileType == 'user-profile')
-                          ">
+                user.userId !== selectedUser?.userId &&
+                (isEdit || isHomeRedirect || profileType == 'user-profile')
+              ">
               {{ user.userName }}
             </mat-option>
           </mat-select>
@@ -49,23 +49,25 @@
         <span class="ml-2">{{ currentDay }}</span>
 
         <!-- Day Wise Date Picker -->
-        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 170px"
-          [ngClass]="{ 'mat-form-field-invalid': isDateBlockDate }">
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 170px" [ngClass]="{
+            'mat-form-field-invalid': isDateBlockDate || isBlockDate
+          }">
           <mat-label>{{ currentDay }}</mat-label>
           <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
           <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
+
         <!-- Start Time Picker -->
-        <mat-form-field appearance="outline" class="custom-form-field ml-2" [class.error-border]="
-                        shiftForm.get('startTime')?.hasError('duplicate')
-                      " [class.disabled-field]="shiftForm.get('startTime')?.disabled" style="width: 80px">
+        <mat-form-field appearance="outline" class="custom-form-field ml-2"
+          [class.error-border]="shiftForm.get('startTime')?.hasError('duplicate')"
+          [class.disabled-field]="shiftForm.get('startTime')?.disabled || isBlockDate" style="width: 80px">
           <mat-label>Start Time</mat-label>
-          <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled">
-            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time) || isBlockDate">
+          <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled || isBlockDate">
+            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
               <div class="time-box" [ngStyle]="{
-                              'background-color': getBackgroundColor(time)
-                            }">
+                  'background-color': getBackgroundColor(time)
+                }">
                 {{ time }}
               </div>
             </mat-option>
@@ -75,13 +77,14 @@
         <!-- End Time Picker -->
         <mat-form-field appearance="outline" class="custom-form-field ml-2"
           [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
-          [class.disabled-field]="shiftForm.get('endTime')?.disabled" style="width: 80px">
+          [class.disabled-field]="shiftForm.get('endTime')?.disabled || isBlockDate" style="width: 80px">
           <mat-label>End Time</mat-label>
-          <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled">
-            <mat-option *ngFor="let time of endtimeSlots" [value]="time" [disabled]="isTimeBlocked(time) || isBlockDate">
+          <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled || isBlockDate">
+            <mat-option *ngFor="let time of endtimeSlots" [value]="time"
+              [disabled]="isTimeBlocked(time) || isBlockDate">
               <div class="time-box" [ngStyle]="{
-                              'background-color': getBackgroundColor(time)
-                            }">
+                  'background-color': getBackgroundColor(time)
+                }">
                 {{ time }}
               </div>
             </mat-option>
@@ -98,23 +101,23 @@
         </mat-form-field>
 
         <!-- Add to Calendar Button -->
-        <div class="ml-1 mr-1" *ngIf="!isEdit">
+        <div class="ml-1 mr-1" *ngIf="!isEdit && isDataLoaded">
           <button mat-raised-button color="primary" [disabled]="
-                          !scheduleFetchStatus ||
-                          shiftForm.invalid ||
-                          !shiftForm.get('startTime')?.value ||
-                          !shiftForm.get('endTime')?.value
-                        ">
+              !scheduleFetchStatus ||
+              shiftForm.invalid ||
+              !shiftForm.get('startTime')?.value ||
+              !shiftForm.get('endTime')?.value
+            ">
             <mat-icon>add</mat-icon> Add to Calendar
           </button>
         </div>
         <div class="icon-container" *ngIf="isEdit" style="
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        margin-left: 10px;
-                      ">
-          <div (click)="editSchedule()" style="margin-right: 10px"
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+          ">
+          <div (click)="onSubmit()" style="margin-right: 10px"
             [ngClass]="{ disabled: !isEditAble || shiftForm.invalid }">
             <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <mask id="mask0_6864_14517" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
@@ -141,6 +144,7 @@
               </g>
             </svg>
           </div>
+
         </div>
       </div>
     </div>
@@ -155,5 +159,6 @@
       [tab]="tab" (scheduleData)="handleSchedule($event)" [isEdit]="isEdit" [isClose]="isClose" [pId]="pId"
       [isScheduleUpdate]="isScheduleUpdate">
       > ></app-shift-calendar>
+    <app-calendar *ngIf="isClosed" [authenticatedUser]="authenticatedUser"></app-calendar>
   </form>
 </div>

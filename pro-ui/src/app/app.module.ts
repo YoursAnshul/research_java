@@ -102,7 +102,8 @@ import { ConfirmationShiftDialogComponent } from './components/delete-dialog/del
 import { UserCoreHoursComponent } from './pages/forecasting/user-core-hours/user-core-hours.component';
 import { ProjectForecastingComponent } from './pages/forecasting/project-forecasting/project-forecasting.component';
 import { TooltipComponent } from './components/tooltip/tooltip.component';
-
+import { MonthlyBlockDate } from './components/calendar/calendar-controls/monthly.block.out.dialog.component';
+import { SchedulingLevelDialog } from './components/calendar/calendar-controls/scheduling-lever-dialog';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -178,7 +179,9 @@ import { TooltipComponent } from './components/tooltip/tooltip.component';
     ConfirmationShiftDialogComponent,
     UserCoreHoursComponent,
     ProjectForecastingComponent,
-    TooltipComponent
+    TooltipComponent,
+    MonthlyBlockDate,
+    SchedulingLevelDialog
   ],
   imports: [
     NgxMaterialTimepickerModule,

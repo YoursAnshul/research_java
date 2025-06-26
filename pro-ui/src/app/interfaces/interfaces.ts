@@ -606,6 +606,7 @@ export interface IRequest {
   invalid?: boolean;
   markedForDeletion?: boolean;
   invalidFields: string[];
+  scheduleId?: number | null;
 }
 
 export interface IProjectGroup {
