@@ -243,6 +243,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onClose(): void {
     this.isClosed = true;
+    localStorage.removeItem('minSelectableDate');
     this.dialogRef.close();
   }
   ngOnInit(): void {
@@ -556,6 +557,8 @@ export class ShiftScheduleComponent implements OnInit {
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      resultDate.setMonth(resultDate.getMonth() + 1);
+      localStorage.setItem('minSelectableDate', resultDate.toLocaleDateString());
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -567,21 +570,8 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      localStorage.setItem('minSelectableDate', resultDate.toLocaleDateString());
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
-        const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
-        if (dayWiseDateControl) {
-          dayWiseDateControl.setValue(
-            new Date(today.getFullYear(), today.getMonth() + 2, 1)
-          );
-          this.minSelectableDate = dayWiseDateControl.value;
-          this.homeSelectedDate = this.convertToLocalDate(
-            dayWiseDateControl.value
-          );
-          localStorage.setItem(
-            'minSelectableDate',
-            dayWiseDateControl.value.toISOString()
-          );
-        }
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();

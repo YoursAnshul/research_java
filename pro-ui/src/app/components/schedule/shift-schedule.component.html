@@ -79,6 +79,7 @@
 
         <!-- Day Wise Date Picker -->
         <mat-form-field
+          *ngIf="authenticatedUser?.interviewer"
           appearance="outline"
           class="custom-form-field ml-2"
           style="width: 170px"
@@ -92,6 +93,27 @@
             [matDatepicker]="dayWisePicker"
             formControlName="dayWiseDate"
             [min]="minSelectableDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="dayWisePicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #dayWisePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field
+          *ngIf="authenticatedUser?.admin"
+          appearance="outline"
+          class="custom-form-field ml-2"
+          style="width: 170px"
+          [ngClass]="{
+            'mat-form-field-invalid': isDateBlockDate || isBlockDate
+          }"
+        >
+          <mat-label>{{ currentDay }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="dayWisePicker"
+            formControlName="dayWiseDate"
           />
           <mat-datepicker-toggle
             matSuffix

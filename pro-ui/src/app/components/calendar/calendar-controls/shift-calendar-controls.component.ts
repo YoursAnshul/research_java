@@ -62,6 +62,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
     private userSchedulesService: UserSchedulesService,
     private logsService: LogsService) { 
       this.minDate = localStorage.getItem('minSelectableDate') ? new Date(localStorage.getItem('minSelectableDate')!) : null;
+      if(this.minDate) this.minDate = new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate());
     }
 
   ngOnInit(): void {
@@ -143,7 +144,9 @@ export class ShiftCalendarControlsComponent implements OnInit {
     const currentDate = new Date(this._selectedDate.value);
     const newDate = new Date(currentDate);
     newDate.setDate(newDate.getDate() + unit);
-    if (this.minDate && newDate < this.minDate) {
+    console.log('newDate: ', newDate);
+    console.log('minDate: ', this.minDate);
+    if ((this.minDate && newDate < this.minDate) && this.authenticatedUser?.interviewer) {
       return;
     }
     switch (this._calendarType.toUpperCase()) {
