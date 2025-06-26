@@ -247,7 +247,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.dialogRef.close();
   }
   ngOnInit(): void {
-    this.tab = 'Month';
     this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
@@ -259,6 +258,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.pId = data.preschedulekey;
       }
     });
+    if (!this.isHomeRedirect) this.tab = 'Month';
     this.scheduleService.getType().subscribe((type) => {
       if (type) {
         this.profileType = type;
@@ -558,7 +558,10 @@ export class ShiftScheduleComponent implements OnInit {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
       resultDate.setMonth(resultDate.getMonth() + 1);
-      localStorage.setItem('minSelectableDate', resultDate.toLocaleDateString());
+      localStorage.setItem(
+        'minSelectableDate',
+        resultDate.toISOString().split('T')[0]
+      );
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -570,7 +573,10 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      localStorage.setItem('minSelectableDate', resultDate.toLocaleDateString());
+      localStorage.setItem(
+        'minSelectableDate',
+        resultDate.toISOString().split('T')[0]
+      );
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
