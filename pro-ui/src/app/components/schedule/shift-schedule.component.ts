@@ -39,6 +39,7 @@ import { MonthlyBlockDate } from '../calendar/calendar-controls/monthly.block.ou
 import { UsersService } from '../../services/users/users.service';
 import { SchedulingLevelDialog } from '../calendar/calendar-controls/scheduling-lever-dialog';
 import { CalendarComponent } from '../calendar/calendar.component';
+import { GlobalsService } from '../../services/globals/globals.service';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -191,6 +192,8 @@ export class ShiftScheduleComponent implements OnInit {
   isStartTimeChanged: boolean = false;
   isEndTimeChanged: boolean = false;
   coreHours: number = 0;
+  minSelectableDate: Date = new Date();
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -201,7 +204,8 @@ export class ShiftScheduleComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private scheduleService: ScheduleService,
     private requestsService: RequestsService,
-    private userService: UsersService
+    private userService: UsersService,
+    private globalsService: GlobalsService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -563,6 +567,20 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
+      if (dayWiseDateControl) {
+        dayWiseDateControl.setValue(
+          new Date(today.getFullYear(), today.getMonth() + 2, 1)
+        );
+        this.minSelectableDate = dayWiseDateControl.value;
+        this.homeSelectedDate = this.convertToLocalDate(
+          dayWiseDateControl.value
+        );
+        localStorage.setItem(
+          'minSelectableDate',
+          dayWiseDateControl.value.toISOString()
+        );
+      }
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();

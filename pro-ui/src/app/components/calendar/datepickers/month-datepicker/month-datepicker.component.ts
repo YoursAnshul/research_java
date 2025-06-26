@@ -4,7 +4,6 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/mat
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
 import moment, { Moment } from 'moment';
-
 @Component({
   selector: 'app-month-datepicker',
   templateUrl: './month-datepicker.component.html',
@@ -34,8 +33,13 @@ import moment, { Moment } from 'moment';
 export class MonthDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
-
-  constructor() { }
+  public minDate: null | Date = null; 
+  constructor() { 
+    const storedMinDate = localStorage.getItem('minSelectableDate');
+    if (storedMinDate) {
+      this.minDate = new Date(storedMinDate);
+    }
+  }
 
   ngOnInit(): void {
   }

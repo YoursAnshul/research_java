@@ -4,6 +4,7 @@
          [formControl]="selectedDate"
          (dateChange)="emitSelectedDate()"
          (blur)="onFinalMonthInput($event)"
+         [min]="minDate"
          (keydown)="onKeydown($event)"
          autocomplete="off" />
   <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>

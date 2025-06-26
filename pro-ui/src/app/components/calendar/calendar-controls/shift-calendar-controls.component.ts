@@ -57,10 +57,12 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   errorMessage!: string;
   @Input() isClose: boolean = false;
-
+  minDate: Date | null = null; 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
-    private logsService: LogsService) { }
+    private logsService: LogsService) { 
+      this.minDate = localStorage.getItem('minSelectableDate') ? new Date(localStorage.getItem('minSelectableDate')!) : null;
+    }
 
   ngOnInit(): void {
      
@@ -138,6 +140,12 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   //route add/subtract functions based on the calendar type
   public addDateUnitsToSelectedDate(unit: number): void {
+    const currentDate = new Date(this._selectedDate.value);
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + unit);
+    if (this.minDate && newDate < this.minDate) {
+      return;
+    }
     switch (this._calendarType.toUpperCase()) {
       case 'DAY': {
         this.addDaysToSelectedDate(unit);

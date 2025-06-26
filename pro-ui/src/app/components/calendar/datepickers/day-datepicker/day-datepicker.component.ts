@@ -41,8 +41,13 @@ import moment, { Moment } from 'moment';
 export class DayDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
-
-  constructor() {}
+  public minDate: null | Date = null;
+  constructor() {
+    const storedMinDate = localStorage.getItem('minSelectableDate');
+    if (storedMinDate) {
+      this.minDate = new Date(storedMinDate);
+    }
+  }
 
   ngOnInit(): void {}
 
