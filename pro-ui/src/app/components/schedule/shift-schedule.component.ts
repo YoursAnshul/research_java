@@ -567,21 +567,21 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
-      if (dayWiseDateControl) {
-        dayWiseDateControl.setValue(
-          new Date(today.getFullYear(), today.getMonth() + 2, 1)
-        );
-        this.minSelectableDate = dayWiseDateControl.value;
-        this.homeSelectedDate = this.convertToLocalDate(
-          dayWiseDateControl.value
-        );
-        localStorage.setItem(
-          'minSelectableDate',
-          dayWiseDateControl.value.toISOString()
-        );
-      }
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
+        const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
+        if (dayWiseDateControl) {
+          dayWiseDateControl.setValue(
+            new Date(today.getFullYear(), today.getMonth() + 2, 1)
+          );
+          this.minSelectableDate = dayWiseDateControl.value;
+          this.homeSelectedDate = this.convertToLocalDate(
+            dayWiseDateControl.value
+          );
+          localStorage.setItem(
+            'minSelectableDate',
+            dayWiseDateControl.value.toISOString()
+          );
+        }
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
