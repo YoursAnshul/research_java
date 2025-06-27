@@ -199,33 +199,67 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   //route add/subtract functions based on the calendar type
   public addDateUnitsToSelectedDate(unit: number): void {
-    const currentDate = new Date(this._selectedDate.value);
-    const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + unit);
-    const normalizedNewDate = new Date(newDate);
-    normalizedNewDate.setHours(0, 0, 0, 0);
+    const selectedDateValue = new Date(this._selectedDate.value);
+    const minDateStr = localStorage.getItem('minSelectableDate');
+    let normalizedMinDate: Date | null = null;
 
-    const normalizedMinDate = this.minDate ? new Date(this.minDate) : null;
-    if (normalizedMinDate) {
-      normalizedMinDate.setHours(0, 0, 0, 0);
+    if (minDateStr) {
+      const parsedMinDate = new Date(minDateStr);
+      if (!isNaN(parsedMinDate.getTime())) {
+        normalizedMinDate = new Date(parsedMinDate);
+        normalizedMinDate.setHours(0, 0, 0, 0);
+      }
     }
-    if (
-      normalizedMinDate &&
-      normalizedNewDate < normalizedMinDate &&
-      this.authenticatedUser?.interviewer
-    ) {
-      return;
-    }
+
     switch (this._calendarType.toUpperCase()) {
       case 'DAY': {
+        const newDate = new Date(selectedDateValue);
+        newDate.setDate(newDate.getDate() + unit);
+        newDate.setHours(0, 0, 0, 0);
+
+        if (
+          normalizedMinDate &&
+          this.authenticatedUser?.interviewer &&
+          (newDate.getFullYear() < normalizedMinDate.getFullYear() ||
+            (newDate.getFullYear() === normalizedMinDate.getFullYear() &&
+              newDate.getMonth() < normalizedMinDate.getMonth()))
+        ) {
+          return;
+        }
+
         this.addDaysToSelectedDate(unit);
         break;
       }
+
       case 'MONTH': {
+        const newDate = new Date(selectedDateValue);
+        newDate.setMonth(newDate.getMonth() + unit);
+        newDate.setDate(1);
+        newDate.setHours(0, 0, 0, 0);
+        if (
+          normalizedMinDate &&
+          newDate.getMonth() < normalizedMinDate.getMonth() &&
+          this.authenticatedUser?.interviewer
+        ) {
+          return;
+        }
+
         this.addMonthsToSelectedDate(unit);
         break;
       }
+
       case 'WEEK': {
+        const newDate = new Date(selectedDateValue);
+        newDate.setDate(newDate.getDate() + unit * 7);
+        newDate.setHours(0, 0, 0, 0);
+        if (
+          normalizedMinDate &&
+          newDate.getMonth() < normalizedMinDate.getMonth() &&
+          this.authenticatedUser?.interviewer
+        ) {
+          return;
+        }
+
         this.addWeeksToSelectedDate(unit);
         break;
       }

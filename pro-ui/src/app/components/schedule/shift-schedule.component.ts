@@ -562,6 +562,9 @@ export class ShiftScheduleComponent implements OnInit {
         'minSelectableDate',
         resultDate.toISOString().split('T')[0]
       );
+      this.homeSelectedDate = resultDate;
+      this.minSelectableDate = new Date(resultDate);
+      this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -573,10 +576,14 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      resultDate.setMonth(resultDate.getMonth() + 2);
       localStorage.setItem(
         'minSelectableDate',
         resultDate.toISOString().split('T')[0]
       );
+      this.homeSelectedDate = resultDate;
+      this.minSelectableDate = new Date(resultDate);
+      this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
