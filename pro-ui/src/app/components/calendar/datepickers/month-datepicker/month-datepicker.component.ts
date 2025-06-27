@@ -49,7 +49,7 @@ export class MonthDatepickerComponent implements OnInit {
         this.minDate = new Date(
           parsedDate.getFullYear(),
           parsedDate.getMonth(),
-          parsedDate.getDate()
+          1
         );
       }
     }
