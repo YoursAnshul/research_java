@@ -132,7 +132,7 @@
           }
         </div>
         <!-- [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''" -->
-        @for (schedule of [us]; track schedule) {
+        @for (schedule of us.schedules; track schedule.preschedulekey) {
         <div
           class="schedule-card"
           (click)="handleClick(schedule, $event)"
