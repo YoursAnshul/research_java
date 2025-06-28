@@ -223,6 +223,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
+
   ngOnChanges(): void {
     // this.getScheduleList();
   }
@@ -338,6 +339,12 @@ export class ShiftScheduleComponent implements OnInit {
       // this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
+      if (this.minSelectableDate) {
+        const date = new Date(this.minSelectableDate);
+        date.setDate(1); 
+        date.setHours(0, 0, 0, 0); 
+        this.minSelectableDate = date;
+      }
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
@@ -362,6 +369,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
       this.updateDayLabel(date);
     });
+
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (
         startTime &&
@@ -684,6 +692,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
     this.shiftForm.get('dayWiseDate')?.enable();
+    this.shiftForm.get('dayWiseDate')?.setErrors(null);
   }
   removeLeadingZero(time: string): string {
     return time.replace(/^0(\d)/, '$1');
