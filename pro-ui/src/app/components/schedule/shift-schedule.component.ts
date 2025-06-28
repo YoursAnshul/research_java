@@ -608,6 +608,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
     this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    this.shiftForm.markAllAsTouched();
   }
 
   validateBlockOutDate(selectedDate: any): void {
@@ -2161,26 +2162,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.dateOptionValue = data?.Subject?.optionValue;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        const resultDate = new Date(year, month, this.dateOptionValue);
-        resultDate.setHours(0, 0, 0, 0);
-        if (resultDate >= today) {
-          resultDate.setMonth(resultDate.getMonth() + 1);
-        } else {
-          resultDate.setMonth(resultDate.getMonth() + 2);
-        }
-        localStorage.setItem(
-          'minSelectableDate',
-          resultDate.toISOString().split('T')[0]
-        );
-        console.log(
-          "resultDate.toISOString().split('T')[0]---",
-          resultDate.toISOString().split('T')[0]
-        );
-
         this.validateDateOption(this.selectedDate.value);
       },
     });
