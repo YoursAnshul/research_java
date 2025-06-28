@@ -7,6 +7,7 @@ public class AuthenticatedUser {
 	public String duDukeID;
 	public String eppn;
 	public String netID;
+	public Integer role;
 	public Boolean interviewer;
 	public Boolean resourceGroup;
 	public Boolean admin;
@@ -22,6 +23,7 @@ public class AuthenticatedUser {
 		setDuDukeID(user.getUniqueid());
 		setEppn(user.getEmailaddr());
 		setNetID(user.getDempoid());
+		setRole(user.getRole());
 	}
 
 	public String[] getUserRoles() {
@@ -62,6 +64,14 @@ public class AuthenticatedUser {
 
 	public void setNetID(String netID) {
 		this.netID = netID;
+	}
+
+	public Integer getRole() {
+		return role;
+	}
+
+	public void setRole(Integer role) {
+		this.role = role;
 	}
 
 	public Boolean getInterviewer() {

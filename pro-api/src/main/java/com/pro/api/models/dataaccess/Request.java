@@ -47,6 +47,8 @@ public class Request {
 	@Column(name = "ModDT")
 	private LocalDateTime modDt;
 
+	private Long scheduleId;
+
 	public Request() {
 
 	}
@@ -145,5 +147,13 @@ public class Request {
 
 	public void setModDt(LocalDateTime modDt) {
 		this.modDt = modDt;
+	}
+
+	public Long getScheduleId() {
+		return scheduleId;
+	}
+
+	public void setScheduleId(Long scheduleId) {
+		this.scheduleId = scheduleId;
 	}
 }

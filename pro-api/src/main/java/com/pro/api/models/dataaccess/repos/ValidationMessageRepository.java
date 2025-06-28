@@ -12,21 +12,25 @@ import java.util.List;
 
 @Repository
 public interface ValidationMessageRepository extends JpaRepository<ValidationMessage, Integer> {
-	@Query("SELECT vm FROM ValidationMessage vm  WHERE vm.dempoId = :dempoId AND YEAR(vm.inMonth) = :year "
-			+ "AND MONTH(vm.inMonth) = :month")
-	List<ValidationMessage> findByDempoIdAndInMonthYearAndInMonthMonth(String dempoId, int year, int month);
+	@Query(value = "SELECT * FROM ValidationMessages vm WHERE vm.DempoID = :dempoId " +
+	       "AND EXTRACT(YEAR FROM vm.InMonth) = :year " +
+	       "AND EXTRACT(MONTH FROM vm.InMonth) = :month", nativeQuery = true)
+	List<ValidationMessage> findByDempoIdAndInMonthYearAndInMonthMonth(@Param("dempoId") String dempoId, @Param("year") int year, @Param("month") int month);
 
-	@Query("SELECT NEW com.pro.api.models.business.ValidationMessagePlus(vm, vmt.messageText) FROM ValidationMessage vm "
-			+ "JOIN ValidationMessageText vmt ON vm.messageId = vmt.messageId "
-			+ "WHERE LOWER(vm.dempoId) = LOWER(:netId) " + "AND YEAR(vm.inMonth) = YEAR(:inDate) "
-			+ "AND MONTH(vm.inMonth) = MONTH(:inDate)")
-	List<ValidationMessagePlus> findValidationMessagesByNetIdAndMonth(@Param("netId") String netId,
-			@Param("inDate") LocalDate inDate);
+	@Query(value = "SELECT vm.ValidationMessagesID, vm.DempoID, vm.MessageID, vm.InMonth, vm.ScheduleKeys, vm.Details, vmt.MessageText " +
+	       "FROM ValidationMessages vm " +
+	       "JOIN ValidationMessageText vmt ON vm.MessageID = vmt.MessageId " +
+	       "WHERE LOWER(vm.DempoID) = LOWER(:netId) " +
+	       "AND EXTRACT(YEAR FROM vm.InMonth) = EXTRACT(YEAR FROM CAST(:inDate AS DATE)) " +
+	       "AND EXTRACT(MONTH FROM vm.InMonth) = EXTRACT(MONTH FROM CAST(:inDate AS DATE))", nativeQuery = true)
+	List<Object[]> findValidationMessagesByNetIdAndMonth(@Param("netId") String netId, @Param("inDate") LocalDate inDate);
 
-	@Query("SELECT NEW com.pro.api.models.business.ValidationMessagePlus(vm, vmt.messageText) FROM ValidationMessage vm "
-			+ "JOIN ValidationMessageText vmt ON vm.messageId = vmt.messageId "
-			+ "WHERE YEAR(vm.inMonth) = YEAR(:inDate) " + "AND MONTH(vm.inMonth) = MONTH(:inDate)")
-	List<ValidationMessagePlus> findValidationMessagesByInDate(@Param("inDate") LocalDate inDate);
+	@Query(value = "SELECT vm.ValidationMessagesID, vm.DempoID, vm.MessageID, vm.InMonth, vm.ScheduleKeys, vm.Details, vmt.MessageText " +
+	       "FROM ValidationMessages vm " +
+	       "JOIN ValidationMessageText vmt ON vm.MessageID = vmt.MessageId " +
+	       "WHERE EXTRACT(YEAR FROM vm.InMonth) = EXTRACT(YEAR FROM CAST(:inDate AS DATE)) " +
+	       "AND EXTRACT(MONTH FROM vm.InMonth) = EXTRACT(MONTH FROM CAST(:inDate AS DATE))", nativeQuery = true)
+	List<Object[]> findValidationMessagesByInDate(@Param("inDate") LocalDate inDate);
 
 	@Query("SELECT vm FROM ValidationMessage vm WHERE vm.validationMessagesId IN :valMessageIds")
 	List<ValidationMessage> findValidationMessagesByIds(@Param("valMessageIds") List<Integer> valMessageIds);

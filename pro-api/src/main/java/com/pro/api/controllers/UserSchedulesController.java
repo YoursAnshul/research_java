@@ -236,16 +236,16 @@ public class UserSchedulesController {
 		return response;
 	}
 
-	@PostMapping("/validation")
+	@PostMapping("/validation/{netId}")
 	public GeneralResponse validateSchedules(HttpServletRequest httpServletRequest,
+			@PathVariable String netId,
 			@RequestBody List<ValidationMessage> userMonths) {
 		GeneralResponse response = new GeneralResponse();
-		String netId = "Unknown";
 		// Retrieve NetId from session if available
-		Object netIdObj = httpServletRequest.getSession().getAttribute("NetId");
-		if (netIdObj != null) {
-			netId = (String) netIdObj;
-		}
+		// Object netIdObj = httpServletRequest.getSession().getAttribute("NetId");
+		// if (netIdObj != null) {
+		// 	netId = (String) netIdObj;
+		// }
 		List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
 		List<ValidationMessagePlus> savedValidationMessages = new ArrayList<ValidationMessagePlus>();
 		List<String> errorMessages = new ArrayList<String>();
@@ -418,13 +418,13 @@ public class UserSchedulesController {
 				// ------------------------------------
 				// schedule level 1 only
 				// ------------------------------------
-				if (schedulinglevel == 1) {
-					// An Interviewer's weekly schedule should not exceed 20 hours total.
-					if (greaterThan20) {
-						addMessage(validationMessages, 8, um.getInMonth(), um.getDempoId(),
-								String.join("|", greaterThan20Details));
-					}
-				}
+				// if (schedulinglevel == 1) {
+				// 	// An Interviewer's weekly schedule should not exceed 20 hours total.
+				// 	if (greaterThan20) {
+				// 		addMessage(validationMessages, 8, um.getInMonth(), um.getDempoId(),
+				// 				String.join("|", greaterThan20Details));
+				// 	}
+				// }
 
 				// ------------------------------------
 				// schedule level 2/3 only
@@ -436,10 +436,12 @@ public class UserSchedulesController {
 								String.join("|", greaterThan40Details));
 					}
 				}
+
 				// ------------------------------------
-				// schedule level 1/2 only
+				// schedule level 1 only
 				// ------------------------------------
-				if (schedulinglevel == 1 || schedulinglevel == 2) {
+				//TODO: change to 2 night shifts every month instead of 1 every week
+				if (schedulinglevel == 1) {
 					List<LocalDateTime> schedulesWeeklyTemp = schedulesWeekly.stream()
 							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
 									&& (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() >= 21
@@ -456,10 +458,17 @@ public class UserSchedulesController {
 					if (schedulesWeeklyTemp.size() < 2 || (schedulesWeeklyTemp.size() == 2 && twoConsecutive)) {
 						addMessage(validationMessages, 10, um.getInMonth(), um.getDempoId(), null);
 					}
-					// An Interviewer's schedule should include 1 weekend shift every other week.
-					// A Friday night shift schedule with majority of hours after 5 PM, can only
-					// have 1 Friday night per month.
-					// A Saturday and / or Sunday shift schedule should be 6 hours minimum.
+				}
+
+				// ------------------------------------
+				// schedule level 1/2 only
+				// ------------------------------------
+				if (schedulinglevel == 1 || schedulinglevel == 2) {
+
+					//TODO: change to 2 weekend shifts each month, remove 
+
+					// An Interviewer's schedule should include 2 weekend shifts each month.
+					// A Saturday or Sunday shift schedule should be 4 hours minimum.
 
 					// get week starts having: A Saturday and / or Sunday shift schedule should be 6
 					// hours minimum.
@@ -468,61 +477,14 @@ public class UserSchedulesController {
 									&& (s.getStartdatetime().getDayOfWeek() == DayOfWeek.SATURDAY
 											|| s.getStartdatetime().getDayOfWeek() == DayOfWeek.SUNDAY)
 									&& (s.getEnddatetime().toLocalTime().toSecondOfDay()
-											- s.getStartdatetime().toLocalTime().toSecondOfDay()) / 3600 >= 6)
+											- s.getStartdatetime().toLocalTime().toSecondOfDay()) / 3600 >= 4)
 							.map(ViUserSchedule::getWeekStart).distinct().collect(Collectors.toList());
-					// get week starts having: A Friday night shift schedule with majority of hours
-					// after 5 PM, can only have 1 Friday night per month.
-					List<Double> timeFrom5 = schedulesWeekly.stream()
-							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY
-									&& (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() > 17))
-							.map(s -> (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() - 17)
-									+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0))
-							.collect(Collectors.toList());
 
-					List<Double> totalHoursFriday = schedulesWeekly.stream()
-							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY)
-							.map(s -> (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour())
-									+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0)
-									- (s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour())
-									+ (s.getStartdatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0))
-							.collect(Collectors.toList());
-
-					List<LocalDateTime> dateAt5 = schedulesWeekly.stream()
-							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY)
-							.map(s -> LocalDateTime.of(s.getStartdatetime().getYear(), s.getStartdatetime().getMonth(),
-									s.getStartdatetime().getDayOfMonth(), 17, 0))
-							.collect(Collectors.toList());
-
-					List<LocalDateTime> fridaySchedules = schedulesWeekly.stream().filter(s -> s
-							.getStartdatetime() != null && s.getEnddatetime() != null
-							&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY
-							&& (((s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() - 17) + (s
-									.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute()
-									/ 60.0)) > ((s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour())
-											+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0)
-											- (s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour())
-											+ (s.getStartdatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0))
-											/ 2))
-							.map(ViUserSchedule::getWeekStart).collect(Collectors.toList());
 					boolean everyOtherWeek = false;
 					if (everyOtherWeekStart(satSunSchedules)) {
 						everyOtherWeek = true;
-					} else {
-						for (LocalDateTime fridayWeekStart : fridaySchedules) {
-							Set<LocalDateTime> tryFridaySchedulesSet = new TreeSet<>(satSunSchedules);
-							tryFridaySchedulesSet.add(fridayWeekStart);
-
-							// Convert the set back to a list
-							List<LocalDateTime> tryFridaySchedules = new ArrayList<>(tryFridaySchedulesSet);
-
-							if (everyOtherWeekStart(tryFridaySchedules)) {
-								everyOtherWeek = true;
-							}
-						}
 					}
+
 					if (!everyOtherWeek) {
 						addMessage(validationMessages, 11, um.getInMonth(), um.getDempoId(), null);
 					}
@@ -672,11 +634,27 @@ public class UserSchedulesController {
 	public GeneralResponse getValidationMessages(@PathVariable LocalDate inDate, @RequestParam String netId) {
 		GeneralResponse response = new GeneralResponse();
 		try {
-			List<ValidationMessagePlus> validationMessages = new ArrayList<ValidationMessagePlus>();
+			List<Object[]> rawResults;
 			if (!isNullOrWhiteSpace(netId)) {
-				validationMessages = validationMessageRepository.findValidationMessagesByNetIdAndMonth(netId, inDate);
+				rawResults = validationMessageRepository.findValidationMessagesByNetIdAndMonth(netId, inDate);
 			} else {
-				validationMessages = validationMessageRepository.findValidationMessagesByInDate(inDate);
+				rawResults = validationMessageRepository.findValidationMessagesByInDate(inDate);
+			}
+			List<ValidationMessagePlus> validationMessages = new ArrayList<>();
+			for (Object[] row : rawResults) {
+				ValidationMessagePlus vmp = new ValidationMessagePlus();
+				vmp.setValidationMessagesId(row[0] instanceof Integer ? (Integer) row[0] : ((Number) row[0]).intValue());
+				vmp.setDempoId((String) row[1]);
+				vmp.setMessageId(row[2] instanceof Integer ? (Integer) row[2] : ((Number) row[2]).intValue());
+				if (row[3] instanceof java.sql.Date) {
+					vmp.setInMonth(((java.sql.Date) row[3]).toLocalDate());
+				} else if (row[3] instanceof java.time.LocalDate) {
+					vmp.setInMonth((java.time.LocalDate) row[3]);
+				}
+				vmp.setScheduleKeys((String) row[4]);
+				vmp.setDetails((String) row[5]);
+				vmp.setMessageText((String) row[6]);
+				validationMessages.add(vmp);
 			}
 			List<Integer> valMessageIds = validationMessages.stream()
 					.map(ValidationMessagePlus::getValidationMessagesId).collect(Collectors.toList());
@@ -764,122 +742,12 @@ public class UserSchedulesController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
-	@PostMapping("/add-new-request")
-    public GeneralResponse saveRequests(HttpServletRequest httpServletRequest, @RequestBody List<Request> requests) {
-        GeneralResponse response = new GeneralResponse();
-        String netId = getNetIdFromSession(httpServletRequest);
+	@GetMapping("/core-hours")
+	public ResponseEntity<GeneralResponse> getCoreHours(
+			@RequestParam(required = false, value = "dempoId") String dempoId,
+			@RequestParam(required = false, value = "scheduleDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate) {
+		GeneralResponse response = scheduleService.getCoreHours(scheduleDate, dempoId);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 
-        List<Request> savedRequests = new ArrayList<>();
-        List<String> errorMessages = new ArrayList<>();
-
-        // Start process logging
-        System.out.println("Received request to save " + requests.size() + " entries from user: " + netId);
-
-        if (requests == null || requests.isEmpty()) {
-            response.Status = "Failure";
-            response.Message = "No request data provided.";
-            return response;
-        }
-
-        int requestIndex = 0;
-
-        for (Request request : requests) {
-            requestIndex++;
-            System.out.println("Processing request #" + requestIndex);
-
-            try {
-                validateRequest(request, requestIndex);
-                populateRequestMetadata(request, netId);
-
-                updateAuditTrail(request.getModBy());
-
-                Request savedRequest = saveRequestToDatabase(request);
-                savedRequests.add(savedRequest);
-
-                System.out.println("Request #" + requestIndex + " saved successfully.");
-
-            } catch (Exception ve) {
-                String errorMsg = "Validation failed for request #" + requestIndex + ": " + ve.getMessage();
-                errorMessages.add(errorMsg);
-                System.err.println(errorMsg);
-            }
-			//  catch (Exception ex) {
-            //     String errorMsg = "Unexpected error for request #" + requestIndex + ": " + ex.getMessage();
-            //     errorMessages.add(errorMsg);
-            //     System.err.println(errorMsg);
-            // }
-        }
-
-        // Final response assembly
-        if (!savedRequests.isEmpty()) {
-            response.Status = "Success";
-            response.Subject = savedRequests;
-
-            if (!errorMessages.isEmpty()) {
-                response.Message = String.format("%d request(s) saved, %d request(s) failed:\n%s",
-                        savedRequests.size(), errorMessages.size(), String.join("\n", errorMessages));
-            } else {
-                response.Message = "All requests saved successfully.";
-            }
-        } else {
-            response.Status = "Failure";
-            response.Message = "No request could be saved.\n" + String.join("\n", errorMessages);
-        }
-
-        return response;
-    }
-
-    private String getNetIdFromSession(HttpServletRequest request) {
-        Object netIdObj = request.getSession().getAttribute("NetId");
-        return (netIdObj != null) ? netIdObj.toString() : "Unknown";
-    }
-
-    private void validateRequest(Request request, int index) throws Exception {
-        // if (request.getProjectName() == null || request.getProjectName().trim().isEmpty()) {
-        //     throw new ValidationException("Project name is missing in request #" + index);
-        // }
-
-        // if (request.getModBy() == null || request.getModBy().trim().isEmpty()) {
-        //     throw new ValidationException("Modified by (modBy) is missing in request #" + index);
-        // }
-
-        // Add more validations as needed
-    }
-
-    private void populateRequestMetadata(Request request, String netId) {
-        String projectName = "";
-
-        // Mapping logic (this mimics your frontend logic)
-        if ("Sick".equalsIgnoreCase(projectName)) {
-            request.setRequestCodeId(3);
-            // request.setRequestType("Unexcused Absence-Sick");
-        } else if ("Absent".equalsIgnoreCase(projectName)) {
-            request.setRequestCodeId(4);
-            // request.setRequestType("Unexcused Absence-Other");
-        } else if ("Arriving Late".equalsIgnoreCase(projectName)) {
-            request.setRequestCodeId(7);
-            // request.setRequestType("Tardy-Arriving Late");
-        } else {
-            request.setRequestCodeId(999); // Default or unknown
-            // request.setRequestType("Unknown Type for project: " + projectName);
-        }
-
-        // Set metadata fields
-        // request.setCreatedBy(netId);
-        // request.setCreatedDate(LocalDateTime.now());
-    }
-
-	 private void updateAuditTrail(String modBy) {
-        auditService.updateNetId(modBy);
-    }
-
-    private Request saveRequestToDatabase(Request request) throws Exception {
-        try {
-            return requestRepository.save(request);
-        } catch (Exception ex) {
-            throw new Exception("Failed to save request with project" );
-        }
-    }
-
-	
 }

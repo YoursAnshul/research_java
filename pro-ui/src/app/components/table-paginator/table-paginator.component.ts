@@ -15,6 +15,7 @@ export class TablePaginatorComponent {
   @Output() currentPageChange = new EventEmitter<number>();
   @Input() pageSize = 10;
   @Output() pageSizeChange = new EventEmitter<number>();
+  @Output() pageChange = new EventEmitter<void>();
 
   constructor() {}
 
@@ -32,6 +33,7 @@ export class TablePaginatorComponent {
     const end = Math.min(start + this.pageSize, total);
     this.paginatedData = (this.sourceData || []).slice(start, end);
     this.paginatedDataChange.emit(this.paginatedData);
+    this.pageChange.emit();
   }
 
   get totalPages(): number {
@@ -97,5 +99,9 @@ export class TablePaginatorComponent {
   getPageEnd(): number {
     const totalItems = this.sourceData?.length || 0;
     return Math.min(this.currentPage * this.pageSize, totalItems);
+  }
+  onPageChange(newPage: number): void {
+    this.currentPage = newPage;
+    this.paginateData();
   }
 }

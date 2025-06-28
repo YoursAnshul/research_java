@@ -11,4 +11,6 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
 
 	@Query("SELECT r FROM Request r WHERE r.interviewerEmpId = :netId ORDER BY r.requestDate DESC")
 	List<Request> findAllByInterviewerEmpIdOrderByRequestDateDesc(String netId);
+
+	Request findByScheduleId(Long id);
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -24,7 +25,9 @@ import org.springframework.stereotype.Service;
 
 import com.pro.api.controllers.GeneralResponse;
 import com.pro.api.models.dataaccess.AdminOption;
+import com.pro.api.models.dataaccess.CoreHour;
 import com.pro.api.models.dataaccess.repos.AdminOptionRepository;
+import com.pro.api.models.dataaccess.repos.CoreHourRepository;
 import com.pro.api.response.Projects;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
@@ -42,6 +45,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Autowired
 	private AdminOptionRepository adminOptionRepository;
+
+	@Autowired
+	private CoreHourRepository coreHourRepository;
 
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
 		GeneralResponse response = new GeneralResponse();
@@ -122,6 +128,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 
 		if (successCount > 0 && duplicateCount == 0) {
+			String sql = "SELECT preScheduleKey FROM core.schedules ORDER BY preScheduleKey DESC LIMIT 1";
+			Long preScheduleKey = jdbcTemplate.queryForObject(sql, Long.class);
+			ScheduleResponse res = new ScheduleResponse();
+			res.setPreschedulekey(preScheduleKey);
+			response.Subject = res;
 			response.Message = "Schedule saved successfully!";
 		} else if (duplicateCount > 0) {
 			response.Message = "Schedule already exists for this user!";
@@ -136,13 +147,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public List<ScheduleResponse> getList(String dempoId, Integer projectId, LocalDate scheduleDate, String tabValue,
 			LocalDate startDate, LocalDate endDate, int year, int month) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT s.preschedulekey, u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
+		query.append(
+				"SELECT s.preschedulekey, u.language, u.dempoid, u.userid, CONCAT(u.fname, ' ', u.lname) AS userName, ");
 		query.append("p.projectid, p.projectcolor, p.projectname, ");
 		query.append("s.startdatetime, s.enddatetime, ");
-		query.append("s.comments, s.scheduleDate AS daywisedate ");
+		query.append("s.comments, s.scheduleDate AS daywisedate, ch.corehours1 ");
 		query.append("FROM core.schedules s ");
 		query.append("JOIN core.projects p ON s.projectid = p.projectid ");
 		query.append("LEFT JOIN core.users u ON s.dempoid = u.dempoid ");
+		query.append("LEFT JOIN core.corehours ch ON s.dempoid = ch.dempoid ");
 		query.append("WHERE p.active = 1  ");
 		List<Object> params = new ArrayList<>();
 
@@ -166,15 +179,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");
-			System.out.println("startTime------------" + startTime);
-			System.out.println("endTime------------" + endTime);
 			double duration = calculateDuration(startTime, endTime);
 
 			return new ScheduleResponse(rs.getString("comments"), formatTime(startTime), formatTime(endTime), duration,
 					rs.getDate("daywisedate"),
 					new User(rs.getString("dempoid"), rs.getInt("userid"), rs.getString("userName")),
 					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")),
-					rs.getLong("preschedulekey"));
+					rs.getLong("preschedulekey"), rs.getString("language"), rs.getInt("corehours1"));
 		}, params.toArray());
 	}
 
@@ -309,6 +320,56 @@ public class ScheduleServiceImpl implements ScheduleService {
 		GeneralResponse res = new GeneralResponse();
 		res.Subject = obj;
 		return res;
+	}
+
+	@Override
+	public GeneralResponse getCoreHours(LocalDate scheduleDate, String dempoId) {
+		int month = scheduleDate.getMonthValue();
+		int year = scheduleDate.getYear();
+
+		CoreHour coreHour = coreHourRepository.findFirstByDempoidAndMonthYear(dempoId, month, year);
+		GeneralResponse response = new GeneralResponse();
+		Integer coreHoursValue = 0;
+
+		if (coreHour == null) {
+			response.Subject = coreHoursValue;
+			return response;
+		}
+
+		YearMonth target = YearMonth.from(scheduleDate);
+
+		if (coreHour.getMonth1() != null && YearMonth.from(coreHour.getMonth1()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours1();
+		} else if (coreHour.getMonth2() != null && YearMonth.from(coreHour.getMonth2()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours2();
+		} else if (coreHour.getMonth3() != null && YearMonth.from(coreHour.getMonth3()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours3();
+		} else if (coreHour.getMonth4() != null && YearMonth.from(coreHour.getMonth4()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours4();
+		} else if (coreHour.getMonth5() != null && YearMonth.from(coreHour.getMonth5()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours5();
+		} else if (coreHour.getMonth6() != null && YearMonth.from(coreHour.getMonth6()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours6();
+		} else if (coreHour.getMonth7() != null && YearMonth.from(coreHour.getMonth7()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours7();
+		} else if (coreHour.getMonth8() != null && YearMonth.from(coreHour.getMonth8()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours8();
+		} else if (coreHour.getMonth9() != null && YearMonth.from(coreHour.getMonth9()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours9();
+		} else if (coreHour.getMonth10() != null && YearMonth.from(coreHour.getMonth10()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours10();
+		} else if (coreHour.getMonth11() != null && YearMonth.from(coreHour.getMonth11()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours11();
+		} else if (coreHour.getMonth12() != null && YearMonth.from(coreHour.getMonth12()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours12();
+		} else if (coreHour.getMonth13() != null && YearMonth.from(coreHour.getMonth13()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours13();
+		} else if (coreHour.getMonth14() != null && YearMonth.from(coreHour.getMonth14()).equals(target)) {
+			coreHoursValue = coreHour.getCoreHours14();
+		}
+
+		response.Subject = coreHoursValue;
+		return response;
 	}
 
 }

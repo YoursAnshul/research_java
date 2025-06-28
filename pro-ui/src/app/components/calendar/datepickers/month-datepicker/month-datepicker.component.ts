@@ -1,10 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MomentDateAdapter,
+} from '@angular/material-moment-adapter';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
 import moment, { Moment } from 'moment';
-
 @Component({
   selector: 'app-month-datepicker',
   templateUrl: './month-datepicker.component.html',
@@ -13,32 +19,43 @@ import moment, { Moment } from 'moment';
     {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     {
-      provide: MAT_DATE_FORMATS, useValue: {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
         parse: {
-          dateInput: "MM/YYYY"
+          dateInput: 'MM/YYYY',
         },
         display: {
-          dateInput: "MM/YYYY",
-          monthYearLabel: "MMM YYYY",
-          dateA11yLabel: "LL",
-          monthYearA11yLabel: "MMMM YYYY",
-        }
+          dateInput: 'MM/YYYY',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
       },
-    }
+    },
   ],
 })
-
 export class MonthDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
-
-  constructor() { }
-
-  ngOnInit(): void {
+  public minDate: null | Date = null;
+  constructor() {
+    const storedMinDate = localStorage.getItem('minSelectableDate');
+    if (storedMinDate) {
+      const parsedDate = new Date(storedMinDate);
+      if (!isNaN(parsedDate.getTime())) {
+        this.minDate = new Date(
+          parsedDate.getFullYear(),
+          parsedDate.getMonth(),
+          1
+        );
+      }
+    }
   }
+
+  ngOnInit(): void {}
 
   //emit selected date
   emitSelectedDate(): void {
@@ -61,7 +78,10 @@ export class MonthDatepickerComponent implements OnInit {
   }
 
   //handle month selection
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+  chosenMonthHandler(
+    normalizedMonth: Moment,
+    datepicker: MatDatepicker<Moment>
+  ) {
     let selectedDt: Date = new Date(this.selectedDate.value);
     selectedDt.setFullYear(normalizedMonth.year());
     selectedDt.setMonth(normalizedMonth.month());
@@ -86,20 +106,20 @@ export class MonthDatepickerComponent implements OnInit {
       this.onFinalMonthInput(event);
     }
   }
-  
+
   onFinalMonthInput(event: Event): void {
     const inputValue = (event.target as HTMLInputElement).value;
     const parsed = moment(inputValue, 'MM/YYYY', true);
-  
+
     if (parsed.isValid()) {
       const year = parsed.year();
-  
+
       if (year === 1969 || year < 2024 || year > 2026) {
         console.warn('Restricted or invalid year in month input:', year);
         const now = moment().date(1);
         this.selectedDate.setValue(now.toDate());
       } else {
-        parsed.date(1); 
+        parsed.date(1);
         this.selectedDate.setValue(parsed.toDate());
       }
     } else {
@@ -107,9 +127,7 @@ export class MonthDatepickerComponent implements OnInit {
       const now = moment().date(1);
       this.selectedDate.setValue(now.toDate());
     }
-  
+
     this.selectedDateChange.emit(this.selectedDate);
   }
-  
-  
 }

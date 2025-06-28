@@ -371,7 +371,7 @@ export class ScheduleComponent implements OnInit {
 
         if (!previousDateIsSame) {
           //call validate schedules
-          this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage]).subscribe(
+          this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage], this.authenticatedUser.netID).subscribe(
             response => {
               if ((response.Status || '').toUpperCase() == 'SUCCESS') {
                 try {
@@ -779,7 +779,7 @@ export class ScheduleComponent implements OnInit {
     }
 
     //call validate schedules
-    this.userSchedulesService.validateSchedules(userMonths).subscribe(
+    this.userSchedulesService.validateSchedules(userMonths, this.authenticatedUser.netID).subscribe(
       response => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
           try {
