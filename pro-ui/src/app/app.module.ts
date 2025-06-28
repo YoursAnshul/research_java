@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { provideHttpClient } from '@angular/common/http';
+import {provideHttpClient} from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -39,33 +39,29 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import {
-  MatNativeDateModule,
-  MAT_DATE_FORMATS,
-  MatRippleModule,
-} from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_FORMATS, MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule} from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
+import {MatSortModule} from '@angular/material/sort';
 import { AnySelectComponent } from './components/any-select/any-select.component';
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { LanguageIconComponent } from './components/language-icon/language-icon.component';
 import { DialogComponent } from './components/dialog/dialog.component';
-import { MonthDatepickerComponent } from './components/calendar/datepickers/month-datepicker/month-datepicker.component';
-import { WeekDatepickerComponent } from './components/calendar/datepickers/week-datepicker/week-datepicker.component';
-import { ScheduleLineComponent } from './components/schedule/schedule-line/schedule-line.component';
-import { RangeDatepickerComponent } from './components/calendar/datepickers/range-datepicker/range-datepicker.component';
-import { MatPaginator } from '@angular/material/paginator';
-import { ModalPopupComponent } from './components/modal-popup/modal-popup.component';
-import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import {MonthDatepickerComponent} from "./components/calendar/datepickers/month-datepicker/month-datepicker.component";
+import {WeekDatepickerComponent} from "./components/calendar/datepickers/week-datepicker/week-datepicker.component";
+import {ScheduleLineComponent} from "./components/schedule/schedule-line/schedule-line.component";
+import {RangeDatepickerComponent} from "./components/calendar/datepickers/range-datepicker/range-datepicker.component";
+import {MatPaginator} from "@angular/material/paginator";
+import {ModalPopupComponent} from "./components/modal-popup/modal-popup.component";
+import {NavMenuComponent} from "./components/nav-menu/nav-menu.component";
 import { HighlightSearch } from './components/highlightsearch/highlight.search';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatCheckboxModule} from '@angular/material/checkbox'
 import { CustomPageComponent } from './pages/custom-page/custom.page.component';
 import { ParticipantSearchComponent } from './components/participant-search/participant-search.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -81,8 +77,8 @@ import { AddUserComponent } from './components/add-user/add-user.component';
 import { TablePaginatorComponent } from './components/table-paginator/table-paginator.component';
 import { ColumnActionsComponent } from './components/column-actions/column-actions.component';
 import { TableHeaderComponent } from './components/table-header/table-header.component';
-import { TrainedOnProjectsComponent } from './components/trained-on-projects/trained-on-projects.component';
-import { ViewUserComponent } from './components/view-user/view-user.component';
+import {TrainedOnProjectsComponent} from "./components/trained-on-projects/trained-on-projects.component";
+import {ViewUserComponent} from "./components/view-user/view-user.component";
 import { FormFieldComponent } from './components/form-field/form-field.component';
 import { UnsavedChangesDialogComponent } from './components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { SelectComponent } from './components/form-inputs/select/select.component';
@@ -221,9 +217,9 @@ import { ProjectForecastingComponentV2 } from './pages/forecasting/project-forec
     MatTableModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    MatRippleModule,
+    MatRippleModule
   ],
   providers: [provideHttpClient()],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

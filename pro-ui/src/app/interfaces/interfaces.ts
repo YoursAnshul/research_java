@@ -1,5 +1,6 @@
 import { FormControl } from "@angular/forms";
 import { User } from "../models/data/user";
+import { UserRole } from "../models/presentation/enums";
 
 export interface ITimeCard {
   timeCardId: number;
@@ -348,6 +349,7 @@ export interface IAuthenticatedUser {
   duDukeID: string;
   eppn: string;
   netID: string;
+  role?: number;
   isMemberOf: string;
   interviewer: boolean;
   resourceGroup: boolean;

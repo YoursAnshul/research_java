@@ -186,8 +186,8 @@ export class UserSchedulesService {
   }
 
   //generate and return validation messages
-  validateSchedules(validationMessages: IValidationMessage[]): Observable<IGeneralResponse> {
-    return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/validation`, validationMessages);
+  validateSchedules(validationMessages: IValidationMessage[], netId: string): Observable<IGeneralResponse> {
+    return this.http.post<IGeneralResponse>(`${this.apiRootUrl}/validation/${netId}`, validationMessages);
   }
 
   //save one or more schedules

@@ -36,13 +36,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.api.models.business.KeyValuePair;
+import com.pro.api.models.business.SessionUserEmail;
 import com.pro.api.models.business.ValidationMessagePlus;
 import com.pro.api.models.dataaccess.CoreHour;
+import com.pro.api.models.dataaccess.Request;
 import com.pro.api.models.dataaccess.Schedule;
 import com.pro.api.models.dataaccess.User;
 import com.pro.api.models.dataaccess.ValidationMessage;
 import com.pro.api.models.dataaccess.ViUserSchedule;
 import com.pro.api.models.dataaccess.repos.CoreHourRepository;
+import com.pro.api.models.dataaccess.repos.RequestRepository;
 import com.pro.api.models.dataaccess.repos.ScheduleRepository;
 import com.pro.api.models.dataaccess.repos.TimeCodeRepository;
 import com.pro.api.models.dataaccess.repos.UserRepository;
@@ -51,6 +54,7 @@ import com.pro.api.models.dataaccess.repos.ValidationMessageTextRepository;
 import com.pro.api.models.dataaccess.repos.ViUserScheduleRepository;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
+import com.pro.api.service.AuditService;
 import com.pro.api.service.ScheduleService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -78,6 +82,15 @@ public class UserSchedulesController {
 
 	@Autowired
 	private ScheduleService scheduleService;
+
+		@Autowired
+	private RequestRepository requestRepository;
+
+	@Autowired
+	private SessionUserEmail UserEmail;
+
+	@Autowired
+	private AuditService auditService;
 
 	@DeleteMapping
 	public GeneralResponse deleteSchedules(@RequestBody List<Schedule> schedules) {
@@ -223,16 +236,16 @@ public class UserSchedulesController {
 		return response;
 	}
 
-	@PostMapping("/validation")
+	@PostMapping("/validation/{netId}")
 	public GeneralResponse validateSchedules(HttpServletRequest httpServletRequest,
+			@PathVariable String netId,
 			@RequestBody List<ValidationMessage> userMonths) {
 		GeneralResponse response = new GeneralResponse();
-		String netId = "Unknown";
 		// Retrieve NetId from session if available
-		Object netIdObj = httpServletRequest.getSession().getAttribute("NetId");
-		if (netIdObj != null) {
-			netId = (String) netIdObj;
-		}
+		// Object netIdObj = httpServletRequest.getSession().getAttribute("NetId");
+		// if (netIdObj != null) {
+		// 	netId = (String) netIdObj;
+		// }
 		List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
 		List<ValidationMessagePlus> savedValidationMessages = new ArrayList<ValidationMessagePlus>();
 		List<String> errorMessages = new ArrayList<String>();
@@ -405,13 +418,13 @@ public class UserSchedulesController {
 				// ------------------------------------
 				// schedule level 1 only
 				// ------------------------------------
-				if (schedulinglevel == 1) {
-					// An Interviewer's weekly schedule should not exceed 20 hours total.
-					if (greaterThan20) {
-						addMessage(validationMessages, 8, um.getInMonth(), um.getDempoId(),
-								String.join("|", greaterThan20Details));
-					}
-				}
+				// if (schedulinglevel == 1) {
+				// 	// An Interviewer's weekly schedule should not exceed 20 hours total.
+				// 	if (greaterThan20) {
+				// 		addMessage(validationMessages, 8, um.getInMonth(), um.getDempoId(),
+				// 				String.join("|", greaterThan20Details));
+				// 	}
+				// }
 
 				// ------------------------------------
 				// schedule level 2/3 only
@@ -423,10 +436,12 @@ public class UserSchedulesController {
 								String.join("|", greaterThan40Details));
 					}
 				}
+
 				// ------------------------------------
-				// schedule level 1/2 only
+				// schedule level 1 only
 				// ------------------------------------
-				if (schedulinglevel == 1 || schedulinglevel == 2) {
+				//TODO: change to 2 night shifts every month instead of 1 every week
+				if (schedulinglevel == 1) {
 					List<LocalDateTime> schedulesWeeklyTemp = schedulesWeekly.stream()
 							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
 									&& (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() >= 21
@@ -443,10 +458,17 @@ public class UserSchedulesController {
 					if (schedulesWeeklyTemp.size() < 2 || (schedulesWeeklyTemp.size() == 2 && twoConsecutive)) {
 						addMessage(validationMessages, 10, um.getInMonth(), um.getDempoId(), null);
 					}
-					// An Interviewer's schedule should include 1 weekend shift every other week.
-					// A Friday night shift schedule with majority of hours after 5 PM, can only
-					// have 1 Friday night per month.
-					// A Saturday and / or Sunday shift schedule should be 6 hours minimum.
+				}
+
+				// ------------------------------------
+				// schedule level 1/2 only
+				// ------------------------------------
+				if (schedulinglevel == 1 || schedulinglevel == 2) {
+
+					//TODO: change to 2 weekend shifts each month, remove 
+
+					// An Interviewer's schedule should include 2 weekend shifts each month.
+					// A Saturday or Sunday shift schedule should be 4 hours minimum.
 
 					// get week starts having: A Saturday and / or Sunday shift schedule should be 6
 					// hours minimum.
@@ -455,61 +477,14 @@ public class UserSchedulesController {
 									&& (s.getStartdatetime().getDayOfWeek() == DayOfWeek.SATURDAY
 											|| s.getStartdatetime().getDayOfWeek() == DayOfWeek.SUNDAY)
 									&& (s.getEnddatetime().toLocalTime().toSecondOfDay()
-											- s.getStartdatetime().toLocalTime().toSecondOfDay()) / 3600 >= 6)
+											- s.getStartdatetime().toLocalTime().toSecondOfDay()) / 3600 >= 4)
 							.map(ViUserSchedule::getWeekStart).distinct().collect(Collectors.toList());
-					// get week starts having: A Friday night shift schedule with majority of hours
-					// after 5 PM, can only have 1 Friday night per month.
-					List<Double> timeFrom5 = schedulesWeekly.stream()
-							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY
-									&& (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() > 17))
-							.map(s -> (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() - 17)
-									+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0))
-							.collect(Collectors.toList());
 
-					List<Double> totalHoursFriday = schedulesWeekly.stream()
-							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY)
-							.map(s -> (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour())
-									+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0)
-									- (s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour())
-									+ (s.getStartdatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0))
-							.collect(Collectors.toList());
-
-					List<LocalDateTime> dateAt5 = schedulesWeekly.stream()
-							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY)
-							.map(s -> LocalDateTime.of(s.getStartdatetime().getYear(), s.getStartdatetime().getMonth(),
-									s.getStartdatetime().getDayOfMonth(), 17, 0))
-							.collect(Collectors.toList());
-
-					List<LocalDateTime> fridaySchedules = schedulesWeekly.stream().filter(s -> s
-							.getStartdatetime() != null && s.getEnddatetime() != null
-							&& s.getStartdatetime().getDayOfWeek() == DayOfWeek.FRIDAY
-							&& (((s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() - 17) + (s
-									.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute()
-									/ 60.0)) > ((s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour())
-											+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0)
-											- (s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour())
-											+ (s.getStartdatetime().atZoneSameInstant(serverZoneId).getMinute() / 60.0))
-											/ 2))
-							.map(ViUserSchedule::getWeekStart).collect(Collectors.toList());
 					boolean everyOtherWeek = false;
 					if (everyOtherWeekStart(satSunSchedules)) {
 						everyOtherWeek = true;
-					} else {
-						for (LocalDateTime fridayWeekStart : fridaySchedules) {
-							Set<LocalDateTime> tryFridaySchedulesSet = new TreeSet<>(satSunSchedules);
-							tryFridaySchedulesSet.add(fridayWeekStart);
-
-							// Convert the set back to a list
-							List<LocalDateTime> tryFridaySchedules = new ArrayList<>(tryFridaySchedulesSet);
-
-							if (everyOtherWeekStart(tryFridaySchedules)) {
-								everyOtherWeek = true;
-							}
-						}
 					}
+
 					if (!everyOtherWeek) {
 						addMessage(validationMessages, 11, um.getInMonth(), um.getDempoId(), null);
 					}
@@ -659,11 +634,27 @@ public class UserSchedulesController {
 	public GeneralResponse getValidationMessages(@PathVariable LocalDate inDate, @RequestParam String netId) {
 		GeneralResponse response = new GeneralResponse();
 		try {
-			List<ValidationMessagePlus> validationMessages = new ArrayList<ValidationMessagePlus>();
+			List<Object[]> rawResults;
 			if (!isNullOrWhiteSpace(netId)) {
-				validationMessages = validationMessageRepository.findValidationMessagesByNetIdAndMonth(netId, inDate);
+				rawResults = validationMessageRepository.findValidationMessagesByNetIdAndMonth(netId, inDate);
 			} else {
-				validationMessages = validationMessageRepository.findValidationMessagesByInDate(inDate);
+				rawResults = validationMessageRepository.findValidationMessagesByInDate(inDate);
+			}
+			List<ValidationMessagePlus> validationMessages = new ArrayList<>();
+			for (Object[] row : rawResults) {
+				ValidationMessagePlus vmp = new ValidationMessagePlus();
+				vmp.setValidationMessagesId(row[0] instanceof Integer ? (Integer) row[0] : ((Number) row[0]).intValue());
+				vmp.setDempoId((String) row[1]);
+				vmp.setMessageId(row[2] instanceof Integer ? (Integer) row[2] : ((Number) row[2]).intValue());
+				if (row[3] instanceof java.sql.Date) {
+					vmp.setInMonth(((java.sql.Date) row[3]).toLocalDate());
+				} else if (row[3] instanceof java.time.LocalDate) {
+					vmp.setInMonth((java.time.LocalDate) row[3]);
+				}
+				vmp.setScheduleKeys((String) row[4]);
+				vmp.setDetails((String) row[5]);
+				vmp.setMessageText((String) row[6]);
+				validationMessages.add(vmp);
 			}
 			List<Integer> valMessageIds = validationMessages.stream()
 					.map(ValidationMessagePlus::getValidationMessagesId).collect(Collectors.toList());
