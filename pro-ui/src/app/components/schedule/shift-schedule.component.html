@@ -54,8 +54,8 @@
             'mat-form-field-invalid': isDateBlockDate || isBlockDate
           }">
           <mat-label>{{ currentDay }}</mat-label>
-          <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate"  />
           <!-- <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" [min]="minSelectableDate" /> -->
+<input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
           <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
@@ -129,7 +129,7 @@
             margin-left: 10px;
           ">
           <div (click)="onSubmit()" style="margin-right: 10px"
-            [ngClass]="{ disabled: !isEditAble || shiftForm.invalid  }">
+            [ngClass]="{ disabled: !isEditAble || shiftForm.invalid }">
             <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <mask id="mask0_6864_14517" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
                 height="25">
@@ -155,7 +155,13 @@
               </g>
             </svg>
           </div>
-         
+          <div style="margin-left: 10px" *ngIf="isEditAble" (click)="undoSchedule()">
+            <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M1.4 14.5L0 13.1L5.6 7.5L0 1.9L1.4 0.5L7 6.1L12.6 0.5L14 1.9L8.4 7.5L14 13.1L12.6 14.5L7 8.9L1.4 14.5Z"
+                fill="#58595B" />
+            </svg>
+          </div>
         </div>
       </div>
     </div>

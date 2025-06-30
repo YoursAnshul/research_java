@@ -23,6 +23,8 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
 
   private _createWeekRange(date: D | null): DateRange<D> {
     if (date) {
+      console.log('Creating week range for date:', date);
+      
       let thisDate: Date = new Date(this._dateAdapter.format(date, 'DD/MM/YYYY'));
       let startDay: number = thisDate.getUTCDate() - thisDate.getUTCDay() + 1; // First day is the day of the month - the day of the week (+ 1 for Monday)
       let endDay: number = startDay + 6; // last day is the first day + 6

@@ -223,6 +223,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
     );
   }
+
   ngOnChanges(): void {
     // this.getScheduleList();
   }
@@ -280,11 +281,11 @@ export class ShiftScheduleComponent implements OnInit {
       id: new FormControl(null),
     });
     let resultDate = localStorage.getItem('minSelectableDate');
-    // if (this.authenticatedUser.interviewer) {
-    //   if (resultDate) {
-    //     this.shiftForm.get('dayWiseDate')?.setValue(new Date(resultDate));
-    //   }
-    // }
+    if (this.authenticatedUser.interviewer) {
+      if (resultDate) {
+        this.shiftForm.get('dayWiseDate')?.setValue(new Date(resultDate));
+      }
+    }
 
     const userId = '';
     const dempoId = this.selectedUser?.dempoId || '';
@@ -368,6 +369,7 @@ export class ShiftScheduleComponent implements OnInit {
       }
       this.updateDayLabel(date);
     });
+
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (
         startTime &&
@@ -559,102 +561,62 @@ export class ShiftScheduleComponent implements OnInit {
       this.dateRange = dateRange;
     }
   }
-  // validateDateOption(selectedDate: any): void {
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
+  validateDateOption(selectedDate: any): void {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  //   const year = today.getFullYear();
-  //   const month = today.getMonth();
+    const year = today.getFullYear();
+    const month = today.getMonth();
 
-  //   const resultDate = new Date(year, month, this.dateOptionValue);
-  //   resultDate.setHours(0, 0, 0, 0);
+    const resultDate = new Date(year, month, this.dateOptionValue);
+    resultDate.setHours(0, 0, 0, 0);
 
-  //   selectedDate.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
 
-  //   this.isDateBlockDate = false;
-  //   if (resultDate >= today) {
-  //     let monthVal = selectedDate.getMonth();
-  //     let resultMonth = resultDate.getMonth();
-  //     resultDate.setMonth(resultDate.getMonth() + 1);
-  //     localStorage.setItem(
-  //       'minSelectableDate',
-  //       resultDate.toISOString().split('T')[0]
-  //     );
-  //     this.homeSelectedDate = resultDate;
-  //     this.minSelectableDate = new Date(resultDate);
-  //     // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
-  //     if (resultMonth > monthVal) {
-  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-  //       this.shiftForm.get('startTime')?.disable();
-  //       this.shiftForm.get('endTime')?.disable();
-  //       this.isDateBlockDate = true;
-  //       this.openMonthlyBlockDialog();
-  //       return;
-  //     }
-  //   } else {
-  //     let monthVal = selectedDate.getMonth();
-  //     let resultMonth = resultDate.getMonth();
-  //     resultDate.setMonth(resultDate.getMonth() + 2);
-  //     localStorage.setItem(
-  //       'minSelectableDate',
-  //       resultDate.toISOString().split('T')[0]
-  //     );
-  //     this.homeSelectedDate = resultDate;
-  //     this.minSelectableDate = new Date(resultDate);
-  //     // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
-  //     if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
-  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-  //       this.shiftForm.get('startTime')?.disable();
-  //       this.shiftForm.get('endTime')?.disable();
-  //       this.isDateBlockDate = true;
-  //       this.openMonthlyBlockDialog();
-  //       return;
-  //     }
-  //   }
-  //   this.shiftForm.get('startTime')?.enable();
-  //   this.shiftForm.get('endTime')?.enable();
-  //   this.shiftForm.get('dayWiseDate')?.setErrors(null);
-  // }
-
-validateDateOption(selectedDate: any): void {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const year = today.getFullYear();
-      const month = today.getMonth();
-
-      const resultDate = new Date(year, month, this.dateOptionValue);
-      resultDate.setHours(0, 0, 0, 0);
-
-      selectedDate.setHours(0, 0, 0, 0);
-
-      this.isDateBlockDate = false;
-      if (resultDate >= today) {
-        let monthVal = selectedDate.getMonth();
-        let resultMonth = resultDate.getMonth();
-        if (resultMonth > monthVal) {
-          this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-          this.shiftForm.get('startTime')?.disable();
-          this.shiftForm.get('endTime')?.disable();
-          this.isDateBlockDate = true;
-          this.openMonthlyBlockDialog();
-          return;
-        }
-      } else {
-        let monthVal = selectedDate.getMonth();
-        let resultMonth = resultDate.getMonth();
-        if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
-          this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-          this.shiftForm.get('startTime')?.disable();
-          this.shiftForm.get('endTime')?.disable();
-          this.isDateBlockDate = true;
-          this.openMonthlyBlockDialog();
-          return;
-        }
+    this.isDateBlockDate = false;
+    if (resultDate >= today) {
+      let monthVal = selectedDate.getMonth();
+      let resultMonth = resultDate.getMonth();
+      resultDate.setMonth(resultDate.getMonth() + 1);
+      localStorage.setItem(
+        'minSelectableDate',
+        resultDate.toISOString().split('T')[0]
+      );
+      this.homeSelectedDate = resultDate;
+      this.minSelectableDate = new Date(resultDate);
+      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
+      if (resultMonth > monthVal) {
+        this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+        this.shiftForm.get('startTime')?.disable();
+        this.shiftForm.get('endTime')?.disable();
+        this.isDateBlockDate = true;
+        this.openMonthlyBlockDialog();
+        return;
       }
+    } else {
+      let monthVal = selectedDate.getMonth();
+      let resultMonth = resultDate.getMonth();
+      resultDate.setMonth(resultDate.getMonth() + 2);
+      localStorage.setItem(
+        'minSelectableDate',
+        resultDate.toISOString().split('T')[0]
+      );
+      this.homeSelectedDate = resultDate;
+      this.minSelectableDate = new Date(resultDate);
+      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
+      if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
+        this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+        this.shiftForm.get('startTime')?.disable();
+        this.shiftForm.get('endTime')?.disable();
+        this.isDateBlockDate = true;
+        this.openMonthlyBlockDialog();
+        return;
+      }
+    }
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
     this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    this.shiftForm.markAllAsTouched();
   }
 
   validateBlockOutDate(selectedDate: any): void {
@@ -1020,7 +982,7 @@ validateDateOption(selectedDate: any): void {
         }
       }
 
-      
+      if (isInterviewer) {
         const userId = formData.user.dempoId;
         const weekStart = this.getWeekStart(selectedDate);
         const weekEnd = this.getWeekEnd(selectedDate);
@@ -1042,8 +1004,7 @@ validateDateOption(selectedDate: any): void {
           const et = this.combineDateAndTime(shift.dayWiseDate, shift.endTime);
           return sum + (et.getTime() - st.getTime()) / (1000 * 60 * 60);
         }, durationInHours); // include current shift
-        alert(weekShifts)
-        alert(totalHours)
+
         if (totalHours > 20) {
           this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
           this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
@@ -1118,7 +1079,7 @@ validateDateOption(selectedDate: any): void {
           });
           return;
         }
-      
+      }
     }
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
@@ -1351,10 +1312,41 @@ validateDateOption(selectedDate: any): void {
       modDt: new Date(),
       scheduleId: id,
     };
-   
+    this.requestsService.updateRequests([this.newRequest]).subscribe(
+      (response) => {
+        if (response.Status == 'Success') {
+          this.newRequest = {
+            invalidFields: [],
+            decisionId: null,
+            requestCodeId: null,
+            interviewerEmpId: null,
+            resourceTeamMemberId: null,
+            requestId: 0,
+            requestDate: new Date(),
+            requestDetails: '',
+            notes: '',
+            modBy: '',
+            entryBy: '',
+            scheduleId: null,
+          };
+        } else {
+        }
+      },
+      (error) => {}
+    );
   }
 
-
+  deleteNewRequest(id: number): void {
+    this.http.delete(`${environment.DataAPIUrl}/api/requests/${id}`).subscribe({
+      next: (res: any) => {
+        this.showToastMessage(res.Message, 'success');
+      },
+      error: (error) => {
+        console.error('Error deleting schedule:', error);
+        this.showToastMessage('Failed to delete request.', 'error');
+      },
+    });
+  }
   formatDateForRequest(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
       month: 'short',
@@ -2102,6 +2094,7 @@ validateDateOption(selectedDate: any): void {
           this.scheduleFetchStatus = false;
           this.onSubmit();
           this.isEdit = false;
+          this.deleteNewRequest(shift.id);
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
@@ -2173,46 +2166,24 @@ validateDateOption(selectedDate: any): void {
       }
     });
   }
-  // getOptionValue(): void {
-  //   const apiUrl = `${environment.DataAPIUrl}/api/userSchedules/option-value`;
-  //   this.http.get(apiUrl).subscribe({
-  //     next: (data: any) => {
-  //       this.dateOptionValue = data?.Subject?.optionValue;
-  //       const today = new Date();
-  //       today.setHours(0, 0, 0, 0);
-  //       const year = today.getFullYear();
-  //       const month = today.getMonth();
-  //       const resultDate = new Date(year, month, this.dateOptionValue);
-  //       resultDate.setHours(0, 0, 0, 0);
-  //       if (resultDate >= today) {
-  //         resultDate.setMonth(resultDate.getMonth() + 1);
-  //       } else {
-  //         resultDate.setMonth(resultDate.getMonth() + 2);
-  //       }
-  //       localStorage.setItem(
-  //         'minSelectableDate',
-  //         resultDate.toISOString().split('T')[0]
-  //       );
-  //       console.log(
-  //         "resultDate.toISOString().split('T')[0]---",
-  //         resultDate.toISOString().split('T')[0]
-  //       );
-
-  //       this.validateDateOption(this.selectedDate.value);
-  //     },
-  //   });
-  // }
-
-      getOptionValue(): void {
-      const apiUrl = `${environment.DataAPIUrl}/api/userSchedules/option-value`;
-      this.http.get(apiUrl).subscribe({
-        next: (data: any) => {
-          this.dateOptionValue = data?.Subject?.optionValue;
-          this.validateDateOption(this.selectedDate.value);
-        },
-      });
+  getOptionValue(): void {
+    const apiUrl = `${environment.DataAPIUrl}/api/userSchedules/option-value`;
+    this.http.get(apiUrl).subscribe({
+      next: (data: any) => {
+        this.dateOptionValue = data?.Subject?.optionValue;
+        this.validateDateOption(this.selectedDate.value);
+      },
+    });
+  }
+  undoSchedule(): void {
+    if (this.previousShift) {
+      this.shiftForm.patchValue(this.previousShift);
+      this.isEditAble = false;
+      this.isModified = false;
+      this.isStartTimeChanged = false;
+      this.isEndTimeChanged = false;
     }
-
+  }
 
   coreHoursValidation(date: Date, dempoId: string): void {
     if (!date) {

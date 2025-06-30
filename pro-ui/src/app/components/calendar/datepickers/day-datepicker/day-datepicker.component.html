@@ -1,6 +1,13 @@
 <mat-form-field appearance="fill" class="date-picker-form-field">
   <mat-label>Select a date</mat-label>
-  <input matInput [matDatepicker]="datePicker"
+  <!-- <input matInput [matDatepicker]="datePicker"
+         [formControl]="selectedDate"
+         (dateChange)="emitSelectedDate()"
+         (blur)="onFinalDateInput($event)"
+         (keydown)="onKeydown($event)"
+         [min]="minDate"
+         autocomplete="off" /> -->
+         <input matInput [matDatepicker]="datePicker"
          [formControl]="selectedDate"
          (dateChange)="emitSelectedDate()"
          (blur)="onFinalDateInput($event)"
