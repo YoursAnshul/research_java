@@ -56,11 +56,6 @@ export class ShiftMonthViewComponent implements OnInit {
   ngOnInit(): void {
     this.processShiftSchedules();
   }
-
-
-  onResetShiftSchedule(): void {
-    this.resetShiftSchedule.emit();
-  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isEdit']) {
       if (this.shiftSchedule?.length) {
@@ -88,301 +83,191 @@ export class ShiftMonthViewComponent implements OnInit {
       this.scheduleData.emit(schedule);
     }
   }
-    resetAllIsEditFlags(scheduleToSkip: ISchedule): void {
-      if (!this.monthSchedules?.weekSchedules?.length) return;
+  resetAllIsEditFlags(scheduleToSkip: ISchedule): void {
+    if (!this.monthSchedules?.weekSchedules?.length) return;
 
-      for (const week of this.monthSchedules.weekSchedules) {
-        for (let i = 1; i <= 7; i++) {
-          const daySchedules: ISchedule[] =
-            (week as any)[`day${i}Schedules`] || [];
-          for (const schedule of daySchedules) {
-            if (
-              schedule &&
-              schedule.preschedulekey !== scheduleToSkip.preschedulekey &&
-              schedule.isEdit
-            ) {
-              schedule.isEdit = false;
-            }
+    for (const week of this.monthSchedules.weekSchedules) {
+      for (let i = 1; i <= 7; i++) {
+        const daySchedules: ISchedule[] =
+          (week as any)[`day${i}Schedules`] || [];
+        for (const schedule of daySchedules) {
+          if (
+            schedule &&
+            schedule.preschedulekey !== scheduleToSkip.preschedulekey &&
+            schedule.isEdit
+          ) {
+            schedule.isEdit = false;
           }
         }
       }
     }
+  }
 
-    processShiftSchedules(): void {
-      if (!this.monthSchedules) {
-        this.monthSchedules = { weekSchedules: [] };
-      }
+  processShiftSchedules(): void {
+    if (!this.monthSchedules) {
+      this.monthSchedules = { weekSchedules: [] };
+    }
 
-      this.monthSchedules.weekSchedules = [];
+    this.monthSchedules.weekSchedules = [];
 
-      const referenceDate = new Date(this.selectedDate?.value || new Date());
-      const startOfMonth = new Date(
-        referenceDate.getFullYear(),
-        referenceDate.getMonth(),
-        1
-      );
-      const weekStarts = this.getWeekStarts(startOfMonth);
-      const startOfCalendarView = new Date(weekStarts[0]);
-      const endOfCalendarView = new Date(weekStarts[weekStarts.length - 1]);
-      endOfCalendarView.setDate(endOfCalendarView.getDate() + 6);
-      startOfCalendarView.setHours(0, 0, 0, 0);
-      endOfCalendarView.setHours(23, 59, 59, 999);
-      if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
-        for (const weekStart of weekStarts) {
-          this.monthSchedules.weekSchedules.push(
-            this.createEmptyWeekSchedule(weekStart)
-          );
-        }
-        return;
-      }
-
-      const shiftsByWeek: Map<string, ISchedule[]> = new Map();
-
-      for (const shift of this.shiftSchedule) {
-        const shiftDate = moment(shift.dayWiseDate)
-          .tz('America/New_York')
-          .startOf('day')
-          .toDate();
-        shiftDate.setHours(0, 0, 0, 0);
-        if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView)
-          continue;
-        let isValid = true;
-
-        if (
-          this.selectedUser &&
-          this.selectedUser.userId &&
-          this.selectedUser.userId !== 0
-        ) {
-          isValid = isValid && shift.user?.userId === this.selectedUser.userId;
-        }
-
-        if (
-          this.selectedProject &&
-          this.selectedProject.projectId &&
-          this.selectedProject.projectId !== 0
-        ) {
-          isValid =
-            isValid &&
-            shift.projects?.projectId === this.selectedProject.projectId;
-        }
-
-        if (!isValid) continue;
-
-        const weekStart = this.getWeekStart(shiftDate);
-        const schedule: ISchedule = {
-          preschedulekey: shift?.preschedulekey || '',
-          displayName: shift.user?.userName || '',
-          projectName: shift.projects?.projectName || '',
-          projectColor: shift.projects?.projectColor || '',
-          scheduledate: shiftDate,
-          comments: shift.comments || '',
-          startTime: shift.startTime || '',
-          endTime: shift.endTime || '',
-          duration: parseFloat(shift.duration) || 0,
-          dayOfWeek: shiftDate.getDay() === 0 ? 7 : shiftDate.getDay(),
-          weekStart: weekStart,
-          weekEnd: endOfCalendarView,
-          month: moment(shiftDate).format('MMMM'),
-          requestDetails: '',
-          requestCode: '',
-          userid: shift.user?.userId || '',
-          trainedon: '',
-          language: null,
-          entryBy: null,
-          dempoid: null,
-          fname: null,
-          lname: null,
-          preferredfname: null,
-          preferredlname: null,
-          userName: null,
-          expr1: null,
-          isNew: shift.isNew === true || !shift.preschedulekey,
-          projectId: shift.projects?.projectId,
-          isEdit: shift.isEdit,
-        };
-
-        const key = weekStart.toISOString();
-        if (!shiftsByWeek.has(key)) {
-          shiftsByWeek.set(key, []);
-        }
-        shiftsByWeek.get(key)!.push(schedule);
-      }
-
+    const referenceDate = new Date(this.selectedDate?.value || new Date());
+    const startOfMonth = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      1
+    );
+    const weekStarts = this.getWeekStarts(startOfMonth);
+    const startOfCalendarView = new Date(weekStarts[0]);
+    const endOfCalendarView = new Date(weekStarts[weekStarts.length - 1]);
+    endOfCalendarView.setDate(endOfCalendarView.getDate() + 6);
+    startOfCalendarView.setHours(0, 0, 0, 0);
+    endOfCalendarView.setHours(23, 59, 59, 999);
+    if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
       for (const weekStart of weekStarts) {
-        const weekSchedule = this.createEmptyWeekSchedule(weekStart);
-        const key = weekStart.toISOString();
-
-        if (shiftsByWeek.has(key)) {
-          const weekShifts = shiftsByWeek.get(key) || [];
-          for (const schedule of weekShifts) {
-            const dayIndex = schedule.dayOfWeek;
-            (weekSchedule as any)[`day${dayIndex}Schedules`].push(schedule);
-          }
-        }
-
-        this.monthSchedules.weekSchedules.push(weekSchedule);
+        this.monthSchedules.weekSchedules.push(
+          this.createEmptyWeekSchedule(weekStart)
+        );
       }
+      return;
     }
 
-    createEmptyWeekSchedule(weekStart: Date): IWeekSchedules {
-      return {
-        weekStart: new Date(weekStart),
-        day1Schedules: [],
-        day2Schedules: [],
-        day3Schedules: [],
-        day4Schedules: [],
-        day5Schedules: [],
-        day6Schedules: [],
-        day7Schedules: [],
+    const shiftsByWeek: Map<string, ISchedule[]> = new Map();
+
+    for (const shift of this.shiftSchedule) {
+      const shiftDate = moment(shift.dayWiseDate)
+        .tz('America/New_York')
+        .startOf('day')
+        .toDate();
+      shiftDate.setHours(0, 0, 0, 0);
+      if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView)
+        continue;
+      let isValid = true;
+
+      if (
+        this.selectedUser &&
+        this.selectedUser.userId &&
+        this.selectedUser.userId !== 0
+      ) {
+        isValid = isValid && shift.user?.userId === this.selectedUser.userId;
+      }
+
+      if (
+        this.selectedProject &&
+        this.selectedProject.projectId &&
+        this.selectedProject.projectId !== 0
+      ) {
+        isValid =
+          isValid &&
+          shift.projects?.projectId === this.selectedProject.projectId;
+      }
+
+      if (!isValid) continue;
+
+      const weekStart = this.getWeekStart(shiftDate);
+      const schedule: ISchedule = {
+        preschedulekey: shift?.preschedulekey || '',
+        displayName: shift.user?.userName || '',
+        projectName: shift.projects?.projectName || '',
+        projectColor: shift.projects?.projectColor || '',
+        scheduledate: shiftDate,
+        comments: shift.comments || '',
+        startTime: shift.startTime || '',
+        endTime: shift.endTime || '',
+        duration: parseFloat(shift.duration) || 0,
+        dayOfWeek: shiftDate.getDay() === 0 ? 7 : shiftDate.getDay(),
+        weekStart: weekStart,
+        weekEnd: endOfCalendarView,
+        month: moment(shiftDate).format('MMMM'),
+        requestDetails: '',
+        requestCode: '',
+        userid: shift.user?.userId || '',
+        trainedon: '',
+        language: null,
+        entryBy: null,
+        dempoid: null,
+        fname: null,
+        lname: null,
+        preferredfname: null,
+        preferredlname: null,
+        userName: null,
+        expr1: null,
+        isNew: shift.isNew === true || !shift.preschedulekey,
+        projectId: shift.projects?.projectId,
+        isEdit: shift.isEdit,
       };
+
+      const key = weekStart.toISOString();
+      if (!shiftsByWeek.has(key)) {
+        shiftsByWeek.set(key, []);
+      }
+      shiftsByWeek.get(key)!.push(schedule);
     }
 
-    getWeekStarts(referenceDate: Date): Date[] {
-      const weekStarts: Date[] = [];
+    for (const weekStart of weekStarts) {
+      const weekSchedule = this.createEmptyWeekSchedule(weekStart);
+      const key = weekStart.toISOString();
 
-      const month = referenceDate.getMonth() + 1;
-      const numberOfWeeks = month === 3 || month === 6 ? 6 : 5;
-
-      const firstDayOfMonth = new Date(
-        referenceDate.getFullYear(),
-        referenceDate.getMonth(),
-        1
-      );
-      const dayOfWeek = firstDayOfMonth.getDay();
-      const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-
-      const firstMonday = new Date(firstDayOfMonth);
-      firstMonday.setDate(firstDayOfMonth.getDate() + daysToMonday);
-
-      for (let i = 0; i < numberOfWeeks; i++) {
-        const currentMonday = new Date(firstMonday);
-        currentMonday.setDate(firstMonday.getDate() + i * 7);
-        weekStarts.push(currentMonday);
+      if (shiftsByWeek.has(key)) {
+        const weekShifts = shiftsByWeek.get(key) || [];
+        for (const schedule of weekShifts) {
+          const dayIndex = schedule.dayOfWeek;
+          (weekSchedule as any)[`day${dayIndex}Schedules`].push(schedule);
+        }
       }
 
-      return weekStarts;
+      this.monthSchedules.weekSchedules.push(weekSchedule);
     }
-    scheduleFOrLockTime(): void {
-      if (!this.monthSchedules) {
-        this.monthSchedules = { weekSchedules: [] };
-      }
+  }
 
-      this.monthSchedules.weekSchedules = [];
+  createEmptyWeekSchedule(weekStart: Date): IWeekSchedules {
+    return {
+      weekStart: new Date(weekStart),
+      day1Schedules: [],
+      day2Schedules: [],
+      day3Schedules: [],
+      day4Schedules: [],
+      day5Schedules: [],
+      day6Schedules: [],
+      day7Schedules: [],
+    };
+  }
 
-      const referenceDate = new Date(this.selectedDate?.value || new Date());
-      const startOfMonth = new Date(
-        referenceDate.getFullYear(),
-        referenceDate.getMonth(),
-        1
-      );
-      const weekStarts = this.getWeekStarts(startOfMonth);
-      const startOfCalendarView = new Date(weekStarts[0]);
-      const endOfCalendarView = new Date(weekStarts[weekStarts.length - 1]);
-      endOfCalendarView.setDate(endOfCalendarView.getDate() + 6);
-      startOfCalendarView.setHours(0, 0, 0, 0);
-      endOfCalendarView.setHours(23, 59, 59, 999);
-      if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
-        for (const weekStart of weekStarts) {
-          this.monthSchedules.weekSchedules.push(
-            this.createEmptyWeekSchedule(weekStart)
-          );
-        }
-        return;
-      }
+  getWeekStarts(referenceDate: Date): Date[] {
+    const weekStarts: Date[] = [];
 
-      const shiftsByWeek: Map<string, ISchedule[]> = new Map();
+    const month = referenceDate.getMonth() + 1;
+    const numberOfWeeks = month === 3 || month === 6 ? 6 : 5;
 
-      for (const shift of this.shiftSchedule) {
-        const shiftDate = moment(shift.dayWiseDate)
-          .tz('America/New_York')
-          .startOf('day')
-          .toDate();
-        shiftDate.setHours(0, 0, 0, 0);
-        if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView)
-          continue;
-        let isValid = true;
+    const firstDayOfMonth = new Date(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      1
+    );
+    const dayOfWeek = firstDayOfMonth.getDay();
+    const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
-        if (
-          this.selectedUser &&
-          this.selectedUser.userId &&
-          this.selectedUser.userId !== 0
-        ) {
-          isValid = isValid && shift.user?.userId === this.selectedUser.userId;
-        }
+    const firstMonday = new Date(firstDayOfMonth);
+    firstMonday.setDate(firstDayOfMonth.getDate() + daysToMonday);
 
-        if (
-          this.selectedProject &&
-          this.selectedProject.projectId &&
-          this.selectedProject.projectId !== 0
-        ) {
-          isValid =
-            isValid &&
-            shift.projects?.projectId === this.selectedProject.projectId;
-        }
-
-        if (!isValid) continue;
-
-        const weekStart = this.getWeekStart(shiftDate);
-        const schedule: ISchedule = {
-          preschedulekey: shift?.preschedulekey || '',
-          displayName: shift.user?.userName || '',
-          projectName: shift.projects?.projectName || '',
-          projectColor: shift.projects?.projectColor || '',
-          scheduledate: shiftDate,
-          comments: shift.comments || '',
-          startTime: shift.startTime || '',
-          endTime: shift.endTime || '',
-          duration: parseFloat(shift.duration) || 0,
-          dayOfWeek: shiftDate.getDay() === 0 ? 7 : shiftDate.getDay(),
-          weekStart: weekStart,
-          weekEnd: endOfCalendarView,
-          month: moment(shiftDate).format('MMMM'),
-          requestDetails: '',
-          requestCode: '',
-          userid: shift.user?.userId || '',
-          trainedon: '',
-          language: null,
-          entryBy: null,
-          dempoid: null,
-          fname: null,
-          lname: null,
-          preferredfname: null,
-          preferredlname: null,
-          userName: null,
-          expr1: null,
-          isNew: shift.isNew === true || !shift.preschedulekey,
-          projectId: shift.projects?.projectId,
-          isEdit: shift.isEdit,
-        };
-
-        const key = weekStart.toISOString();
-        if (!shiftsByWeek.has(key)) {
-          shiftsByWeek.set(key, []);
-        }
-        shiftsByWeek.get(key)!.push(schedule);
-      }
-
-      for (const weekStart of weekStarts) {
-        const weekSchedule = this.createEmptyWeekSchedule(weekStart);
-        const key = weekStart.toISOString();
-
-        if (shiftsByWeek.has(key)) {
-          const weekShifts = shiftsByWeek.get(key) || [];
-          for (const schedule of weekShifts) {
-            const dayIndex = schedule.dayOfWeek;
-            (weekSchedule as any)[`day${dayIndex}Schedules`].push(schedule);
-          }
-        }
-
-        this.monthSchedules.weekSchedules.push(weekSchedule);
-      }
+    for (let i = 0; i < numberOfWeeks; i++) {
+      const currentMonday = new Date(firstMonday);
+      currentMonday.setDate(firstMonday.getDate() + i * 7);
+      weekStarts.push(currentMonday);
     }
-    getWeekStart(date: Date): Date {
-      const day = date.getDay();
-      const diff = day === 0 ? -6 : 1 - day;
-      const weekStart = new Date(date);
-      weekStart.setDate(date.getDate() + diff);
-      weekStart.setHours(0, 0, 0, 0);
-      return weekStart;
-    }
+
+    return weekStarts;
+  }
+
+  getWeekStart(date: Date): Date {
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    const weekStart = new Date(date);
+    weekStart.setDate(date.getDate() + diff);
+    weekStart.setHours(0, 0, 0, 0);
+    return weekStart;
+  }
+
+  onResetShiftSchedule(): void {
+    this.resetShiftSchedule.emit();
+  }
 }

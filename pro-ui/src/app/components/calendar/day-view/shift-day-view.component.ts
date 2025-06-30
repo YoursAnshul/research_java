@@ -363,4 +363,16 @@ export class ShiftDayViewComponent implements OnInit {
 
     return Math.min(scheduleCount * baseHeight, maxHeight) + 'px';
   }
+
+  get groupedSchedules() {
+    const groups: { [userId: string]: { user: any, schedules: any[] } } = {};
+    for (const schedule of this.filteredShiftSchedule) {
+      const userId = schedule.user.userId;
+      if (!groups[userId]) {
+        groups[userId] = { user: schedule.user, schedules: [] };
+      }
+      groups[userId].schedules.push(schedule);
+    }
+    return Object.values(groups);
+  }
 }

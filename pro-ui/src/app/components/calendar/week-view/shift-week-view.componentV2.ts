@@ -70,7 +70,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     );
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
@@ -182,14 +182,14 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     });
     const firstFilteredSchedule = this.pId
       ? this.processedSchedules.find(
-        (schedule) => schedule.preschedulekey === this.pId
-      )
+          (schedule) => schedule.preschedulekey === this.pId
+        )
       : null;
     if (
       firstFilteredSchedule &&
       (!this.previouslyEditedSchedule ||
         this.previouslyEditedSchedule.preschedulekey !==
-        firstFilteredSchedule.preschedulekey)
+          firstFilteredSchedule.preschedulekey)
     ) {
       this.openScheduleData(firstFilteredSchedule);
     }
@@ -409,7 +409,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
         tab = data.tab;
       }
     });
-
+  
     this.processedSchedules?.forEach((s) => (s.isEdit = false));
     this.scheduleService.getType().subscribe((type) => {
       if (type) {

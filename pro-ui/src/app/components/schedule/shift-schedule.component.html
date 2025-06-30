@@ -1,154 +1,267 @@
-  <div class="d-flex align-items-center justify-content-between" style="padding: 10px 15px">
-    <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
+<div class="d-flex align-items-center justify-content-between" style="padding: 10px 15px">
+  <h2 style="color: #0680cd; margin: 0">Add Shift Schedule</h2>
 
-    <div class="d-flex" style="margin-left: auto">
-      <button style="height: 25px" class="btn-outline ml-2" (click)="confirmatationClose()">
-        Close
-      </button>
-    </div>
+  <div class="d-flex" style="margin-left: auto">
+    <button style="height: 25px" class="btn-outline ml-2" (click)="confirmatationClose()">
+      Close
+    </button>
   </div>
+</div>
 
-  <div style="margin-left: 15px; margin-right: 15px">
-    <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
-      <div class="form-container">
-        <div>
-          <!-- User Dropdown -->
-          <mat-form-field appearance="outline" class="custom-form-field" style="width: 185px">
-            <mat-label>User</mat-label>
-            <mat-select formControlName="user" [(value)]="selectedUser" (selectionChange)="onUserSelectionChange($event)">
-              <mat-option *ngFor="let user of userList" [value]="user" [disabled]="
-                  user.userId !== selectedUser?.userId &&
-                  (isEdit || isHomeRedirect || profileType == 'user-profile')
-                ">
-                {{ user.userName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Project Multi-select -->
-          <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 185px">
-            <mat-label>Project</mat-label>
-            <mat-select formControlName="projects" [(value)]="selectedProject">
-              <!-- Other Projects -->
-              <mat-optgroup label="Projects">
-                <mat-option *ngFor="let project of otherProjects" [value]="project">
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-
-              <!-- Admin Projects -->
-              <mat-optgroup label="Admin">
-                <mat-option *ngFor="let project of adminProjects" [value]="project">
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Current Day Display -->
-          <span class="ml-2">{{ currentDay }}</span>
-
-          <!-- Day Wise Date Picker -->
-          <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 170px" [ngClass]="{
-              'mat-form-field-invalid': isDateBlockDate || isBlockDate
-            }">
-            <mat-label>{{ currentDay }}</mat-label>
-            <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
-            <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
-            <mat-datepicker #dayWisePicker></mat-datepicker>
-          </mat-form-field>
-
-          <!-- Start Time Picker -->
-          <mat-form-field appearance="outline" class="custom-form-field ml-2"
-            [class.error-border]="shiftForm.get('startTime')?.hasError('duplicate')"
-            [class.disabled-field]="shiftForm.get('startTime')?.disabled || isBlockDate" style="width: 80px">
-            <mat-label>Start Time</mat-label>
-            <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled || isBlockDate">
-              <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
-                <div class="time-box" [ngStyle]="{
-                    'background-color': getBackgroundColor(time)
-                  }">
-                  {{ time }}
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- End Time Picker -->
-          <mat-form-field appearance="outline" class="custom-form-field ml-2"
-            [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
-            [class.disabled-field]="shiftForm.get('endTime')?.disabled || isBlockDate" style="width: 80px">
-            <mat-label>End Time</mat-label>
-            <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled || isBlockDate">
-              <mat-option *ngFor="let time of endtimeSlots" [value]="time"
-                [disabled]="isTimeBlocked(time) || isBlockDate">
-                <div class="time-box" [ngStyle]="{
-                    'background-color': getBackgroundColor(time)
-                  }">
-                  {{ time }}
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <!-- Dynamic Duration Display -->
-          <span class="ml-2">{{ duration }}</span>
-
-          <!-- Comments (Optional) -->
-          <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
-            <mat-label>Comments</mat-label>
-            <input matInput formControlName="comments" />
-          </mat-form-field>
-
-          <!-- Add to Calendar Button -->
-          <div class="ml-1 mr-1" *ngIf="!isEdit && isDataLoaded">
-            <button mat-raised-button color="primary" [disabled]="
-                !scheduleFetchStatus ||
-                shiftForm.invalid ||
-                !shiftForm.get('startTime')?.value ||
-                !shiftForm.get('endTime')?.value
+<div style="margin-left: 15px; margin-right: 15px">
+  <form [formGroup]="shiftForm" (ngSubmit)="onSubmit()">
+    <div class="form-container">
+      <div>
+        <!-- User Dropdown -->
+        <mat-form-field appearance="outline" class="custom-form-field" style="width: 185px">
+          <mat-label>User</mat-label>
+          <mat-select formControlName="user" [(value)]="selectedUser" (selectionChange)="onUserSelectionChange($event)">
+            <mat-option *ngFor="let user of userList" [value]="user" [disabled]="
+                user.userId !== selectedUser?.userId &&
+                (isEdit || isHomeRedirect || profileType == 'user-profile')
               ">
-              <mat-icon>add</mat-icon> Add to Calendar
-            </button>
-          </div>
-          <div class="icon-container" *ngIf="isEdit" style="
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              margin-left: 10px;
-            ">
-            <div (click)="onSubmit()" style="margin-right: 10px"
-              [ngClass]="{ disabled: !isEditAble || shiftForm.invalid }">
-              <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <mask id="mask0_6864_14517" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
-                  height="25">
-                  <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
-                </mask>
-                <g mask="url(#mask0_6864_14517)">
-                  <path
-                    d="M15 22.5V20.5H19V10.5H5V14.5H3V6.5C3 5.95 3.19583 5.47917 3.5875 5.0875C3.97917 4.69583 4.45 4.5 5 4.5H6V2.5H8V4.5H16V2.5H18V4.5H19C19.55 4.5 20.0208 4.69583 20.4125 5.0875C20.8042 5.47917 21 5.95 21 6.5V20.5C21 21.05 20.8042 21.5208 20.4125 21.9125C20.0208 22.3042 19.55 22.5 19 22.5H15ZM8 24.5L6.6 23.1L9.175 20.5H1V18.5H9.175L6.6 15.9L8 14.5L13 19.5L8 24.5Z"
-                    fill="#0680CD" />
-                </g>
-              </svg>
-            </div>
-            <div (click)="confirmationPopup()" [ngClass]="{ disabled: isEditAble }">
-              <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <mask id="mask0_6864_14520" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
-                  height="25">
-                  <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
-                </mask>
-                <g mask="url(#mask0_6864_14520)">
-                  <path
-                    d="M9.4 17L12 14.4L14.6 17L16 15.6L13.4 13L16 10.4L14.6 9L12 11.6L9.4 9L8 10.4L10.6 13L8 15.6L9.4 17ZM7 21.5C6.45 21.5 5.97917 21.3042 5.5875 20.9125C5.19583 20.5208 5 20.05 5 19.5V6.5H4V4.5H9V3.5H15V4.5H20V6.5H19V19.5C19 20.05 18.8042 20.5208 18.4125 20.9125C18.0208 21.3042 17.55 21.5 17 21.5H7Z"
-                    fill="#DC4A38" />
-                </g>
-              </svg>
-            </div>
+              {{ user.userName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
+        <!-- Project Multi-select -->
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 185px">
+          <mat-label>Project</mat-label>
+          <mat-select formControlName="projects" [(value)]="selectedProject">
+            <!-- Other Projects -->
+            <mat-optgroup label="Projects">
+              <mat-option *ngFor="let project of otherProjects" [value]="project">
+                {{ project.projectName }}
+              </mat-option>
+            </mat-optgroup>
+
+            <!-- Admin Projects -->
+            <mat-optgroup label="Admin">
+              <mat-option *ngFor="let project of adminProjects" [value]="project">
+                {{ project.projectName }}
+              </mat-option>
+            </mat-optgroup>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Current Day Display -->
+        <span class="ml-2">{{ currentDay }}</span>
+
+        <!-- Day Wise Date Picker -->
+        <mat-form-field *ngIf="authenticatedUser?.interviewer" appearance="outline" class="custom-form-field ml-2"
+          style="width: 170px" [ngClass]="{
+            'mat-form-field-invalid': isDateBlockDate || isBlockDate
+          }">
+          <mat-label>{{ currentDay }}</mat-label>
+          <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate"  />
+          <!-- <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" [min]="minSelectableDate" /> -->
+          <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
+          <mat-datepicker #dayWisePicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field *ngIf="authenticatedUser?.admin" appearance="outline" class="custom-form-field ml-2"
+          style="width: 170px" [ngClass]="{
+            'mat-form-field-invalid': isDateBlockDate || isBlockDate
+          }">
+          <mat-label>{{ currentDay }}</mat-label>
+          <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
+          <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
+          <mat-datepicker #dayWisePicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Start Time Picker -->
+        <mat-form-field appearance="outline" class="custom-form-field ml-2"
+          [class.error-border]="shiftForm.get('startTime')?.hasError('duplicate')"
+          [class.disabled-field]="shiftForm.get('startTime')?.disabled || isBlockDate" style="width: 80px">
+          <mat-label>Start Time</mat-label>
+          <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled || isBlockDate">
+            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isTimeBlocked(time)">
+              <div class="time-box" [ngStyle]="{
+                  'background-color': getBackgroundColor(time)
+                }">
+                {{ time }}
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- End Time Picker -->
+        <mat-form-field appearance="outline" class="custom-form-field ml-2"
+          [class.error-border]="shiftForm.get('endTime')?.hasError('duplicate')"
+          [class.disabled-field]="shiftForm.get('endTime')?.disabled || isBlockDate" style="width: 80px">
+          <mat-label>End Time</mat-label>
+          <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled || isBlockDate">
+            <mat-option *ngFor="let time of endtimeSlots" [value]="time"
+              [disabled]="isTimeBlocked(time) || isBlockDate">
+              <div class="time-box" [ngStyle]="{
+                  'background-color': getBackgroundColor(time)
+                }">
+                {{ time }}
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Dynamic Duration Display -->
+        <span class="ml-2">{{ duration }}</span>
+
+        <!-- Comments (Optional) -->
+        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
+          <mat-label>Comments</mat-label>
+          <input matInput formControlName="comments" />
+        </mat-form-field>
+
+        <!-- Add to Calendar Button -->
+        <div class="ml-1 mr-1" *ngIf="!isEdit && isDataLoaded">
+          <button mat-raised-button color="primary" [disabled]="
+              !scheduleFetchStatus ||
+              shiftForm.invalid ||
+              !shiftForm.get('startTime')?.value ||
+              !shiftForm.get('endTime')?.value
+            ">
+            <mat-icon>add</mat-icon> Add to Calendar
+          </button>
+        </div>
+        <div class="icon-container" *ngIf="isEdit" style="
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+          ">
+          <div (click)="onSubmit()" style="margin-right: 10px"
+            [ngClass]="{ disabled: !isEditAble || shiftForm.invalid  }">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_6864_14517" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+                height="25">
+                <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
+              </mask>
+              <g mask="url(#mask0_6864_14517)">
+                <path
+                  d="M15 22.5V20.5H19V10.5H5V14.5H3V6.5C3 5.95 3.19583 5.47917 3.5875 5.0875C3.97917 4.69583 4.45 4.5 5 4.5H6V2.5H8V4.5H16V2.5H18V4.5H19C19.55 4.5 20.0208 4.69583 20.4125 5.0875C20.8042 5.47917 21 5.95 21 6.5V20.5C21 21.05 20.8042 21.5208 20.4125 21.9125C20.0208 22.3042 19.55 22.5 19 22.5H15ZM8 24.5L6.6 23.1L9.175 20.5H1V18.5H9.175L6.6 15.9L8 14.5L13 19.5L8 24.5Z"
+                  fill="#0680CD" />
+              </g>
+            </svg>
+          </div>
+          <div (click)="confirmationPopup()" [ngClass]="{ disabled: isEditAble }">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_6864_14520" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+                height="25">
+                <rect y="0.5" width="24" height="24" fill="#D9D9D9" />
+              </mask>
+              <g mask="url(#mask0_6864_14520)">
+                <path
+                  d="M9.4 17L12 14.4L14.6 17L16 15.6L13.4 13L16 10.4L14.6 9L12 11.6L9.4 9L8 10.4L10.6 13L8 15.6L9.4 17ZM7 21.5C6.45 21.5 5.97917 21.3042 5.5875 20.9125C5.19583 20.5208 5 20.05 5 19.5V6.5H4V4.5H9V3.5H15V4.5H20V6.5H19V19.5C19 20.05 18.8042 20.5208 18.4125 20.9125C18.0208 21.3042 17.55 21.5 17 21.5H7Z"
+                  fill="#DC4A38" />
+              </g>
+            </svg>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+
+    <!--schedule validation issues-->
+    @if (validationMessages.length > 0 && (selectedUser?.dempoId?.length || 0) > 0) {
+    <div id="validation-messages">
+
+      <!-- validation header -->
+      <div class="flex align-items-center gap-2">
+
+        <!-- validation error icon -->
+        <div class="text-warn-red">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+            <path
+              d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+          </svg>
+        </div>
+
+        <div class="text-warn-red">{{validationMessages.length}} validation errors found</div>
+
+        <!-- scheduling level info icon -->
+        <!-- <svg id="scheduling-level-info" width="16px" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+            class="bi bi-question-circle" viewBox="0 0 16 16" *ngIf="validationMessagesChecked"
+            (mouseenter)="displaySchedulingLevelInfo($event)" (mouseleave)="hideSchedulingLevelInfo()">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path
+              d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z" />
+          </svg> -->
+
+        <div class="text-dark-neutral">
+          <!-- expand messages -->
+          @if (!validationMessagesExpanded) {
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24px" fill="currentColor"
+            (click)="expandValidationMessages(true)">
+            <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+          </svg>
+          }
+
+          <!-- collapse messages -->
+          @if (validationMessagesExpanded) {
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24px" fill="currentColor"
+            (click)="expandValidationMessages(false)">
+            <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+          </svg>
+          }
+        </div>
+
+      </div>
+
+      <!-- validation message details -->
+      @if (validationMessagesExpanded) {
+      <div class="relative">
+        <div class="absolute w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+          <div class="p-4 max-h-[60vh] overflow-y-auto">
+            <ul class="space-y-2 text-xs">
+              <!-- Loop through validation messages -->
+              @for (vm of validationMessages; track vm) {
+              <li class="list-[initial]">
+                <!--{{vm.MessageText}}-->
+                @for (line of (vm.messageText || '').split('|'); track line) {
+                <div>{{line}}</div>
+                }
+
+                @if ((vm.schedules || '').length > 0) {
+                <ul class="mt-2 space-y-1">
+                  @for (s of vm.schedules; track s) {
+                  <li class="text-gray-600 ml-4 list-[initial]"><span class="font-bold italic">{{s.projectName}}
+                      |</span>&nbsp;&nbsp;{{formatDateOnlyWithMonthNameToString(s.startdatetime || null)}},
+                    &nbsp;&nbsp;<span class="italic">{{s.startTime}} – {{s.endTime}} : {{s.scheduledHours}} hours</span>
+                  </li>
+                  }
+                </ul>
+                }
+
+                @if ((vm.details || '').length > 0) {
+                <ul class="mt-2 space-y-1">
+                  @for (detail of splitByPipe((vm.details || '')); track detail) {
+                  <li class="text-gray-600 ml-4"><span class="font-bold italic">{{detail}}</span></li>
+                  }
+                </ul>
+                }
+
+              </li>
+              }
+            </ul>
           </div>
         </div>
       </div>
+      }
 
+    </div>
+    }
+
+    <!--no schedule validation issues-->
+    @if (validationMessages.length < 1 && validationMessagesChecked && (selectedUser?.dempoId?.length || 0)> 0) {
+      <div id="no-validation-issues">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="green" class="valid-icon bi bi-calendar-check-fill"
+          viewBox="0 0 16 16">
+          <path
+            d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zm-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708z" />
+        </svg>
+
+        {{formatDateMonthNameToString(selectedDate.value)}} schedule is valid
+      </div>
+      }
       <!-- Shift Calendar Component -->
       <app-shift-calendar style="margin-top: -20px" (resetShiftSchedule)="onResetShiftSchedule()"
         (selectedUserChange)="handleUser($event)" (selectedProjectChange)="handleProject($event)"
@@ -160,5 +273,5 @@
         [isScheduleUpdate]="isScheduleUpdate">
         > ></app-shift-calendar>
       <app-calendar *ngIf="isClosed" [authenticatedUser]="authenticatedUser"></app-calendar>
-    </form>
-  </div>
+  </form>
+</div>
