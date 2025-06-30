@@ -55,20 +55,20 @@ export class DayDatepickerComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
   ngOnInit(): void {
-    const storedMinDate = localStorage.getItem('minSelectableDate');
-    if (storedMinDate) {
-      const parsedDate = new Date(storedMinDate);
-      if (!isNaN(parsedDate.getTime())) {
-        this.minDate = new Date(
-          parsedDate.getFullYear(),
-          parsedDate.getMonth(),
-          1
-        );
-      }
-    } else {
-      const today = new Date();
-      this.minDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    }
+    // const storedMinDate = localStorage.getItem('minSelectableDate');
+    // if (storedMinDate) {
+    //   const parsedDate = new Date(storedMinDate);
+    //   if (!isNaN(parsedDate.getTime())) {
+    //     this.minDate = new Date(
+    //       parsedDate.getFullYear(),
+    //       parsedDate.getMonth(),
+    //       1
+    //     );
+    //   }
+    // } else {
+    //   const today = new Date();
+    //   this.minDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    // }
   }
 
   //emit selected date

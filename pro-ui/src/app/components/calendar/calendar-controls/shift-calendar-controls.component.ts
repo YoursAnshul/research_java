@@ -50,6 +50,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
   @Input() _projects!: IProjectMin[];
   @Input() selectedDateRange!: FormGroup;
 
+  
   //filters
   @Input() _userFilter!: FormControl;
   @Input() _languageFilter!: FormControl;

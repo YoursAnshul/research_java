@@ -43,16 +43,16 @@ export class MonthDatepickerComponent implements OnInit {
   public minDate: null | Date = null;
   constructor() {
     const storedMinDate = localStorage.getItem('minSelectableDate');
-    if (storedMinDate) {
-      const parsedDate = new Date(storedMinDate);
-      if (!isNaN(parsedDate.getTime())) {
-        this.minDate = new Date(
-          parsedDate.getFullYear(),
-          parsedDate.getMonth(),
-          1
-        );
-      }
-    }
+    // if (storedMinDate) {
+    //   const parsedDate = new Date(storedMinDate);
+    //   if (!isNaN(parsedDate.getTime())) {
+    //     this.minDate = new Date(
+    //       parsedDate.getFullYear(),
+    //       parsedDate.getMonth(),
+    //       1
+    //     );
+    //   }
+    // }
   }
 
   ngOnInit(): void {}
