@@ -1051,7 +1051,6 @@ export class ShiftScheduleComponent implements OnInit {
         }, durationInHours); // include current shift
 
         // 8. An Interviewer's weekly schedule should not exceed 20 hours total.
-        alert("totalHours-------"+totalHours)
         if (totalHours > 20) {
           this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
           this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
