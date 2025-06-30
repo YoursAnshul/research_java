@@ -1766,9 +1766,10 @@ export class ShiftScheduleComponent implements OnInit {
           if (res.Message == 'Schedule already exists for this user!') {
             this.shiftForm.get('startTime')?.setErrors({ required: true });
             this.shiftForm.get('endTime')?.setErrors({ required: true });
-          } else if (this.authenticatedUser.interviewer) {
+          } 
+          
             this.saveNewRequest(res?.Subject?.preschedulekey);
-          }
+          
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
         },
