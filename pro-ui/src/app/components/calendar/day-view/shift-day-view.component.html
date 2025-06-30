@@ -1,27 +1,18 @@
 <div id="day-calendar">
   <div id="day-calendar-header"></div>
   <div id="day-calendar-time-header">
-    <div
-      *ngIf="authenticatedUser?.interviewer"
-      [ngStyle]="{
+    <div *ngIf="authenticatedUser?.interviewer" [ngStyle]="{
         width: '13.1%',
         border: 'none'
-      }"
-    ></div>
-    <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-      [ngStyle]="{
+      }"></div>
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0" [ngStyle]="{
         width: '13.1%',
         border: 'none'
-      }"
-    ></div>
-    <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0"
-      [ngStyle]="{
+      }"></div>
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0" [ngStyle]="{
         width: '15.4%',
         border: 'none'
-      }"
-    ></div>
+      }"></div>
     <div class="hour-header">08:00 AM</div>
     <div class="hour-header">09:00 AM</div>
     <div class="hour-header">10:00 AM</div>
@@ -38,19 +29,12 @@
     <div class="hour-header">09:00 PM</div>
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
-    <div
-      *ngIf="authenticatedUser?.interviewer"
-      class="total-hour-header"
-      style="background: #0078d4; color: white"
-    >
+    <div *ngIf="authenticatedUser?.interviewer" class="total-hour-header" style="background: #0078d4; color: white">
       Total
     </div>
 
-    <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-      class="total-hour-header"
-      style="background: #0078d4; color: white"
-    >
+    <div *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0" class="total-hour-header"
+      style="background: #0078d4; color: white">
       Total
     </div>
   </div>
@@ -58,93 +42,40 @@
     <mat-spinner color="primary" [diameter]="30"></mat-spinner>
   </div>
   <div style="position: relative">
-    <div
-      class="day-input-container"
-      *ngIf="authenticatedUser?.interviewer"
-      style="position: absolute; top: -3px; right: 0; z-index: 10"
-    >
-      <input
-        type="text"
-        [value]="calculateTotalDuration() + ' hr'"
-        class="day-right-aligned-input"
-        [readonly]="true"
-        [style.height]="inputHeight"
-        disabled="true"
-      />
+    <div class="day-input-container" *ngIf="authenticatedUser?.interviewer" style="
+        position: absolute;
+        top: -3px;
+        right: 0;
+        z-index: 10;
+      ">
+      <input type="text" [value]="calculateTotalDuration() + ' hr'" class="day-right-aligned-input" [readonly]="true"
+        [style.height]="inputHeight" disabled="true" />
     </div>
-    <div
-      class="day-input-container"
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-      style="position: absolute; top: -3px; right: 0; z-index: 10"
-    >
-      <input
-        type="text"
-        [value]="calculateTotalDuration() + ' hr'"
-        class="day-right-aligned-input"
-        [readonly]="true"
-        [style.height]="inputHeight"
-        disabled="true"
-      />
+    <div class="day-input-container" *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0" style="
+        position: absolute;
+        top: -3px;
+        right: 0;
+        z-index: 10;
+      ">
+      <input type="text" [value]="calculateTotalDuration() + ' hr'" class="day-right-aligned-input" [readonly]="true"
+        [style.height]="inputHeight" disabled="true" />
     </div>
-    <div
-      id="day-calendar-user-schedules"
-      style="margin-top: 4px"
-      *ngIf="!isLoading"
-    >
-      @for (us of filteredShiftSchedule; track us) {
+    <div id="day-calendar-user-schedules" style="margin-top: 4px" *ngIf="!isLoading">
+      @for (group of groupedSchedules; track group.user.userId) {
       <div class="user-schedule-row">
-        <div
-          *ngIf="authenticatedUser?.interviewer"
-          class="user-card"
-          [ngStyle]="{
-            width: '12.85%'
-          }"
-        >
-          {{ us.user.userName }}
-          @for (language of us?.language?.split('|'); track language) {
-          <app-language-icon [language]="language"></app-language-icon>
-          }
+        <div *ngIf="authenticatedUser?.interviewer || (authenticatedUser?.admin && selectedUser?.userId != 0)" class="user-card" [ngStyle]="{ width: '12.85%' }">
+          {{ group.user.userName }}
         </div>
-
-        <div
-          *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-          class="user-card"
-          [ngStyle]="{
-            width: '12.85%'
-          }"
-        >
-          {{ us.user.userName }}
-          @for (language of us.language.split('|'); track language) {
-          <app-language-icon [language]="language"></app-language-icon>
-          }
+        <div *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0" class="user-card" [ngStyle]="{ width: '15.4%' }">
+          {{ group.user.userName }}
         </div>
-
-        <div
-          *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0"
-          class="user-card"
-          [ngStyle]="{
-            width: '15.4%'
-          }"
-        >
-          {{ us.user.userName }}
-          @for (language of us.language.split('|'); track language) {
-          <app-language-icon [language]="language"></app-language-icon>
-          }
-        </div>
-        <!-- [style.border]="schedule.isEdit ? '2.5px solid #66aeff' : ''" -->
-        @for (schedule of us.schedules; track schedule.preschedulekey) {
-        <div
-          class="schedule-card"
-          (click)="handleClick(schedule, $event)"
-          (mouseenter)="displayHoverMessage($event, schedule, us)"
-          (mouseleave)="hideHoverMessage()"
+        @for (schedule of group.schedules; track schedule) {
+        <div class="schedule-card" (click)="handleClick(schedule, $event)"
+          (mouseenter)="displayHoverMessage($event, schedule, group)" (mouseleave)="hideHoverMessage()"
           [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"
-          [style.opacity]="schedule.isEdit ? 0.5 : 1"
-        >
+          [style.opacity]="schedule.isEdit ? 0.5 : 1">
           <div class="center-align-container">
-            <app-project-swatch
-              [projectColor]="schedule.projects.projectColor"
-            ></app-project-swatch>
+            <app-project-swatch [projectColor]="schedule.projects.projectColor"></app-project-swatch>
             <div>
               <span class="bold">{{ schedule.user.userName }}: </span>
               <span>{{ schedule.startTime }} - {{ schedule.endTime }}</span>
@@ -156,66 +87,29 @@
             </div>
           </div>
         </div>
-
-        <!-- <div
-        class="input-container"
-        *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-      >
-        <input
-          type="text"
-          [value]="schedule?.duration + ' hr'"
-          class="right-aligned-input"
-          [readonly]="true"
-          disabled="true"
-        />
-      </div> -->
-
         }
       </div>
       }
-      <div
-        *ngIf="authenticatedUser?.interviewer"
-        class="user-card"
-        [ngStyle]="{
+      <div *ngIf="authenticatedUser?.interviewer" class="user-card" [ngStyle]="{
           width: '12.85%'
-        }"
-        style="margin-top: -5px"
-      ></div>
+        }" style="margin-top: -5px"></div>
 
-      <div
-        *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
-        class="user-card"
-        [ngStyle]="{
+      <div *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0" class="user-card" [ngStyle]="{
           width: '12.85%'
-        }"
-        style="margin-top: -5px"
-      ></div>
+        }" style="margin-top: -5px"></div>
 
-      <div
-        *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0"
-        class="user-card"
-        [ngStyle]="{
+      <div *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0" class="user-card" [ngStyle]="{
           width: '15.4%'
-        }"
-        style="margin-top: -5px"
-      ></div>
+        }" style="margin-top: -5px"></div>
 
-      <div
-        *ngIf="
+      <div *ngIf="
           filteredShiftSchedule?.length == 0 && authenticatedUser?.interviewer
-        "
-        class="no-results bold italic"
-        style="margin-top: -5px"
-      >
+        " class="no-results bold italic" style="margin-top: -5px">
         No schedules found for this day...
       </div>
-      <div
-        *ngIf="
+      <div *ngIf="
           filteredShiftSchedule?.length == 0 && !authenticatedUser?.interviewer
-        "
-        class="no-results bold italic"
-        style="margin-top: -5px"
-      >
+        " class="no-results bold italic" style="margin-top: -5px">
         No schedules found for this day...
       </div>
       <div class="icon-input-container">
@@ -226,12 +120,7 @@
     </div>
   </div>
 
-  <div
-    *ngIf="showTooltip"
-    class="custom-tooltip"
-    [ngStyle]="tooltipPosition"
-    [innerHTML]="tooltipMessage"
-  ></div>
+  <div *ngIf="showTooltip" class="custom-tooltip" [ngStyle]="tooltipPosition" [innerHTML]="tooltipMessage"></div>
 </div>
 
 <app-hover-message [hoverMessage]="hoverMessage"></app-hover-message>

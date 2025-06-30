@@ -71,115 +71,12 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   if (this.selectedProject) {
-  //     this.selectedProjectChange.emit(this.selectedProject);
-  //   }
-  //   const selectedDateValue = this.selectedDate?.value
-  //     ? new Date(this.selectedDate.value)
-  //     : null;
-
-  //   const selectedUserId = this.selectedUser?.userId || 0;
-  //   const selectedProjectId = this.selectedProject?.projectId || 0;
-
-  //   this.filteredShiftSchedule = this.shiftSchedule
-  //     ?.map((schedule) => {
-  //       const scheduleDateUTC = new Date(schedule?.dayWiseDate);
-
-  //       const scheduleDateET = new Date(
-  //         scheduleDateUTC.toLocaleString('en-US', {
-  //           timeZone: 'America/New_York',
-  //         })
-  //       );
-
-  //       const formattedScheduleDate = scheduleDateET
-  //         .toISOString()
-  //         .split('T')[0];
-
-  //       const selectedDateET = selectedDateValue
-  //         ? new Date(
-  //             selectedDateValue.toLocaleString('en-US', {
-  //               timeZone: 'America/New_York',
-  //             })
-  //           )
-  //             .toISOString()
-  //             .split('T')[0]
-  //         : null;
-
-  //       const isDateMatch = selectedDateET
-  //         ? formattedScheduleDate === selectedDateET
-  //         : true;
-  //       const isUserMatch = selectedUserId
-  //         ? schedule.user.userId === selectedUserId
-  //         : true;
-  //       const isProjectMatch = selectedProjectId
-  //         ? schedule.projects.projectId === selectedProjectId
-  //         : true;
-
-  //       schedule.duration = parseFloat(schedule.duration) || 0;
-
-  //       if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
-  //         const utcStart = new Date(
-  //           `${schedule.dayWiseDate} ${schedule.startTime} UTC`
-  //         );
-  //         const utcEnd = new Date(
-  //           `${schedule.dayWiseDate} ${schedule.endTime} UTC`
-  //         );
-
-  //         const startET = new Date(
-  //           utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
-  //         );
-  //         const endET = new Date(
-  //           utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
-  //         );
-
-  //         const timeOptions: Intl.DateTimeFormatOptions = {
-  //           hour: 'numeric',
-  //           minute: '2-digit',
-  //           hour12: true,
-  //           timeZone: 'America/New_York',
-  //         };
-
-  //         schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
-  //         schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
-  //       }
-
-  //       return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
-  //     })
-  //     .filter((s) => s);
-
-  //   if (this.pId > 0) {
-  //     this.filteredShiftSchedule
-  //       .filter((schedule) => schedule.preschedulekey === this.pId)
-  //       .forEach((schedule) => (schedule.isEdit = true));
-
-  //     const targetSchedule = this.filteredShiftSchedule.find(
-  //       (item) => item.preschedulekey === this.pId
-  //     );
-  //     if (
-  //       targetSchedule &&
-  //       (!this.previouslyEditedSchedule ||
-  //         this.previouslyEditedSchedule.preschedulekey !==
-  //           targetSchedule.preschedulekey)
-  //     ) {
-  //       this.openScheduleData(targetSchedule);
-  //     }
-  //   }
-  //   if (this.isScheduleUpdate) {
-  //     this.filteredShiftSchedule.forEach((schedule) => {
-  //       schedule.isEdit = false;
-  //     });
-  //   }
-  //   console.log("filteredShiftSchedule--->",this.filteredShiftSchedule);
-
-  // }
   ngOnChanges(changes: SimpleChanges): void {
     if (this.selectedProject) {
       this.selectedProjectChange.emit(this.selectedProject);
     }
-
     const selectedDateValue = this.selectedDate?.value
       ? new Date(this.selectedDate.value)
       : null;
@@ -187,122 +84,93 @@ export class ShiftDayViewComponent implements OnInit {
     const selectedUserId = this.selectedUser?.userId || 0;
     const selectedProjectId = this.selectedProject?.projectId || 0;
 
-    const grouped = new Map<number, any>();
+    this.filteredShiftSchedule = this.shiftSchedule
+      ?.map((schedule) => {
+        const scheduleDateUTC = new Date(schedule?.dayWiseDate);
 
-    this.shiftSchedule?.forEach((schedule) => {
-      const scheduleDateUTC = new Date(schedule?.dayWiseDate);
+        const scheduleDateET = new Date(
+          scheduleDateUTC.toLocaleString('en-US', {
+            timeZone: 'America/New_York',
+          })
+        );
 
-      const scheduleDateET = new Date(
-        scheduleDateUTC.toLocaleString('en-US', {
-          timeZone: 'America/New_York',
-        })
-      );
-      const formattedScheduleDate = scheduleDateET.toISOString().split('T')[0];
+        const formattedScheduleDate = scheduleDateET
+          .toISOString()
+          .split('T')[0];
 
-      const selectedDateET = selectedDateValue
-        ? new Date(
+        const selectedDateET = selectedDateValue
+          ? new Date(
             selectedDateValue.toLocaleString('en-US', {
               timeZone: 'America/New_York',
             })
           )
             .toISOString()
             .split('T')[0]
-        : null;
+          : null;
 
-      const isDateMatch = selectedDateET
-        ? formattedScheduleDate === selectedDateET
-        : true;
-      const isUserMatch = selectedUserId
-        ? schedule.user.userId === selectedUserId
-        : true;
-      const isProjectMatch = selectedProjectId
-        ? schedule.projects.projectId === selectedProjectId
-        : true;
+        const isDateMatch = selectedDateET
+          ? formattedScheduleDate === selectedDateET
+          : true;
+        const isUserMatch = selectedUserId
+          ? schedule.user.userId === selectedUserId
+          : true;
+        const isProjectMatch = selectedProjectId
+          ? schedule.projects.projectId === selectedProjectId
+          : true;
 
-      if (!(isDateMatch && isUserMatch && isProjectMatch)) return;
+        schedule.duration = parseFloat(schedule.duration) || 0;
 
-      schedule.duration = parseFloat(schedule.duration) || 0;
+        if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
+          const utcStart = new Date(
+            `${schedule.dayWiseDate} ${schedule.startTime} UTC`
+          );
+          const utcEnd = new Date(
+            `${schedule.dayWiseDate} ${schedule.endTime} UTC`
+          );
 
-      if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
-        const utcStart = new Date(
-          `${schedule.dayWiseDate} ${schedule.startTime} UTC`
-        );
-        const utcEnd = new Date(
-          `${schedule.dayWiseDate} ${schedule.endTime} UTC`
-        );
+          const startET = new Date(
+            utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          );
+          const endET = new Date(
+            utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          );
 
-        const startET = new Date(
-          utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
-        );
-        const endET = new Date(
-          utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
-        );
+          const timeOptions: Intl.DateTimeFormatOptions = {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: 'America/New_York',
+          };
 
-        const timeOptions: Intl.DateTimeFormatOptions = {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true,
-          timeZone: 'America/New_York',
-        };
+          schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
+          schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
+        }
 
-        schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
-        schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
-      }
-
-      // Grouping schedules by userId
-      const userId = schedule.user.userId;
-      if (!grouped.has(userId)) {
-        grouped.set(userId, {
-          user: schedule.user,
-          language: schedule.language,
-          schedules: [],
-        });
-      }
-
-      grouped.get(userId).schedules.push(schedule);
-    });
-
-    this.filteredShiftSchedule = Array.from(grouped.values());
-
-    // Handle editing schedules by preschedulekey
+        return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
+      })
+      .filter((s) => s);
     if (this.pId > 0) {
-      this.filteredShiftSchedule.forEach((userGroup) => {
-        userGroup.schedules.forEach(
-          (schedule: { preschedulekey: number; isEdit: boolean }) => {
-            if (schedule.preschedulekey === this.pId) {
-              schedule.isEdit = true;
-            }
-          }
-        );
-      });
+      this.filteredShiftSchedule
+        .filter((schedule) => schedule.preschedulekey === this.pId)
+        .forEach((schedule) => (schedule.isEdit = true));
 
-      const targetScheduleGroup = this.filteredShiftSchedule.find((group) =>
-        group.schedules.some(
-          (s: { preschedulekey: number }) => s.preschedulekey === this.pId
-        )
+      const targetSchedule = this.filteredShiftSchedule.find(
+        (item) => item.preschedulekey === this.pId
       );
-
-      const targetSchedule = targetScheduleGroup?.schedules.find(
-        (s: { preschedulekey: number; }) => s.preschedulekey === this.pId
-      );
-
       if (
         targetSchedule &&
         (!this.previouslyEditedSchedule ||
           this.previouslyEditedSchedule.preschedulekey !==
-            targetSchedule.preschedulekey)
+          targetSchedule.preschedulekey)
       ) {
         this.openScheduleData(targetSchedule);
       }
     }
-
     if (this.isScheduleUpdate) {
-      this.filteredShiftSchedule.forEach((group) => {
-        group.schedules.forEach((s: { isEdit: boolean; }) => (s.isEdit = false));
+      this.filteredShiftSchedule.forEach((schedule) => {
+        schedule.isEdit = false;
       });
     }
-
-    console.log('filteredShiftSchedule--->', this.filteredShiftSchedule);
   }
 
   customScheduleCard(startTime: string, endTime: string) {
@@ -494,5 +362,17 @@ export class ShiftDayViewComponent implements OnInit {
     const maxHeight = 200; // optional limit
 
     return Math.min(scheduleCount * baseHeight, maxHeight) + 'px';
+  }
+
+  get groupedSchedules() {
+    const groups: { [userId: string]: { user: any, schedules: any[] } } = {};
+    for (const schedule of this.filteredShiftSchedule) {
+      const userId = schedule.user.userId;
+      if (!groups[userId]) {
+        groups[userId] = { user: schedule.user, schedules: [] };
+      }
+      groups[userId].schedules.push(schedule);
+    }
+    return Object.values(groups);
   }
 }
