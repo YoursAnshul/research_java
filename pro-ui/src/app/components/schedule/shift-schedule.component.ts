@@ -602,7 +602,6 @@ export class ShiftScheduleComponent implements OnInit {
       );
       this.homeSelectedDate = resultDate;
       this.minSelectableDate = new Date(resultDate);
-      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
