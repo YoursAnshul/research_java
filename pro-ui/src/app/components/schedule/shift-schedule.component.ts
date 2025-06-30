@@ -334,14 +334,15 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
-      // this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
-      if (this.minSelectableDate) {
-        const date = new Date(this.minSelectableDate);
-        date.setDate(1);
-        date.setHours(0, 0, 0, 0);
-        this.minSelectableDate = date;
+      if (this.authenticatedUser.interviewer) {
+        if (this.minSelectableDate) {
+          const date = new Date(this.minSelectableDate);
+          date.setDate(1);
+          date.setHours(0, 0, 0, 0);
+          this.minSelectableDate = date;
+        }
       }
     });
 
