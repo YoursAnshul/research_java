@@ -224,9 +224,7 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-  ngOnChanges(): void {
-    // this.getScheduleList();
-  }
+  ngOnChanges(): void {}
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
@@ -341,8 +339,8 @@ export class ShiftScheduleComponent implements OnInit {
       this.scheduleFetchStatus = this.shiftForm.valid;
       if (this.minSelectableDate) {
         const date = new Date(this.minSelectableDate);
-        date.setDate(1); 
-        date.setHours(0, 0, 0, 0); 
+        date.setDate(1);
+        date.setHours(0, 0, 0, 0);
         this.minSelectableDate = date;
       }
     });
@@ -618,7 +616,6 @@ export class ShiftScheduleComponent implements OnInit {
   //   this.shiftForm.get('dayWiseDate')?.setErrors(null);
   //   this.shiftForm.markAllAsTouched();
   // }
-
    validateDateOption(selectedDate: any): void {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -655,11 +652,8 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     }
-    this.shiftForm.get('startTime')?.enable();
-    this.shiftForm.get('endTime')?.enable();
-    this.shiftForm.get('dayWiseDate')?.setErrors(null);
-    this.shiftForm.markAllAsTouched();
   }
+
   validateBlockOutDate(selectedDate: any): void {
     this.blockedTimeSlots = [];
     this.isBlockDate = false;
@@ -853,6 +847,10 @@ export class ShiftScheduleComponent implements OnInit {
       this.schedulinglevel == 1 &&
       this.authenticatedUser.interviewer
     ) {
+      const storedSchedule = localStorage.getItem('shiftSchedule');
+      if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
+        this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
+      }
       const formData = this.shiftForm.value;
       const selectedDate = new Date(formData.dayWiseDate);
       const day = selectedDate.getDay(); // 0 = Sunday, ..., 6 = Saturday
@@ -868,7 +866,7 @@ export class ShiftScheduleComponent implements OnInit {
         (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60);
       const isInterviewer = this.authenticatedUser?.interviewer;
       this.coreHoursValidation(selectedDate, formData?.user?.dempoId);
-      
+
       // 1. A shift schedule should be at least 4 hours in length.
       if (durationInHours < 4) {
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
@@ -880,7 +878,7 @@ export class ShiftScheduleComponent implements OnInit {
         });
         return;
       }
-      
+
       // 2. A shift schedule should be no more than 7 hours in length.
       if (durationInHours > 7) {
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
@@ -895,17 +893,20 @@ export class ShiftScheduleComponent implements OnInit {
 
       // 3. A shift schedule for a weekday, Monday thru Friday, should begin at or after 1 PM.
       const startHour = startTime.getHours();
-      if ((day >= 1 && day <= 5) && startHour < 13) {
+      if (day >= 1 && day <= 5 && startHour < 13) {
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
         this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
         this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
-          data: { message: 'Weekday shifts (Monday-Friday) must begin at or after 1 PM.' },
+          data: {
+            message:
+              'Weekday shifts (Monday-Friday) must begin at or after 1 PM.',
+          },
         });
         return;
       }
-      
+
       // 4. A shift schedule for Saturday should begin at or after 9 AM.
       if (day === 6 && startHour < 9) {
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
@@ -917,7 +918,7 @@ export class ShiftScheduleComponent implements OnInit {
         });
         return;
       }
-      
+
       // 5. A shift schedule for Sunday should begin at or after 12 noon.
       if (day === 0 && startHour < 12) {
         this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
@@ -937,7 +938,10 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.markAllAsTouched();
         const dialogRef = this.dialog.open(SchedulingLevelDialog, {
           panelClass: 'custom-dialog-container',
-          data: { message: 'Weekend shifts (Saturday/Sunday) must be at least 6 hours.' },
+          data: {
+            message:
+              'Weekend shifts (Saturday/Sunday) must be at least 6 hours.',
+          },
         });
         return;
       }
@@ -1029,27 +1033,38 @@ export class ShiftScheduleComponent implements OnInit {
 
       if (isInterviewer) {
         const userId = formData.user.dempoId;
-        const weekStart = this.getWeekStart(selectedDate);
-        const weekEnd = this.getWeekEnd(selectedDate);
+        const selectedDate = this.shiftForm.get('dayWiseDate')?.value;
+
+        const weekStartStr = this.getWeekStart(selectedDate)
+          .toISOString()
+          .slice(0, 10);
+        const weekEndStr = this.getWeekEnd(selectedDate)
+          .toISOString()
+          .slice(0, 10);
+        const currentShiftDateStr = new Date(selectedDate)
+          .toISOString()
+          .slice(0, 10);
+
         const weekShifts = this.shiftSchedule.filter((s) => {
-          const shiftDate = new Date(s.dayWiseDate);
-          return (
-            s.user.dempoId === userId &&
-            shiftDate >= weekStart &&
-            shiftDate <= weekEnd
-          );
+          if (!s.dayWiseDate || !s.user) return false;
+
+          const shiftDateStr = new Date(s.dayWiseDate)
+            .toISOString()
+            .slice(0, 10);
+
+          const isSameUser = s.user.dempoId === userId;
+          const isWithinWeek =
+            shiftDateStr >= weekStartStr && shiftDateStr <= weekEndStr;
+          const isNotCurrentShift =
+            !this.isEdit || shiftDateStr !== currentShiftDateStr;
+
+          return isSameUser && isWithinWeek && isNotCurrentShift;
         });
-
-        // Calculate total hours this week including current shift
-        const totalHours = weekShifts.reduce((sum, shift) => {
-          const st = this.combineDateAndTime(
-            shift.dayWiseDate,
-            shift.startTime
-          );
-          const et = this.combineDateAndTime(shift.dayWiseDate, shift.endTime);
-          return sum + (et.getTime() - st.getTime()) / (1000 * 60 * 60);
-        }, durationInHours); // include current shift
-
+        console.log('weekShifts----->', weekShifts);
+        let totalHours = this.getDuration();
+        for (let i = 0; weekShifts && i < weekShifts.length; i++) {
+          totalHours += weekShifts[i].duration;
+        }
         // 8. An Interviewer's weekly schedule should not exceed 20 hours total.
         if (totalHours > 20) {
           this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
@@ -1063,7 +1078,7 @@ export class ShiftScheduleComponent implements OnInit {
           });
           return;
         }
-        
+
         // 9. An Interviewer's weekly schedule should at a minimum match their core hours total.
         if (
           this.coreHours &&
@@ -1082,7 +1097,7 @@ export class ShiftScheduleComponent implements OnInit {
           });
           return;
         }
-        
+
         // 10. An Interviewer's schedule should include 1 night shift, until at or after 9 PM, every other week.
         // 11. An Interviewer's schedule should include 1 weekend shift every other week.
         const isNightShift = (date: string, end: string): boolean =>
@@ -1123,7 +1138,9 @@ export class ShiftScheduleComponent implements OnInit {
           this.shiftForm.markAllAsTouched();
           const dialogRef = this.dialog.open(SchedulingLevelDialog, {
             panelClass: 'custom-dialog-container',
-            data: { message: 'You must include one weekend shift every other week.' },
+            data: {
+              message: 'You must include one weekend shift every other week.',
+            },
           });
           return;
         }
@@ -1309,7 +1326,6 @@ export class ShiftScheduleComponent implements OnInit {
       (error) => {}
     );
   }
-
 
   formatDateForRequest(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
@@ -1731,9 +1747,9 @@ export class ShiftScheduleComponent implements OnInit {
             this.shiftForm.get('startTime')?.setErrors({ required: true });
             this.shiftForm.get('endTime')?.setErrors({ required: true });
           }
-          
-            this.saveNewRequest(res?.Subject?.preschedulekey);
-          
+
+          this.saveNewRequest(res?.Subject?.preschedulekey);
+
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
         },
@@ -2055,11 +2071,15 @@ export class ShiftScheduleComponent implements OnInit {
           this.isScheduleUpdate = true;
           this.showToastMessage(res.Message, 'success');
           this.scheduleFetchStatus = false;
-          this.onSubmit();
           this.isEdit = false;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
+          const anchorDate =
+            this.selectedDate && this.selectedDate.value instanceof Date
+              ? this.selectedDate.value.toISOString().split('T')[0]
+              : null;
+          this.getScheduleList(anchorDate);
           localStorage.removeItem('shiftSchedule');
         },
         error: (error) => {
@@ -2137,6 +2157,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
+
 
   coreHoursValidation(date: Date, dempoId: string): void {
     if (!date) {
@@ -2483,5 +2504,28 @@ export class ShiftScheduleComponent implements OnInit {
           }
         );
     }
+  }
+  getDuration(): number {
+    const start = this.shiftForm.get('startTime')?.value;
+    const end = this.shiftForm.get('endTime')?.value;
+
+    if (!start || !end) {
+      return 0;
+    }
+
+    const startDate = this.parseTime(start);
+    const endDate = this.parseTime(end);
+
+    if (endDate <= startDate) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+
+    const diffMs = endDate.getTime() - startDate.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.round((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    const formattedMinutes = diffMinutes / 60;
+    const total = diffHours + formattedMinutes;
+    return parseFloat(String(total)) || 0;
   }
 }
