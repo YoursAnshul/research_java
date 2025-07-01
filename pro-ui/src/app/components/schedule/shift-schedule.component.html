@@ -56,7 +56,7 @@
           <mat-label>{{ currentDay }}</mat-label>
           <!-- <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" [min]="minSelectableDate" /> -->
 <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
-          <mat-datepicker-toggle matSuffix [for]="dayWisePicker"></mat-datepicker-toggle>
+          <mat-datepicker-toggle matSuffix [for]="dayWisePicker" [disabled]="isBlockDate"></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
         <mat-form-field *ngIf="authenticatedUser?.admin" appearance="outline" class="custom-form-field ml-2"
@@ -106,7 +106,7 @@
         <span class="ml-2">{{ duration }}</span>
 
         <!-- Comments (Optional) -->
-        <mat-form-field appearance="outline" class="custom-form-field ml-2" style="width: 150px">
+        <mat-form-field appearance="outline"  class="custom-form-field ml-2" style="width: 150px">
           <mat-label>Comments</mat-label>
           <input matInput formControlName="comments" />
         </mat-form-field>
@@ -142,7 +142,7 @@
               </g>
             </svg>
           </div>
-          <div (click)="confirmationPopup()" [ngClass]="{ disabled: isEditAble }">
+          <div (click)="confirmationPopup()" [ngClass]="{ disabled: isEditAble || shiftForm.invalid }">
             <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <mask id="mask0_6864_14520" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
                 height="25">

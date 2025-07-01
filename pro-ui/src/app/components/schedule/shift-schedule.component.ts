@@ -278,12 +278,12 @@ export class ShiftScheduleComponent implements OnInit {
       comments: new FormControl(''),
       id: new FormControl(null),
     });
-    // let resultDate = localStorage.getItem('minSelectableDate');
-    // if (this.authenticatedUser.interviewer) {
-    //   if (resultDate) {
-    //     this.shiftForm.get('dayWiseDate')?.setValue(new Date(resultDate));
-    //   }
-    // }
+    let resultDate = localStorage.getItem('minSelectableDate');
+    if (this.authenticatedUser.interviewer) {
+      if (resultDate) {
+        this.shiftForm.get('dayWiseDate')?.setValue(new Date(resultDate));
+      }
+    }
 
     const userId = '';
     const dempoId = this.selectedUser?.dempoId || '';
@@ -559,64 +559,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.dateRange = dateRange;
     }
   }
-  // validateDateOption(selectedDate: any): void {
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
-
-  //   const year = today.getFullYear();
-  //   const month = today.getMonth();
-
-  //   const resultDate = new Date(year, month, this.dateOptionValue);
-  //   resultDate.setHours(0, 0, 0, 0);
-
-  //   selectedDate.setHours(0, 0, 0, 0);
-
-  //   this.isDateBlockDate = false;
-  //   if (resultDate >= today) {
-  //     let monthVal = selectedDate.getMonth();
-  //     let resultMonth = resultDate.getMonth();
-  //     resultDate.setMonth(resultDate.getMonth() + 1);
-  //     localStorage.setItem(
-  //       'minSelectableDate',
-  //       resultDate.toISOString().split('T')[0]
-  //     );
-  //     this.homeSelectedDate = resultDate;
-  //     this.minSelectableDate = new Date(resultDate);
-  //     // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
-  //     if (resultMonth > monthVal) {
-  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-  //       this.shiftForm.get('startTime')?.disable();
-  //       this.shiftForm.get('endTime')?.disable();
-  //       this.isDateBlockDate = true;
-  //       this.openMonthlyBlockDialog();
-  //       return;
-  //     }
-  //   } else {
-  //     let monthVal = selectedDate.getMonth();
-  //     let resultMonth = resultDate.getMonth();
-  //     resultDate.setMonth(resultDate.getMonth() + 2);
-  //     localStorage.setItem(
-  //       'minSelectableDate',
-  //       resultDate.toISOString().split('T')[0]
-  //     );
-  //     this.homeSelectedDate = resultDate;
-  //     this.minSelectableDate = new Date(resultDate);
-  //     // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
-  //     if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
-  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-  //       this.shiftForm.get('startTime')?.disable();
-  //       this.shiftForm.get('endTime')?.disable();
-  //       this.isDateBlockDate = true;
-  //       this.openMonthlyBlockDialog();
-  //       return;
-  //     }
-  //   }
-  //   this.shiftForm.get('startTime')?.enable();
-  //   this.shiftForm.get('endTime')?.enable();
-  //   this.shiftForm.get('dayWiseDate')?.setErrors(null);
-  //   this.shiftForm.markAllAsTouched();
-  // }
-   validateDateOption(selectedDate: any): void {
+  validateDateOption(selectedDate: any): void {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -632,6 +575,14 @@ export class ShiftScheduleComponent implements OnInit {
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      resultDate.setMonth(resultDate.getMonth() + 1);
+      localStorage.setItem(
+        'minSelectableDate',
+        resultDate.toISOString().split('T')[0]
+      );
+      this.homeSelectedDate = resultDate;
+      this.minSelectableDate = new Date(resultDate);
+      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -643,6 +594,14 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      resultDate.setMonth(resultDate.getMonth() + 2);
+      localStorage.setItem(
+        'minSelectableDate',
+        resultDate.toISOString().split('T')[0]
+      );
+      this.homeSelectedDate = resultDate;
+      this.minSelectableDate = new Date(resultDate);
+      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -652,7 +611,48 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     }
+    this.shiftForm.get('startTime')?.enable();
+    this.shiftForm.get('endTime')?.enable();
+    this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    this.shiftForm.markAllAsTouched();
   }
+  //  validateDateOption(selectedDate: any): void {
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
+
+  //   const year = today.getFullYear();
+  //   const month = today.getMonth();
+
+  //   const resultDate = new Date(year, month, this.dateOptionValue);
+  //   resultDate.setHours(0, 0, 0, 0);
+
+  //   selectedDate.setHours(0, 0, 0, 0);
+
+  //   this.isDateBlockDate = false;
+  //   if (resultDate >= today) {
+  //     let monthVal = selectedDate.getMonth();
+  //     let resultMonth = resultDate.getMonth();
+  //     if (resultMonth > monthVal) {
+  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+  //       this.shiftForm.get('startTime')?.disable();
+  //       this.shiftForm.get('endTime')?.disable();
+  //       this.isDateBlockDate = true;
+  //       this.openMonthlyBlockDialog();
+  //       return;
+  //     }
+  //   } else {
+  //     let monthVal = selectedDate.getMonth();
+  //     let resultMonth = resultDate.getMonth();
+  //     if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
+  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
+  //       this.shiftForm.get('startTime')?.disable();
+  //       this.shiftForm.get('endTime')?.disable();
+  //       this.isDateBlockDate = true;
+  //       this.openMonthlyBlockDialog();
+  //       return;
+  //     }
+  //   }
+  // }
 
   validateBlockOutDate(selectedDate: any): void {
     this.blockedTimeSlots = [];
