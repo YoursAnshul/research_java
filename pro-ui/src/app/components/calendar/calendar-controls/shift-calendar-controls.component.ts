@@ -201,7 +201,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
   public addDateUnitsToSelectedDate(unit: number): void {
     const minDateStr = localStorage.getItem('minSelectableDate');
     const minDate = minDateStr ? new Date(minDateStr) : null;
-    const blockMonth = minDate?.getMonth() ?? 0;
+    const blockMonth = (minDate?.getMonth() ?? 0) ;
     const blockYear = minDate?.getFullYear();
 
     const currentDate = new Date(this._selectedDate.value);

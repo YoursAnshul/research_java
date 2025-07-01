@@ -249,6 +249,7 @@ export class ShiftScheduleComponent implements OnInit {
     if (this.authenticatedUser.admin || this.canEdit) {
       localStorage.removeItem('minSelectableDate');
     }
+    localStorage.removeItem('minSelectableDate');
     this.dialogRef.close();
   }
   ngOnInit(): void {
@@ -279,16 +280,6 @@ export class ShiftScheduleComponent implements OnInit {
       comments: new FormControl(''),
       id: new FormControl(null),
     });
-    if (this.authenticatedUser.interviewer) {
-      const resultDateStr = localStorage.getItem('minSelectableDate');
-      if (resultDateStr) {
-        const resultDate = moment
-          .tz(resultDateStr, 'YYYY-MM-DD', 'America/Toronto')
-          .toDate();
-        this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
-      }
-    }
-
     const userId = '';
     const dempoId = this.selectedUser?.dempoId || '';
     forkJoin([
@@ -571,22 +562,14 @@ export class ShiftScheduleComponent implements OnInit {
     const year = today.getFullYear();
     const month = today.getMonth();
 
-    const resultDate = new Date(year, month, this.dateOptionValue);
-    resultDate.setHours(0, 0, 0, 0);
-
-    selectedDate.setHours(0, 0, 0, 0);
+    const resultDate = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
+    resultDate.setHours(12, 0, 0, 0);
+    selectedDate.setHours(12, 0, 0, 0);
 
     this.isDateBlockDate = false;
-    if (resultDate >= today) {
+    if (resultDate > today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      resultDate.setMonth(resultDate.getMonth() + 1);
-      localStorage.setItem(
-        'minSelectableDate',
-        resultDate.toISOString().split('T')[0]
-      );
-      this.homeSelectedDate = resultDate;
-      this.minSelectableDate = new Date(resultDate);
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -598,13 +581,32 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      resultDate.setMonth(resultDate.getMonth() + 2);
-      localStorage.setItem(
-        'minSelectableDate',
-        resultDate.toISOString().split('T')[0]
-      );
-      this.homeSelectedDate = resultDate;
-      this.minSelectableDate = new Date(resultDate);
+      const lastDayOfMonth = new Date(
+        resultDate.getFullYear(),
+        resultDate.getMonth() + 1,
+        0
+      ).getDate();
+
+      if (resultDate.getDate() == lastDayOfMonth) {
+        const date = new Date(year, month, 1, 12, 0, 0, 0);
+        date.setMonth(date.getMonth() + 3);
+        localStorage.setItem(
+          'minSelectableDate',
+          date.toISOString().split('T')[0]
+        );
+        this.homeSelectedDate = date;
+        this.minSelectableDate = new Date(date);
+      } else {
+        const date = new Date(year, month, 1, 12, 0, 0, 0);
+        date.setMonth(date.getMonth() + 2);
+        localStorage.setItem(
+          'minSelectableDate',
+          date.toISOString().split('T')[0]
+        );
+        const dateValue = new Date(year, month, 1, 12, 0, 0, 0);
+        this.homeSelectedDate = dateValue;
+        this.minSelectableDate = new Date(dateValue);
+      }
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -2207,6 +2209,26 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.dateOptionValue = data?.Subject?.optionValue;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
+        const lastDayOfMonth = new Date(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          0
+        ).getDate();
+        if (date < today) {
+          if (date.getDate() == lastDayOfMonth) {
+            const date = new Date(year, month + 2, 1, 12, 0, 0, 0);
+            this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
+          } else {
+            const date = new Date(year, month, 1, 12, 0, 0, 0);
+            this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
+          }
+        }
+
         this.validateDateOption(this.selectedDate.value);
       },
     });
