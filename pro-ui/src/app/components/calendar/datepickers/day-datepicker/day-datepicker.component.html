@@ -1,16 +1,10 @@
 <mat-form-field appearance="fill" class="date-picker-form-field">
-  <mat-label>Select a date</mat-label>
-  <input matInput [matDatepicker]="datePicker"
-         [formControl]="selectedDate"
-         (dateChange)="emitSelectedDate()"
-         (blur)="onFinalDateInput($event)"
-         (keydown)="onKeydown($event)"
-         [min]="minDate"
-         autocomplete="off" />
-  <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-  <mat-datepicker #datePicker
-                  startView="month"
-                  (yearSelected)="chosenYearHandler($event)"
-                  (monthSelected)="chosenMonthHandler($event, datePicker)"
-                  (daySelected)="chosenDayHandler($event, datePicker)"></mat-datepicker>
+       <mat-label>Select a date</mat-label>
+       <input matInput [matDatepicker]="datePicker" [formControl]="selectedDate" (dateChange)="emitSelectedDate()"
+              (blur)="onFinalDateInput($event)" (keydown)="onKeydown($event)" [matDatepickerFilter]="dateFilter"
+              autocomplete="off" />
+       <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+       <mat-datepicker #datePicker startView="month" (yearSelected)="chosenYearHandler($event)"
+              (monthSelected)="chosenMonthHandler($event, datePicker)"
+              (daySelected)="chosenDayHandler($event, datePicker)"></mat-datepicker>
 </mat-form-field>

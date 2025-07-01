@@ -88,12 +88,9 @@ export class MonthDatepickerComponent implements OnInit {
     selectedDt.setDate(1);
     this.selectedDate.setValue(selectedDt);
 
-    //emit the selected date because this month handler will not trigger the (dateChange) action
     this.emitSelectedDate();
 
-    //close the datepicker so we don't get prompted for a day
     datepicker.close();
-    //console.log(normalizedMonth);
   }
 
   //handle day selection
@@ -130,4 +127,10 @@ export class MonthDatepickerComponent implements OnInit {
 
     this.selectedDateChange.emit(this.selectedDate);
   }
+  dateFilter = (date: Moment | null): boolean => {
+    if (!date || !this.minDate) return true;
+    const min = moment(this.minDate).startOf('month');
+    const current = moment(date).startOf('month');
+    return !current.isSame(min, 'month');
+  };
 }

@@ -106,6 +106,7 @@ import { MonthlyBlockDate } from './components/calendar/calendar-controls/monthl
 import { SchedulingLevelDialog } from './components/calendar/calendar-controls/scheduling-lever-dialog';
 import { UserCoreHoursComponentV2 } from './pages/forecasting/user-core-hours/user-core-hours.component-v2';
 import { ProjectForecastingComponentV2 } from './pages/forecasting/project-forecasting/project-forecasting.component-v2';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 @NgModule({
   declarations: [
     ManageAnnouncementsComponent,
@@ -217,7 +218,8 @@ import { ProjectForecastingComponentV2 } from './pages/forecasting/project-forec
     MatTableModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    MatRippleModule
+    MatRippleModule,
+    MatMomentDateModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]

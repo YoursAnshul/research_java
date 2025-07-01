@@ -199,75 +199,91 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   //route add/subtract functions based on the calendar type
   public addDateUnitsToSelectedDate(unit: number): void {
-    const selectedDateValue = new Date(this._selectedDate.value);
     const minDateStr = localStorage.getItem('minSelectableDate');
-    let normalizedMinDate: Date | null = null;
+    const minDate = minDateStr ? new Date(minDateStr) : null;
+    const blockMonth = minDate?.getMonth() ?? 0;
+    const blockYear = minDate?.getFullYear();
 
-    if (minDateStr) {
-      const parsedMinDate = new Date(minDateStr);
-      if (!isNaN(parsedMinDate.getTime())) {
-        normalizedMinDate = new Date(parsedMinDate);
-        normalizedMinDate.setHours(0, 0, 0, 0);
-      }
-    }
+    const currentDate = new Date(this._selectedDate.value);
 
     switch (this._calendarType.toUpperCase()) {
-      case 'DAY': {
-        const newDate = new Date(selectedDateValue);
-        newDate.setDate(newDate.getDate() + unit);
-        newDate.setHours(0, 0, 0, 0);
-
-        if (
-          normalizedMinDate &&
-          this.authenticatedUser?.interviewer &&
-          (newDate.getFullYear() < normalizedMinDate.getFullYear() ||
-            (newDate.getFullYear() === normalizedMinDate.getFullYear() &&
-              newDate.getMonth() < normalizedMinDate.getMonth()))
-        ) {
-          return;
-        }
-
-        this.addDaysToSelectedDate(unit);
-        break;
-      }
-
-      case 'MONTH': {
-        const newDate = new Date(selectedDateValue);
-        newDate.setMonth(newDate.getMonth() + unit);
-        newDate.setDate(1);
-        newDate.setHours(0, 0, 0, 0);
-        if (
-          normalizedMinDate &&
-          newDate.getMonth() < normalizedMinDate.getMonth() &&
-          this.authenticatedUser?.interviewer
-        ) {
-          return;
-        }
-
-        this.addMonthsToSelectedDate(unit);
-        break;
-      }
-
       case 'WEEK': {
-        const newDate = new Date(selectedDateValue);
-        newDate.setDate(newDate.getDate() + unit * 7);
-        newDate.setHours(0, 0, 0, 0);
-        if (
-          normalizedMinDate &&
-          newDate.getMonth() < normalizedMinDate.getMonth() &&
-          this.authenticatedUser?.interviewer
-        ) {
-          return;
+        let targetDate = new Date(currentDate);
+        targetDate.setDate(targetDate.getDate() + unit * 7);
+
+        const weekStart =
+          Utils.setSelectedWeekStartAndEnd(targetDate).weekStart;
+        const weekEnd = Utils.setSelectedWeekStartAndEnd(targetDate).weekEnd;
+
+        const isBlockedWeek =
+          this.authenticatedUser?.interviewer &&
+          blockMonth !== undefined &&
+          blockYear !== undefined &&
+          ((weekStart.getMonth() === blockMonth &&
+            weekStart.getFullYear() === blockYear) ||
+            (weekEnd.getMonth() === blockMonth &&
+              weekEnd.getFullYear() === blockYear));
+
+        if (isBlockedWeek) {
+          console.log('Skipping blocked week in month:', blockMonth + 1);
+          unit = unit < 0 ? unit * 7 - 1 : unit * 7 + 1;
         }
 
         this.addWeeksToSelectedDate(unit);
         break;
       }
 
-      default: {
+      case 'MONTH': {
+        let targetDate = new Date(currentDate);
+        targetDate.setMonth(targetDate.getMonth() + unit);
+
+        const isBlockedMonth =
+          this.authenticatedUser?.interviewer &&
+          blockMonth !== undefined &&
+          blockYear !== undefined &&
+          targetDate.getMonth() === blockMonth &&
+          targetDate.getFullYear() === blockYear;
+
+        if (isBlockedMonth) {
+          unit = unit < 0 ? unit - 1 : unit + 1;
+        }
+
+        this.addMonthsToSelectedDate(unit);
+        break;
+      }
+
+      case 'DAY': {
+        let targetDate = new Date(currentDate);
+        targetDate.setDate(targetDate.getDate() + unit);
+
+        if (this.authenticatedUser?.interviewer && minDate) {
+          const blockedStart = new Date(
+            minDate.getFullYear(),
+            minDate.getMonth(),
+            1
+          );
+          const blockedEnd = new Date(
+            minDate.getFullYear(),
+            minDate.getMonth() + 1,
+            0
+          );
+          const isBlockedDay =
+            targetDate >= blockedStart && targetDate <= blockedEnd;
+
+          if (isBlockedDay) {
+            const daysToSkip = blockedEnd.getDate();
+            unit = unit < 0 ? unit - daysToSkip : unit + daysToSkip;
+            targetDate.setDate(currentDate.getDate() + unit);
+          }
+        }
+
         this.addDaysToSelectedDate(unit);
         break;
       }
+
+      default:
+        this.addDaysToSelectedDate(unit);
+        break;
     }
   }
 
@@ -295,18 +311,16 @@ export class ShiftCalendarControlsComponent implements OnInit {
     //refresh the grid with the new date
     this.selectedDateChange.emit(this._selectedDate);
   }
-
-  //emit selected date
-  emitSelectedDate(): void {
-    let selectedDt: Date = new Date(this._selectedDate.value);
-    this._selectedDate.setValue(selectedDt);
-    this.selectedDateChange.emit(this._selectedDate);
-  }
-
   public addMonthsToSelectedDate(months: number): void {
     let selectedDt: Date = new Date(this._selectedDate.value);
     selectedDt.setDate(1);
     selectedDt.setMonth(selectedDt.getMonth() + months);
+    this._selectedDate.setValue(selectedDt);
+    this.selectedDateChange.emit(this._selectedDate);
+  }
+  //emit selected date
+  emitSelectedDate(): void {
+    let selectedDt: Date = new Date(this._selectedDate.value);
     this._selectedDate.setValue(selectedDt);
     this.selectedDateChange.emit(this._selectedDate);
   }

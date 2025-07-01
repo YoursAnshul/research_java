@@ -46,6 +46,7 @@ import { GlobalsService } from '../../services/globals/globals.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
 import { User } from '../../models/data/user';
 import { UserRole } from '../../models/presentation/enums';
+import moment from 'moment';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -278,10 +279,13 @@ export class ShiftScheduleComponent implements OnInit {
       comments: new FormControl(''),
       id: new FormControl(null),
     });
-    let resultDate = localStorage.getItem('minSelectableDate');
     if (this.authenticatedUser.interviewer) {
-      if (resultDate) {
-        this.shiftForm.get('dayWiseDate')?.setValue(new Date(resultDate));
+      const resultDateStr = localStorage.getItem('minSelectableDate');
+      if (resultDateStr) {
+        const resultDate = moment
+          .tz(resultDateStr, 'YYYY-MM-DD', 'America/Toronto')
+          .toDate();
+        this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       }
     }
 
@@ -583,7 +587,6 @@ export class ShiftScheduleComponent implements OnInit {
       );
       this.homeSelectedDate = resultDate;
       this.minSelectableDate = new Date(resultDate);
-      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
