@@ -1964,22 +1964,22 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   handleDate(dateEvent: any) {
-    console.log('dateEvent--------<>', dateEvent);
     const selectedDate = dateEvent?.value ? new Date(dateEvent.value) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
+        this.homeSelectedDate = new Date(dateEvent.value);
       });
     } else {
       console.error('Invalid Date Selected:', dateEvent?.value);
     }
   }
   handleWeekDate(date: any) {
-    console.log('date shift--------<>', date);
     const selectedDate = date ? new Date(date) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
+        this.homeSelectedDate = selectedDate;
       });
     } else {
       console.error('Invalid Date Selected:', date);
