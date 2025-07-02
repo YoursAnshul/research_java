@@ -166,6 +166,21 @@ export class WeekDatepickerComponent implements OnInit {
     this.selectedDateRangeChange.emit(this.selectedDateRange);
     this.selectedDateChange.emit(this.selectedDate);
   }
+   dateFilter = (d: Date | null): boolean => {
+    if (!d) return true;
+
+    const resultDateStr = localStorage.getItem('resultDate');
+    if (!resultDateStr) return true;
+
+    const blocked = new Date(resultDateStr);
+    blocked.setDate(1);
+    blocked.setMonth(blocked.getMonth() + 1);
+
+    return !(
+      d.getMonth() === blocked.getMonth() &&
+      d.getFullYear() === blocked.getFullYear()
+    );
+  };
   
   
 }

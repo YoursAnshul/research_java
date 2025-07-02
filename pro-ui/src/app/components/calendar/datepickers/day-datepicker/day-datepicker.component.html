@@ -5,6 +5,7 @@
          (dateChange)="emitSelectedDate()"
          (blur)="onFinalDateInput($event)"
          (keydown)="onKeydown($event)"
+         [matDatepickerFilter]="dateFilter"
          autocomplete="off" />
   <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
   <mat-datepicker #datePicker

@@ -40,9 +40,16 @@ import moment, { Moment } from 'moment';
 export class MonthDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
+  resuldDate: Date | null = null;
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const resultDateStr = localStorage.getItem('resultDate');
+    if (resultDateStr) {
+      this.resuldDate = new Date(resultDateStr);
+      this.resuldDate.setMonth(this.resuldDate.getMonth() + 1);
+    }
+  }
 
   //emit selected date
   emitSelectedDate(): void {
@@ -117,4 +124,10 @@ export class MonthDatepickerComponent implements OnInit {
 
     this.selectedDateChange.emit(this.selectedDate);
   }
+  dateFilter = (date: Moment | null): boolean => {
+    if (!date || !this.resuldDate) return true;
+    const min = moment(this.resuldDate).startOf('month');
+    const current = moment(date).startOf('month');
+    return !current.isSame(min, 'month');
+  };
 }

@@ -244,6 +244,9 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onClose(): void {
+    if(this.authenticatedUser.admin){
+      localStorage.removeItem('resultDate');
+    }
     this.isClosed = true;
     this.dialogRef.close();
   }
@@ -569,6 +572,7 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
+      localStorage.setItem('resultDate', resultDate.toLocaleDateString());
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();

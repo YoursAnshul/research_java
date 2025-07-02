@@ -3,7 +3,8 @@
   <mat-date-range-input [formGroup]="selectedDateRange"
                         [rangePicker]="datePicker"
                         [comparisonStart]="selectedDateRange?.value.start"
-                        [comparisonEnd]="selectedDateRange?.value.end">
+                        [comparisonEnd]="selectedDateRange?.value.end"
+                        [dateFilter]="dateFilter">
     <input matStartDate placeholder="Start date"
            (dateChange)="emitSelectedDate()"
            formControlName="start"

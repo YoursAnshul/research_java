@@ -41,10 +41,17 @@ import moment, { Moment } from 'moment';
 export class DayDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
+  resuldDate: Date | null = null;
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const resultDateStr = localStorage.getItem('resultDate');
+    if (resultDateStr) {
+      this.resuldDate = new Date(resultDateStr);
+      this.resuldDate.setMonth(this.resuldDate.getMonth() + 1);
+    }
+  }
 
   //emit selected date
   emitSelectedDate(): void {
@@ -77,7 +84,7 @@ export class DayDatepickerComponent implements OnInit {
       this.onFinalDateInput(event);
     }
   }
-  
+
   // onFinalDateInput(event: Event): void {
   //   const input = (event.target as HTMLInputElement).value;
   //   const parsed = moment(input, 'MM/DD/YYYY', true);
@@ -89,17 +96,17 @@ export class DayDatepickerComponent implements OnInit {
   //     const now = new Date();
   //     this.selectedDate.setValue(now);
   //   }
-  
+
   //   this.selectedDateChange.emit(this.selectedDate);
   // }
 
   onFinalDateInput(event: Event): void {
     const input = (event.target as HTMLInputElement).value;
     const parsed = moment(input, 'MM/DD/YYYY', true);
-  
+
     if (parsed.isValid()) {
       const year = parsed.year();
-  
+
       if (year === 1969 || year < 2024 || year > 2026) {
         console.warn('Restricted or invalid year detected:', year);
         this.selectedDate.setValue(new Date());
@@ -110,10 +117,14 @@ export class DayDatepickerComponent implements OnInit {
       console.warn('Invalid date format or input:', input);
       this.selectedDate.setValue(new Date());
     }
-  
+
     this.selectedDateChange.emit(this.selectedDate);
   }
-  
-  
-  
+
+  dateFilter = (date: Moment | null): boolean => {
+    if (!date || !this.resuldDate) return true;
+    const min = moment(this.resuldDate).startOf('month');
+    const current = moment(date).startOf('month');
+    return !current.isSame(min, 'month');
+  };
 }
