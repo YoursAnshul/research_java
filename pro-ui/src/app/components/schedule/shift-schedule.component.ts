@@ -244,9 +244,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onClose(): void {
-    if(this.authenticatedUser.admin){
-      localStorage.removeItem('resultDate');
-    }
+    localStorage.removeItem('resultDate');
     this.isClosed = true;
     this.dialogRef.close();
   }

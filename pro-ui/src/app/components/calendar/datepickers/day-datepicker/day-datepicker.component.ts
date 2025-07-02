@@ -45,13 +45,7 @@ export class DayDatepickerComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    const resultDateStr = localStorage.getItem('resultDate');
-    if (resultDateStr) {
-      this.resuldDate = new Date(resultDateStr);
-      this.resuldDate.setMonth(this.resuldDate.getMonth() + 1);
-    }
-  }
+  ngOnInit(): void {}
 
   //emit selected date
   emitSelectedDate(): void {
@@ -122,6 +116,11 @@ export class DayDatepickerComponent implements OnInit {
   }
 
   dateFilter = (date: Moment | null): boolean => {
+    const resultDateStr = localStorage.getItem('resultDate');
+    if (resultDateStr) {
+      this.resuldDate = new Date(resultDateStr);
+      this.resuldDate.setMonth(this.resuldDate.getMonth() + 1);
+    }
     if (!date || !this.resuldDate) return true;
     const min = moment(this.resuldDate).startOf('month');
     const current = moment(date).startOf('month');
