@@ -246,9 +246,6 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onClose(): void {
     this.isClosed = true;
-    if (this.authenticatedUser.admin || this.canEdit) {
-      localStorage.removeItem('minSelectableDate');
-    }
     localStorage.removeItem('minSelectableDate');
     this.dialogRef.close();
   }
@@ -567,7 +564,7 @@ export class ShiftScheduleComponent implements OnInit {
     selectedDate.setHours(12, 0, 0, 0);
 
     this.isDateBlockDate = false;
-    if (resultDate > today) {
+    if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
       if (resultMonth > monthVal) {
@@ -581,33 +578,16 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      const lastDayOfMonth = new Date(
-        resultDate.getFullYear(),
-        resultDate.getMonth() + 1,
-        0
-      ).getDate();
-
-      if (resultDate.getDate() == lastDayOfMonth) {
-        const date = new Date(year, month, 1, 12, 0, 0, 0);
-        date.setMonth(date.getMonth() + 3);
-        localStorage.setItem(
-          'minSelectableDate',
-          date.toISOString().split('T')[0]
-        );
-        this.homeSelectedDate = date;
-        this.minSelectableDate = new Date(date);
-      } else {
-        const date = new Date(year, month, 1, 12, 0, 0, 0);
-        date.setMonth(date.getMonth() + 2);
-        localStorage.setItem(
-          'minSelectableDate',
-          date.toISOString().split('T')[0]
-        );
-        const dateValue = new Date(year, month, 1, 12, 0, 0, 0);
-        this.homeSelectedDate = dateValue;
-        this.minSelectableDate = new Date(dateValue);
-      }
-      if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
+      const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
+      date.setMonth(date.getMonth() + 1);
+      localStorage.setItem(
+        'minSelectableDate',
+        date.toISOString().split('T')[0]
+      );
+      date.setMonth(date.getMonth() + 1);
+      this.homeSelectedDate = date;
+      this.minSelectableDate = new Date(date);
+      if (resultMonth + 2 > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
@@ -2214,19 +2194,21 @@ export class ShiftScheduleComponent implements OnInit {
         const year = today.getFullYear();
         const month = today.getMonth();
         const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
-        const lastDayOfMonth = new Date(
-          date.getFullYear(),
-          date.getMonth() + 1,
-          0
-        ).getDate();
-        if (date < today) {
-          if (date.getDate() == lastDayOfMonth) {
-            const date = new Date(year, month + 2, 1, 12, 0, 0, 0);
-            this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
-          } else {
-            const date = new Date(year, month, 1, 12, 0, 0, 0);
-            this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
-          }
+
+        if (date >= today) {
+          const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
+          this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
+        } else {
+          const date = new Date(
+            year,
+            month + 2,
+            this.dateOptionValue,
+            12,
+            0,
+            0,
+            0
+          );
+          this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
         }
 
         this.validateDateOption(this.selectedDate.value);

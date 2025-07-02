@@ -64,26 +64,17 @@ export class DayDatepickerComponent implements OnInit, AfterViewInit {
           parsedDate.getMonth(),
           1
         );
-
-        const month = this.minDate.getMonth();
       }
-    } else {
-      const today = new Date();
-      this.minDate = new Date(today.getFullYear(), today.getMonth(), 1);
     }
   }
+
   public dateFilter = (d: any): boolean => {
     if (!d || !this.minDate) return true;
-
     const date = d instanceof Date ? d : new Date(d);
-
-    const dateMonth = date.getMonth();
-    const dateYear = date.getFullYear();
-
-    const blockedMonth = this.minDate.getMonth();
-    const blockedYear = this.minDate.getFullYear();
-
-    return !(dateMonth === blockedMonth && dateYear === blockedYear);
+    return !(
+      date.getMonth() === this.minDate.getMonth() &&
+      date.getFullYear() === this.minDate.getFullYear()
+    );
   };
 
   //emit selected date
