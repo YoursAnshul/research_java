@@ -41,9 +41,7 @@ export class MonthDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
   public minDate: null | Date = null;
-  constructor() {}
-
-  ngOnInit(): void {
+  constructor() {
     const storedMinDate = localStorage.getItem('minSelectableDate');
     if (storedMinDate) {
       const parsedDate = new Date(storedMinDate);
@@ -56,6 +54,8 @@ export class MonthDatepickerComponent implements OnInit {
       }
     }
   }
+
+  ngOnInit(): void {}
 
   //emit selected date
   emitSelectedDate(): void {
@@ -88,9 +88,12 @@ export class MonthDatepickerComponent implements OnInit {
     selectedDt.setDate(1);
     this.selectedDate.setValue(selectedDt);
 
+    //emit the selected date because this month handler will not trigger the (dateChange) action
     this.emitSelectedDate();
 
+    //close the datepicker so we don't get prompted for a day
     datepicker.close();
+    //console.log(normalizedMonth);
   }
 
   //handle day selection
@@ -127,21 +130,4 @@ export class MonthDatepickerComponent implements OnInit {
 
     this.selectedDateChange.emit(this.selectedDate);
   }
-  dateFilter = (date: Moment | null): boolean => {
-    const storedMinDate = localStorage.getItem('minSelectableDate');
-    if (storedMinDate) {
-      const parsedDate = new Date(storedMinDate);
-      if (!isNaN(parsedDate.getTime())) {
-        this.minDate = new Date(
-          parsedDate.getFullYear(),
-          parsedDate.getMonth(),
-          1
-        );
-      }
-    }
-    if (!date || !this.minDate) return true;
-    const min = moment(this.minDate).startOf('month');
-    const current = moment(date).startOf('month');
-    return !current.isSame(min, 'month');
-  };
 }
