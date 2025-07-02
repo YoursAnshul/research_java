@@ -559,12 +559,21 @@ export class ShiftScheduleComponent implements OnInit {
     const year = today.getFullYear();
     const month = today.getMonth();
 
-    const resultDate = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
-    resultDate.setHours(12, 0, 0, 0);
-    selectedDate.setHours(12, 0, 0, 0);
+    const resultDate = new Date(year, month, this.dateOptionValue);
+    resultDate.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
 
     this.isDateBlockDate = false;
-    if (resultDate >= today) {
+    const formatDate = (date: Date): string => {
+      return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, '0'),
+        String(date.getDate()).padStart(2, '0'),
+      ].join('-');
+    };
+    const todayStr = formatDate(today);
+    const resultDateStr = formatDate(resultDate);
+    if (resultDateStr >= todayStr) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
       if (resultMonth > monthVal) {
@@ -578,13 +587,12 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
-      date.setMonth(date.getMonth() + 1);
+      const date = new Date(year, month, this.dateOptionValue);
+      date.setMonth(date.getMonth() + 2);
       localStorage.setItem(
         'minSelectableDate',
         date.toISOString().split('T')[0]
       );
-      date.setMonth(date.getMonth() + 1);
       this.homeSelectedDate = date;
       this.minSelectableDate = new Date(date);
       if (resultMonth + 2 > monthVal) {
