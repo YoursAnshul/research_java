@@ -40,20 +40,7 @@ import moment, { Moment } from 'moment';
 export class MonthDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
-  public minDate: null | Date = null;
-  constructor() {
-    const storedMinDate = localStorage.getItem('minSelectableDate');
-    if (storedMinDate) {
-      const parsedDate = new Date(storedMinDate);
-      if (!isNaN(parsedDate.getTime())) {
-        this.minDate = new Date(
-          parsedDate.getFullYear(),
-          parsedDate.getMonth(),
-          1
-        );
-      }
-    }
-  }
+  constructor() {}
 
   ngOnInit(): void {}
 

@@ -202,7 +202,6 @@ export class ShiftScheduleComponent implements OnInit {
   isStartTimeChanged: boolean = false;
   isEndTimeChanged: boolean = false;
   coreHours: number = 0;
-  minSelectableDate: Date = new Date();
 
   constructor(
     private http: HttpClient,
@@ -246,7 +245,6 @@ export class ShiftScheduleComponent implements OnInit {
   }
   onClose(): void {
     this.isClosed = true;
-    localStorage.removeItem('minSelectableDate');
     this.dialogRef.close();
   }
   ngOnInit(): void {
@@ -328,14 +326,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.valueChanges.subscribe(() => {
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
-      if (this.authenticatedUser.interviewer) {
-        if (this.minSelectableDate) {
-          const date = new Date(this.minSelectableDate);
-          date.setDate(1);
-          date.setHours(0, 0, 0, 0);
-          this.minSelectableDate = date;
-        }
-      }
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
@@ -2180,28 +2170,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.dateOptionValue = data?.Subject?.optionValue;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
-
-        if (date >= today) {
-          const date = new Date(year, month, this.dateOptionValue, 12, 0, 0, 0);
-          this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
-        } else {
-          const date = new Date(
-            year,
-            month + 2,
-            this.dateOptionValue,
-            12,
-            0,
-            0,
-            0
-          );
-          this.shiftForm.get('dayWiseDate')?.setValue(new Date(date));
-        }
-
         this.validateDateOption(this.selectedDate.value);
       },
     });

@@ -55,7 +55,7 @@
           }"
            [class.disabled-field]="isBlockDate">
           <mat-label>{{ currentDay }}</mat-label>
-          <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" [min]="minSelectableDate" />
+          <input matInput [matDatepicker]="dayWisePicker" formControlName="dayWiseDate" />
           <mat-datepicker-toggle matSuffix [for]="dayWisePicker" [disabled]="isBlockDate"></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
