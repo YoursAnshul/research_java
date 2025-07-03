@@ -50,7 +50,6 @@ export class ShiftCalendarControlsComponent implements OnInit {
   @Input() _projects!: IProjectMin[];
   @Input() selectedDateRange!: FormGroup;
 
-  
   //filters
   @Input() _userFilter!: FormControl;
   @Input() _languageFilter!: FormControl;
@@ -76,21 +75,12 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   errorMessage!: string;
   @Input() isClose: boolean = false;
-  minDate: Date | null = null;
+
   constructor(
     private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
     private logsService: LogsService
   ) {
-    this.minDate = localStorage.getItem('minSelectableDate')
-      ? new Date(localStorage.getItem('minSelectableDate')!)
-      : null;
-    if (this.minDate)
-      this.minDate = new Date(
-        this.minDate.getFullYear(),
-        this.minDate.getMonth(),
-        this.minDate.getDate()
-      );
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -200,75 +190,85 @@ export class ShiftCalendarControlsComponent implements OnInit {
 
   //route add/subtract functions based on the calendar type
   public addDateUnitsToSelectedDate(unit: number): void {
-    const selectedDateValue = new Date(this._selectedDate.value);
-    const minDateStr = localStorage.getItem('minSelectableDate');
-    let normalizedMinDate: Date | null = null;
+    const resultDateStr = localStorage.getItem('resultDate');
 
-    if (minDateStr) {
-      const parsedMinDate = new Date(minDateStr);
-      if (!isNaN(parsedMinDate.getTime())) {
-        normalizedMinDate = new Date(parsedMinDate);
-        normalizedMinDate.setHours(0, 0, 0, 0);
-      }
+    let blockedMonth = -1;
+    let blockedYear = -1;
+
+    if (resultDateStr) {
+      const resultDate = new Date(resultDateStr);
+      const blockedDate = new Date(resultDate);
+      blockedDate.setMonth(resultDate.getMonth() + 1);
+      blockedMonth = blockedDate.getMonth();
+      blockedYear = blockedDate.getFullYear();
     }
+
+    const currentDate = new Date(this._selectedDate.value);
 
     switch (this._calendarType.toUpperCase()) {
       case 'DAY': {
-        const newDate = new Date(selectedDateValue);
-        newDate.setDate(newDate.getDate() + unit);
-        newDate.setHours(0, 0, 0, 0);
+        let targetDate = new Date(currentDate);
+        targetDate.setDate(targetDate.getDate() + unit);
 
         if (
-          normalizedMinDate &&
           this.authenticatedUser?.interviewer &&
-          (newDate.getFullYear() < normalizedMinDate.getFullYear() ||
-            (newDate.getFullYear() === normalizedMinDate.getFullYear() &&
-              newDate.getMonth() < normalizedMinDate.getMonth()))
+          targetDate.getMonth() === blockedMonth &&
+          targetDate.getFullYear() === blockedYear
         ) {
-          return;
+          const daysInMonth = new Date(
+            blockedYear,
+            blockedMonth + 1,
+            0
+          ).getDate();
+          unit = unit < 0 ? unit - daysInMonth : unit + daysInMonth;
+          targetDate.setDate(currentDate.getDate() + unit);
         }
 
         this.addDaysToSelectedDate(unit);
         break;
       }
 
-      case 'MONTH': {
-        const newDate = new Date(selectedDateValue);
-        newDate.setMonth(newDate.getMonth() + unit);
-        newDate.setDate(1);
-        newDate.setHours(0, 0, 0, 0);
+      case 'WEEK': {
+        let newUnit = unit;
+        const tempDate = new Date(currentDate);
+        tempDate.setDate(tempDate.getDate() + newUnit * 7);
+        const dayOfWeek = tempDate.getDay();
+        const weekStart = new Date(tempDate);
+        weekStart.setDate(tempDate.getDate() - dayOfWeek);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+
         if (
-          normalizedMinDate &&
-          newDate.getMonth() < normalizedMinDate.getMonth() &&
-          this.authenticatedUser?.interviewer
+          this.authenticatedUser?.interviewer &&
+          weekStart.getMonth() === blockedMonth &&
+          weekEnd.getMonth() === blockedMonth
         ) {
-          return;
+          newUnit = newUnit < 0 ? newUnit - 1 * 4 : newUnit + 1 * 4;
+        }
+        this.addWeeksToSelectedDate(newUnit);
+        break;
+      }
+
+      case 'MONTH': {
+        let targetDate = new Date(currentDate);
+        targetDate.setMonth(targetDate.getMonth() + unit);
+
+        if (
+          this.authenticatedUser?.interviewer &&
+          targetDate.getMonth() === blockedMonth &&
+          targetDate.getFullYear() === blockedYear
+        ) {
+          unit = unit < 0 ? unit - 1 : unit + 1;
+          targetDate.setMonth(currentDate.getMonth() + unit);
         }
 
         this.addMonthsToSelectedDate(unit);
         break;
       }
 
-      case 'WEEK': {
-        const newDate = new Date(selectedDateValue);
-        newDate.setDate(newDate.getDate() + unit * 7);
-        newDate.setHours(0, 0, 0, 0);
-        if (
-          normalizedMinDate &&
-          newDate.getMonth() < normalizedMinDate.getMonth() &&
-          this.authenticatedUser?.interviewer
-        ) {
-          return;
-        }
-
-        this.addWeeksToSelectedDate(unit);
-        break;
-      }
-
-      default: {
+      default:
         this.addDaysToSelectedDate(unit);
         break;
-      }
     }
   }
 

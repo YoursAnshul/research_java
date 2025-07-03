@@ -46,6 +46,7 @@ import { GlobalsService } from '../../services/globals/globals.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
 import { User } from '../../models/data/user';
 import { UserRole } from '../../models/presentation/enums';
+import moment from 'moment';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -201,7 +202,6 @@ export class ShiftScheduleComponent implements OnInit {
   isStartTimeChanged: boolean = false;
   isEndTimeChanged: boolean = false;
   coreHours: number = 0;
-  minSelectableDate: Date = new Date();
 
   constructor(
     private http: HttpClient,
@@ -244,10 +244,8 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   onClose(): void {
+    localStorage.removeItem('resultDate');
     this.isClosed = true;
-    if (this.authenticatedUser.admin || this.canEdit) {
-      localStorage.removeItem('minSelectableDate');
-    }
     this.dialogRef.close();
   }
   ngOnInit(): void {
@@ -278,13 +276,6 @@ export class ShiftScheduleComponent implements OnInit {
       comments: new FormControl(''),
       id: new FormControl(null),
     });
-    let resultDate = localStorage.getItem('minSelectableDate');
-    if (this.authenticatedUser.interviewer) {
-      if (resultDate) {
-        this.shiftForm.get('dayWiseDate')?.setValue(new Date(resultDate));
-      }
-    }
-
     const userId = '';
     const dempoId = this.selectedUser?.dempoId || '';
     forkJoin([
@@ -334,15 +325,8 @@ export class ShiftScheduleComponent implements OnInit {
     });
 
     this.shiftForm.valueChanges.subscribe(() => {
-      // this.isEditAble = this.shiftForm.dirty;
       this.updateDuration();
       this.scheduleFetchStatus = this.shiftForm.valid;
-      if (this.minSelectableDate) {
-        const date = new Date(this.minSelectableDate);
-        date.setDate(1);
-        date.setHours(0, 0, 0, 0);
-        this.minSelectableDate = date;
-      }
     });
 
     this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
@@ -575,14 +559,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      resultDate.setMonth(resultDate.getMonth() + 1);
-      localStorage.setItem(
-        'minSelectableDate',
-        resultDate.toISOString().split('T')[0]
-      );
-      this.homeSelectedDate = resultDate;
-      this.minSelectableDate = new Date(resultDate);
-      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
       if (resultMonth > monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -594,14 +570,7 @@ export class ShiftScheduleComponent implements OnInit {
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      resultDate.setMonth(resultDate.getMonth() + 2);
-      localStorage.setItem(
-        'minSelectableDate',
-        resultDate.toISOString().split('T')[0]
-      );
-      this.homeSelectedDate = resultDate;
-      this.minSelectableDate = new Date(resultDate);
-      // this.shiftForm.get('dayWiseDate')?.setValue(resultDate);
+      localStorage.setItem('resultDate', resultDate.toLocaleDateString());
       if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
@@ -614,45 +583,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
     this.shiftForm.get('dayWiseDate')?.setErrors(null);
-    this.shiftForm.markAllAsTouched();
   }
-  //  validateDateOption(selectedDate: any): void {
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
-
-  //   const year = today.getFullYear();
-  //   const month = today.getMonth();
-
-  //   const resultDate = new Date(year, month, this.dateOptionValue);
-  //   resultDate.setHours(0, 0, 0, 0);
-
-  //   selectedDate.setHours(0, 0, 0, 0);
-
-  //   this.isDateBlockDate = false;
-  //   if (resultDate >= today) {
-  //     let monthVal = selectedDate.getMonth();
-  //     let resultMonth = resultDate.getMonth();
-  //     if (resultMonth > monthVal) {
-  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-  //       this.shiftForm.get('startTime')?.disable();
-  //       this.shiftForm.get('endTime')?.disable();
-  //       this.isDateBlockDate = true;
-  //       this.openMonthlyBlockDialog();
-  //       return;
-  //     }
-  //   } else {
-  //     let monthVal = selectedDate.getMonth();
-  //     let resultMonth = resultDate.getMonth();
-  //     if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
-  //       this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
-  //       this.shiftForm.get('startTime')?.disable();
-  //       this.shiftForm.get('endTime')?.disable();
-  //       this.isDateBlockDate = true;
-  //       this.openMonthlyBlockDialog();
-  //       return;
-  //     }
-  //   }
-  // }
 
   validateBlockOutDate(selectedDate: any): void {
     this.blockedTimeSlots = [];
@@ -1916,22 +1847,22 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   handleDate(dateEvent: any) {
-    console.log('dateEvent--------<>', dateEvent);
     const selectedDate = dateEvent?.value ? new Date(dateEvent.value) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
+        this.homeSelectedDate = new Date(dateEvent.value);
       });
     } else {
       console.error('Invalid Date Selected:', dateEvent?.value);
     }
   }
   handleWeekDate(date: any) {
-    console.log('date shift--------<>', date);
     const selectedDate = date ? new Date(date) : null;
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
+        this.homeSelectedDate = selectedDate;
       });
     } else {
       console.error('Invalid Date Selected:', date);
@@ -2157,8 +2088,6 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
-
-
   coreHoursValidation(date: Date, dempoId: string): void {
     if (!date) {
       return;
