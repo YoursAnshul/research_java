@@ -71,7 +71,7 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.selectedProject) {
@@ -100,12 +100,12 @@ export class ShiftDayViewComponent implements OnInit {
 
         const selectedDateET = selectedDateValue
           ? new Date(
-            selectedDateValue.toLocaleString('en-US', {
-              timeZone: 'America/New_York',
-            })
-          )
-            .toISOString()
-            .split('T')[0]
+              selectedDateValue.toLocaleString('en-US', {
+                timeZone: 'America/New_York',
+              })
+            )
+              .toISOString()
+              .split('T')[0]
           : null;
 
         const isDateMatch = selectedDateET
@@ -161,7 +161,7 @@ export class ShiftDayViewComponent implements OnInit {
         targetSchedule &&
         (!this.previouslyEditedSchedule ||
           this.previouslyEditedSchedule.preschedulekey !==
-          targetSchedule.preschedulekey)
+            targetSchedule.preschedulekey)
       ) {
         this.openScheduleData(targetSchedule);
       }
@@ -305,6 +305,15 @@ export class ShiftDayViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    let date = schedule?.dayWiseDate ? new Date(schedule.dayWiseDate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
+      return;
+    }
     let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -365,7 +374,7 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   get groupedSchedules() {
-    const groups: { [userId: string]: { user: any, schedules: any[] } } = {};
+    const groups: { [userId: string]: { user: any; schedules: any[] } } = {};
     for (const schedule of this.filteredShiftSchedule) {
       const userId = schedule.user.userId;
       if (!groups[userId]) {

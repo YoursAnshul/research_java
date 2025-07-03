@@ -1,31 +1,37 @@
-import { Component, Input, OnInit, } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { IMonthSchedules } from '../../../interfaces/interfaces';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
-
 
 @Component({
   selector: 'app-month-view',
   templateUrl: './month-view.component.html',
-  styleUrls: ['./month-view.component.css']
+  styleUrls: ['./month-view.component.css'],
 })
 export class MonthViewComponent implements OnInit {
-
   @Input() monthSchedules!: IMonthSchedules;
   authenticatedUser: any;
   monthPart: any;
   scheduleService: any;
   dialog: any;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   openScheduleData(schedule: any): void {
+    let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
+      return;
+    }
     if (this.monthPart) {
-      schedule.tab = "Month";
+      schedule.tab = 'Month';
     } else {
-      schedule.tab = "Week";
+      schedule.tab = 'Week';
     }
     schedule.isHomeRedirect = true;
     console.log('Clicked Week schedule--for month view---->:', schedule);

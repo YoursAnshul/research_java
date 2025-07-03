@@ -153,6 +153,15 @@ export class DayViewComponent implements OnInit {
     ) {
       return;
     }
+    let date = schedule?.dayWiseDate ? new Date(schedule.dayWiseDate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
+      return;
+    }
     schedule.tab = 'Day';
     schedule.isHomeRedirect = true;
     this.scheduleService.setSchedule(schedule);
