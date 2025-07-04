@@ -2,7 +2,7 @@ package com.pro.api.service;
 
 public class CoreHoursRequest {
 
-	private String dempoId;
+	private Long forecastHoursId;
 	private String date;
 	private int coreHours;
 
@@ -22,11 +22,12 @@ public class CoreHoursRequest {
 		this.date = date;
 	}
 
-	public String getDempoId() {
-		return dempoId;
+	public Long getForecastHoursId() {
+		return forecastHoursId;
 	}
 
-	public void setDempoId(String dempoId) {
-		this.dempoId = dempoId;
+	public void setForecastHoursId(Long forecastHoursId) {
+		this.forecastHoursId = forecastHoursId;
 	}
+
 }

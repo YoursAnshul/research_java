@@ -35,7 +35,13 @@ import {
 } from '@angular/material/snack-bar';
 import { ScheduleService } from './schedule.service';
 import { Utils } from '../../classes/utils';
-import { filter, forkJoin, pairwise, startWith } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  forkJoin,
+  pairwise,
+  startWith,
+} from 'rxjs';
 import { ConfirmationShiftDialogComponent } from '../delete-dialog/delete-shift-dialog/confirmation-shift-dialog.component';
 import { RequestsService } from '../../services/requests/requests.service';
 import { MonthlyBlockDate } from '../calendar/calendar-controls/monthly.block.out.dialog.component';
@@ -329,28 +335,62 @@ export class ShiftScheduleComponent implements OnInit {
       this.scheduleFetchStatus = this.shiftForm.valid;
     });
 
-    this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
-      if (
-        date &&
-        this.shiftForm.valid &&
-        this.previousDate?.toString() !== new Date(date).toString()
-      ) {
-        this.isModified = true;
-        this.isDateModified = true;
-        this.isEditAble = this.shiftForm.dirty;
-      } else {
-        this.isModified = false;
-        this.isDateModified = false;
-      }
-      this.previousDate = new Date(date);
-      if (this.authenticatedUser?.interviewer) {
-        this.validateBlockOutDate(date);
-        if (!this.isEdit) {
-          this.validateDateOption(date);
+    // this.shiftForm.get('dayWiseDate')?.valueChanges.subscribe((date) => {
+    //   if (
+    //     date &&
+    //     this.shiftForm.valid &&
+    //     this.previousDate?.toString() !== new Date(date).toString()
+    //   ) {
+    //     this.isModified = true;
+    //     this.isDateModified = true;
+    //     this.isEditAble = this.shiftForm.dirty;
+    //   } else {
+    //     this.isModified = false;
+    //     this.isDateModified = false;
+    //   }
+    //   this.previousDate = new Date(date);
+    //   if (this.authenticatedUser?.interviewer) {
+    //     this.validateBlockOutDate(date);
+    //     if (!this.isEdit) {
+    //       this.validateDateOption(date);
+    //     }
+    //   }
+    //   this.updateDayLabel(date);
+    // });
+
+    this.shiftForm
+      .get('dayWiseDate')
+      ?.valueChanges.pipe(
+        distinctUntilChanged(
+          (prev, curr) =>
+            new Date(prev).toString() === new Date(curr).toString()
+        )
+      )
+      .subscribe((date) => {
+        if (
+          date &&
+          this.shiftForm.valid &&
+          this.previousDate?.toString() !== new Date(date).toString()
+        ) {
+          this.isModified = true;
+          this.isDateModified = true;
+          this.isEditAble = this.shiftForm.dirty;
+        } else {
+          this.isModified = false;
+          this.isDateModified = false;
         }
-      }
-      this.updateDayLabel(date);
-    });
+
+        this.previousDate = new Date(date);
+
+        if (this.authenticatedUser?.interviewer) {
+          this.validateBlockOutDate(date);
+          if (!this.isEdit) {
+            this.validateDateOption(date);
+          }
+        }
+
+        this.updateDayLabel(date);
+      });
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
       if (
@@ -580,9 +620,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     }
-    this.shiftForm.get('startTime')?.enable();
-    this.shiftForm.get('endTime')?.enable();
-    this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    // this.shiftForm.get('startTime')?.enable();
+    // this.shiftForm.get('endTime')?.enable();
+    // this.shiftForm.get('dayWiseDate')?.setErrors(null);
   }
 
   validateBlockOutDate(selectedDate: any): void {

@@ -13,7 +13,7 @@ public interface ForecastingService {
 
 	public PageResponse<ForecastingResponse> getList();
 
-	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests);
+	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests);
 
 	public PageResponse<ForecastingResponse> getProjectCoreHoursList();
 

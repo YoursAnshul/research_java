@@ -2,13 +2,15 @@ package com.pro.api.service.impl;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,6 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
-			response.setDempoid(rs.getString("dempoid"));
 			response.setFname(rs.getString("fname"));
 			response.setLname(rs.getString("lname"));
 
@@ -50,7 +51,6 @@ public class ForecastingServiceImpl implements ForecastingService {
 				}
 			}
 
-			response.setCoreHoursByMonth(monthHoursMap);
 			return response;
 		});
 
@@ -60,58 +60,24 @@ public class ForecastingServiceImpl implements ForecastingService {
 		return response;
 	}
 
-	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests) {
+	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
 
-		if (requests != null && !requests.isEmpty()) {
-			for (CoreHoursRequest request : requests) {
-				String dempoid = request.getDempoId();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-				String selectSql = "SELECT * FROM core.corehours WHERE dempoid = ?";
-				List<Map<String, Object>> records = jdbcTemplate.queryForList(selectSql, dempoid);
-				if (records.isEmpty()) {
-					continue;
-				}
+		for (CoreHoursRequest request : requests) {
+			int val = getValue(request.getDate());
 
-				Map<String, Object> record = records.get(0);
-				LocalDate baseDate = LocalDate.now();
-
-				for (int i = 0; i < 14; i++) {
-					YearMonth targetMonth = YearMonth.from(baseDate.plusMonths(i));
-					String monthColumn = "month" + (i + 1);
-					String coreHourColumn = "corehours" + (i + 1);
-
-					Date existingDate = (Date) record.get(monthColumn);
-					Object coreHourValue = record.get(coreHourColumn);
-
-					boolean needsUpdate = false;
-					Object[] params = new Object[4];
-
-					if (existingDate == null || !YearMonth.from(existingDate.toLocalDate()).equals(targetMonth)) {
-						params[1] = targetMonth.atDay(1);
-						needsUpdate = true;
-					} else {
-						params[1] = existingDate.toLocalDate();
-					}
-
-					if (coreHourValue == null
-							|| (coreHourValue instanceof Number && ((Number) coreHourValue).intValue() == 0)) {
-						params[0] = request.getCoreHours();
-						needsUpdate = true;
-					} else {
-						params[0] = coreHourValue;
-					}
-
-					if (needsUpdate) {
-						params[2] = LocalDate.now();
-						params[3] = dempoid;
-
-						String updateSql = "UPDATE core.corehours SET " + coreHourColumn + " = ?, " + monthColumn
-								+ " = ?, ModDt = ? WHERE dempoid = ?";
-						jdbcTemplate.update(updateSql, params);
-					}
-				}
+			if (val < 1 || val > 14) {
+				continue;
 			}
+
+			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+			Date sqlDate = Date.valueOf(parsedDate);
+
+			String sql = "UPDATE core.forecasthours SET moddt = NOW(), forecasthours" + val + " = ?, month" + val
+					+ " = ? WHERE forecasthoursid = ?";
+			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getForecastHoursId());
 		}
 
 		response.Status = "success";
@@ -121,32 +87,42 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Override
 	public PageResponse<ForecastingResponse> getProjectCoreHoursList() {
-		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.month1, fh.forecasthours1, fh.month2, fh.forecasthours2, fh.month3, fh.forecasthours3, "
-				+ " fh.month4, fh.forecasthours4, fh.month5, fh.forecasthours5, fh.month6, fh.forecasthours6, "
-				+ " fh.month7, fh.forecasthours7, fh.month8, fh.forecasthours8, fh.month9, fh.forecasthours9, "
-				+ " fh.month10, fh.forecasthours10, fh.month11, fh.forecasthours11, fh.month12, fh.forecasthours12, "
-				+ " fh.month13, fh.forecasthours13, fh.month14, fh.forecasthours14 FROM core.projects p "
-				+ " INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ " WHERE p.active = 1 and p.projecttype = 2 ";
+		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.forecasthoursid, "
+				+ "fh.month1 AS month1, fh.forecasthours1 AS forecasthours1, "
+				+ "fh.month2 AS month2, fh.forecasthours2 AS forecasthours2, "
+				+ "fh.month3 AS month3, fh.forecasthours3 AS forecasthours3, "
+				+ "fh.month4 AS month4, fh.forecasthours4 AS forecasthours4, "
+				+ "fh.month5 AS month5, fh.forecasthours5 AS forecasthours5, "
+				+ "fh.month6 AS month6, fh.forecasthours6 AS forecasthours6, "
+				+ "fh.month7 AS month7, fh.forecasthours7 AS forecasthours7, "
+				+ "fh.month8 AS month8, fh.forecasthours8 AS forecasthours8, "
+				+ "fh.month9 AS month9, fh.forecasthours9 AS forecasthours9, "
+				+ "fh.month10 AS month10, fh.forecasthours10 AS forecasthours10, "
+				+ "fh.month11 AS month11, fh.forecasthours11 AS forecasthours11, "
+				+ "fh.month12 AS month12, fh.forecasthours12 AS forecasthours12, "
+				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
+				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
+				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
+				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
+			response.setForecastHoursId(rs.getLong("forecasthoursid"));
 			response.setProjectColor(rs.getString("projectcolor"));
 			response.setProjectName(rs.getString("projectname"));
 
-			Map<LocalDate, Integer> monthHoursMap = new LinkedHashMap<>();
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
 			for (int i = 1; i <= 14; i++) {
 				Date date = rs.getDate("month" + i);
 				Integer hours = rs.getObject("forecasthours" + i, Integer.class);
-				if (hours == null)
-					hours = 0;
 				if (date != null) {
-					monthHoursMap.put(date.toLocalDate(), hours);
+					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
 				}
 			}
-			response.setCoreHoursByMonth(monthHoursMap);
+			response.setCoreHoursByMonth(monthHoursList);
 			return response;
 		});
+
 		PageResponse<ForecastingResponse> response = new PageResponse<>();
 		response.setData(result);
 		response.setCount(result.size());
@@ -190,6 +166,27 @@ public class ForecastingServiceImpl implements ForecastingService {
 			}
 			return totalHours;
 		});
+	}
+
+	public int getValue(String date) {
+		try {
+			LocalDate inputDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			LocalDate now = LocalDate.now();
+
+			LocalDate currentMonth = LocalDate.of(now.getYear(), now.getMonth(), 1);
+			LocalDate inputMonth = LocalDate.of(inputDate.getYear(), inputDate.getMonth(), 1);
+
+			long monthsBetween = ChronoUnit.MONTHS.between(currentMonth, inputMonth);
+
+			if (monthsBetween >= 0 && monthsBetween < 14) {
+				return (int) monthsBetween + 1;
+			} else {
+				return 0;
+			}
+
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 }

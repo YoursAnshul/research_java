@@ -29,9 +29,10 @@ export class ProjectForecastingComponentV2 implements OnInit {
   totalCoreHours: number[] = [];
   projectTotalCorehours: number[] = [];
   editedCoreHours: {
-    dempoId: string;
+    forecastHoursId: number;
     date: string;
     coreHours: number;
+    coreHoursId: number;
   }[] = [];
   dropDownValues: IDropDownValue[] = [
     { codeValues: 1, dropDownItem: 'Interviewer' },
@@ -95,13 +96,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
 
     this.paginatedList = this.list.slice(start, end);
     this.calculateTotals();
+    this.calculateProjectTotals();
   }
-
   getCoreHour(res: any, monthIndex: number): number {
-    const key = this.monthKeys[monthIndex];
-    return res.coreHoursByMonth?.[key] ?? 0;
+    const key = this.monthKeys[monthIndex]; // key = '2025-07-01'
+    const match = res.coreHoursByMonth?.find((m: any) => m.first === key);
+    return match?.second ?? 0;
   }
-
   calculateTotals(): void {
     const apiUrl = `${environment.DataAPIUrl}/forecasting/user-total-hours`;
     this.http.get(apiUrl).subscribe({
@@ -130,21 +131,24 @@ export class ProjectForecastingComponentV2 implements OnInit {
     this.calculateTotals();
   }
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
+    console.log(res);
+
     const input = event.target as HTMLInputElement;
     const value = parseInt(input.value, 0);
     if (isNaN(value)) return;
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
     const existing = this.editedCoreHours.find(
-      (e) => e.dempoId === res.dempoid && e.date === monthKey
+      (e) => e.forecastHoursId === res.forecastHoursId && e.date === monthKey
     );
     if (existing) {
       existing.coreHours = value;
     } else {
       this.editedCoreHours.push({
-        dempoId: res.dempoid,
+        forecastHoursId: res.forecastHoursId ?? 0,
         date: monthKey,
         coreHours: value,
+        coreHoursId: res.coreHoursId ?? 0,
       });
     }
   }
@@ -162,6 +166,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
         this.getList();
+        this
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);

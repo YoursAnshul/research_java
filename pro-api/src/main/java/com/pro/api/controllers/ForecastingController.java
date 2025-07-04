@@ -31,7 +31,7 @@ public class ForecastingController {
 
 	@PutMapping("/update")
 	public ResponseEntity<GeneralResponse> updateCoreHours(@RequestBody List<CoreHoursRequest> requests) {
-		GeneralResponse response = forecastingService.updateCoreHours(requests);
+		GeneralResponse response = forecastingService.updateForeCastingHours(requests);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
