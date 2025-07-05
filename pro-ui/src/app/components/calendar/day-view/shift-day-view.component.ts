@@ -305,6 +305,15 @@ export class ShiftDayViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    let date = schedule?.dayWiseDate ? new Date(schedule.dayWiseDate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
+      return;
+    }
     let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {

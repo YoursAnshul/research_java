@@ -89,7 +89,19 @@ export class WeekViewComponent implements OnInit {
   }
 
   openScheduleData(schedule: any): void {
-    if (this.authenticatedUser.interviewer && this.authenticatedUser.netID != schedule.dempoid) {
+    if (
+      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.netID != schedule.dempoid
+    ) {
+      return;
+    }
+    let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
       return;
     }
     if (this.monthPart) {
