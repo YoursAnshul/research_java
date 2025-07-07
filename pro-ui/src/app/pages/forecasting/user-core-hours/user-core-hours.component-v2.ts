@@ -37,9 +37,9 @@ export class UserCoreHoursComponentV2 implements OnInit {
     new SelectedValue(1, { codeValues: 1, dropDownItem: 'Interviewer' }),
   ];
   editedCoreHours: {
-    dempoId: string;
     date: string;
     coreHours: number;
+    coreHoursId: number;
   }[] = [];
   ngOnInit(): void {
     this.getMonths();
@@ -98,11 +98,13 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
     this.paginatedList = this.list.slice(start, end);
     this.calculateTotals();
+    this.calculateProjectTotals();
   }
 
   getCoreHour(res: any, monthIndex: number): number {
     const key = this.monthKeys[monthIndex];
-    return res.coreHoursByMonth?.[key] ?? 0;
+    const match = res.coreHoursByMonth?.find((m: any) => m.first === key);
+    return match?.second ?? 0;
   }
 
   calculateTotals(): void {
@@ -139,13 +141,13 @@ export class UserCoreHoursComponentV2 implements OnInit {
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
     const existing = this.editedCoreHours.find(
-      (e) => e.dempoId === res.dempoid && e.date === monthKey
+      (e) => e.coreHoursId === res.coreHoursId && e.date === monthKey
     );
     if (existing) {
       existing.coreHours = value;
     } else {
       this.editedCoreHours.push({
-        dempoId: res.dempoid,
+        coreHoursId: res.coreHoursId ?? 0,
         date: monthKey,
         coreHours: value,
       });
@@ -154,20 +156,20 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
   saveCoreHours(): void {
     if (this.editedCoreHours.length === 0) {
-      // this.showToastMessage('No changes to save.', 'error');
+      this.showToastMessage('No changes to save.', 'error');
       return;
     }
-    // const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
-    // this.http.put(apiUrl, this.editedCoreHours).subscribe({
-    //   next: (response: any) => {
-    //     this.showToastMessage('Core hours saved successfully!', 'success');
-    //     this.editedCoreHours = [];
-    //     this.getList();
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error saving core hours:', error);
-    //   },
-    // });
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/user-core-update`;
+    this.http.put(apiUrl, this.editedCoreHours).subscribe({
+      next: (response: any) => {
+        this.showToastMessage('Core hours saved successfully!', 'success');
+        this.editedCoreHours = [];
+        this.getList();
+      },
+      error: (error: any) => {
+        console.error('Error saving core hours:', error);
+      },
+    });
   }
   showToastMessage(message: string, type: string): void {
     let snackBarClass = 'success-snackbar';

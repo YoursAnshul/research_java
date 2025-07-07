@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -28,29 +26,30 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Override
 	public PageResponse<ForecastingResponse> getList() {
-		String sql = "SELECT u.dempoid, u.fname, u.lname, " + "c.month1, c.corehours1, " + "c.month2, c.corehours2, "
-				+ "c.month3, c.corehours3, " + "c.month4, c.corehours4, " + "c.month5, c.corehours5, "
-				+ "c.month6, c.corehours6, " + "c.month7, c.corehours7, " + "c.month8, c.corehours8, "
-				+ "c.month9, c.corehours9, " + "c.month10, c.corehours10, " + "c.month11, c.corehours11, "
-				+ "c.month12, c.corehours12, " + "c.month13, c.corehours13, " + "c.month14, c.corehours14 "
-				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE  u.status = '1'";
+		String sql = "SELECT u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
+				+ "c.month2, c.corehours2, " + "c.month3, c.corehours3, " + "c.month4, c.corehours4, "
+				+ "c.month5, c.corehours5, " + "c.month6, c.corehours6, " + "c.month7, c.corehours7, "
+				+ "c.month8, c.corehours8, " + "c.month9, c.corehours9, " + "c.month10, c.corehours10, "
+				+ "c.month11, c.corehours11, " + "c.month12, c.corehours12, " + "c.month13, c.corehours13, "
+				+ "c.month14, c.corehours14 "
+				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid "
+				+ "WHERE  u.status = '1' ORDER BY c.corehoursid DESC";
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
+			response.setCoreHoursId(rs.getLong("corehoursid"));
 			response.setFname(rs.getString("fname"));
 			response.setLname(rs.getString("lname"));
 
-			Map<LocalDate, Integer> monthHoursMap = new LinkedHashMap<>();
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
 			for (int i = 1; i <= 14; i++) {
 				Date date = rs.getDate("month" + i);
 				Integer hours = rs.getObject("corehours" + i, Integer.class);
-				if (hours == null)
-					hours = 0;
 				if (date != null) {
-					monthHoursMap.put(date.toLocalDate(), hours);
+					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
 				}
 			}
-
+			response.setCoreHoursByMonth(monthHoursList);
 			return response;
 		});
 
@@ -103,7 +102,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+				+ "WHERE p.active = 1 AND p.projecttype = 2 order by fh.forecasthoursid DESC";
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
@@ -187,6 +186,32 @@ public class ForecastingServiceImpl implements ForecastingService {
 		} catch (Exception e) {
 			return 0;
 		}
+	}
+
+	@Override
+	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests) {
+		GeneralResponse response = new GeneralResponse();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		for (CoreHoursRequest request : requests) {
+			int val = getValue(request.getDate());
+
+			if (val < 1 || val > 14) {
+				continue;
+			}
+
+			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+			Date sqlDate = Date.valueOf(parsedDate);
+
+			String sql = "UPDATE core.corehours SET moddt = NOW(), corehours" + val + " = ?, month" + val
+					+ " = ? WHERE corehoursid = ?";
+			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getCoreHoursId());
+		}
+
+		response.Status = "success";
+		response.Message = "Core hours updated successfully";
+		return response;
 	}
 
 }

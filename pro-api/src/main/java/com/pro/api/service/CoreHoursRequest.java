@@ -5,6 +5,7 @@ public class CoreHoursRequest {
 	private Long forecastHoursId;
 	private String date;
 	private int coreHours;
+	private Long coreHoursId;
 
 	public int getCoreHours() {
 		return coreHours;
@@ -28,6 +29,14 @@ public class CoreHoursRequest {
 
 	public void setForecastHoursId(Long forecastHoursId) {
 		this.forecastHoursId = forecastHoursId;
+	}
+
+	public Long getCoreHoursId() {
+		return coreHoursId;
+	}
+
+	public void setCoreHoursId(Long coreHoursId) {
+		this.coreHoursId = coreHoursId;
 	}
 
 }

@@ -32,7 +32,6 @@ export class ProjectForecastingComponentV2 implements OnInit {
     forecastHoursId: number;
     date: string;
     coreHours: number;
-    coreHoursId: number;
   }[] = [];
   dropDownValues: IDropDownValue[] = [
     { codeValues: 1, dropDownItem: 'Interviewer' },
@@ -98,8 +97,9 @@ export class ProjectForecastingComponentV2 implements OnInit {
     this.calculateTotals();
     this.calculateProjectTotals();
   }
+
   getCoreHour(res: any, monthIndex: number): number {
-    const key = this.monthKeys[monthIndex]; // key = '2025-07-01'
+    const key = this.monthKeys[monthIndex];
     const match = res.coreHoursByMonth?.find((m: any) => m.first === key);
     return match?.second ?? 0;
   }
@@ -148,7 +148,6 @@ export class ProjectForecastingComponentV2 implements OnInit {
         forecastHoursId: res.forecastHoursId ?? 0,
         date: monthKey,
         coreHours: value,
-        coreHoursId: res.coreHoursId ?? 0,
       });
     }
   }
@@ -158,15 +157,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
       this.showToastMessage('No changes to save.', 'error');
       return;
     }
-    console.log('Saving core hours:', this.editedCoreHours);
-
     const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
     this.http.put(apiUrl, this.editedCoreHours).subscribe({
       next: (response: any) => {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
         this.getList();
-        this
+        this;
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);

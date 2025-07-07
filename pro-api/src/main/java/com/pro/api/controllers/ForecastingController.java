@@ -52,4 +52,10 @@ public class ForecastingController {
 		List<Long> response = forecastingService.getProjectTotalHours();
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+
+	@PutMapping("/user-core-update")
+	public ResponseEntity<GeneralResponse> updateUserCoreHours(@RequestBody List<CoreHoursRequest> requests) {
+		GeneralResponse response = forecastingService.updateCoreHours(requests);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 }
