@@ -27,7 +27,7 @@
     <div id="day-calendar-user-schedules">
       @for (us of userSchedules; track us) {
       <div class="user-schedule-row">
-        <app-user-card class="user-card" [user]="us.user"></app-user-card>
+        <app-user-card class="user-card" style="margin-bottom: 0px !important;" [user]="us.user"></app-user-card>
         @for (schedule of us.schedules; track schedule) {
         <!-- <div class="schedule-card"
               (dblclick)="openUserSchedule(us.user.dempoid, schedule.projectName)"
@@ -45,6 +45,7 @@
           </div> -->
         <div class="schedule-card" (dblclick)="openScheduleData(schedule)"
           (mouseenter)="displayHoverMessage($event, schedule, us)" (mouseleave)="hideHoverMessage()"
+          style="margin-top: 0px !important; "
           [ngStyle]="customScheduleCard(schedule.startdatetime, schedule.scheduledHours || 0)">
           <div class="center-align-container">
             <app-project-swatch [projectColor]="schedule.projectColor"></app-project-swatch>

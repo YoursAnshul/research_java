@@ -17,6 +17,10 @@ export class UserSchedulesService {
   public selectedDate: BehaviorSubject<Date> = new BehaviorSubject<Date>(new Date());
   public timeCodes: BehaviorSubject<ITimeCode[]> = new BehaviorSubject<ITimeCode[]>([] as ITimeCode[]);
   public scheduleFetchStatus: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  public allValidationMessages: BehaviorSubject<IValidationMessage[]> = new BehaviorSubject<IValidationMessage[]>([] as IValidationMessage[]);
+  public userValidationMessages: BehaviorSubject<IValidationMessage[]> = new BehaviorSubject<IValidationMessage[]>([] as IValidationMessage[]);
+  public invalidSchedulesKeys: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([] as string[]);
+  public invalidWeeks: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([] as string[]);
   public errorMessage!: string;
 
   constructor(private http: HttpClient,
@@ -176,6 +180,45 @@ export class UserSchedulesService {
     inDate.setDate(1);
     let inDateString: string = Utils.formatDateOnlyToStringUTC(inDate, true, true, true) || '';
     return this.http.get<IGeneralResponse>(`${this.apiRootUrl}/validationMessages/${inDateString}`);
+  }
+
+  setUserValidationMessages(inDate: Date, netId: string): void {
+    this.validateSchedules([{ dempoId: netId, inMonth: inDate } as IValidationMessage], netId).subscribe(
+      response => {
+        if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+          try {
+            // this.getValidationMessages();
+            let allValidationMessages: IValidationMessage[] = <IValidationMessage[]>(response.Subject);
+            let invalidSchedulesKeys: string[] = [];
+            let invalidWeeks: string[] = [];
+
+            for (var i = 0; i < allValidationMessages.length; i++) {
+              let vmScheduleKeys: string[] = allValidationMessages[i].scheduleKeys?.split('|') || [];
+              let vmWeeks: string[] = allValidationMessages[i].details?.split('|||') || [];
+              if (vmScheduleKeys.length > 0) {
+                vmScheduleKeys.forEach((x: any) => {
+                  invalidSchedulesKeys.push(x);
+                });
+              }
+              if (vmWeeks.length == 2) {
+                allValidationMessages[i].details = vmWeeks[0];
+                invalidWeeks.push(...vmWeeks[1].split('|'));
+              }
+            }
+            this.invalidSchedulesKeys.next(invalidSchedulesKeys);
+            this.invalidWeeks.next(invalidWeeks);
+            this.allValidationMessages.next(<IValidationMessage[]>(response.Subject));
+            this.userValidationMessages.next(<IValidationMessage[]>(response.Subject).filter((x: any) => x.dempoId == netId));
+          } catch (ex) {
+            console.log(ex);
+          }
+        }
+      },
+      error => {
+        console.error('Error validating schedules:', error);
+      }
+    );
+
   }
 
   //get validation messages for the specified month and user

@@ -62,8 +62,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-		ZoneId localZone = ZoneId.systemDefault(); // or specify your expected input zone, e.g.,
-													// ZoneId.of("Asia/Kolkata")
+		ZoneId localZone = ZoneId.systemDefault(); 
+												
 		ZoneId utcZone = ZoneOffset.UTC;
 
 		for (ShiftScheduleRequest request : list) {
@@ -78,7 +78,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 				LocalTime startTime = LocalTime.parse(request.getStartTime(), timeFormatter);
 				LocalTime endTime = LocalTime.parse(request.getEndTime(), timeFormatter);
 
-				// Combine into LocalDateTime in local zone
 				LocalDateTime localStartDateTime = LocalDateTime.of(scheduleDate, startTime);
 				LocalDateTime localEndDateTime = LocalDateTime.of(scheduleDate, endTime);
 
@@ -231,8 +230,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 				return response;
 			}
 
-			// Convert to UTC
-			ZoneId localZone = ZoneId.systemDefault(); // or ZoneId.of("America/New_York")
+
+			ZoneId localZone = ZoneId.systemDefault();
 			ZoneId utcZone = ZoneOffset.UTC;
 
 			LocalDateTime localStartDateTime = LocalDateTime.of(scheduleDate, startTime);

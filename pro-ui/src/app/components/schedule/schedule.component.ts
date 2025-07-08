@@ -370,6 +370,7 @@ export class ScheduleComponent implements OnInit {
         this.previousSelectedDate = new Date(this.selectedDate);
 
         if (!previousDateIsSame) {
+          console.log('validation', this.selectedDate);
           //call validate schedules
           this.userSchedulesService.validateSchedules([{ dempoId: this.authenticatedUser.netID, inMonth: new Date(this.selectedDate) } as IValidationMessage], this.authenticatedUser.netID).subscribe(
             response => {

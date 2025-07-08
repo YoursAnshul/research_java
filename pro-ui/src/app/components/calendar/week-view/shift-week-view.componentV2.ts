@@ -12,6 +12,7 @@ import {
   IAuthenticatedUser,
   ILegend,
   ISchedule,
+  IValidationMessage,
   IWeekSchedules,
 } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
@@ -21,6 +22,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import moment from 'moment-timezone';
 import { ScheduleService } from '../../schedule/schedule.service';
+import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
 
 @Component({
   selector: 'app-shift-week-view-v2',
@@ -55,13 +57,17 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   @Input() pId: number = 0;
   processedSchedules: ISchedule[] = [];
   @Input() isScheduleUpdate: boolean = false;
+  validationMessages: IValidationMessage[] = [];
+  invalidScheduleKeys: string[] = [];
+  invalidWeeks: string[] = [];
 
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
     private authenticationService: AuthenticationService,
     private cdr: ChangeDetectorRef,
-    private scheduleService: ScheduleService
+    private scheduleService: ScheduleService,
+    private userScheduleService: UserSchedulesService
   ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
@@ -70,7 +76,29 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    //subscribe to validation messages
+    this.userScheduleService.userValidationMessages.subscribe((messages) => {
+      this.validationMessages = messages;
+    });
+
+    //subscribe to invalid schedules
+    this.userScheduleService.invalidSchedulesKeys.subscribe((scheduleKeys) => {
+      this.invalidScheduleKeys = scheduleKeys;
+    });
+
+    //subscribe to invalid weeks
+    this.userScheduleService.invalidWeeks.subscribe((weeks) => {
+      this.invalidWeeks = weeks;
+    });
+
+  }
+
+  scheduleInvalid(scheduleKey: number): boolean {
+    return this.invalidScheduleKeys.some((x) => scheduleKey.toString() == x);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.processShiftSchedules();
   }
@@ -404,11 +432,10 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   openScheduleData(schedule: ISchedule): void {
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
-    if (date) {
+     if (date) {
       date.setHours(0, 0, 0, 0);
     }
     currentDate.setHours(0, 0, 0, 0);
-
     if (
       this.authenticatedUser.interviewer &&
       date !== null &&

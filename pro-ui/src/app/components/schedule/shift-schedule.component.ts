@@ -202,6 +202,8 @@ export class ShiftScheduleComponent implements OnInit {
   isStartTimeChanged: boolean = false;
   isEndTimeChanged: boolean = false;
   coreHours: number = 0;
+  invalidScheduleKeys: string[] = [];
+  invalidWeeks: string[] = [];
 
   constructor(
     private http: HttpClient,
@@ -448,7 +450,19 @@ export class ShiftScheduleComponent implements OnInit {
     setTimeout(() => {
       this.isDataLoaded = true;
     }, 1000);
+
+    //subscribe to validation messages
+    this.userScheduleService.userValidationMessages.subscribe((messages) => {
+      this.validationMessages = messages;
+    });
+
+    //subscribe to invalid schedules
+    this.userScheduleService.invalidSchedulesKeys.subscribe((scheduleKeys) => {
+      this.invalidScheduleKeys = scheduleKeys;
+    });
+
   }
+
   loadUserData(): void {
     this.scheduleService.getUser().subscribe((data) => {
       if (data) {
@@ -538,7 +552,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onDateRangeReceived(dateRange: any): void {
-    this.tryValidateSchedules();
+    this.tryValidateSchedules(dateRange.startDate);
     if (this.tabValue != 'Day') {
       this.dateRange = dateRange;
     }
@@ -1076,11 +1090,13 @@ export class ShiftScheduleComponent implements OnInit {
           return;
         }
       }
+      this.tryValidateSchedules(selectedDate || new Date());
     }
     if (this.shiftForm.valid) {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
       this.changeDate = new Date(selectedDate);
+      this.tryValidateSchedules(selectedDate || new Date());
     }
     const storedSchedule = localStorage.getItem('shiftSchedule');
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
@@ -1181,6 +1197,7 @@ export class ShiftScheduleComponent implements OnInit {
       } else {
         this.editSchedule();
       }
+      this.tryValidateSchedules(selectedDate || new Date());
     }
   }
   saveNewRequest(id: number): void {
@@ -1575,7 +1592,7 @@ export class ShiftScheduleComponent implements OnInit {
   handleUser(user: any): void {
     this.filterUser = user;
     this.selectedUser = user;
-    this.tryValidateSchedules();
+    this.tryValidateSchedules(this.selectedDate.value || new Date());
   }
   handleProject(project: any): void {
     this.filterProject = project;
@@ -1839,6 +1856,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onSeletedDayDate(day: any): void {
+    this.tryValidateSchedules(day);
     if (this.tabValue == 'Day') {
       this.dateRange = null;
       this.selectedDayDate = day;
@@ -1988,7 +2006,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.isEditAble = false;
       console.log('this.shiftForm---', this.shiftForm.value);
     }
-    this.tryValidateSchedules();
+    this.tryValidateSchedules(this.selectedDate.value || new Date());
   }
 
   deleteSchedule() {
@@ -2376,7 +2394,7 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-  public tryValidateSchedules(): void {
+  public tryValidateSchedules(day: Date): void {
     if (
       (this.selectedUser?.dempoId?.length || 0) < 1 &&
       this.authenticatedUser?.role == UserRole.Interviewer
@@ -2384,7 +2402,7 @@ export class ShiftScheduleComponent implements OnInit {
       this.selectedUser = this.authenticatedUser;
     }
     console.log(this.selectedUser);
-    if (this.selectedDate && this.authenticatedUser && this.selectedUser) {
+    if (day && this.authenticatedUser && this.selectedUser) {
       let netId: string = this.authenticatedUser?.netID || '';
       if (this.authenticatedUser.role !== UserRole.Interviewer) {
         //if the selected user is the current user, don't valiate schedules
@@ -2402,36 +2420,12 @@ export class ShiftScheduleComponent implements OnInit {
       }
 
       //call validate schedules
-      const selectedDateValue = this.selectedDate.value
-        ? new Date(this.selectedDate.value)
+      const selectedDateValue = day
+        ? new Date(day)
         : new Date();
-      this.userScheduleService
-        .validateSchedules(
-          [
-            {
-              dempoId: netId,
-              inMonth: selectedDateValue,
-            } as IValidationMessage,
-          ],
-          netId
-        )
-        .subscribe(
-          (response) => {
-            if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-              try {
-                // this.getValidationMessages();
-                this.validationMessages = <IValidationMessage[]>(
-                  response.Subject.filter((x: any) => x.dempoId == netId)
-                );
-              } catch (ex) {
-                console.log(ex);
-              }
-            }
-          },
-          (error) => {
-            console.error('Error validating schedules:', error);
-          }
-        );
+
+        this.userScheduleService.setUserValidationMessages(selectedDateValue, netId);
+
     }
   }
   getDuration(): number {
