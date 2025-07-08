@@ -29,7 +29,7 @@
     <div class="hour-header">09:00 PM</div>
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
-    <div *ngIf="authenticatedUser?.interviewer" class="total-hour-header" style="background: #0078d4; color: white">
+    <div *ngIf="authenticatedUser?.interviewer" class="total-hour-header" style="background: #0078d4; color: white; width: 5.75%;">
       Total
     </div>
 
@@ -48,8 +48,11 @@
         right: 0;
         z-index: 10;
       ">
+      <!-- <input type="text" [value]="calculateTotalDuration() + ' hr'" class="day-right-aligned-input" [readonly]="true"
+        [style.height]="inputHeight"
+        disabled="true" /> -->
       <input type="text" [value]="calculateTotalDuration() + ' hr'" class="day-right-aligned-input" [readonly]="true"
-        [style.height]="inputHeight" disabled="true" />
+        disabled="true" />
     </div>
     <div class="day-input-container" *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0" style="
         position: absolute;
@@ -63,7 +66,7 @@
     <div id="day-calendar-user-schedules" style="margin-top: 4px" *ngIf="!isLoading">
       @for (group of groupedSchedules; track group.user.userId) {
       <div class="user-schedule-row">
-        <div *ngIf="authenticatedUser?.interviewer || (authenticatedUser?.admin && selectedUser?.userId != 0)" class="user-card" [ngStyle]="{ width: '12.85%' }">
+        <div *ngIf="authenticatedUser?.interviewer || (authenticatedUser?.admin && selectedUser?.userId != 0)" class="user-card" [ngStyle]="{ width: '12.8%' }">
           {{ group.user.userName }}
         </div>
         <div *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0" class="user-card" [ngStyle]="{ width: '15.4%' }">
@@ -72,6 +75,7 @@
         @for (schedule of group.schedules; track schedule) {
         <div class="schedule-card" (click)="handleClick(schedule, $event)"
           (mouseenter)="displayHoverMessage($event, schedule, group)" (mouseleave)="hideHoverMessage()"
+          [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
           [ngStyle]="customScheduleCard(schedule.startTime, schedule.endTime)"
           [style.opacity]="schedule.isEdit ? 0.5 : 1">
           <div class="center-align-container">
@@ -91,7 +95,7 @@
       </div>
       }
       <div *ngIf="authenticatedUser?.interviewer" class="user-card" [ngStyle]="{
-          width: '12.85%'
+          width: '12.8%'
         }" style="margin-top: -5px"></div>
 
       <div *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0" class="user-card" [ngStyle]="{

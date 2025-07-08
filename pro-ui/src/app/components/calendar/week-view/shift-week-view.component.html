@@ -93,6 +93,7 @@
         type="text"
         [value]="calculateTotalDuration() + ' hr'"
         class="right-aligned-input"
+        [ngClass]="{'invalid-total': invalidWeeks.includes((weekSchedules?.weekStart | date:'MM/dd/yyyy') || '')}"
         [style.height]="inputHeight"
         [readonly]="true"
         disabled="true"
@@ -149,6 +150,7 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
       >
         <div class="center-align-container">
           <app-project-swatch
@@ -183,6 +185,7 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
       >
         <div class="center-align-container">
           <app-project-swatch
@@ -217,6 +220,7 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
       >
         <div class="center-align-container">
           <app-project-swatch
@@ -251,6 +255,7 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
       >
         <div class="center-align-container">
           <app-project-swatch
@@ -285,6 +290,7 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
       >
         <div class="center-align-container">
           <app-project-swatch
@@ -319,6 +325,7 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
       >
         <div class="center-align-container">
           <app-project-swatch
@@ -353,7 +360,8 @@
         [style.opacity]="schedule.isEdit ? 0.5 : 1"
         (mouseenter)="displayHoverMessage($event, schedule)"
         (mouseleave)="hideHoverMessage()"
-      >
+        [class.invalid-schedule]="scheduleInvalid(schedule.preschedulekey)"
+        >
         <div class="center-align-container">
           <app-project-swatch
             [projectColor]="schedule.projectColor"

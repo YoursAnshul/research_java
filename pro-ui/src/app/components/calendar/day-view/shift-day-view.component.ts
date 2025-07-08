@@ -14,6 +14,7 @@ import {
   ILegend,
   ISchedule,
   IUserSchedule,
+  IValidationMessage,
 } from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
@@ -22,6 +23,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { ScheduleService } from '../../schedule/schedule.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
+import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
 
 @Component({
   selector: 'app-shift-day-view',
@@ -55,12 +57,15 @@ export class ShiftDayViewComponent implements OnInit {
   clickDelay = 250;
   @Input() pId: number = 0;
   @Input() isScheduleUpdate: boolean = false;
+  validationMessages: IValidationMessage[] = [];
+  invalidScheduleKeys: string[] = [];
 
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
     private authenticationService: AuthenticationService,
     private scheduleService: ScheduleService,
+    private userScheduleService: UserSchedulesService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {
@@ -71,7 +76,23 @@ export class ShiftDayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    //subscribe to validation messages
+    this.userScheduleService.userValidationMessages.subscribe((messages) => {
+      this.validationMessages = messages;
+    });
+
+    //subscribe to invalid schedules
+    this.userScheduleService.invalidSchedulesKeys.subscribe((scheduleKeys) => {
+      this.invalidScheduleKeys = scheduleKeys;
+    });
+
+  }
+
+  scheduleInvalid(scheduleKey: number): boolean {
+    return this.invalidScheduleKeys.some((x) => scheduleKey.toString() == x);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.selectedProject) {
@@ -180,7 +201,7 @@ export class ShiftDayViewComponent implements OnInit {
     let leftOffset = 0;
     let totalHours = 0;
     if (this.authenticatedUser?.interviewer) {
-      leftOffset = 12.85;
+      leftOffset = 12.9;
       totalHours = 17;
     } else if (
       this.authenticatedUser?.admin &&
@@ -313,7 +334,6 @@ export class ShiftDayViewComponent implements OnInit {
       date.setHours(0, 0, 0, 0);
     }
     currentDate.setHours(0, 0, 0, 0);
-
     if (
       this.authenticatedUser.interviewer &&
       date !== null &&
@@ -321,7 +341,6 @@ export class ShiftDayViewComponent implements OnInit {
     ) {
       return;
     }
-
     let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -392,4 +411,5 @@ export class ShiftDayViewComponent implements OnInit {
     }
     return Object.values(groups);
   }
+  
 }

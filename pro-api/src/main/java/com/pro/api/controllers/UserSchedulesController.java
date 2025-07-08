@@ -366,11 +366,13 @@ public class UserSchedulesController {
 						.map(ViUserSchedule::getWeekStart).distinct().sorted().collect(Collectors.toList());
 				boolean hoursDontMatch = false;
 				List<String> coreHoursDetails = new ArrayList<String>();
+				List<String> coreHoursWeeks = new ArrayList<String>();
 
 				boolean greaterThan20 = false;
 				List<String> greaterThan20Details = new ArrayList<String>();
 				boolean greaterThan40 = false;
 				List<String> greaterThan40Details = new ArrayList<String>();
+				List<String> greaterThan40Weeks = new ArrayList<String>();
 
 				for (LocalDateTime weekStart : schedulesWeeklyDistinct) {
 					double totalHours = schedulesWeekly.stream()
@@ -393,6 +395,7 @@ public class UserSchedulesController {
 						hoursDontMatch = true;
 						coreHoursDetails.add(String.format("Week of %s: %.2f hours",
 								weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), totalHours));
+						coreHoursWeeks.add(weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
 					}
 
 					// An Interviewer's weekly schedule should not exceed 20 hours total.
@@ -401,18 +404,19 @@ public class UserSchedulesController {
 						greaterThan20Details.add(String.format("Week of %s: %.2f hours",
 								weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), totalHours));
 					}
-
+					
 					// An Interviewer's weekly schedule should not exceed 40 hours total.
 					if (totalHours > 40) {
 						greaterThan40 = true;
 						greaterThan40Details.add(String.format("Week of %s: %.2f hours",
 								weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), totalHours));
+						greaterThan40Weeks.add(weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
 					}
 				}
 
 				if (hoursDontMatch) {
 					addMessage(validationMessages, 7, um.getInMonth(), um.getDempoId(),
-							String.join("|", coreHoursDetails));
+							String.join("|", coreHoursDetails) + "|||" + String.join("|", coreHoursWeeks));
 				}
 
 				// ------------------------------------
@@ -429,11 +433,11 @@ public class UserSchedulesController {
 				// ------------------------------------
 				// schedule level 2/3 only
 				// ------------------------------------
-				if (schedulinglevel == 2 || schedulinglevel == 3) {
+				if (schedulinglevel == 2 || schedulinglevel == 3) { 
 					// An Interviewer's weekly schedule should not exceed 40 hours total.
 					if (greaterThan40) {
 						addMessage(validationMessages, 9, um.getInMonth(), um.getDempoId(),
-								String.join("|", greaterThan40Details));
+								String.join("|", greaterThan40Details) + "|||" + String.join("|", greaterThan40Weeks));
 					}
 				}
 
@@ -465,10 +469,19 @@ public class UserSchedulesController {
 				// ------------------------------------
 				if (schedulinglevel == 1 || schedulinglevel == 2) {
 
-					//TODO: change to 2 weekend shifts each month, remove 
+					//TODO: change to 2 weekend shifts each month
 
+					//WAS:
+
+					// An Interviewer's schedule should include 1 weekend shift every other week.
+					// A Friday night shift schedule with majority of hours after 5 PM, can only
+					// have 1 Friday night per month.
+					// A Saturday and / or Sunday shift schedule should be 6 hours minimum.
+
+					// NOW:
 					// An Interviewer's schedule should include 2 weekend shifts each month.
 					// A Saturday or Sunday shift schedule should be 4 hours minimum.
+					
 
 					// get week starts having: A Saturday and / or Sunday shift schedule should be 6
 					// hours minimum.
