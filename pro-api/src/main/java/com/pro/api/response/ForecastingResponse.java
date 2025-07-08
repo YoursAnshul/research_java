@@ -2,26 +2,28 @@ package com.pro.api.response;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+
+import org.springframework.data.util.Pair;
 
 public class ForecastingResponse {
 
-	private String dempoid;
+	private Long forecastHoursId;
 	private String fname;
 	private String lname;
 	private String projectColor;
 	private String projectName;
 	private List<Long> userTotalCoreHours;
 	private List<Long> projectTotalCoreHours;
+	private Long coreHoursId;
 
-	private Map<LocalDate, Integer> coreHoursByMonth;
+	List<Pair<LocalDate, Integer>> coreHoursByMonth;
 
-	public String getDempoid() {
-		return dempoid;
+	public List<Pair<LocalDate, Integer>> getCoreHoursByMonth() {
+		return coreHoursByMonth;
 	}
 
-	public void setDempoid(String dempoid) {
-		this.dempoid = dempoid;
+	public void setCoreHoursByMonth(List<Pair<LocalDate, Integer>> coreHoursByMonth) {
+		this.coreHoursByMonth = coreHoursByMonth;
 	}
 
 	public String getFname() {
@@ -38,14 +40,6 @@ public class ForecastingResponse {
 
 	public void setLname(String lname) {
 		this.lname = lname;
-	}
-
-	public Map<LocalDate, Integer> getCoreHoursByMonth() {
-		return coreHoursByMonth;
-	}
-
-	public void setCoreHoursByMonth(Map<LocalDate, Integer> coreHoursByMonth) {
-		this.coreHoursByMonth = coreHoursByMonth;
 	}
 
 	public String getProjectColor() {
@@ -78,6 +72,22 @@ public class ForecastingResponse {
 
 	public void setProjectTotalCoreHours(List<Long> projectTotalCoreHours) {
 		this.projectTotalCoreHours = projectTotalCoreHours;
+	}
+
+	public Long getForecastHoursId() {
+		return forecastHoursId;
+	}
+
+	public void setForecastHoursId(Long forecastHoursId) {
+		this.forecastHoursId = forecastHoursId;
+	}
+
+	public Long getCoreHoursId() {
+		return coreHoursId;
+	}
+
+	public void setCoreHoursId(Long coreHoursId) {
+		this.coreHoursId = coreHoursId;
 	}
 
 }

@@ -2,13 +2,13 @@ package com.pro.api.service.impl;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,34 +24,45 @@ public class ForecastingServiceImpl implements ForecastingService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+
 	@Override
 	public PageResponse<ForecastingResponse> getProjectCoreHoursList() {
-		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.month1, fh.forecasthours1, fh.month2, fh.forecasthours2, fh.month3, fh.forecasthours3, "
-				+ " fh.month4, fh.forecasthours4, fh.month5, fh.forecasthours5, fh.month6, fh.forecasthours6, "
-				+ " fh.month7, fh.forecasthours7, fh.month8, fh.forecasthours8, fh.month9, fh.forecasthours9, "
-				+ " fh.month10, fh.forecasthours10, fh.month11, fh.forecasthours11, fh.month12, fh.forecasthours12, "
-				+ " fh.month13, fh.forecasthours13, fh.month14, fh.forecasthours14 FROM core.projects p "
-				+ " INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ " WHERE p.active = 1 and p.projecttype = 2 ";
+		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.forecasthoursid, "
+				+ "fh.month1 AS month1, fh.forecasthours1 AS forecasthours1, "
+				+ "fh.month2 AS month2, fh.forecasthours2 AS forecasthours2, "
+				+ "fh.month3 AS month3, fh.forecasthours3 AS forecasthours3, "
+				+ "fh.month4 AS month4, fh.forecasthours4 AS forecasthours4, "
+				+ "fh.month5 AS month5, fh.forecasthours5 AS forecasthours5, "
+				+ "fh.month6 AS month6, fh.forecasthours6 AS forecasthours6, "
+				+ "fh.month7 AS month7, fh.forecasthours7 AS forecasthours7, "
+				+ "fh.month8 AS month8, fh.forecasthours8 AS forecasthours8, "
+				+ "fh.month9 AS month9, fh.forecasthours9 AS forecasthours9, "
+				+ "fh.month10 AS month10, fh.forecasthours10 AS forecasthours10, "
+				+ "fh.month11 AS month11, fh.forecasthours11 AS forecasthours11, "
+				+ "fh.month12 AS month12, fh.forecasthours12 AS forecasthours12, "
+				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
+				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
+				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
+				+ "WHERE p.active = 1 AND p.projecttype = 2 order by fh.forecasthoursid DESC";
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
+			response.setForecastHoursId(rs.getLong("forecasthoursid"));
 			response.setProjectColor(rs.getString("projectcolor"));
 			response.setProjectName(rs.getString("projectname"));
 
-			Map<LocalDate, Integer> monthHoursMap = new LinkedHashMap<>();
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
 			for (int i = 1; i <= 14; i++) {
 				Date date = rs.getDate("month" + i);
 				Integer hours = rs.getObject("forecasthours" + i, Integer.class);
-				if (hours == null)
-					hours = 0;
 				if (date != null) {
-					monthHoursMap.put(date.toLocalDate(), hours);
+					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
 				}
 			}
-			response.setCoreHoursByMonth(monthHoursMap);
+			response.setCoreHoursByMonth(monthHoursList);
 			return response;
 		});
+
 		PageResponse<ForecastingResponse> response = new PageResponse<>();
 		response.setData(result);
 		response.setCount(result.size());

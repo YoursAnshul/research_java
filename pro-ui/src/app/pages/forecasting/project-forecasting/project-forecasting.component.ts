@@ -8,6 +8,10 @@ import { IDropDownValue } from '../../../interfaces/interfaces';
   styleUrl: './project-forecasting.component.css'
 })
 export class ProjectForecastingComponent {
+  filterData: any[] = [];
+  paginatedData: any[] = [];
+  currentPage: number = 1;
+  
 
   dropDownValues: IDropDownValue[] = [
     { codeValues: 1, dropDownItem: 'Interviewer' },

@@ -16,4 +16,5 @@ public interface ForecastingService {
 	public List<Long> getUserTotalHours();
 
 	public List<Long> getProjectTotalHours();
+
 }
