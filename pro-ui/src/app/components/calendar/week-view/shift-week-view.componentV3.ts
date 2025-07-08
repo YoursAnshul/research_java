@@ -384,6 +384,15 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   }
 
   openScheduleData(schedule: ISchedule): void {
+    let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
+      return;
+    }
     let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {

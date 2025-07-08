@@ -1,6 +1,11 @@
-import { Component, Input, OnInit, } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Utils } from '../../../classes/utils';
-import { ILegend, ISchedule, IWeekSchedules, IAuthenticatedUser } from '../../../interfaces/interfaces';
+import {
+  ILegend,
+  ISchedule,
+  IWeekSchedules,
+  IAuthenticatedUser,
+} from '../../../interfaces/interfaces';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { HoverMessage } from '../../../models/presentation/hover-message';
 import { ScheduleService } from '../../schedule/schedule.service';
@@ -11,17 +16,20 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 @Component({
   selector: 'app-week-view',
   templateUrl: './week-view.component.html',
-  styleUrls: ['./week-view.component.css']
+  styleUrls: ['./week-view.component.css'],
 })
 export class WeekViewComponent implements OnInit {
-
-
   @Input() weekSchedules: IWeekSchedules | null = null;
   @Input() monthPart: boolean = false;
   authenticatedUser!: IAuthenticatedUser;
   hoverMessage: HoverMessage = new HoverMessage();
 
-  constructor(private authenticationService: AuthenticationService, private globalsService: GlobalsService, private scheduleService: ScheduleService, private dialog: MatDialog) {
+  constructor(
+    private authenticationService: AuthenticationService,
+    private globalsService: GlobalsService,
+    private scheduleService: ScheduleService,
+    private dialog: MatDialog
+  ) {
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -29,8 +37,7 @@ export class WeekViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public GetDaysDate(weekStart: Date | undefined, dayOfWeek: number): string {
     let workingDate: Date = new Date(weekStart || '');
@@ -43,7 +50,10 @@ export class WeekViewComponent implements OnInit {
     return workingDate.toLocaleString('en-US', options);
   }
 
-  public GetDaysDateAsDate(weekStart: Date | undefined, dayOfWeek: number): Date {
+  public GetDaysDateAsDate(
+    weekStart: Date | undefined,
+    dayOfWeek: number
+  ): Date {
     let workingDate: Date = new Date(weekStart || '');
     workingDate.setDate(workingDate.getDate() + (dayOfWeek - 1));
 
@@ -59,29 +69,52 @@ export class WeekViewComponent implements OnInit {
   }
 
   //open contextual popup for the clicked user
-  openUserSchedule(netId: string | null, projectName: string | null = null, contextDate: Date | null = null, scheduleTabIndex: number | null = null): void {
+  openUserSchedule(
+    netId: string | null,
+    projectName: string | null = null,
+    contextDate: Date | null = null,
+    scheduleTabIndex: number | null = null
+  ): void {
     if (!scheduleTabIndex) {
       if (this.monthPart) {
         //tab index of 3 = Month tab
         scheduleTabIndex = 3;
       } else {
         //tab index of 2 = Week tab
-        scheduleTabIndex = 2
+        scheduleTabIndex = 2;
       }
     }
 
-    this.globalsService.showContextualPopup(scheduleTabIndex, netId, null, contextDate as Date);
+    this.globalsService.showContextualPopup(
+      scheduleTabIndex,
+      netId,
+      null,
+      contextDate as Date
+    );
   }
 
   displayHoverMessage(event: any, schedule: ISchedule): void {
-
-    let htmlMessage: string = '<p class="hover-message-title">' + schedule.displayName + ' (' + schedule.projectName + '): ' + schedule.startTime + ' – ' + schedule.endTime + ' – ' + this.formatDateOnlyString(schedule.startdatetime) + ' </p>';
+    let htmlMessage: string =
+      '<p class="hover-message-title">' +
+      schedule.displayName +
+      ' (' +
+      schedule.projectName +
+      '): ' +
+      schedule.startTime +
+      ' – ' +
+      schedule.endTime +
+      ' – ' +
+      this.formatDateOnlyString(schedule.startdatetime) +
+      ' </p>';
     if (schedule.comments) {
-      htmlMessage = htmlMessage + '<p class="bold">Comments:</p><p>' + schedule.comments + '</p>';
+      htmlMessage =
+        htmlMessage +
+        '<p class="bold">Comments:</p><p>' +
+        schedule.comments +
+        '</p>';
     }
 
     this.hoverMessage.setAndShow(event, htmlMessage);
-
   }
 
   hideHoverMessage(): void {
@@ -105,9 +138,9 @@ export class WeekViewComponent implements OnInit {
       return;
     }
     if (this.monthPart) {
-      schedule.tab = "Month";
+      schedule.tab = 'Month';
     } else {
-      schedule.tab = "Week";
+      schedule.tab = 'Week';
     }
     schedule.isHomeRedirect = true;
     console.log('Clicked Week schedule------->:', schedule);

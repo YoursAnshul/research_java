@@ -38,7 +38,7 @@ export class DayViewComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   customScheduleCard(startTime: Date | null | undefined, totalHours: number) {
     var startTimeCode = 0;

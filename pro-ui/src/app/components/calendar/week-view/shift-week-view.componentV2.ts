@@ -402,6 +402,15 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
+    let currentDate = new Date();
+    if (
+      this.authenticatedUser.interviewer &&
+      date !== null &&
+      date < currentDate
+    ) {
+      return;
+    }
     let tab = '';
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -409,7 +418,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
         tab = data.tab;
       }
     });
-  
+
     this.processedSchedules?.forEach((s) => (s.isEdit = false));
     this.scheduleService.getType().subscribe((type) => {
       if (type) {

@@ -63,12 +63,10 @@
     <div id="day-calendar-user-schedules" style="margin-top: 4px" *ngIf="!isLoading">
       @for (group of groupedSchedules; track group.user.userId) {
       <div class="user-schedule-row">
-        <div *ngIf="authenticatedUser?.interviewer || (authenticatedUser?.admin && selectedUser?.userId != 0)"
-          class="user-card" [ngStyle]="{ width: '12.85%' }">
+        <div *ngIf="authenticatedUser?.interviewer || (authenticatedUser?.admin && selectedUser?.userId != 0)" class="user-card" [ngStyle]="{ width: '12.85%' }">
           {{ group.user.userName }}
         </div>
-        <div *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0" class="user-card"
-          [ngStyle]="{ width: '15.4%' }">
+        <div *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0" class="user-card" [ngStyle]="{ width: '15.4%' }">
           {{ group.user.userName }}
         </div>
         @for (schedule of group.schedules; track schedule) {
