@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedValue } from '../../../models/presentation/selected-value';
-import { IDropDownValue } from '../../../interfaces/interfaces';
+import {
+  IDropDownValue,
+  IFormFieldVariable,
+} from '../../../interfaces/interfaces';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import {
@@ -8,6 +11,7 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { ConfigurationService } from '../../../services/configuration/configuration.service';
 
 @Component({
   selector: 'app-user-core-hours-v2',
@@ -17,8 +21,20 @@ import {
 export class UserCoreHoursComponentV2 implements OnInit {
   constructor(
     private readonly http: HttpClient,
-    private readonly snackBar: MatSnackBar
-  ) {}
+    private readonly snackBar: MatSnackBar,
+    private configurationService: ConfigurationService
+  ) {
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+        this.dropDownValues =
+          (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
+        this.dropDownValues.unshift({
+          codeValues: 0,
+          dropDownItem: 'All Roles',
+        });
+      }
+    });
+  }
 
   monthsHeader: string[] = [];
   monthKeys: string[] = [];
@@ -29,13 +45,8 @@ export class UserCoreHoursComponentV2 implements OnInit {
   totalCoreHours: number[] = [];
   projectTotalCorehours: number[] = [];
 
-  dropDownValues: IDropDownValue[] = [
-    { codeValues: 1, dropDownItem: 'Interviewer' },
-    { codeValues: 2, dropDownItem: 'Resource Group' },
-  ];
-  selectedValues: SelectedValue[] = [
-    new SelectedValue(1, { codeValues: 1, dropDownItem: 'Interviewer' }),
-  ];
+  dropDownValues: any[] = [];
+  selectedValues: SelectedValue[] = [];
   editedCoreHours: {
     date: string;
     coreHours: number;
@@ -43,7 +54,7 @@ export class UserCoreHoursComponentV2 implements OnInit {
   }[] = [];
   ngOnInit(): void {
     this.getMonths();
-    this.getList();
+    this.getList(0);
     this.calculateProjectTotals();
     this.calculateTotals();
   }
@@ -67,11 +78,12 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
   userRoleChange(event: any) {
     console.log('Role changed:', event);
-    // Optionally re-fetch list based on role
+    this.selectedValues = event;
+    this.getList(this.selectedValues[0]?.item?.codeValues || 0);    
   }
 
-  getList(): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/list`;
+  getList(codeValues: number): void {
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/list?codeValues=${codeValues}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
@@ -164,7 +176,7 @@ export class UserCoreHoursComponentV2 implements OnInit {
       next: (response: any) => {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
-        this.getList();
+        this.getList(this.selectedValues[0]?.item?.codeValues || 0);
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);

@@ -25,16 +25,19 @@ public class ForecastingServiceImpl implements ForecastingService {
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public PageResponse<ForecastingResponse> getList() {
+	public PageResponse<ForecastingResponse> getList(Integer codeValues) {
 		String sql = "SELECT u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
 				+ "c.month2, c.corehours2, " + "c.month3, c.corehours3, " + "c.month4, c.corehours4, "
 				+ "c.month5, c.corehours5, " + "c.month6, c.corehours6, " + "c.month7, c.corehours7, "
 				+ "c.month8, c.corehours8, " + "c.month9, c.corehours9, " + "c.month10, c.corehours10, "
 				+ "c.month11, c.corehours11, " + "c.month12, c.corehours12, " + "c.month13, c.corehours13, "
 				+ "c.month14, c.corehours14 "
-				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid "
-				+ "WHERE  u.status = '1' ORDER BY c.corehoursid DESC";
+				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE  u.status = '1' ";
 
+		if (codeValues != null && codeValues > 0) {
+			sql += " AND u.role = " + codeValues;
+		}
+		sql += " ORDER BY c.corehoursid DESC ";
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setCoreHoursId(rs.getLong("corehoursid"));
@@ -85,7 +88,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public PageResponse<ForecastingResponse> getProjectCoreHoursList() {
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList(String codeValues) {
 		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.forecasthoursid, "
 				+ "fh.month1 AS month1, fh.forecasthours1 AS forecasthours1, "
 				+ "fh.month2 AS month2, fh.forecasthours2 AS forecasthours2, "

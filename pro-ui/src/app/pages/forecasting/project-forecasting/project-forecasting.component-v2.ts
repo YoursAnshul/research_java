@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedValue } from '../../../models/presentation/selected-value';
-import { IDropDownValue } from '../../../interfaces/interfaces';
+import {
+  IDropDownValue,
+  IFormFieldVariable,
+} from '../../../interfaces/interfaces';
 import { environment } from '../../../../environments/environment';
 import {
   MatSnackBar,
@@ -8,6 +11,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
+import { ConfigurationService } from '../../../services/configuration/configuration.service';
 
 @Component({
   selector: 'app-project-forecasting-v2',
@@ -17,8 +21,21 @@ import { HttpClient } from '@angular/common/http';
 export class ProjectForecastingComponentV2 implements OnInit {
   constructor(
     private readonly http: HttpClient,
-    private readonly snackBar: MatSnackBar
-  ) {}
+    private readonly snackBar: MatSnackBar,
+    private configurationService: ConfigurationService
+  ) {
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+        this.dropDownValues =
+          (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
+        this.dropDownValues.unshift({
+          codeValues: 0,
+          dropDownItem: 'All Roles',
+        });
+        console.log('dropDownValues:', this.dropDownValues);
+      }
+    });
+  }
   filterData: any[] = [];
   monthsHeader: string[] = [];
   monthKeys: string[] = [];
@@ -33,24 +50,21 @@ export class ProjectForecastingComponentV2 implements OnInit {
     date: string;
     coreHours: number;
   }[] = [];
-  dropDownValues: IDropDownValue[] = [
-    { codeValues: 1, dropDownItem: 'Interviewer' },
-    { codeValues: 2, dropDownItem: 'Resource Group' },
-  ];
-  selectedValues: SelectedValue[] = [
-    new SelectedValue(1, { codeValues: 1, dropDownItem: 'Interviewer' }),
-  ];
+  dropDownValues: any[] = [];
+  selectedValues: SelectedValue[] = [];
 
   ngOnInit(): void {
     this.getMonths();
-    this.getList();
+    this.getList(0);
     this.calculateProjectTotals();
     this.calculateTotals();
   }
   userRoleChange(event: any) {
     console.log('Role changed:', event);
+    this.selectedValues = event;
+    this.getList(this.selectedValues[0]?.item?.codeValues || 0);
   }
-  getMonths() {
+  getMonths(codeValues: number = 0): void {
     const now = new Date();
     for (let i = 0; i < 14; i++) {
       const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
@@ -67,8 +81,8 @@ export class ProjectForecastingComponentV2 implements OnInit {
     }
   }
 
-  getList(): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list`;
+  getList(codeValues: number): void {
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list?codeValues=${codeValues}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
@@ -162,7 +176,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
       next: (response: any) => {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
-        this.getList();
+        this.getList(this.selectedValues[0]?.item?.codeValues || 0);
         this;
       },
       error: (error: any) => {

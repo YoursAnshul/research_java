@@ -11,11 +11,11 @@ import com.pro.api.response.PageResponse;
 @Service
 public interface ForecastingService {
 
-	public PageResponse<ForecastingResponse> getList();
+	public PageResponse<ForecastingResponse> getList(Integer codeValues);
 
 	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests);
 
-	public PageResponse<ForecastingResponse> getProjectCoreHoursList();
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList(String codeValues);
 
 	public List<Long> getUserTotalHours();
 

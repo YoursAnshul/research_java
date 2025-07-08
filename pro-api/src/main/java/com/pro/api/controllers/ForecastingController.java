@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.api.response.ForecastingResponse;
@@ -24,8 +25,9 @@ public class ForecastingController {
 	private ForecastingService forecastingService;
 
 	@GetMapping("/list")
-	public ResponseEntity<PageResponse<ForecastingResponse>> getList() {
-		PageResponse<ForecastingResponse> response = forecastingService.getList();
+	public ResponseEntity<PageResponse<ForecastingResponse>> getList(
+			@RequestParam(value = "codeValues", required = false) Integer codeValues) {
+		PageResponse<ForecastingResponse> response = forecastingService.getList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -36,8 +38,9 @@ public class ForecastingController {
 	}
 
 	@GetMapping("/project-list")
-	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList() {
-		PageResponse<ForecastingResponse> response = forecastingService.getProjectCoreHoursList();
+	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList(
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
+		PageResponse<ForecastingResponse> response = forecastingService.getProjectCoreHoursList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
