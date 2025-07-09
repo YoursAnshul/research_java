@@ -32,7 +32,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Roles',
         });
-        console.log('dropDownValues:', this.dropDownValues);
+        const selectedItem = this.dropDownValues.find(
+          (item) => item.codeValues === 3
+        );
+
+        this.selectedValues = selectedItem
+          ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
+          : [];
       }
     });
   }
@@ -54,10 +60,30 @@ export class ProjectForecastingComponentV2 implements OnInit {
   selectedValues: SelectedValue[] = [];
 
   ngOnInit(): void {
-    this.getMonths();
-    this.getList(0);
-    this.calculateProjectTotals();
-    this.calculateTotals();
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() === 'SUCCESS') {
+        this.dropDownValues =
+          (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
+
+        this.dropDownValues.unshift({
+          codeValues: 0,
+          dropDownItem: 'All Roles',
+        });
+
+        const selectedItem = this.dropDownValues.find(
+          (item) => item.codeValues === 3
+        );
+
+        this.selectedValues = selectedItem
+          ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
+          : [];
+
+        this.getMonths();
+        this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
+        this.calculateProjectTotals();
+        this.calculateTotals();
+      }
+    });
   }
   userRoleChange(event: any) {
     console.log('Role changed:', event);
@@ -118,7 +144,11 @@ export class ProjectForecastingComponentV2 implements OnInit {
     return match?.second ?? 0;
   }
   calculateTotals(): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/user-total-hours`;
+    const apiUrl = `${
+      environment.DataAPIUrl
+    }/forecasting/user-total-hours?codeValues=${
+      this.selectedValues[0]?.item?.codeValues || 0
+    }`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -145,11 +175,12 @@ export class ProjectForecastingComponentV2 implements OnInit {
     this.calculateTotals();
   }
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
-    console.log(res);
-
     const input = event.target as HTMLInputElement;
     const value = parseInt(input.value, 0);
-    if (isNaN(value)) return;
+    if (isNaN(value) || value < 0) {
+      input.value = '';
+      return;
+    }
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
     const existing = this.editedCoreHours.find(

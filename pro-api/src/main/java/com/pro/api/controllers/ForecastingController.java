@@ -1,5 +1,6 @@
 package com.pro.api.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import com.pro.api.response.ForecastingResponse;
 import com.pro.api.response.PageResponse;
 import com.pro.api.service.CoreHoursRequest;
 import com.pro.api.service.ForecastingService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/forecasting")
@@ -39,14 +42,15 @@ public class ForecastingController {
 
 	@GetMapping("/project-list")
 	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList(
-			@RequestParam(value = "codeValues", required = false) String codeValues) {
+			@RequestParam(value = "codeValues", required = false) Integer codeValues) {
 		PageResponse<ForecastingResponse> response = forecastingService.getProjectCoreHoursList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/user-total-hours")
-	public ResponseEntity<List<Long>> getUserTotalHours() {
-		List<Long> response = forecastingService.getUserTotalHours();
+	public ResponseEntity<List<Long>> getUserTotalHours(
+			@RequestParam(value = "codeValues", required = false) Integer codeValues) {
+		List<Long> response = forecastingService.getUserTotalHours(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -60,5 +64,15 @@ public class ForecastingController {
 	public ResponseEntity<GeneralResponse> updateUserCoreHours(@RequestBody List<CoreHoursRequest> requests) {
 		GeneralResponse response = forecastingService.updateCoreHours(requests);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+
+	@GetMapping("/export")
+	public void exportForecastingExcel(@RequestParam(required = false) Integer codeValues,
+			HttpServletResponse response) {
+		try {
+			forecastingService.exportForecastingExcel(codeValues, response);
+		} catch (IOException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 }

@@ -1,12 +1,23 @@
 package com.pro.api.service.impl;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +28,8 @@ import com.pro.api.response.ForecastingResponse;
 import com.pro.api.response.PageResponse;
 import com.pro.api.service.CoreHoursRequest;
 import com.pro.api.service.ForecastingService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class ForecastingServiceImpl implements ForecastingService {
@@ -37,7 +50,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 		if (codeValues != null && codeValues > 0) {
 			sql += " AND u.role = " + codeValues;
 		}
-		sql += " ORDER BY c.corehoursid DESC ";
+		sql += " ORDER BY u.fname ASC ";
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setCoreHoursId(rs.getLong("corehoursid"));
@@ -45,13 +58,13 @@ public class ForecastingServiceImpl implements ForecastingService {
 			response.setLname(rs.getString("lname"));
 
 			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			LocalDate now = LocalDate.now();
 			for (int i = 1; i <= 14; i++) {
-				Date date = rs.getDate("month" + i);
+				LocalDate monthDate = now.plusMonths(i - 1);
 				Integer hours = rs.getObject("corehours" + i, Integer.class);
-				if (date != null) {
-					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
-				}
+				monthHoursList.add(Pair.of(monthDate.withDayOfMonth(1), hours != null ? hours : 0));
 			}
+
 			response.setCoreHoursByMonth(monthHoursList);
 			return response;
 		});
@@ -88,7 +101,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public PageResponse<ForecastingResponse> getProjectCoreHoursList(String codeValues) {
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList(Integer codeValues) {
 		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.forecasthoursid, "
 				+ "fh.month1 AS month1, fh.forecasthours1 AS forecasthours1, "
 				+ "fh.month2 AS month2, fh.forecasthours2 AS forecasthours2, "
@@ -105,7 +118,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 order by fh.forecasthoursid DESC";
+				+ "WHERE p.active = 1 AND p.projecttype = 2 order by p.projectname ASC";
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
@@ -114,12 +127,11 @@ public class ForecastingServiceImpl implements ForecastingService {
 			response.setProjectName(rs.getString("projectname"));
 
 			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			LocalDate now = LocalDate.now();
 			for (int i = 1; i <= 14; i++) {
-				Date date = rs.getDate("month" + i);
+				LocalDate monthDate = now.plusMonths(i - 1);
 				Integer hours = rs.getObject("forecasthours" + i, Integer.class);
-				if (date != null) {
-					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
-				}
+				monthHoursList.add(Pair.of(monthDate.withDayOfMonth(1), hours != null ? hours : 0));
 			}
 			response.setCoreHoursByMonth(monthHoursList);
 			return response;
@@ -132,11 +144,14 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public List<Long> getUserTotalHours() {
+	public List<Long> getUserTotalHours(Integer codeValues) {
 		String sql = "SELECT  SUM(c.corehours1), SUM(c.corehours2), SUM(c.corehours3), SUM(c.corehours4), SUM(c.corehours5), "
 				+ " SUM(c.corehours6), SUM(c.corehours7), SUM(c.corehours8), SUM(c.corehours9), SUM(c.corehours10), SUM(c.corehours11), "
 				+ " SUM(c.corehours12), SUM(c.corehours13), SUM(c.corehours14) "
 				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
+		if (codeValues != null && codeValues > 0) {
+			sql += " AND u.role = " + codeValues;
+		}
 
 		return jdbcTemplate.query(sql, rs -> {
 			List<Long> result = new ArrayList<>();
@@ -215,6 +230,173 @@ public class ForecastingServiceImpl implements ForecastingService {
 		response.Status = "success";
 		response.Message = "Core hours updated successfully";
 		return response;
+	}
+
+	public void exportForecastingExcel(Integer codeValues, HttpServletResponse response) throws IOException {
+		List<ForecastingResponse> userData = getList(codeValues).getData();
+		List<ForecastingResponse> projectData = getProjectCoreHoursList(codeValues).getData();
+		List<Long> userTotalHours = getUserTotalHours(codeValues);
+		List<Long> projectTotalHours = getProjectTotalHours();
+
+		try (Workbook workbook = new XSSFWorkbook()) {
+			// ========== Define styles ==========
+			CellStyle boldStyle = workbook.createCellStyle();
+			Font boldFont = workbook.createFont();
+			boldFont.setBold(true);
+			boldStyle.setFont(boldFont);
+
+			CellStyle boldBlack = workbook.createCellStyle();
+			Font boldBlackFont = workbook.createFont();
+			boldBlackFont.setBold(true);
+			boldBlack.setFont(boldBlackFont);
+
+			CellStyle boldRed = workbook.createCellStyle();
+			Font boldRedFont = workbook.createFont();
+			boldRedFont.setBold(true);
+			boldRedFont.setColor(IndexedColors.RED.getIndex());
+			boldRed.setFont(boldRedFont);
+
+			// ========== Date format ==========
+			List<LocalDate> monthDates = new ArrayList<>();
+			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
+			DateTimeFormatter monthLabelFormatter = DateTimeFormatter.ofPattern("MMM-yy");
+			DateTimeFormatter keyFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			for (int i = 0; i < 14; i++) {
+				monthDates.add(currentMonth.plusMonths(i));
+			}
+
+			// ========== Sheet 1: User Forecasting ==========
+			Sheet sheet1 = workbook.createSheet("user_forecasting");
+
+			Row headerRow1 = sheet1.createRow(0);
+			int col = 0;
+			headerRow1.createCell(col++).setCellValue("User (hrs. per week)");
+			for (LocalDate month : monthDates) {
+				Cell cell = headerRow1.createCell(col++);
+				cell.setCellValue(month.format(monthLabelFormatter));
+				cell.setCellStyle(boldStyle);
+			}
+
+			int rowIdx1 = 1;
+			for (ForecastingResponse record : userData) {
+				Row row = sheet1.createRow(rowIdx1++);
+				int c = 0;
+				row.createCell(c++).setCellValue(record.getFname() + " " + record.getLname());
+
+				Map<String, Integer> monthMap = new HashMap<>();
+				for (Pair<LocalDate, Integer> entry : record.getCoreHoursByMonth()) {
+					monthMap.put(entry.getFirst().format(keyFormatter), entry.getSecond());
+				}
+
+				for (LocalDate month : monthDates) {
+					Integer hours = monthMap.getOrDefault(month.format(keyFormatter), 0);
+					row.createCell(c++).setCellValue(hours);
+				}
+			}
+
+			// Totals
+			Row userTotalRow = sheet1.createRow(rowIdx1++);
+			userTotalRow.createCell(0).setCellValue("User Core Hr. Totals");
+			userTotalRow.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = userTotalRow.createCell(i + 1);
+				cell.setCellValue(userTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row projectTotalRow = sheet1.createRow(rowIdx1++);
+			projectTotalRow.createCell(0).setCellValue("User Project Hr. Totals");
+			projectTotalRow.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = projectTotalRow.createCell(i + 1);
+				cell.setCellValue(projectTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row coverageRow1 = sheet1.createRow(rowIdx1++);
+			coverageRow1.createCell(0).setCellValue("Coverage Calculation");
+			coverageRow1.getCell(0).setCellStyle(boldBlack);
+
+			for (int i = 0; i < 14; i++) {
+				long diff = projectTotalHours.get(i) - userTotalHours.get(i);
+				Cell cell = coverageRow1.createCell(i + 1);
+				cell.setCellValue(diff);
+				cell.setCellStyle(diff < 0 ? boldRed : boldBlack);
+			}
+
+			for (int i = 0; i < sheet1.getRow(0).getLastCellNum(); i++) {
+				sheet1.autoSizeColumn(i);
+			}
+
+			// ========== Sheet 2: Project Forecasting ==========
+			Sheet sheet2 = workbook.createSheet("project_forecasting");
+
+			Row headerRow2 = sheet2.createRow(0);
+			int col2 = 0;
+			headerRow2.createCell(col2++).setCellValue("Project (hrs. per week)");
+			for (LocalDate month : monthDates) {
+				Cell cell = headerRow2.createCell(col2++);
+				cell.setCellValue(month.format(monthLabelFormatter));
+				cell.setCellStyle(boldStyle);
+			}
+
+			int rowIdx2 = 1;
+			for (ForecastingResponse record : projectData) {
+				Row row = sheet2.createRow(rowIdx2++);
+				int c = 0;
+				row.createCell(c++).setCellValue(record.getProjectName());
+
+				Map<String, Integer> monthMap = new HashMap<>();
+				for (Pair<LocalDate, Integer> entry : record.getCoreHoursByMonth()) {
+					monthMap.put(entry.getFirst().format(keyFormatter), entry.getSecond());
+				}
+
+				for (LocalDate month : monthDates) {
+					String key = month.format(keyFormatter);
+					Integer hours = monthMap.getOrDefault(key, 0);
+					row.createCell(c++).setCellValue(hours);
+				}
+			}
+
+			// Totals in reverse order
+			Row projectTotalRow2 = sheet2.createRow(rowIdx2++);
+			projectTotalRow2.createCell(0).setCellValue("Project Core Hr. Totals");
+			projectTotalRow2.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = projectTotalRow2.createCell(i + 1);
+				cell.setCellValue(projectTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row userTotalRow2 = sheet2.createRow(rowIdx2++);
+			userTotalRow2.createCell(0).setCellValue("User Core Hr. Totals");
+			userTotalRow2.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = userTotalRow2.createCell(i + 1);
+				cell.setCellValue(userTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row coverageRow2 = sheet2.createRow(rowIdx2++);
+			coverageRow2.createCell(0).setCellValue("Coverage Calculation");
+			coverageRow2.getCell(0).setCellStyle(boldBlack);
+			for (int i = 0; i < 14; i++) {
+				long diff = userTotalHours.get(i) - projectTotalHours.get(i); // reversed logic
+				Cell cell = coverageRow2.createCell(i + 1);
+				cell.setCellValue(diff);
+				cell.setCellStyle(diff < 0 ? boldRed : boldBlack);
+			}
+
+			for (int i = 0; i < sheet2.getRow(0).getLastCellNum(); i++) {
+				sheet2.autoSizeColumn(i);
+			}
+
+			// ========== Export ==========
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			response.setHeader("Content-Disposition", "attachment; filename=forecasting.xlsx");
+			workbook.write(response.getOutputStream());
+		}
 	}
 
 }

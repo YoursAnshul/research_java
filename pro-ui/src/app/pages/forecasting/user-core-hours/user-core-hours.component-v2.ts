@@ -32,6 +32,13 @@ export class UserCoreHoursComponentV2 implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Roles',
         });
+        const selectedItem = this.dropDownValues.find(
+          (item) => item.codeValues === 3
+        );
+
+        this.selectedValues = selectedItem
+          ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
+          : [];
       }
     });
   }
@@ -53,10 +60,30 @@ export class UserCoreHoursComponentV2 implements OnInit {
     coreHoursId: number;
   }[] = [];
   ngOnInit(): void {
-    this.getMonths();
-    this.getList(0);
-    this.calculateProjectTotals();
-    this.calculateTotals();
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() === 'SUCCESS') {
+        this.dropDownValues =
+          (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
+
+        this.dropDownValues.unshift({
+          codeValues: 0,
+          dropDownItem: 'All Roles',
+        });
+
+        const selectedItem = this.dropDownValues.find(
+          (item) => item.codeValues === 3
+        );
+
+        this.selectedValues = selectedItem
+          ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
+          : [];
+
+        this.getMonths();
+        this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
+        this.calculateProjectTotals();
+        this.calculateTotals();
+      }
+    });
   }
 
   getMonths() {
@@ -77,9 +104,8 @@ export class UserCoreHoursComponentV2 implements OnInit {
   }
 
   userRoleChange(event: any) {
-    console.log('Role changed:', event);
     this.selectedValues = event;
-    this.getList(this.selectedValues[0]?.item?.codeValues || 0);    
+    this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
   }
 
   getList(codeValues: number): void {
@@ -120,7 +146,11 @@ export class UserCoreHoursComponentV2 implements OnInit {
   }
 
   calculateTotals(): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/user-total-hours`;
+    const apiUrl = `${
+      environment.DataAPIUrl
+    }/forecasting/user-total-hours?codeValues=${
+      this.selectedValues[0]?.item?.codeValues || 0
+    }  `;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -149,7 +179,10 @@ export class UserCoreHoursComponentV2 implements OnInit {
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
     const input = event.target as HTMLInputElement;
     const value = parseInt(input.value, 0);
-    if (isNaN(value)) return;
+    if (isNaN(value) || value < 0) {
+      input.value = '';
+      return;
+    }
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
     const existing = this.editedCoreHours.find(
@@ -176,7 +209,7 @@ export class UserCoreHoursComponentV2 implements OnInit {
       next: (response: any) => {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
-        this.getList(this.selectedValues[0]?.item?.codeValues || 0);
+        this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);
@@ -197,6 +230,28 @@ export class UserCoreHoursComponentV2 implements OnInit {
       panelClass: [snackBarClass],
       horizontalPosition: horizontalPosition,
       verticalPosition: verticalPosition,
+    });
+  }
+  export() {
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
+    const params = new HttpParams().set(
+      'codeValues',
+      this.selectedValues[0]?.item?.codeValues || 0
+    );
+
+    this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'forecasting.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error: any) => {
+        console.error('Error exporting core hours:', error);
+      },
     });
   }
 }
