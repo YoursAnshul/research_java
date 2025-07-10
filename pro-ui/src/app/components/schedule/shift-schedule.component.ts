@@ -225,6 +225,7 @@ export class ShiftScheduleComponent implements OnInit {
     private globalsService: GlobalsService,
     private userScheduleService: UserSchedulesService
   ) {
+    localStorage.removeItem('resultDate');
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -383,12 +384,9 @@ export class ShiftScheduleComponent implements OnInit {
         }
 
         this.previousDate = new Date(date);
-
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          if (!this.isEdit) {
-            this.validateDateOption(date);
-          }
+          this.validateDateOption(date);
         }
 
         this.updateDayLabel(date);
@@ -500,7 +498,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.userScheduleService.invalidSchedulesKeys.subscribe((scheduleKeys) => {
       this.invalidScheduleKeys = scheduleKeys;
     });
-
   }
   loadUserData(): void {
     this.scheduleService.getUser().subscribe((data) => {
@@ -624,7 +621,7 @@ export class ShiftScheduleComponent implements OnInit {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
       localStorage.setItem('resultDate', resultDate.toLocaleDateString());
-      if (resultMonth < monthVal && resultMonth + 1 >= monthVal) {
+      if (resultMonth === monthVal || resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
@@ -633,9 +630,9 @@ export class ShiftScheduleComponent implements OnInit {
         return;
       }
     }
-    // this.shiftForm.get('startTime')?.enable();
-    // this.shiftForm.get('endTime')?.enable();
-    // this.shiftForm.get('dayWiseDate')?.setErrors(null);
+    this.shiftForm.get('startTime')?.enable();
+    this.shiftForm.get('endTime')?.enable();
+    this.shiftForm.get('dayWiseDate')?.setErrors(null);
   }
 
   validateBlockOutDate(selectedDate: any): void {
@@ -2531,7 +2528,7 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-    public tryValidateSchedules(day: Date): void {
+  public tryValidateSchedules(day: Date): void {
     if (
       (this.selectedUser?.dempoId?.length || 0) < 1 &&
       this.authenticatedUser?.role == UserRole.Interviewer
@@ -2557,12 +2554,12 @@ export class ShiftScheduleComponent implements OnInit {
       }
 
       //call validate schedules
-      const selectedDateValue = day
-        ? new Date(day)
-        : new Date();
+      const selectedDateValue = day ? new Date(day) : new Date();
 
-        this.userScheduleService.setUserValidationMessages(selectedDateValue, netId);
-
+      this.userScheduleService.setUserValidationMessages(
+        selectedDateValue,
+        netId
+      );
     }
   }
   getDuration(): number {

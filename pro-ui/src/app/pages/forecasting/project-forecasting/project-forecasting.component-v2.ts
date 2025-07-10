@@ -3,6 +3,7 @@ import { SelectedValue } from '../../../models/presentation/selected-value';
 import {
   IDropDownValue,
   IFormFieldVariable,
+  IProjectMin,
 } from '../../../interfaces/interfaces';
 import { environment } from '../../../../environments/environment';
 import {
@@ -12,6 +13,8 @@ import {
 } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { ConfigurationService } from '../../../services/configuration/configuration.service';
+import { Utils } from '../../../classes/utils';
+import { ProjectsService } from '../../../services/projects/projects.service';
 
 @Component({
   selector: 'app-project-forecasting-v2',
@@ -22,7 +25,8 @@ export class ProjectForecastingComponentV2 implements OnInit {
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
-    private configurationService: ConfigurationService
+    private configurationService: ConfigurationService,
+    private projectsService: ProjectsService
   ) {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() == 'SUCCESS') {
@@ -41,6 +45,19 @@ export class ProjectForecastingComponentV2 implements OnInit {
           : [];
       }
     });
+
+    this.projectsService.allProjectsMin.subscribe((allProjects) => {
+      this.activeProjects = allProjects.filter(
+        (x) => x.active && x.projectType !== 'Administrative'
+      );
+
+      //setup active projects as an iDropDownValue type
+      this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(
+        this.activeProjects,
+        'projectID',
+        'projectName'
+      );
+    });
   }
   filterData: any[] = [];
   monthsHeader: string[] = [];
@@ -58,6 +75,10 @@ export class ProjectForecastingComponentV2 implements OnInit {
   }[] = [];
   dropDownValues: any[] = [];
   selectedValues: SelectedValue[] = [];
+  public activeProjects: IProjectMin[] = [];
+  public activeProjectsDv: IDropDownValue[] = [];
+  public selectedProjects: SelectedValue[] = [];
+  public projectsAnySelected: boolean = true;
 
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
@@ -230,5 +251,9 @@ export class ProjectForecastingComponentV2 implements OnInit {
       horizontalPosition: horizontalPosition,
       verticalPosition: verticalPosition,
     });
+  }
+  projectFilterChange(event: any): void {
+    console.log('Project filter changed:', event);
+    
   }
 }

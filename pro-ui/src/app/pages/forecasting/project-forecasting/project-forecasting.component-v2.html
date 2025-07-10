@@ -2,11 +2,14 @@
   <div class="flex items-center">
     <div class="min-w-[225px] pr-4 py-1">
       <app-select
-        id="status-filter"
-        [fieldLabel]="'User Role (for Core Hr. Totals)'"
-        [dropDownValues]="dropDownValues"
-        [selectedValues]="selectedValues"
-        (selectedValuesChange)="userRoleChange($event)"
+        id="projects-filter"
+        [fieldLabel]="'Projects'"
+        [anyLabel]="'Project'"
+        [multiSelect]="true"
+        [dropDownValues]="activeProjectsDv"
+        [(selectedValues)]="selectedProjects"
+        [(anyValueSelected)]="projectsAnySelected"
+        (selectedValuesChange)="projectFilterChange($event)"
       >
       </app-select>
     </div>
