@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,30 +41,45 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Override
 	public PageResponse<ForecastingResponse> getList(Integer codeValues) {
-		String sql = "SELECT u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
-				+ "c.month2, c.corehours2, " + "c.month3, c.corehours3, " + "c.month4, c.corehours4, "
-				+ "c.month5, c.corehours5, " + "c.month6, c.corehours6, " + "c.month7, c.corehours7, "
-				+ "c.month8, c.corehours8, " + "c.month9, c.corehours9, " + "c.month10, c.corehours10, "
-				+ "c.month11, c.corehours11, " + "c.month12, c.corehours12, " + "c.month13, c.corehours13, "
-				+ "c.month14, c.corehours14 "
-				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE  u.status = '1' ";
+		String sql = "SELECT u.dempoid, u.fname, u.lname, "
+				+ "c.corehoursid, c.month1, c.corehours1, c.month2, c.corehours2, c.month3, c.corehours3, "
+				+ "c.month4, c.corehours4, c.month5, c.corehours5, c.month6, c.corehours6, "
+				+ "c.month7, c.corehours7, c.month8, c.corehours8, c.month9, c.corehours9, "
+				+ "c.month10, c.corehours10, c.month11, c.corehours11, c.month12, c.corehours12, "
+				+ "c.month13, c.corehours13, c.month14, c.corehours14 "
+				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
 
 		if (codeValues != null && codeValues > 0) {
 			sql += " AND u.role = " + codeValues;
 		}
-		sql += " ORDER BY u.fname ASC ";
+		sql += " ORDER BY u.fname ASC";
+
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setCoreHoursId(rs.getLong("corehoursid"));
 			response.setFname(rs.getString("fname"));
 			response.setLname(rs.getString("lname"));
 
-			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
-			LocalDate now = LocalDate.now();
+			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
+			Map<LocalDate, Integer> monthTotals = new LinkedHashMap<>();
+			for (int i = 0; i < 14; i++) {
+				monthTotals.put(currentMonth.plusMonths(i), 0);
+			}
+
 			for (int i = 1; i <= 14; i++) {
-				LocalDate monthDate = now.plusMonths(i - 1);
+				Date date = rs.getDate("month" + i);
 				Integer hours = rs.getObject("corehours" + i, Integer.class);
-				monthHoursList.add(Pair.of(monthDate.withDayOfMonth(1), hours != null ? hours : 0));
+				if (date != null && hours != null) {
+					LocalDate recordMonth = date.toLocalDate().withDayOfMonth(1);
+					if (monthTotals.containsKey(recordMonth)) {
+						monthTotals.put(recordMonth, monthTotals.get(recordMonth) + hours);
+					}
+				}
+			}
+
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			for (Map.Entry<LocalDate, Integer> entry : monthTotals.entrySet()) {
+				monthHoursList.add(Pair.of(entry.getKey(), entry.getValue()));
 			}
 
 			response.setCoreHoursByMonth(monthHoursList);
@@ -126,12 +143,26 @@ public class ForecastingServiceImpl implements ForecastingService {
 			response.setProjectColor(rs.getString("projectcolor"));
 			response.setProjectName(rs.getString("projectname"));
 
-			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
-			LocalDate now = LocalDate.now();
+			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
+			Map<LocalDate, Integer> monthTotals = new LinkedHashMap<>();
+			for (int i = 0; i < 14; i++) {
+				monthTotals.put(currentMonth.plusMonths(i), 0);
+			}
+
 			for (int i = 1; i <= 14; i++) {
-				LocalDate monthDate = now.plusMonths(i - 1);
+				Date date = rs.getDate("month" + i);
 				Integer hours = rs.getObject("forecasthours" + i, Integer.class);
-				monthHoursList.add(Pair.of(monthDate.withDayOfMonth(1), hours != null ? hours : 0));
+				if (date != null && hours != null) {
+					LocalDate recordMonth = date.toLocalDate().withDayOfMonth(1);
+					if (monthTotals.containsKey(recordMonth)) {
+						monthTotals.put(recordMonth, monthTotals.get(recordMonth) + hours);
+					}
+				}
+			}
+
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			for (Map.Entry<LocalDate, Integer> entry : monthTotals.entrySet()) {
+				monthHoursList.add(Pair.of(entry.getKey(), entry.getValue()));
 			}
 			response.setCoreHoursByMonth(monthHoursList);
 			return response;
@@ -145,43 +176,81 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Override
 	public List<Long> getUserTotalHours(Integer codeValues) {
-		String sql = "SELECT  SUM(c.corehours1), SUM(c.corehours2), SUM(c.corehours3), SUM(c.corehours4), SUM(c.corehours5), "
-				+ " SUM(c.corehours6), SUM(c.corehours7), SUM(c.corehours8), SUM(c.corehours9), SUM(c.corehours10), SUM(c.corehours11), "
-				+ " SUM(c.corehours12), SUM(c.corehours13), SUM(c.corehours14) "
+		String sql = "SELECT c.month1, c.corehours1, c.month2, c.corehours2, c.month3, c.corehours3, "
+				+ "c.month4, c.corehours4, c.month5, c.corehours5, c.month6, c.corehours6, "
+				+ "c.month7, c.corehours7, c.month8, c.corehours8, c.month9, c.corehours9, "
+				+ "c.month10, c.corehours10, c.month11, c.corehours11, c.month12, c.corehours12, "
+				+ "c.month13, c.corehours13, c.month14, c.corehours14 "
 				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
 		if (codeValues != null && codeValues > 0) {
 			sql += " AND u.role = " + codeValues;
 		}
 
 		return jdbcTemplate.query(sql, rs -> {
-			List<Long> result = new ArrayList<>();
-			if (rs.next()) {
+			LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
+			List<LocalDate> expectedMonths = new ArrayList<>();
+			for (int i = 0; i < 14; i++) {
+				expectedMonths.add(baseMonth.plusMonths(i));
+			}
+			List<Long> totals = new ArrayList<>(Collections.nCopies(14, 0L));
+
+			while (rs.next()) {
 				for (int i = 1; i <= 14; i++) {
-					result.add(rs.getLong(i));
+					Date date = rs.getDate("month" + i);
+					Integer hours = rs.getObject("corehours" + i, Integer.class);
+
+					if (date != null && hours != null) {
+						LocalDate recordMonth = date.toLocalDate().withDayOfMonth(1);
+						for (int j = 0; j < 14; j++) {
+							if (recordMonth.equals(expectedMonths.get(j))) {
+								totals.set(j, totals.get(j) + hours);
+								break;
+							}
+						}
+					}
 				}
 			}
-			return result;
+			return totals;
 		});
 	}
 
 	@Override
 	public List<Long> getProjectTotalHours() {
-		String sql = "SELECT SUM(fh.forecasthours1), SUM(fh.forecasthours2), SUM(fh.forecasthours3), "
-				+ "SUM(fh.forecasthours4), SUM(fh.forecasthours5), SUM(fh.forecasthours6), "
-				+ "SUM(fh.forecasthours7), SUM(fh.forecasthours8), SUM(fh.forecasthours9), "
-				+ "SUM(fh.forecasthours10), SUM(fh.forecasthours11), SUM(fh.forecasthours12), "
-				+ "SUM(fh.forecasthours13), SUM(fh.forecasthours14) " + "FROM core.projects p "
+		String sql = "SELECT fh.month1, fh.forecasthours1, fh.month2, fh.forecasthours2, "
+				+ "fh.month3, fh.forecasthours3, fh.month4, fh.forecasthours4, "
+				+ "fh.month5, fh.forecasthours5, fh.month6, fh.forecasthours6, "
+				+ "fh.month7, fh.forecasthours7, fh.month8, fh.forecasthours8, "
+				+ "fh.month9, fh.forecasthours9, fh.month10, fh.forecasthours10, "
+				+ "fh.month11, fh.forecasthours11, fh.month12, fh.forecasthours12, "
+				+ "fh.month13, fh.forecasthours13, fh.month14, fh.forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
 				+ "WHERE p.active = 1 AND p.projecttype = 2";
 
 		return jdbcTemplate.query(sql, rs -> {
-			List<Long> totalHours = new ArrayList<>();
-			if (rs.next()) {
+			LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
+			List<LocalDate> expectedMonths = new ArrayList<>();
+			for (int i = 0; i < 14; i++) {
+				expectedMonths.add(baseMonth.plusMonths(i));
+			}
+			List<Long> totals = new ArrayList<>(Collections.nCopies(14, 0L));
+
+			while (rs.next()) {
 				for (int i = 1; i <= 14; i++) {
-					totalHours.add(rs.getLong(i));
+					Date date = rs.getDate("month" + i);
+					Integer hours = rs.getObject("forecasthours" + i, Integer.class);
+
+					if (date != null && hours != null) {
+						LocalDate recordMonth = date.toLocalDate().withDayOfMonth(1);
+						for (int j = 0; j < 14; j++) {
+							if (recordMonth.equals(expectedMonths.get(j))) {
+								totals.set(j, totals.get(j) + hours);
+								break;
+							}
+						}
+					}
 				}
 			}
-			return totalHours;
+			return totals;
 		});
 	}
 
