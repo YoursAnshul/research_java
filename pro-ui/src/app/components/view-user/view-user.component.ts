@@ -589,8 +589,9 @@ export class ViewUserComponent implements OnInit, OnChanges {
       let interviewerUser = this.allUsers.find(
         (x) => x.dempoid == this.requests[i].interviewerEmpId
       );
+
       let resourceUser = this.allUsers.find(
-        (x) => x.dempoid == this.requests[i].resourceTeamMemberId
+        (x) => x.dempoid == this.requests[i].modBy
       );
 
       this.requests[i].requestType = requestTypeCode
@@ -601,7 +602,10 @@ export class ViewUserComponent implements OnInit, OnChanges {
         ? interviewerUser.displayName || ''
         : '';
       this.requests[i].resourceTeamMemberName = resourceUser
-        ? resourceUser.displayName || ''
+        ? (
+            (resourceUser.fname ? resourceUser.fname : '') +
+            (resourceUser.lname ? ' ' + resourceUser.lname : '')
+          ).trim()
         : '';
     }
   }
@@ -1058,8 +1062,8 @@ export class ViewUserComponent implements OnInit, OnChanges {
             this.coreHours[`coreHours${i}`] =
               this.coreHours[`coreHours${i}`] || '0';
           }
-          console.log("this.coreHours-->",this.coreHours);
-          
+          console.log('this.coreHours-->', this.coreHours);
+
           this.usersService
             .saveUserCoreHoursWithAudit(
               [this.coreHours],
