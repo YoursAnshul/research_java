@@ -24,6 +24,42 @@ public class ForecastingServiceImpl implements ForecastingService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	@Override
+	public PageResponse<ForecastingResponse> getList() {
+		String sql = "SELECT u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
+				+ "c.month2, c.corehours2, " + "c.month3, c.corehours3, " + "c.month4, c.corehours4, "
+				+ "c.month5, c.corehours5, " + "c.month6, c.corehours6, " + "c.month7, c.corehours7, "
+				+ "c.month8, c.corehours8, " + "c.month9, c.corehours9, " + "c.month10, c.corehours10, "
+				+ "c.month11, c.corehours11, " + "c.month12, c.corehours12, " + "c.month13, c.corehours13, "
+				+ "c.month14, c.corehours14 "
+				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE  u.status = '1' ";
+
+		
+		sql += " ORDER BY c.corehoursid DESC ";
+		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
+			ForecastingResponse response = new ForecastingResponse();
+			response.setCoreHoursId(rs.getLong("corehoursid"));
+			response.setFname(rs.getString("fname"));
+			response.setLname(rs.getString("lname"));
+
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			for (int i = 1; i <= 14; i++) {
+				Date date = rs.getDate("month" + i);
+				Integer hours = rs.getObject("corehours" + i, Integer.class);
+				if (date != null) {
+					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
+				}
+			}
+			response.setCoreHoursByMonth(monthHoursList);
+			return response;
+		});
+
+		PageResponse<ForecastingResponse> response = new PageResponse<>();
+		response.setData(result);
+		response.setCount(result.size());
+		return response;
+	}
+
 
 	@Override
 	public PageResponse<ForecastingResponse> getProjectCoreHoursList() {
@@ -107,5 +143,6 @@ public class ForecastingServiceImpl implements ForecastingService {
 			return totalHours;
 		});
 	}
+
 
 }

@@ -11,10 +11,13 @@ import com.pro.api.response.PageResponse;
 @Service
 public interface ForecastingService {
 
+	public PageResponse<ForecastingResponse> getList();
+
 	public PageResponse<ForecastingResponse> getProjectCoreHoursList();
 
 	public List<Long> getUserTotalHours();
 
 	public List<Long> getProjectTotalHours();
+	
 
 }

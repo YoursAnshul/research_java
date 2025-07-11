@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pro.api.response.ForecastingResponse;
@@ -22,6 +23,12 @@ public class ForecastingController {
 
 	@Autowired
 	private ForecastingService forecastingService;
+
+	@GetMapping("/list")
+	public ResponseEntity<PageResponse<ForecastingResponse>> getList() {
+		PageResponse<ForecastingResponse> response = forecastingService.getList();
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 
 
 	@GetMapping("/project-list")
@@ -41,4 +48,6 @@ public class ForecastingController {
 		List<Long> response = forecastingService.getProjectTotalHours();
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+	
 }
+
