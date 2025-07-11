@@ -130,60 +130,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
     this.calculateProjectTotals();
     this.calculateTotals();
   }
-  onCoreHourChange(event: Event, monthKey: string, res: any): void {
-    console.log(res);
 
-    const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 0);
-    if (isNaN(value)) return;
-    res.coreHoursByMonth ??= {};
-    res.coreHoursByMonth[monthKey] = value;
-    const existing = this.editedCoreHours.find(
-      (e) => e.forecastHoursId === res.forecastHoursId && e.date === monthKey
-    );
-    if (existing) {
-      existing.coreHours = value;
-    } else {
-      this.editedCoreHours.push({
-        forecastHoursId: res.forecastHoursId ?? 0,
-        date: monthKey,
-        coreHours: value,
-      });
-    }
-  }
-
-  saveCoreHours(): void {
-    if (this.editedCoreHours.length === 0) {
-      this.showToastMessage('No changes to save.', 'error');
-      return;
-    }
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
-    this.http.put(apiUrl, this.editedCoreHours).subscribe({
-      next: (response: any) => {
-        this.showToastMessage('Core hours saved successfully!', 'success');
-        this.editedCoreHours = [];
-        this.getList();
-        this;
-      },
-      error: (error: any) => {
-        console.error('Error saving core hours:', error);
-      },
-    });
-  }
-  showToastMessage(message: string, type: string): void {
-    let snackBarClass = 'success-snackbar';
-    if (type === 'error') {
-      snackBarClass = 'error-snackbar';
-    }
-
-    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
-    const verticalPosition: MatSnackBarVerticalPosition = 'top';
-
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      panelClass: [snackBarClass],
-      horizontalPosition: horizontalPosition,
-      verticalPosition: verticalPosition,
-    });
-  }
+ 
+ 
 }
