@@ -74,9 +74,9 @@
   border-color: #f44336 !important; /* red */
 }
 
-::ng-deep .mat-form-field-invalid .mdc-floating-label,
+/* ::ng-deep .mat-form-field-invalid .mdc-floating-label,
 ::ng-deep .mat-form-field-invalid .mdc-floating-label--float-above {
   color: #f44336 !important;
-}
+} */
 
 
