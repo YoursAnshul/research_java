@@ -77,7 +77,6 @@ export class ShiftDayViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     //subscribe to validation messages
     this.userScheduleService.userValidationMessages.subscribe((messages) => {
       this.validationMessages = messages;
@@ -87,7 +86,6 @@ export class ShiftDayViewComponent implements OnInit {
     this.userScheduleService.invalidSchedulesKeys.subscribe((scheduleKeys) => {
       this.invalidScheduleKeys = scheduleKeys;
     });
-
   }
 
   scheduleInvalid(scheduleKey: number): boolean {
@@ -310,6 +308,16 @@ export class ShiftDayViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   addShift(): void {
+    if (this.authenticatedUser?.interviewer) {
+      const selectedDate = new Date(this.selectedDate.value);
+      const currentDate = new Date();
+      selectedDate.setHours(0, 0, 0, 0);
+      currentDate.setHours(0, 0, 0, 0);
+      if (selectedDate.getTime() < currentDate.getTime()) {
+        console.warn('Past date selected, ignoring.');
+        return;
+      }
+    }
     this.sendDate.emit(this.selectedDate);
     this.resetShiftSchedule.emit();
   }
@@ -411,5 +419,4 @@ export class ShiftDayViewComponent implements OnInit {
     }
     return Object.values(groups);
   }
-  
 }
