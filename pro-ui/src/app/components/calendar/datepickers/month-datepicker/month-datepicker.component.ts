@@ -120,13 +120,20 @@ export class MonthDatepickerComponent implements OnInit {
   }
   dateFilter = (date: Moment | null): boolean => {
     const resultDateStr = localStorage.getItem('resultDate');
+    if (!date || !resultDateStr) return true;
+    const currentMonth = moment().startOf('month');
+    let disabledNextMonth: moment.Moment | null = null;
     if (resultDateStr) {
-      this.resuldDate = new Date(resultDateStr);
-      this.resuldDate.setMonth(this.resuldDate.getMonth() + 1);
+      const resDate = moment(resultDateStr);
+      disabledNextMonth = resDate.add(1, 'month').startOf('month');
     }
-    if (!date || !this.resuldDate) return true;
-    const min = moment(this.resuldDate).startOf('month');
-    const current = moment(date).startOf('month');
-    return !current.isSame(min, 'month');
+    const selectedMonth = date.clone().startOf('month');
+    if (
+      selectedMonth.isSame(currentMonth, 'month') ||
+      (disabledNextMonth && selectedMonth.isSame(disabledNextMonth, 'month'))
+    ) {
+      return false;
+    }
+    return true;
   };
 }

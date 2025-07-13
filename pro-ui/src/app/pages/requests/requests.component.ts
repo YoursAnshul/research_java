@@ -248,7 +248,7 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
       (x) => x.dempoid == request.interviewerEmpId
     );
     let resourceUser = this.allUsers.find(
-      (x) => x.dempoid == request.resourceTeamMemberId
+      (x) => x.dempoid == request.modBy
     );
 
     request.requestType = requestTypeCode ? requestTypeCode.dropDownItem : '';
@@ -257,7 +257,8 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
       ? interviewerUser.displayName || ''
       : '';
     request.resourceTeamMemberName = resourceUser
-      ? resourceUser.displayName || ''
+      ? (resourceUser.fname ? resourceUser.fname : '') +
+      (resourceUser.lname ? ' ' + resourceUser.lname : '') || ''
       : '';
     request.requestDate = new Date(request.requestDate || '');
   }
@@ -346,11 +347,11 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
         this.filteredRequests = this.filteredRequests.filter(
           (x) =>
             (Utils.formatDateOnly(x.requestDate) || new Date()) >=
-              (Utils.formatDateOnly(this.selectedDateRange.value.start) ||
-                new Date()) &&
+            (Utils.formatDateOnly(this.selectedDateRange.value.start) ||
+              new Date()) &&
             (Utils.formatDateOnly(x.requestDate) || new Date()) <=
-              (Utils.formatDateOnly(this.selectedDateRange.value.end) ||
-                new Date())
+            (Utils.formatDateOnly(this.selectedDateRange.value.end) ||
+              new Date())
         );
       }
     }
@@ -554,7 +555,7 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
           Utils.generatePopupMessage(
             'Error',
             'Encountered an error while trying to save new request:<br />' +
-              this.errorMessage,
+            this.errorMessage,
             ['OK']
           )
         );
@@ -620,7 +621,7 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
             Utils.generatePopupMessage(
               'Error',
               'Encountered an error while trying to save request(s):<br />' +
-                this.errorMessage,
+              this.errorMessage,
               ['OK']
             )
           );
@@ -682,7 +683,7 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
             Utils.generatePopupMessage(
               'Error',
               'Encountered an error while trying to delete request(s):<br />' +
-                this.errorMessage,
+              this.errorMessage,
               ['OK']
             )
           );
@@ -737,9 +738,13 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
   }
 
   getRtmDisplayName(resourceTeamMemberId: string): string {
+    console.log("resourceTeamMemberId-----", resourceTeamMemberId);
+
+    const resourceUser = this.allUsers.find((x) => x.dempoid === resourceTeamMemberId);
+
     return (
-      this.allUsers.find((x) => x.dempoid == resourceTeamMemberId)
-        ?.displayName || ''
+      (resourceUser?.fname ? resourceUser.fname : '') +
+      (resourceUser?.lname ? ' ' + resourceUser.lname : '')
     );
   }
 
@@ -798,7 +803,7 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
   public log(e: any): void {
     console.log(e);
   }
-    public paginate(): void {
+  public paginate(): void {
     if (this.filteredRequests) {
       if (this.filteredRequests.length <= this.pageSize) {
         this.currentPage = 1;

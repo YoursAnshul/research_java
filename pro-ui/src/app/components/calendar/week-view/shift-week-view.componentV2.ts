@@ -77,7 +77,6 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   }
 
   ngOnInit(): void {
-
     //subscribe to validation messages
     this.userScheduleService.userValidationMessages.subscribe((messages) => {
       this.validationMessages = messages;
@@ -92,7 +91,6 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     this.userScheduleService.invalidWeeks.subscribe((weeks) => {
       this.invalidWeeks = weeks;
     });
-
   }
 
   scheduleInvalid(scheduleKey: number): boolean {
@@ -322,7 +320,23 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     this.hoverMessage.hide();
   }
   addShift(date: any): void {
-    console.log('Date:--------->', date);
+    if (this.authenticatedUser?.interviewer) {
+      if (!date) {
+        console.warn('No date selected.');
+        return;
+      }
+
+      const selectedDate = new Date(date);
+      const currentDate = new Date();
+
+      selectedDate.setHours(0, 0, 0, 0);
+      currentDate.setHours(0, 0, 0, 0);
+
+      if (selectedDate.getTime() < currentDate.getTime()) {
+        console.warn('Past date selected, ignoring.');
+        return;
+      }
+    }
     this.sendWeekDate.emit(date);
     this.resetShiftSchedule.emit();
   }
@@ -432,7 +446,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
   openScheduleData(schedule: ISchedule): void {
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
-     if (date) {
+    if (date) {
       date.setHours(0, 0, 0, 0);
     }
     currentDate.setHours(0, 0, 0, 0);

@@ -21,6 +21,7 @@ import { SchedulingInfoComponent } from './components/scheduling-info/scheduling
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
 import { ShiftScheduleComponent } from './components/schedule/shift-schedule.component';
+import { UserCoreHoursComponentV2 } from './pages/forecasting/user-core-hours/user-core-hours.component-v2';
 import { ProjectForecastingComponentV2 } from './pages/forecasting/project-forecasting/project-forecasting.component-v2';
 
 const routes: Routes = [
@@ -45,6 +46,7 @@ const routes: Routes = [
   { path: 'scheduling-info', data: { hideHeaderFooter: true }, component: SchedulingInfoComponent},
   { path: 'user-profile', component: UserProfileComponent, canDeactivate: [UnsavedChangesGuard]},
   { path: 'shift-schedule', component: ShiftScheduleComponent},
+  { path: 'user-forecasting-v2', component: UserCoreHoursComponentV2},
   { path: 'project-forecasting-v2', component: ProjectForecastingComponentV2}
 
 

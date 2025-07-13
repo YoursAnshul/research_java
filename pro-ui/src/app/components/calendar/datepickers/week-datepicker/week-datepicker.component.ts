@@ -1,17 +1,33 @@
-import {Component, EventEmitter, Injectable, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {
+  Component,
+  EventEmitter,
+  Injectable,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import {
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+  MomentDateAdapter,
+} from '@angular/material-moment-adapter';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
 import {
   DateRange,
   MAT_DATE_RANGE_SELECTION_STRATEGY,
   MatDatepicker,
-  MatDateRangeSelectionStrategy
+  MatDateRangeSelectionStrategy,
 } from '@angular/material/datepicker';
 import moment, { Moment } from 'moment';
 @Injectable()
-export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
-  constructor(private _dateAdapter: DateAdapter<D>) { }
+export class WeekRangeSelectionStrategy<D>
+  implements MatDateRangeSelectionStrategy<D>
+{
+  constructor(private _dateAdapter: DateAdapter<D>) {}
 
   selectionFinished(date: D | null): DateRange<D> {
     return this._createWeekRange(date);
@@ -24,8 +40,10 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
   private _createWeekRange(date: D | null): DateRange<D> {
     if (date) {
       console.log('Creating week range for date:', date);
-      
-      let thisDate: Date = new Date(this._dateAdapter.format(date, 'DD/MM/YYYY'));
+
+      let thisDate: Date = new Date(
+        this._dateAdapter.format(date, 'DD/MM/YYYY')
+      );
       let startDay: number = thisDate.getUTCDate() - thisDate.getUTCDay() + 1; // First day is the day of the month - the day of the week (+ 1 for Monday)
       let endDay: number = startDay + 6; // last day is the first day + 6
 
@@ -35,12 +53,14 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
       let startYear: number = thisDate.getFullYear();
       let endYear: number = thisDate.getFullYear();
 
-      let currentMonthLength: number = this._dateAdapter.getNumDaysInMonth(date);
+      let currentMonthLength: number =
+        this._dateAdapter.getNumDaysInMonth(date);
 
       if (startDay < 1) {
         let previousMonth: D = date;
-        this._dateAdapter.addCalendarMonths(previousMonth, - 1);
-        let previousMonthLength: number = this._dateAdapter.getNumDaysInMonth(previousMonth);
+        this._dateAdapter.addCalendarMonths(previousMonth, -1);
+        let previousMonthLength: number =
+          this._dateAdapter.getNumDaysInMonth(previousMonth);
         startMonth = startMonth - 1;
         startDay = previousMonthLength + (startDay + 1); //+1 for Monday
 
@@ -61,8 +81,16 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
         }
       }
 
-      let weekStart: D = this._dateAdapter.createDate(startYear, startMonth - 1, startDay);
-      let weekEnd: D = this._dateAdapter.createDate(endYear, endMonth - 1, endDay);
+      let weekStart: D = this._dateAdapter.createDate(
+        startYear,
+        startMonth - 1,
+        startDay
+      );
+      let weekEnd: D = this._dateAdapter.createDate(
+        endYear,
+        endMonth - 1,
+        endDay
+      );
 
       //console.log(weekStart + ' - ' + weekEnd);
 
@@ -79,21 +107,19 @@ export class WeekRangeSelectionStrategy<D> implements MatDateRangeSelectionStrat
   providers: [
     {
       provide: MAT_DATE_RANGE_SELECTION_STRATEGY,
-      useClass: WeekRangeSelectionStrategy
-    }
+      useClass: WeekRangeSelectionStrategy,
+    },
   ],
 })
-
 export class WeekDatepickerComponent implements OnInit {
   @Input() selectedDate!: FormControl;
   @Output() selectedDateChange = new EventEmitter<FormControl>();
   @Input() selectedDateRange!: FormGroup;
   @Output() selectedDateRangeChange = new EventEmitter<FormGroup>();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   //emit selected date
   emitSelectedDate(): void {
@@ -108,7 +134,10 @@ export class WeekDatepickerComponent implements OnInit {
   }
 
   //handle month selection
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+  chosenMonthHandler(
+    normalizedMonth: Moment,
+    datepicker: MatDatepicker<Moment>
+  ) {
     //datepicker.close();
     //console.log(normalizedMonth);
   }
@@ -123,64 +152,70 @@ export class WeekDatepickerComponent implements OnInit {
       this.onFinalWeekInput();
     }
   }
-  
+
   onFinalWeekInput(): void {
     const startInput = this.selectedDateRange.value.start;
     const endInput = this.selectedDateRange.value.end;
-  
+
     const start = moment(startInput, 'MM/DD/YYYY', true);
     const end = moment(endInput, 'MM/DD/YYYY', true);
-  
-    const validYear = (year: number) => year >= 2024 && year <= 2026 && year !== 1969;
-  
+
+    const validYear = (year: number) =>
+      year >= 2024 && year <= 2026 && year !== 1969;
+
     const isValidRange =
       start.isValid() &&
       end.isValid() &&
       start.isSameOrBefore(end) &&
       validYear(start.year()) &&
       validYear(end.year());
-  
+
     if (isValidRange) {
       this.selectedDateRange.setValue({
         start: start.toDate(),
-        end: end.toDate()
+        end: end.toDate(),
       });
       this.selectedDate.setValue(start.toDate());
     } else {
       console.warn('Invalid or restricted week range:', {
         start: startInput,
-        end: endInput
+        end: endInput,
       });
-  
+
       const today = moment();
       const weekStart = today.clone().startOf('isoWeek');
       const weekEnd = today.clone().endOf('isoWeek');
-  
+
       this.selectedDateRange.setValue({
         start: weekStart.toDate(),
-        end: weekEnd.toDate()
+        end: weekEnd.toDate(),
       });
       this.selectedDate.setValue(weekStart.toDate());
     }
-  
+
     this.selectedDateRangeChange.emit(this.selectedDateRange);
     this.selectedDateChange.emit(this.selectedDate);
   }
-   dateFilter = (d: Date | null): boolean => {
+  dateFilter = (d: Date | null): boolean => {
     if (!d) return true;
 
     const resultDateStr = localStorage.getItem('resultDate');
     if (!resultDateStr) return true;
 
+    const dateToCheck = new Date(d);
+    const currentMonth = new Date();
+    currentMonth.setDate(1);
+
     const blocked = new Date(resultDateStr);
     blocked.setDate(1);
     blocked.setMonth(blocked.getMonth() + 1);
 
+    const isSameMonth = (a: Date, b: Date): boolean =>
+      a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+
     return !(
-      d.getMonth() === blocked.getMonth() &&
-      d.getFullYear() === blocked.getFullYear()
+      isSameMonth(dateToCheck, currentMonth) ||
+      isSameMonth(dateToCheck, blocked)
     );
   };
-  
-  
 }

@@ -108,6 +108,7 @@ import { ProjectForecastingComponent } from './pages/forecasting/project-forecas
 import { TooltipComponent } from './components/tooltip/tooltip.component';
 import { MonthlyBlockDate } from './components/calendar/calendar-controls/monthly.block.out.dialog.component';
 import { SchedulingLevelDialog } from './components/calendar/calendar-controls/scheduling-lever-dialog';
+import { UserCoreHoursComponentV2 } from './pages/forecasting/user-core-hours/user-core-hours.component-v2';
 import { ProjectForecastingComponentV2 } from './pages/forecasting/project-forecasting/project-forecasting.component-v2';
 @NgModule({
   declarations: [
@@ -187,6 +188,7 @@ import { ProjectForecastingComponentV2 } from './pages/forecasting/project-forec
     TooltipComponent,
     MonthlyBlockDate,
     SchedulingLevelDialog,
+    UserCoreHoursComponentV2,
     ProjectForecastingComponentV2,
   ],
   imports: [
