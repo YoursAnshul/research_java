@@ -386,7 +386,9 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          this.validateDateOption(date);
+          if (!this.canEdit) {
+            this.validateDateOption(date);
+          }
         }
 
         this.updateDayLabel(date);
