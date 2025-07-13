@@ -186,7 +186,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
     });
   }
   calculateProjectTotals(): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-total-hours`;
+    let codeValues = [];
+    for (let i = 0; i < this.selectedProjects.length; i++) {
+      if (this.selectedProjects[i]?.value !== 0) {
+        codeValues.push(this.selectedProjects[i].value);
+      }
+    }
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-total-hours?codeValues=${codeValues}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectTotalCorehours = data ?? [];

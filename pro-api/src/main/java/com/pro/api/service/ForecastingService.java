@@ -22,7 +22,7 @@ public interface ForecastingService {
 
 	public List<Long> getUserTotalHours(String codeValues);
 
-	public List<Long> getProjectTotalHours();
+	public List<Long> getProjectTotalHours(String codeValues);
 
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests);
 

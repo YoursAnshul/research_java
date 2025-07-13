@@ -49,7 +49,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "c.month13, c.corehours13, c.month14, c.corehours14 "
 				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
 
-		if (codeValues != null) {
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
 			sql += " AND u.role = " + codeValues;
 		}
 		sql += " ORDER BY u.fname ASC";
@@ -186,7 +186,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "c.month10, c.corehours10, c.month11, c.corehours11, c.month12, c.corehours12, "
 				+ "c.month13, c.corehours13, c.month14, c.corehours14 "
 				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
-		if (codeValues != null) {
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
 			sql += " AND u.role = " + codeValues;
 		}
 
@@ -219,7 +219,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public List<Long> getProjectTotalHours() {
+	public List<Long> getProjectTotalHours(String codeValues) {
 		String sql = "SELECT fh.month1, fh.forecasthours1, fh.month2, fh.forecasthours2, "
 				+ "fh.month3, fh.forecasthours3, fh.month4, fh.forecasthours4, "
 				+ "fh.month5, fh.forecasthours5, fh.month6, fh.forecasthours6, "
@@ -228,7 +228,10 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month11, fh.forecasthours11, fh.month12, fh.forecasthours12, "
 				+ "fh.month13, fh.forecasthours13, fh.month14, fh.forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2";
+				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
+			sql += " AND p.projectid IN (" + codeValues + ") ";
+		}
 
 		return jdbcTemplate.query(sql, rs -> {
 			LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
@@ -310,7 +313,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 		List<ForecastingResponse> userData = getList(codeValues).getData();
 		List<ForecastingResponse> projectData = getProjectCoreHoursList(projectIds).getData();
 		List<Long> userTotalHours = getUserTotalHours(codeValues);
-		List<Long> projectTotalHours = getProjectTotalHours();
+		List<Long> projectTotalHours = getProjectTotalHours(projectIds);
 
 		try (Workbook workbook = new XSSFWorkbook()) {
 			// ========== Define styles ==========

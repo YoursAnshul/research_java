@@ -55,8 +55,9 @@ public class ForecastingController {
 	}
 
 	@GetMapping("/project-total-hours")
-	public ResponseEntity<List<Long>> getProjectTotalHours() {
-		List<Long> response = forecastingService.getProjectTotalHours();
+	public ResponseEntity<List<Long>> getProjectTotalHours(
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
+		List<Long> response = forecastingService.getProjectTotalHours(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
