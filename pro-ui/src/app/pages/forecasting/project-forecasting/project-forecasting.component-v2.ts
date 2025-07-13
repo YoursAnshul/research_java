@@ -11,7 +11,7 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ConfigurationService } from '../../../services/configuration/configuration.service';
 import { Utils } from '../../../classes/utils';
 import { ProjectsService } from '../../../services/projects/projects.service';
@@ -100,7 +100,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
           : [];
 
         this.getMonths();
-        this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
+        this.getList();
         this.calculateProjectTotals();
         this.calculateTotals();
       }
@@ -109,7 +109,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
   userRoleChange(event: any) {
     console.log('Role changed:', event);
     this.selectedValues = event;
-    this.getList(this.selectedValues[0]?.item?.codeValues || 0);
+    this.getList();
   }
   getMonths(codeValues: number = 0): void {
     const now = new Date();
@@ -128,7 +128,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
     }
   }
 
-  getList(codeValues: number): void {
+  getList(): void {
+    let codeValues = [];
+    for (let i = 0; i < this.selectedProjects.length; i++) {
+      if (this.selectedProjects[i]?.value !== 0) {
+        codeValues.push(this.selectedProjects[i].value);
+      }
+    }
     const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list?codeValues=${codeValues}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
@@ -228,7 +234,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
       next: (response: any) => {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
-        this.getList(this.selectedValues[0]?.item?.codeValues || 0);
+        this.getList();
         this;
       },
       error: (error: any) => {
@@ -253,7 +259,32 @@ export class ProjectForecastingComponentV2 implements OnInit {
     });
   }
   projectFilterChange(event: any): void {
-    console.log('Project filter changed:', event);
-    
+    this.selectedProjects = event;
+    this.getList();
+  }
+  export() {
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
+    let codeValues = [];
+    for (let i = 0; i < this.selectedProjects.length; i++) {
+      if (this.selectedProjects[i]?.value !== 0) {
+        codeValues.push(this.selectedProjects[i].value);
+      }
+    }
+    const params = new HttpParams().set('projectIds', codeValues.join(','));
+
+    this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'forecasting.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error: any) => {
+        console.error('Error exporting core hours:', error);
+      },
+    });
   }
 }

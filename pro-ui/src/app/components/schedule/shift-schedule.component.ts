@@ -261,7 +261,6 @@ export class ShiftScheduleComponent implements OnInit {
     this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
-      this.getOptionValue();
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -386,7 +385,9 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          this.validateDateOption(date);
+          if (!this.canEdit) {
+            this.validateDateOption(date);
+          }
         }
 
         this.updateDayLabel(date);

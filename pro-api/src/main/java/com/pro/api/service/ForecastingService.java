@@ -14,17 +14,18 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public interface ForecastingService {
 
-	public PageResponse<ForecastingResponse> getList(Integer codeValues);
+	public PageResponse<ForecastingResponse> getList(String codeValues);
 
 	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests);
 
-	public PageResponse<ForecastingResponse> getProjectCoreHoursList(Integer codeValues);
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList(String codeValues);
 
-	public List<Long> getUserTotalHours(Integer codeValues);
+	public List<Long> getUserTotalHours(String codeValues);
 
 	public List<Long> getProjectTotalHours();
 
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests);
 
-	public void exportForecastingExcel(Integer codeValues, HttpServletResponse response) throws IOException;
+	public void exportForecastingExcel(String codeValues, HttpServletResponse response, String projectIds)
+			throws IOException;
 }

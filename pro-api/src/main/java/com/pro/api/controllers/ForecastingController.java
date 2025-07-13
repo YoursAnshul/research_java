@@ -29,7 +29,7 @@ public class ForecastingController {
 
 	@GetMapping("/list")
 	public ResponseEntity<PageResponse<ForecastingResponse>> getList(
-			@RequestParam(value = "codeValues", required = false) Integer codeValues) {
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
 		PageResponse<ForecastingResponse> response = forecastingService.getList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -42,14 +42,14 @@ public class ForecastingController {
 
 	@GetMapping("/project-list")
 	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList(
-			@RequestParam(value = "codeValues", required = false) Integer codeValues) {
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
 		PageResponse<ForecastingResponse> response = forecastingService.getProjectCoreHoursList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/user-total-hours")
 	public ResponseEntity<List<Long>> getUserTotalHours(
-			@RequestParam(value = "codeValues", required = false) Integer codeValues) {
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
 		List<Long> response = forecastingService.getUserTotalHours(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -67,10 +67,10 @@ public class ForecastingController {
 	}
 
 	@GetMapping("/export")
-	public void exportForecastingExcel(@RequestParam(required = false) Integer codeValues,
-			HttpServletResponse response) {
+	public void exportForecastingExcel(@RequestParam(required = false) String codeValues, HttpServletResponse response,
+			@RequestParam(value = "projectIds", required = false) String projectIds) {
 		try {
-			forecastingService.exportForecastingExcel(codeValues, response);
+			forecastingService.exportForecastingExcel(codeValues, response, projectIds);
 		} catch (IOException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}

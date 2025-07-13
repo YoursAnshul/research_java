@@ -40,7 +40,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public PageResponse<ForecastingResponse> getList(Integer codeValues) {
+	public PageResponse<ForecastingResponse> getList(String codeValues) {
 		String sql = "SELECT u.dempoid, u.fname, u.lname, "
 				+ "c.corehoursid, c.month1, c.corehours1, c.month2, c.corehours2, c.month3, c.corehours3, "
 				+ "c.month4, c.corehours4, c.month5, c.corehours5, c.month6, c.corehours6, "
@@ -49,7 +49,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "c.month13, c.corehours13, c.month14, c.corehours14 "
 				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
 
-		if (codeValues != null && codeValues > 0) {
+		if (codeValues != null) {
 			sql += " AND u.role = " + codeValues;
 		}
 		sql += " ORDER BY u.fname ASC";
@@ -118,7 +118,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public PageResponse<ForecastingResponse> getProjectCoreHoursList(Integer codeValues) {
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList(String codeValues) {
 		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.forecasthoursid, "
 				+ "fh.month1 AS month1, fh.forecasthours1 AS forecasthours1, "
 				+ "fh.month2 AS month2, fh.forecasthours2 AS forecasthours2, "
@@ -135,8 +135,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 order by p.projectname ASC";
+				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
+			sql += "AND p.projectid IN (" + codeValues + ") ";
+		}
 
+		sql += "ORDER BY p.projectname ASC";
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setForecastHoursId(rs.getLong("forecasthoursid"));
@@ -175,14 +179,14 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public List<Long> getUserTotalHours(Integer codeValues) {
+	public List<Long> getUserTotalHours(String codeValues) {
 		String sql = "SELECT c.month1, c.corehours1, c.month2, c.corehours2, c.month3, c.corehours3, "
 				+ "c.month4, c.corehours4, c.month5, c.corehours5, c.month6, c.corehours6, "
 				+ "c.month7, c.corehours7, c.month8, c.corehours8, c.month9, c.corehours9, "
 				+ "c.month10, c.corehours10, c.month11, c.corehours11, c.month12, c.corehours12, "
 				+ "c.month13, c.corehours13, c.month14, c.corehours14 "
 				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
-		if (codeValues != null && codeValues > 0) {
+		if (codeValues != null) {
 			sql += " AND u.role = " + codeValues;
 		}
 
@@ -301,9 +305,10 @@ public class ForecastingServiceImpl implements ForecastingService {
 		return response;
 	}
 
-	public void exportForecastingExcel(Integer codeValues, HttpServletResponse response) throws IOException {
+	public void exportForecastingExcel(String codeValues, HttpServletResponse response, String projectIds)
+			throws IOException {
 		List<ForecastingResponse> userData = getList(codeValues).getData();
-		List<ForecastingResponse> projectData = getProjectCoreHoursList(codeValues).getData();
+		List<ForecastingResponse> projectData = getProjectCoreHoursList(projectIds).getData();
 		List<Long> userTotalHours = getUserTotalHours(codeValues);
 		List<Long> projectTotalHours = getProjectTotalHours();
 
