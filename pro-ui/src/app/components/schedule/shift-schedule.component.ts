@@ -261,7 +261,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
-      this.getOptionValue();
+      // this.getOptionValue();
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
