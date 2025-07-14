@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between mb-4">
   <div class="flex items-center">
     <div class="min-w-[225px] pr-4 py-1">
-      <app-select
+      <!-- <app-select
         id="projects-filter"
         [fieldLabel]="'Projects'"
         [anyLabel]="'Project'"
@@ -10,6 +10,14 @@
         [(selectedValues)]="selectedProjects"
         [(anyValueSelected)]="projectsAnySelected"
         (selectedValuesChange)="projectFilterChange($event)"
+      >
+      </app-select> -->
+       <app-select
+        id="status-filter"
+        [fieldLabel]="'User Role (for Core Hr. Totals)'"
+        [dropDownValues]="dropDownValues"
+        [selectedValues]="selectedValues"
+        (selectedValuesChange)="userRoleChange($event)"
       >
       </app-select>
     </div>

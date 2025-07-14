@@ -107,7 +107,6 @@ export class ProjectForecastingComponentV2 implements OnInit {
     });
   }
   userRoleChange(event: any) {
-    console.log('Role changed:', event);
     this.selectedValues = event;
     this.getList();
   }
@@ -129,13 +128,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
   }
 
   getList(): void {
-    let codeValues = [];
-    for (let i = 0; i < this.selectedProjects.length; i++) {
-      if (this.selectedProjects[i]?.value !== 0) {
-        codeValues.push(this.selectedProjects[i].value);
-      }
-    }
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list?codeValues=${codeValues}`;
+    // let codeValues = [];
+    // for (let i = 0; i < this.selectedProjects.length; i++) {
+    //   if (this.selectedProjects[i]?.value !== 0) {
+    //     codeValues.push(this.selectedProjects[i].value);
+    //   }
+    // }
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
@@ -186,13 +185,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
     });
   }
   calculateProjectTotals(): void {
-    let codeValues = [];
-    for (let i = 0; i < this.selectedProjects.length; i++) {
-      if (this.selectedProjects[i]?.value !== 0) {
-        codeValues.push(this.selectedProjects[i].value);
-      }
-    }
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-total-hours?codeValues=${codeValues}`;
+    // let codeValues = [];
+    // for (let i = 0; i < this.selectedProjects.length; i++) {
+    //   if (this.selectedProjects[i]?.value !== 0) {
+    //     codeValues.push(this.selectedProjects[i].value);
+    //   }
+    // }
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/project-total-hours`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectTotalCorehours = data ?? [];
@@ -270,13 +269,16 @@ export class ProjectForecastingComponentV2 implements OnInit {
   }
   export() {
     const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
-    let codeValues = [];
-    for (let i = 0; i < this.selectedProjects.length; i++) {
-      if (this.selectedProjects[i]?.value !== 0) {
-        codeValues.push(this.selectedProjects[i].value);
-      }
-    }
-    const params = new HttpParams().set('projectIds', codeValues.join(','));
+    // let codeValues = [];
+    // for (let i = 0; i < this.selectedProjects.length; i++) {
+    //   if (this.selectedProjects[i]?.value !== 0) {
+    //     codeValues.push(this.selectedProjects[i].value);
+    //   }
+    // }
+    const params = new HttpParams().set(
+      'codeValues',
+      this.selectedValues[0]?.item?.codeValues || 0
+    );
 
     this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
       next: (response: Blob) => {
