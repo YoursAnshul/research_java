@@ -145,6 +145,20 @@ export class UserCoreHoursComponentV2 implements OnInit {
     return match?.second ?? 0;
   }
 
+    validateKeyDown(event: KeyboardEvent): void {
+    const allowedKeys = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+    ];
+    if (
+      allowedKeys.includes(event.key) ||
+      /^[0-9]$/.test(event.key)
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+  }
+
   calculateTotals(): void {
     const apiUrl = `${
       environment.DataAPIUrl

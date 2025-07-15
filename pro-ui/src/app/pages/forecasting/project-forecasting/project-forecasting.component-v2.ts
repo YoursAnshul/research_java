@@ -170,11 +170,9 @@ export class ProjectForecastingComponentV2 implements OnInit {
     return match?.second ?? 0;
   }
   calculateTotals(): void {
-    const apiUrl = `${
-      environment.DataAPIUrl
-    }/forecasting/user-total-hours?codeValues=${
-      this.selectedValues[0]?.item?.codeValues || 0
-    }`;
+    const apiUrl = `${environment.DataAPIUrl
+      }/forecasting/user-total-hours?codeValues=${this.selectedValues[0]?.item?.codeValues || 0
+      }`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -227,6 +225,20 @@ export class ProjectForecastingComponentV2 implements OnInit {
         coreHours: value,
       });
     }
+  }
+
+  validateKeyDown(event: KeyboardEvent): void {
+    const allowedKeys = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+    ];
+    if (
+      allowedKeys.includes(event.key) ||
+      /^[0-9]$/.test(event.key)
+    ) {
+      return;
+    }
+
+    event.preventDefault();
   }
 
   saveCoreHours(): void {
