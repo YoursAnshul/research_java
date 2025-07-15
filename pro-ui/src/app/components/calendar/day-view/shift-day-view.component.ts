@@ -334,6 +334,14 @@ export class ShiftDayViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    if (
+      schedule.projects.projectName == 'Sick' ||
+      schedule.projects.projectName == 'Absent' ||
+      schedule.projects.projectName == 'Arriving Late' ||
+      schedule.projects.projectName == 'Leaving Early'
+    ) {
+      return;
+    }
     let date = schedule?.dayWiseDate
       ? new Date(schedule.dayWiseDate + 'T00:00:00-04:00')
       : null;

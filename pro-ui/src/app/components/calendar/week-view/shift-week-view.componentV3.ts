@@ -400,6 +400,14 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   }
 
   openScheduleData(schedule: ISchedule): void {
+    if (
+      schedule.projectName == 'Sick' ||
+      schedule.projectName == 'Absent' ||
+      schedule.projectName == 'Arriving Late' ||
+      schedule.projectName == 'Leaving Early'
+    ) {
+      return;
+    }
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
     if (date) {
