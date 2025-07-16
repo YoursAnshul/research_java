@@ -1973,7 +1973,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
-        this.homeSelectedDate = new Date(dateEvent.value);
       });
     } else {
       console.error('Invalid Date Selected:', dateEvent?.value);
@@ -1984,7 +1983,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
-        this.homeSelectedDate = selectedDate;
       });
     } else {
       console.error('Invalid Date Selected:', date);
