@@ -335,10 +335,11 @@ export class ShiftDayViewComponent implements OnInit {
   }
   openScheduleData(schedule: ISchedule): void {
     if (
-      schedule.projects.projectName == 'Sick' ||
-      schedule.projects.projectName == 'Absent' ||
-      schedule.projects.projectName == 'Arriving Late' ||
-      schedule.projects.projectName == 'Leaving Early'
+      (schedule.projects.projectName == 'Sick' ||
+        schedule.projects.projectName == 'Absent' ||
+        schedule.projects.projectName == 'Arriving Late' ||
+        schedule.projects.projectName == 'Leaving Early') &&
+      this.authenticatedUser.interviewer
     ) {
       return;
     }

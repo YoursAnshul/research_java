@@ -401,10 +401,10 @@ export class ShiftWeekViewComponentV3 implements OnInit {
 
   openScheduleData(schedule: ISchedule): void {
     if (
-      schedule.projectName == 'Sick' ||
+      (schedule.projectName == 'Sick' ||
       schedule.projectName == 'Absent' ||
       schedule.projectName == 'Arriving Late' ||
-      schedule.projectName == 'Leaving Early'
+      schedule.projectName == 'Leaving Early') && this.authenticatedUser.interviewer
     ) {
       return;
     }
