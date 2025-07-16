@@ -401,14 +401,14 @@ export class ShifCalendarComponent implements OnInit {
       !this.isHomeRedirect &&
       this.authenticatedUser.interviewer
     ) {
-      // this.getScheduleList(
-      //   Utils.formatDateOnlyToStringUTC(
-      //     this.selectedDate.value,
-      //     true,
-      //     true,
-      //     true
-      //   )
-      // );
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(
+          this.selectedDate.value,
+          true,
+          true,
+          true
+        )
+      );
     } else if (
       this.isHomeRedirect &&
       this.authenticatedUser.admin &&

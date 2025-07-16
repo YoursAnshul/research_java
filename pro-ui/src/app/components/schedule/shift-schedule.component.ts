@@ -210,7 +210,7 @@ export class ShiftScheduleComponent implements OnInit {
   coreHours: number = 0;
   invalidScheduleKeys: string[] = [];
   invalidWeeks: string[] = [];
-
+  isChange: boolean = false;
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -354,7 +354,7 @@ export class ShiftScheduleComponent implements OnInit {
     //   if (this.authenticatedUser?.interviewer) {
     //     this.validateBlockOutDate(date);
     //     if (!this.isEdit) {
-    //       this.validateDateOption(date);
+    //       this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
     //     }
     //   }
     //   this.updateDayLabel(date);
@@ -369,6 +369,9 @@ export class ShiftScheduleComponent implements OnInit {
         )
       )
       .subscribe((date) => {
+        if (this.authenticatedUser.interviewer) {
+          this.isChange = true;
+        }
         if (
           date &&
           this.shiftForm.valid &&
@@ -386,7 +389,7 @@ export class ShiftScheduleComponent implements OnInit {
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
           if (!this.canEdit) {
-            this.validateDateOption(date);
+            this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
           }
         }
 
@@ -603,9 +606,7 @@ export class ShiftScheduleComponent implements OnInit {
 
     const resultDate = new Date(year, month, this.dateOptionValue);
     resultDate.setHours(0, 0, 0, 0);
-
     selectedDate.setHours(0, 0, 0, 0);
-
     this.isDateBlockDate = false;
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
@@ -615,19 +616,23 @@ export class ShiftScheduleComponent implements OnInit {
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
         this.isDateBlockDate = true;
-        this.openMonthlyBlockDialog();
+        if (this.isChange) {
+          this.openMonthlyBlockDialog();
+        }
         return;
       }
     } else {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
-      localStorage.setItem('resultDate', resultDate.toLocaleDateString());
+      // localStorage.setItem('resultDate', resultDate.toLocaleDateString());
       if (resultMonth === monthVal || resultMonth + 1 >= monthVal) {
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
         this.isDateBlockDate = true;
-        this.openMonthlyBlockDialog();
+        if (this.isChange) {
+          this.openMonthlyBlockDialog();
+        }
         return;
       }
     }
@@ -686,9 +691,6 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.blockedTimeSlots = [];
     blockedEntries.forEach((blockOut) => {
-      console.log('blockOut---->', blockOut.startTime);
-      console.log('blockOut---->', blockOut.endTime);
-
       if (blockOut.startTime && blockOut.endTime) {
         const normalizedStart = this.removeLeadingZero(blockOut.startTime);
         const normalizedEnd = this.removeLeadingZero(blockOut.endTime);
@@ -698,14 +700,6 @@ export class ShiftScheduleComponent implements OnInit {
         );
       }
     });
-
-    if (this.blockedTimeSlots.length > 0) {
-      // this.openBlockDialog(true); // time slot block
-    }
-
-    console.log('Blocked Time Slots:', this.blockedTimeSlots);
-
-    // Enable fields (specific blocked times will be handled separately)
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
     this.shiftForm.get('dayWiseDate')?.enable();
@@ -1384,18 +1378,6 @@ export class ShiftScheduleComponent implements OnInit {
       },
       (error) => {}
     );
-  }
-
-  deleteNewRequest(id: number): void {
-    this.http.delete(`${environment.DataAPIUrl}/api/requests/${id}`).subscribe({
-      next: (res: any) => {
-        this.showToastMessage(res.Message, 'success');
-      },
-      error: (error) => {
-        console.error('Error deleting schedule:', error);
-        this.showToastMessage('Failed to delete request.', 'error');
-      },
-    });
   }
   formatDateForRequest(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
@@ -2128,7 +2110,6 @@ export class ShiftScheduleComponent implements OnInit {
         id: schedule.preschedulekey,
       });
       this.isEditAble = false;
-      console.log('this.shiftForm---', this.shiftForm.value);
     }
     this.tryValidateSchedules(this.selectedDate.value || new Date());
   }
@@ -2141,19 +2122,13 @@ export class ShiftScheduleComponent implements OnInit {
       )
       .subscribe({
         next: (res: any) => {
-          this.isScheduleUpdate = true;
           this.showToastMessage(res.Message, 'success');
           this.scheduleFetchStatus = false;
           this.isEdit = false;
-          this.deleteNewRequest(shift.id);
+          this.isScheduleUpdate = true;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
-          const anchorDate =
-            this.selectedDate && this.selectedDate.value instanceof Date
-              ? this.selectedDate.value.toISOString().split('T')[0]
-              : null;
-          this.getScheduleList(anchorDate);
           localStorage.removeItem('shiftSchedule');
         },
         error: (error) => {
@@ -2227,7 +2202,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.dateOptionValue = data?.Subject?.optionValue;
-        this.validateDateOption(this.selectedDate.value);
+        this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
       },
     });
   }
