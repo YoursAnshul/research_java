@@ -523,17 +523,17 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   public getAllUserSchedulesByAnchorDateNew(): void {
-    this.shiftSchedule = [];
-    this.shiftSchedule1 = [];
+    // this.shiftSchedule = [];
+    // this.shiftSchedule1 = [];
     this.refreshDate();
-    this.userSchedulesService.selectedDate.next(
-      new Date(this.selectedDate.value)
-    );
-    // this.getScheduleList(
-    //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // this.userSchedulesService.selectedDate.next(
+    //   new Date(this.selectedDate.value)
     // );
-    this.seletedDayDate.emit(this.selectedDate?.value);
-    this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
+    // // this.getScheduleList(
+    // //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+    // // );
+    // this.seletedDayDate.emit(this.selectedDate?.value);
+    // this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
 
   refreshDate() {
