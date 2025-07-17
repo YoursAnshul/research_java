@@ -401,14 +401,14 @@ export class ShifCalendarComponent implements OnInit {
       !this.isHomeRedirect &&
       this.authenticatedUser.interviewer
     ) {
-      // this.getScheduleList(
-      //   Utils.formatDateOnlyToStringUTC(
-      //     this.selectedDate.value,
-      //     true,
-      //     true,
-      //     true
-      //   )
-      // );
+      this.getScheduleList(
+        Utils.formatDateOnlyToStringUTC(
+          this.selectedDate.value,
+          true,
+          true,
+          true
+        )
+      );
     } else if (
       this.isHomeRedirect &&
       this.authenticatedUser.admin &&
@@ -523,17 +523,17 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   public getAllUserSchedulesByAnchorDateNew(): void {
-    this.shiftSchedule = [];
-    this.shiftSchedule1 = [];
+    // this.shiftSchedule = [];
+    // this.shiftSchedule1 = [];
     this.refreshDate();
-    this.userSchedulesService.selectedDate.next(
-      new Date(this.selectedDate.value)
-    );
+    // this.userSchedulesService.selectedDate.next(
+    //   new Date(this.selectedDate.value)
+    // );
     // this.getScheduleList(
     //   Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     // );
-    this.seletedDayDate.emit(this.selectedDate?.value);
-    this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
+    // this.seletedDayDate.emit(this.selectedDate?.value);
+    // this.selectedDateRangeValue.emit(this.selectedDateRange?.value);
   }
 
   refreshDate() {
