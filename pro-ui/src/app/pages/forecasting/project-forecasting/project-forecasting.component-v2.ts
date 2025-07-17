@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedValue } from '../../../models/presentation/selected-value';
 import {
+  IAuthenticatedUser,
   IDropDownValue,
   IFormFieldVariable,
   IProjectMin,
@@ -15,6 +16,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { ConfigurationService } from '../../../services/configuration/configuration.service';
 import { Utils } from '../../../classes/utils';
 import { ProjectsService } from '../../../services/projects/projects.service';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-project-forecasting-v2',
@@ -26,7 +28,8 @@ export class ProjectForecastingComponentV2 implements OnInit {
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
     private configurationService: ConfigurationService,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private authenticationService: AuthenticationService
   ) {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() == 'SUCCESS') {
@@ -44,6 +47,11 @@ export class ProjectForecastingComponentV2 implements OnInit {
           ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
           : [];
       }
+      this.authenticationService.authenticatedUser.subscribe(
+        (authenticatedUser) => {
+          this.authenticatedUser = authenticatedUser;
+        }
+      );
     });
 
     this.projectsService.allProjectsMin.subscribe((allProjects) => {
@@ -72,6 +80,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
     forecastHoursId: number;
     date: string;
     coreHours: number;
+    entryBy?: string;
   }[] = [];
   dropDownValues: any[] = [];
   selectedValues: SelectedValue[] = [];
@@ -79,6 +88,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
   public activeProjectsDv: IDropDownValue[] = [];
   public selectedProjects: SelectedValue[] = [];
   public projectsAnySelected: boolean = true;
+  authenticatedUser!: IAuthenticatedUser;
 
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
@@ -170,9 +180,11 @@ export class ProjectForecastingComponentV2 implements OnInit {
     return match?.second ?? 0;
   }
   calculateTotals(): void {
-    const apiUrl = `${environment.DataAPIUrl
-      }/forecasting/user-total-hours?codeValues=${this.selectedValues[0]?.item?.codeValues || 0
-      }`;
+    const apiUrl = `${
+      environment.DataAPIUrl
+    }/forecasting/user-total-hours?codeValues=${
+      this.selectedValues[0]?.item?.codeValues || 0
+    }`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -229,12 +241,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
 
   validateKeyDown(event: KeyboardEvent): void {
     const allowedKeys = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+      'Backspace',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+      'Delete',
     ];
-    if (
-      allowedKeys.includes(event.key) ||
-      /^[0-9]$/.test(event.key)
-    ) {
+    if (allowedKeys.includes(event.key) || /^[0-9]$/.test(event.key)) {
       return;
     }
 
@@ -246,6 +259,10 @@ export class ProjectForecastingComponentV2 implements OnInit {
       this.showToastMessage('No changes to save.', 'error');
       return;
     }
+    this.editedCoreHours = this.editedCoreHours.map(e => ({
+      ...e,
+      entryBy: this.authenticatedUser.netID
+    }));
     const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
     this.http.put(apiUrl, this.editedCoreHours).subscribe({
       next: (response: any) => {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedValue } from '../../../models/presentation/selected-value';
 import {
+  IAuthenticatedUser,
   IDropDownValue,
   IFormFieldVariable,
 } from '../../../interfaces/interfaces';
@@ -12,6 +13,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ConfigurationService } from '../../../services/configuration/configuration.service';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-user-core-hours-v2',
@@ -22,7 +24,8 @@ export class UserCoreHoursComponentV2 implements OnInit {
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
-    private configurationService: ConfigurationService
+    private configurationService: ConfigurationService,
+    private authenticationService: AuthenticationService
   ) {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() == 'SUCCESS') {
@@ -41,6 +44,11 @@ export class UserCoreHoursComponentV2 implements OnInit {
           : [];
       }
     });
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
   }
 
   monthsHeader: string[] = [];
@@ -58,7 +66,10 @@ export class UserCoreHoursComponentV2 implements OnInit {
     date: string;
     coreHours: number;
     coreHoursId: number;
+    entryBy?: string;
   }[] = [];
+  authenticatedUser!: IAuthenticatedUser;
+
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() === 'SUCCESS') {
@@ -145,14 +156,15 @@ export class UserCoreHoursComponentV2 implements OnInit {
     return match?.second ?? 0;
   }
 
-    validateKeyDown(event: KeyboardEvent): void {
+  validateKeyDown(event: KeyboardEvent): void {
     const allowedKeys = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+      'Backspace',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+      'Delete',
     ];
-    if (
-      allowedKeys.includes(event.key) ||
-      /^[0-9]$/.test(event.key)
-    ) {
+    if (allowedKeys.includes(event.key) || /^[0-9]$/.test(event.key)) {
       return;
     }
 
@@ -218,6 +230,10 @@ export class UserCoreHoursComponentV2 implements OnInit {
       this.showToastMessage('No changes to save.', 'error');
       return;
     }
+    this.editedCoreHours = this.editedCoreHours.map((e) => ({
+      ...e,
+      entryBy: this.authenticatedUser.netID,
+    }));
     const apiUrl = `${environment.DataAPIUrl}/forecasting/user-core-update`;
     this.http.put(apiUrl, this.editedCoreHours).subscribe({
       next: (response: any) => {

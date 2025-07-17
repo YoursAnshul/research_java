@@ -108,8 +108,9 @@ public class ForecastingServiceImpl implements ForecastingService {
 			Date sqlDate = Date.valueOf(parsedDate);
 
 			String sql = "UPDATE core.forecasthours SET moddt = NOW(), forecasthours" + val + " = ?, month" + val
-					+ " = ? WHERE forecasthoursid = ?";
-			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getForecastHoursId());
+					+ " = ?, entryby = ? WHERE forecasthoursid = ?";
+			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
+					request.getForecastHoursId());
 		}
 
 		response.Status = "success";
@@ -299,8 +300,9 @@ public class ForecastingServiceImpl implements ForecastingService {
 			Date sqlDate = Date.valueOf(parsedDate);
 
 			String sql = "UPDATE core.corehours SET moddt = NOW(), corehours" + val + " = ?, month" + val
-					+ " = ? WHERE corehoursid = ?";
-			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getCoreHoursId());
+					+ " = ?, entryBy = ?  WHERE corehoursid = ?";
+			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
+					request.getCoreHoursId());
 		}
 
 		response.Status = "success";
