@@ -69,8 +69,6 @@ export class UserCoreHoursComponentV2 implements OnInit {
     entryBy?: string;
   }[] = [];
   authenticatedUser!: IAuthenticatedUser;
-  footerVisible = false;
-
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() === 'SUCCESS') {
