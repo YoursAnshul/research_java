@@ -28,9 +28,9 @@
     </button>
   </div>
 </div>
-<div class="overflow-x-auto border border-blue-600" style="border-width: 1px !important">
+<div class="overflow-x-auto border border-blue-600 max-h-[600px]" style="border-width: 1px !important">
   <table class="text-black min-w-full text-s border-separate border-spacing-0">
-    <thead>
+    <thead class="sticky top-0 bg-gray-200 z-10">
       <tr class="bg-[#E7F3FA] border border-blue-600">
         <th
           class="text-center px-2 py-1 border-r border-b border-blue-600 text-left font-semibold w-48 whitespace-nowrap">
@@ -43,8 +43,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Project rows: alternate bg-white and bg-gray-50 -->
-      <tr *ngFor="let res of paginatedList" class="bg-white">
+      <tr *ngFor="let res of list" class="bg-white">
         <td class="px-2 py-1 border">
           <span class="inline-flex items-center">
             <app-project-swatch class="w-3 mr-2" [projectColor]="res.projectColor" [size]="'12px'"></app-project-swatch>
@@ -57,7 +56,9 @@
             inputmode="numeric" pattern="[0-9]*" min="0" />
         </td>
       </tr>
-      <tr class="bg-[#E7F3FA] border border-blue-600">
+    </tbody>
+    <tfoot>
+      <tr class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10">
         <td class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap">
           Project Core Hr. Totals
         </td>
@@ -66,13 +67,13 @@
           {{ total }}
         </td>
       </tr>
-      <tr class="bg-gray-100">
+      <tr class="bg-gray-100 sticky bottom-[38px] z-10">
         <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
         <td class="p-2 border text-center" *ngFor="let total of totalCoreHours">
           {{ total }}
         </td>
       </tr>
-      <tr class="bg-gray-100">
+      <tr class="bg-gray-100 sticky bottom-0 z-10">
         <td class="p-2 border font-semibold whitespace-nowrap">
           Coverage Calculation
         </td>
@@ -83,8 +84,8 @@
           {{ val - projectTotalCorehours[i] }}
         </td>
       </tr>
-    </tbody>
+    </tfoot>
   </table>
-  <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
-    (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator>
+  <!-- <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
+    (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator> -->
 </div>
