@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { User } from '../../models/data/user';
-import { IDropDownValue, IFormFieldVariable, IProjectMin } from '../../interfaces/interfaces';
+import { IAuthenticatedUser, IDropDownValue, IFormFieldVariable, IProjectMin } from '../../interfaces/interfaces';
 import { MatTableDataSource } from '@angular/material/table';
 import { TableHeaderItem } from '../../models/presentation/table-header-item';
 import { UsersService } from '../../services/users/users.service';
@@ -15,6 +15,7 @@ import { CanComponentDeactivate } from '../../guards/unsaved-changes.guard';
 import { MatDialog } from '@angular/material/dialog';
 import { UnsavedChangesDialogComponent } from '../../components/unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-users',
@@ -95,13 +96,15 @@ export class UsersComponent implements CanComponentDeactivate {
 
   //General
   public errorMessage!: string;
+  authenticatedUser!: IAuthenticatedUser;
 
   constructor(private usersService: UsersService,
     private projectsService: ProjectsService,
     private configurationService: ConfigurationService,
     private globalsService: GlobalsService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService,
   ) {
 
     this.getAllUsers();
@@ -149,6 +152,12 @@ export class UsersComponent implements CanComponentDeactivate {
 
         //setup active projects as an iDropDownValue type
         this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(this.activeProjects, 'projectID', 'projectName');
+      }
+    );
+
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
       }
     );
 

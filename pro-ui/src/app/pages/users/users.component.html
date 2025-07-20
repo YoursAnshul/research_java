@@ -1,4 +1,15 @@
-<div class="text-[#262626] w-fit" *ngIf="!showSelectedUser && !createUser" >
+<div
+  class="inner-container"
+  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+>
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>
+    Please contact someone in the resource team if you believe this was a
+    mistake.
+  </p>
+</div>
+<div class="text-[#262626] w-fit" *ngIf="(!showSelectedUser && !createUser) && authenticatedUser?.netID && authenticatedUser?.admin">
 
    
     <div class="text-xl font-medium mb-6">
@@ -246,7 +257,7 @@
 
 
 <!--view user-->
-<div id="user-profile" *ngIf="showSelectedUser">
+<div id="user-profile" *ngIf="showSelectedUser && authenticatedUser?.netID && authenticatedUser?.admin">
 
   <app-view-user id="view-user-form"
                  [viewUser]="selectedUser"
@@ -254,6 +265,6 @@
   </app-view-user>
 </div>
 
-<div *ngIf="createUser">
+<div *ngIf="createUser && authenticatedUser?.netID && authenticatedUser?.admin">
     <app-add-user (closewindow)="createUser = false" (userSaved)="onUserAdded($event)" [createForm] ="true" (setUnsavedChanges)="setUnsavedChanges($event)"/>
 </div>

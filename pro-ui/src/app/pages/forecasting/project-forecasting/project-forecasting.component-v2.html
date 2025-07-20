@@ -1,7 +1,20 @@
-<div class="flex items-center justify-between mb-4">
-  <div class="flex items-center">
-    <div class="min-w-[225px] pr-4 py-1">
-      <!-- <app-select
+<div
+  class="inner-container"
+  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+>
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>
+    Please contact someone in the resource team if you believe this was a
+    mistake.
+  </p>
+</div>
+
+<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center">
+      <div class="min-w-[225px] pr-4 py-1">
+        <!-- <app-select
         id="projects-filter"
         [fieldLabel]="'Projects'"
         [anyLabel]="'Project'"
@@ -12,80 +25,124 @@
         (selectedValuesChange)="projectFilterChange($event)"
       >
       </app-select> -->
-      <app-select id="status-filter" [fieldLabel]="'User Role (for Core Hr. Totals)'" [dropDownValues]="dropDownValues"
-        [selectedValues]="selectedValues" (selectedValuesChange)="userRoleChange($event)">
-      </app-select>
+        <app-select
+          id="status-filter"
+          [fieldLabel]="'User Role (for Core Hr. Totals)'"
+          [dropDownValues]="dropDownValues"
+          [selectedValues]="selectedValues"
+          (selectedValuesChange)="userRoleChange($event)"
+        >
+        </app-select>
+      </div>
+    </div>
+    <div class="flex space-x-2">
+      <button
+        (click)="saveCoreHours()"
+        class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+      >
+        Save
+      </button>
+      <button
+        (click)="export()"
+        class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+      >
+        Export
+      </button>
     </div>
   </div>
-  <div class="flex space-x-2">
-    <button (click)="saveCoreHours()"
-      class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400">
-      Save
-    </button>
-    <button (click)="export()"
-      class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400">
-      Export
-    </button>
-  </div>
-</div>
-<div class="overflow-x-auto border border-blue-600 max-h-[600px]" style="border-width: 1px !important">
-  <table class="text-black min-w-full text-s border-separate border-spacing-0">
-    <thead class="sticky top-0 bg-gray-200 z-10">
-      <tr class="bg-[#E7F3FA] border border-blue-600">
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 text-left font-semibold w-48 whitespace-nowrap">
-          Project (hrs. per week)
-        </th>
-        <th *ngFor="let month of monthsHeader"
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold">
-          {{ month }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let res of list" class="bg-white">
-        <td class="px-2 py-1 border">
-          <span class="inline-flex items-center">
-            <app-project-swatch class="w-3 mr-2" [projectColor]="res.projectColor" [size]="'12px'"></app-project-swatch>
-            {{res.projectName}}
-          </span>
-        </td>
-        <td *ngFor="let month of monthsHeader; index as i" class="px-3 py-2 border text-center">
-          <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white" [value]="getCoreHour(res, i)"
-            (keydown)="validateKeyDown($event)" (input)="onCoreHourChange($event, monthKeys[i], res)"
-            inputmode="numeric" pattern="[0-9]*" min="0" />
-        </td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10">
-        <td class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap">
-          Project Core Hr. Totals
-        </td>
-        <td *ngFor="let total of projectTotalCorehours"
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold">
-          {{ total }}
-        </td>
-      </tr>
-      <tr class="bg-gray-100 sticky bottom-[38px] z-10">
-        <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
-        <td class="p-2 border text-center" *ngFor="let total of totalCoreHours">
-          {{ total }}
-        </td>
-      </tr>
-      <tr class="bg-gray-100 sticky bottom-0 z-10">
-        <td class="p-2 border font-semibold whitespace-nowrap">
-          Coverage Calculation
-        </td>
-        <td class="p-2 border text-center font-bold" *ngFor="let val of totalCoreHours; let i = index" [ngClass]="{
+  <div
+    class="overflow-x-auto border border-blue-600 max-h-[600px]"
+    style="border-width: 1px !important"
+  >
+    <table
+      class="text-black min-w-full text-s border-separate border-spacing-0"
+    >
+      <thead class="sticky top-0 bg-gray-200 z-10">
+        <tr class="bg-[#E7F3FA] border border-blue-600">
+          <th
+            class="text-center px-2 py-1 border-r border-b border-blue-600 text-left font-semibold w-48 whitespace-nowrap"
+          >
+            Project (hrs. per week)
+          </th>
+          <th
+            *ngFor="let month of monthsHeader"
+            class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
+          >
+            {{ month }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let res of list" class="bg-white">
+          <td class="px-2 py-1 border">
+            <span class="inline-flex items-center">
+              <app-project-swatch
+                class="w-3 mr-2"
+                [projectColor]="res.projectColor"
+                [size]="'12px'"
+              ></app-project-swatch>
+              {{res.projectName}}
+            </span>
+          </td>
+          <td
+            *ngFor="let month of monthsHeader; index as i"
+            class="px-3 py-2 border text-center"
+          >
+            <input
+              class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
+              [value]="getCoreHour(res, i)"
+              (keydown)="validateKeyDown($event)"
+              (input)="onCoreHourChange($event, monthKeys[i], res)"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              min="0"
+            />
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr
+          class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10"
+        >
+          <td
+            class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap"
+          >
+            Project Core Hr. Totals
+          </td>
+          <td
+            *ngFor="let total of projectTotalCorehours"
+            class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
+          >
+            {{ total }}
+          </td>
+        </tr>
+        <tr class="bg-gray-100 sticky bottom-[38px] z-10">
+          <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
+          <td
+            class="p-2 border text-center"
+            *ngFor="let total of totalCoreHours"
+          >
+            {{ total }}
+          </td>
+        </tr>
+        <tr class="bg-gray-100 sticky bottom-0 z-10">
+          <td class="p-2 border font-semibold whitespace-nowrap">
+            Coverage Calculation
+          </td>
+          <td
+            class="p-2 border text-center font-bold"
+            *ngFor="let val of totalCoreHours; let i = index"
+            [ngClass]="{
       'text-green-600': (val - projectTotalCorehours[i]) >= 0,
       'text-red-600': (val - projectTotalCorehours[i]) < 0
-    }">
-          {{ val - projectTotalCorehours[i] }}
-        </td>
-      </tr>
-    </tfoot>
-  </table>
-  <!-- <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
+    }"
+          >
+            {{ val - projectTotalCorehours[i] }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <!-- <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
     (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator> -->
+  </div>
 </div>

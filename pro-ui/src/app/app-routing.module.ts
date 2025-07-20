@@ -46,8 +46,8 @@ const routes: Routes = [
   { path: 'scheduling-info', data: { hideHeaderFooter: true }, component: SchedulingInfoComponent},
   { path: 'user-profile', component: UserProfileComponent, canDeactivate: [UnsavedChangesGuard]},
   { path: 'shift-schedule', component: ShiftScheduleComponent},
-  { path: 'user-forecasting-v2', component: UserCoreHoursComponentV2},
-  { path: 'project-forecasting-v2', component: ProjectForecastingComponentV2}
+  { path: 'user-forecasting-v2', component: UserCoreHoursComponentV2, canDeactivate: [UnsavedChangesGuard]},
+  { path: 'project-forecasting-v2', component: ProjectForecastingComponentV2, canDeactivate: [UnsavedChangesGuard]}
 
 
   //{ path: 'test', component: TestComponent },
