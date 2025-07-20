@@ -89,6 +89,7 @@ export class ProjectForecastingComponentV2 implements OnInit {
   public selectedProjects: SelectedValue[] = [];
   public projectsAnySelected: boolean = true;
   authenticatedUser!: IAuthenticatedUser;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
@@ -144,11 +145,13 @@ export class ProjectForecastingComponentV2 implements OnInit {
     //     codeValues.push(this.selectedProjects[i].value);
     //   }
     // }
+    this.isLoading = true;
     const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
         this.paginate();
+        this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Error fetching user forecasting:', error);

@@ -9,7 +9,10 @@
     mistake.
   </p>
 </div>
-<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin">
+<div *ngIf="isLoading" class="spinner-container">
+  <mat-spinner color="primary" [diameter]="30"></mat-spinner>
+</div>
+<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin && !isLoading">
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center">
       <div class="min-w-[225px] pr-4 py-1">
