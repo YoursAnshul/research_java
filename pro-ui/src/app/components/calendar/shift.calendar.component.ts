@@ -352,7 +352,8 @@ export class ShifCalendarComponent implements OnInit {
       },
     });
   }
-  ngOnChanges(changes: SimpleChanges): void {
+
+    ngOnChanges(changes: SimpleChanges): void {
     this.scheduleService.getType().subscribe((type) => {
       if (type) {
         this.profileType = type;
@@ -391,40 +392,96 @@ export class ShifCalendarComponent implements OnInit {
         this.isHomeRedirect = data.isHomeRedirect;
       }
     });
-    if (this.changeDate && !this.isEdit) {
-      this.selectedDate.setValue(this.changeDate);
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(this.changeDate, true, true, true)
-      );
-    } else if (
-      !this.isEdit &&
-      !this.isHomeRedirect &&
-      this.authenticatedUser.interviewer
+    const formattedDate = Utils.formatDateOnlyToStringUTC(
+      this.selectedDate.value,
+      true,
+      true,
+      true
+    );
+
+    if (
+      !this.isEdit ||
+      (this.isHomeRedirect &&
+        this.authenticatedUser.admin &&
+        this.tab === 'Day')
     ) {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(
-          this.selectedDate.value,
-          true,
-          true,
-          true
-        )
-      );
-    } else if (
-      this.isHomeRedirect &&
-      this.authenticatedUser.admin &&
-      this.tab == 'Day'
-    ) {
-      this.getScheduleList(
-        Utils.formatDateOnlyToStringUTC(
-          this.selectedDate.value,
-          true,
-          true,
-          true
-        )
-      );
+      this.getScheduleList(formattedDate);
     }
     this.checkContext();
   }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   this.scheduleService.getType().subscribe((type) => {
+  //     if (type) {
+  //       this.profileType = type;
+  //     }
+  //   });
+
+  //   if (this.profileType == 'user-profile') {
+  //     this.tabIndex = 2;
+  //   } else if (this.tab) {
+  //     if (this.tab === 'Month') {
+  //       this.tabIndex = 2;
+  //     } else if (this.tab == 'Week') {
+  //       this.tabIndex = 1;
+  //     } else {
+  //       this.tabIndex = 0;
+  //     }
+  //   }
+  //   if (this.homeSelectedDate) {
+  //     this.selectedDate.setValue(this.homeSelectedDate);
+  //   }
+  //   if (this.homeUser && !this.authenticatedUser?.interviewer) {
+  //     this.selectedUser = this.homeUser;
+  //     this.defaultUser = this.homeUser;
+  //     this.getAuthorNew(0);
+  //     this.getProjectInfo(this.selectedUser?.dempoId);
+  //   }
+  //   if (
+  //     this.homeSelectedProject &&
+  //     !this.authenticatedUser?.interviewer &&
+  //     this.profileType != 'user-profile'
+  //   ) {
+  //     this.selectedProject = this.homeSelectedProject;
+  //   }
+  //   this.scheduleService.getSchedule().subscribe((data) => {
+  //     if (data) {
+  //       this.isHomeRedirect = data.isHomeRedirect;
+  //     }
+  //   });
+  //   if (this.changeDate && !this.isEdit) {
+  //     // this.selectedDate.setValue(this.changeDate);
+  //     this.getScheduleList(
+  //       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
+  //     );
+  //   } else if (
+  //     !this.isEdit &&
+  //     !this.isHomeRedirect &&
+  //     this.authenticatedUser.interviewer
+  //   ) {
+  //     this.getScheduleList(
+  //       Utils.formatDateOnlyToStringUTC(
+  //         this.selectedDate.value,
+  //         true,
+  //         true,
+  //         true
+  //       )
+  //     );
+  //   } else if (
+  //     this.isHomeRedirect &&
+  //     this.authenticatedUser.admin &&
+  //     this.tab == 'Day'
+  //   ) {
+  //     this.getScheduleList(
+  //       Utils.formatDateOnlyToStringUTC(
+  //         this.selectedDate.value,
+  //         true,
+  //         true,
+  //         true
+  //       )
+  //     );
+  //   }
+  //   this.checkContext();
+  // }
 
   findProjectInLists(projectToFind: any): any {
     return (
