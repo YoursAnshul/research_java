@@ -179,9 +179,17 @@ export class ProjectForecastingComponentV2 implements OnInit {
 
   getCoreHour(res: any, monthIndex: number): number {
     const key = this.monthKeys[monthIndex];
-    const match = res.coreHoursByMonth?.find((m: any) => m.first === key);
+    if (
+      res.coreHoursByMonth &&
+      typeof res.coreHoursByMonth === 'object' &&
+      !Array.isArray(res.coreHoursByMonth)
+    ) {
+      return res.coreHoursByMonth[key] ?? 0;
+    }
+    const match = res.coreHoursByMonth?.find?.((m: any) => m.first === key);
     return match?.second ?? 0;
   }
+
   calculateTotals(): void {
     const apiUrl = `${
       environment.DataAPIUrl
@@ -221,16 +229,30 @@ export class ProjectForecastingComponentV2 implements OnInit {
   }
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
     const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 0);
+    const value = parseInt(input.value, 10);
+
     if (isNaN(value) || value < 0) {
       input.value = '';
       return;
     }
+
+    if (Array.isArray(res.coreHoursByMonth)) {
+      const obj: { [key: string]: number } = {};
+      for (const item of res.coreHoursByMonth) {
+        if (item?.first && typeof item?.second === 'number') {
+          obj[item.first] = item.second;
+        }
+      }
+      res.coreHoursByMonth = obj;
+    }
+
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
+
     const existing = this.editedCoreHours.find(
       (e) => e.forecastHoursId === res.forecastHoursId && e.date === monthKey
     );
+
     if (existing) {
       existing.coreHours = value;
     } else {
@@ -239,6 +261,41 @@ export class ProjectForecastingComponentV2 implements OnInit {
         date: monthKey,
         coreHours: value,
       });
+    }
+
+    this.recalculateTotalsFromList();
+  }
+  recalculateTotalsFromList(): void {
+    const monthCount = this.monthKeys.length;
+    this.projectTotalCorehours = new Array(monthCount).fill(0);
+
+    for (const row of this.list) {
+      if (Array.isArray(row.coreHoursByMonth)) {
+        const obj: { [key: string]: number } = {};
+        for (const item of row.coreHoursByMonth) {
+          if (item?.first && typeof item?.second === 'number') {
+            obj[item.first] = item.second;
+          }
+        }
+        row.coreHoursByMonth = obj;
+      }
+
+      row.coreHoursByMonth ??= {};
+
+      for (let i = 0; i < monthCount; i++) {
+        const monthKey = this.monthKeys[i];
+
+        let baseValue = row.coreHoursByMonth[monthKey] ?? 0;
+        const edited = this.editedCoreHours.find(
+          (e) =>
+            e.forecastHoursId === row.forecastHoursId && e.date === monthKey
+        );
+        if (edited) {
+          baseValue = edited.coreHours;
+        }
+
+        this.projectTotalCorehours[i] += baseValue;
+      }
     }
   }
 
@@ -262,23 +319,27 @@ export class ProjectForecastingComponentV2 implements OnInit {
       this.showToastMessage('No changes to save.', 'error');
       return;
     }
-    this.editedCoreHours = this.editedCoreHours.map(e => ({
+
+    this.editedCoreHours = this.editedCoreHours.map((e) => ({
       ...e,
-      entryBy: this.authenticatedUser.netID
+      entryBy: this.authenticatedUser.netID,
     }));
+
     const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
+
     this.http.put(apiUrl, this.editedCoreHours).subscribe({
       next: (response: any) => {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
         this.getList();
-        this;
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);
+        this.showToastMessage('Failed to save core hours.', 'error');
       },
     });
   }
+
   showToastMessage(message: string, type: string): void {
     let snackBarClass = 'success-snackbar';
     if (type === 'error') {
