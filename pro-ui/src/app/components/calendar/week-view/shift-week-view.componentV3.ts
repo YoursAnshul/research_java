@@ -400,11 +400,16 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   }
 
   openScheduleData(schedule: ISchedule): void {
+    const excludedProjects = [
+      'Sick',
+      'Absent',
+      'Arriving Late',
+      'Leaving Early',
+    ];
+
     if (
-      (schedule.projectName == 'Sick' ||
-      schedule.projectName == 'Absent' ||
-      schedule.projectName == 'Arriving Late' ||
-      schedule.projectName == 'Leaving Early') && this.authenticatedUser.interviewer
+      excludedProjects.includes(schedule.projectName ?? '') &&
+      this.authenticatedUser.interviewer
     ) {
       return;
     }

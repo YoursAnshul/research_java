@@ -431,15 +431,20 @@ export class ShiftWeekViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    const excludedProjects = [
+      'Sick',
+      'Absent',
+      'Arriving Late',
+      'Leaving Early',
+    ];
+
     if (
-      (schedule.projectName == 'Sick' ||
-      schedule.projectName == 'Absent' ||
-      schedule.projectName == 'Arriving Late' ||
-      schedule.projectName == 'Leaving Early') &&
+      excludedProjects.includes(schedule.projectName ?? '') &&
       this.authenticatedUser.interviewer
     ) {
       return;
     }
+
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
     if (date) {

@@ -1232,13 +1232,16 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   saveNewRequest(id: number): void {
+    const excludedProjects = [
+      'Sick',
+      'Absent',
+      'Arriving Late',
+      'Leaving Early',
+    ];
+
     if (
-      !(
-        this.selectedProject.projectName == 'Sick' ||
-        this.selectedProject.projectName == 'Absent' ||
-        this.selectedProject.projectName == 'Arriving Late' ||
-        this.selectedProject.projectName == 'Leaving Early'
-      )
+      excludedProjects.includes(this.selectedProject.projectName) &&
+      this.authenticatedUser.interviewer
     ) {
       return;
     }
@@ -1306,16 +1309,20 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   updateNewRequest(id: number): void {
+    const excludedProjects = [
+      'Sick',
+      'Absent',
+      'Arriving Late',
+      'Leaving Early',
+    ];
+
     if (
-      !(
-        this.selectedProject.projectName == 'Sick' ||
-        this.selectedProject.projectName == 'Absent' ||
-        this.selectedProject.projectName == 'Arriving Late' ||
-        this.selectedProject.projectName == 'Leaving Early'
-      )
+      excludedProjects.includes(this.selectedProject.projectName) &&
+      this.authenticatedUser.interviewer
     ) {
       return;
     }
+
     let requestCodeIdValue = 0;
     let requestTypeValue = '';
     if (this.selectedProject.projectName == 'Sick') {

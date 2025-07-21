@@ -334,11 +334,15 @@ export class ShiftDayViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
+    const excludedProjects = [
+      'Sick',
+      'Absent',
+      'Arriving Late',
+      'Leaving Early',
+    ];
+
     if (
-      (schedule.projects.projectName == 'Sick' ||
-        schedule.projects.projectName == 'Absent' ||
-        schedule.projects.projectName == 'Arriving Late' ||
-        schedule.projects.projectName == 'Leaving Early') &&
+      excludedProjects.includes(schedule.projects.projectName) &&
       this.authenticatedUser.interviewer
     ) {
       return;
