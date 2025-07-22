@@ -9,6 +9,7 @@ import { ProjectsService } from '../../services/projects/projects.service';
 import { LogsService } from '../../services/logs/logs.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { User } from '../../models/data/user';
+import { ScheduleService } from '../schedule/schedule.service';
 
 @Component({
   selector: 'app-calendar',
@@ -67,16 +68,23 @@ export class CalendarComponent implements OnInit {
   scheduleFetchMessage: string = '';
 
   tabIndex = 0;
-
+  scheduleDate: Date = new Date();
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
     private usersService: UsersService,
     private configurationService: ConfigurationService,
     private projectsService: ProjectsService,
-    private logsService: LogsService
+    private logsService: LogsService,
+    private scheduleService: ScheduleService
   ) {
-
+    this.scheduleService.getSchedule().subscribe((data) => {
+      if (data) {
+         const dateStr = data.scheduledate; 
+         const [year, month, day] = dateStr.split('-').map(Number);
+         this.selectedDate.setValue(new Date(year, month - 1, day));         
+      }
+    });
     //subscribe to users
     this.usersService.allUsersMin.subscribe(
       allUsers => {
@@ -151,7 +159,13 @@ export class CalendarComponent implements OnInit {
     this.userSchedulesService.selectedDate.subscribe(
       selectedDate => {
         this.selectedDate = new FormControl((selectedDate).toISOString());
-
+        this.scheduleService.getSchedule().subscribe((data) => {
+            if (data) {
+              const dateStr = data.scheduledate; 
+              const [year, month, day] = dateStr.split('-').map(Number);
+              this.selectedDate.setValue(new Date(year, month - 1, day));         
+            }
+        });
         this.selectedWeekStartAndEnd = Utils.setSelectedWeekStartAndEnd(new Date(this.selectedDate.value));
 
         this.selectedDateRange = new FormGroup({
@@ -161,6 +175,7 @@ export class CalendarComponent implements OnInit {
 
       }
     );
+    
 
     this.userSchedulesService.selectedDate.next(new Date());
 
