@@ -2097,7 +2097,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.selectedProject = selectedProject;
         scheduleDate = new Date(schedule.scheduledate);
       }
-
       this.shiftForm.patchValue({
         user: this.selectedUser,
         projects: this.selectedProject,
@@ -2204,6 +2203,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
+
 
   coreHoursValidation(date: Date, dempoId: string): void {
     if (!date) {
