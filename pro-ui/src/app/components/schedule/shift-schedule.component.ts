@@ -1305,7 +1305,80 @@ export class ShiftScheduleComponent implements OnInit {
       (error) => {}
     );
   }
+  updateNewRequest(id: number): void {
+    if (
+      !(
+        this.selectedProject.projectName == 'Sick' ||
+        this.selectedProject.projectName == 'Absent' ||
+        this.selectedProject.projectName == 'Arriving Late' ||
+        this.selectedProject.projectName == 'Leaving Early'
+      )
+    ) {
+      return;
+    }
+    let requestCodeIdValue = 0;
+    let requestTypeValue = '';
+    if (this.selectedProject.projectName == 'Sick') {
+      requestCodeIdValue = 3;
+      requestTypeValue = 'Unexcused Absence-Sick';
+    } else if (this.selectedProject.projectName == 'Absent') {
+      requestCodeIdValue = 4;
+      requestTypeValue = 'Unexcused Absence-Other';
+    } else if (this.selectedProject.projectName == 'Arriving Late') {
+      requestCodeIdValue = 7;
+      requestTypeValue = 'Tardy-Arriving Late';
+    } else if (this.selectedProject.projectName == 'Leaving Early') {
+      requestCodeIdValue = 8;
+      requestTypeValue = 'Tardy-Leaving Early';
+    }
 
+    const selectedDate: Date = this.shiftForm.value.dayWiseDate;
+    const formattedDate = this.formatDateForRequest(selectedDate);
+    const requestDetailsValue = `${this.selectedProject.projectName}: ${formattedDate}: ${this.shiftForm.value.startTime}-${this.shiftForm.value.endTime}`;
+    this.newRequest = {
+      invalidFields: [],
+      decisionId: 1,
+      requestCodeId: requestCodeIdValue,
+      interviewerEmpId: this.selectedUser.dempoId,
+      resourceTeamMemberId: this.selectedUser.dempoId,
+      resourceTeamMemberName: this.selectedUser.userName,
+      requestId: 0,
+      requestDate: new Date(),
+      requestDetails: requestDetailsValue,
+      notes: '',
+      modBy: this.authenticatedUser.netID,
+      entryBy: this.authenticatedUser.netID,
+      changed: false,
+      entryDt: new Date(),
+      decision: 'Schedule updated',
+      requestType: requestTypeValue,
+      invalid: false,
+      modDt: new Date(),
+      scheduleId: id,
+    };
+    this.requestsService.updateRequests([this.newRequest]).subscribe(
+      (response) => {
+        if (response.Status == 'Success') {
+          this.newRequest = {
+            invalidFields: [],
+            decisionId: null,
+            requestCodeId: null,
+            interviewerEmpId: null,
+            resourceTeamMemberId: null,
+            requestId: 0,
+            requestDate: new Date(),
+            requestDetails: '',
+            notes: '',
+            modBy: '',
+            entryBy: '',
+            scheduleId: null,
+          };
+        } else {
+        }
+      },
+      (error) => {}
+    );
+  }
   formatDateForRequest(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
       month: 'short',
@@ -1900,7 +1973,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
-        this.homeSelectedDate = new Date(dateEvent.value);
       });
     } else {
       console.error('Invalid Date Selected:', dateEvent?.value);
@@ -1911,7 +1983,6 @@ export class ShiftScheduleComponent implements OnInit {
     if (selectedDate && !isNaN(selectedDate.getTime())) {
       setTimeout(() => {
         this.shiftForm.get('dayWiseDate')?.setValue(selectedDate);
-        this.homeSelectedDate = selectedDate;
       });
     } else {
       console.error('Invalid Date Selected:', date);
@@ -1969,7 +2040,9 @@ export class ShiftScheduleComponent implements OnInit {
           this.scheduleFetchStatus = false;
           this.isEdit = false;
           this.isScheduleUpdate = true;
-         
+          if (this.selectedProject) {
+            this.updateNewRequest(shift.id);
+          }
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];

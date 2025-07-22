@@ -7,20 +7,20 @@
     </div>
   </div>
   <div class="flex space-x-2">
-    <button
+    <button 
       class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400">
       Save
     </button>
-    <button
+    <button 
       class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400">
       Export
     </button>
   </div>
 </div>
 
-<div class="overflow-x-auto border border-blue-600">
+<div class="overflow-x-auto border border-blue-600 max-h-[600px]">
   <table class="text-black min-w-full text-s border-separate border-spacing-0">
-    <thead>
+    <thead class="sticky top-0 bg-gray-200 z-10">
       <tr class="bg-[#E7F3FA] border border-blue-600">
         <th class="text-left px-2 py-1 border-r border-b border-blue-600 font-semibold w-48 whitespace-nowrap">
           User (hrs. per week)
@@ -32,15 +32,17 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let res of paginatedList" class="bg-white">
+      <tr *ngFor="let res of list" class="bg-white">
         <td class="px-2 py-1 border">{{ res.fname }} {{ res.lname }}</td>
         <td *ngFor="let month of monthsHeader; index as i" class="px-3 py-2 border text-center">
           <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white" [value]="getCoreHour(res, i)"
-            (keydown)="validateKeyDown($event)" inputmode="numeric" pattern="[0-9]*" min="0" />
+            (keydown)="validateKeyDown($event)" (input)="onCoreHourChange($event, monthKeys[i], res)"
+            inputmode="numeric" pattern="[0-9]*" min="0" />
         </td>
       </tr>
-
-      <tr class="bg-[#E7F3FA] border border-blue-600">
+    </tbody>
+    <tfoot>
+      <tr class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10">
         <td class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap">
           User Core Hr. Totals
         </td>
@@ -49,26 +51,26 @@
           {{ total }}
         </td>
       </tr>
-      <tr class="bg-gray-100">
+      <tr class="bg-gray-100 sticky bottom-[38px] z-10">
         <td class="p-2 border whitespace-nowrap">User Project Hr. Totals</td>
         <td class="p-2 border text-center" *ngFor="let total of projectTotalCorehours">
           {{ total }}
         </td>
       </tr>
-      <tr class="bg-gray-100">
+      <tr class="bg-gray-100 sticky bottom-0 z-10">
         <td class="p-2 border font-semibold whitespace-nowrap">
           Coverage Calculation
         </td>
         <td class="p-2 border text-center font-bold" *ngFor="let val of projectTotalCorehours; let i = index" [ngClass]="{
-        'text-green-600': (val - totalCoreHours[i]) >= 0,
-        'text-red-600': (val - totalCoreHours[i]) < 0
-      }">
+      'text-green-600': (val - totalCoreHours[i]) >= 0,
+      'text-red-600': (val - totalCoreHours[i]) < 0
+    }">
           {{ val - totalCoreHours[i] }}
         </td>
       </tr>
-    </tbody>
+    </tfoot>
   </table>
 
-  <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
-    (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator>
+  <!-- <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
+    (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator> -->
 </div>

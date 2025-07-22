@@ -20,5 +20,5 @@ export class UserCoreHoursComponent {
   userRoleChange(event: any) {
     console.log(event);
   }
-
+  
 }

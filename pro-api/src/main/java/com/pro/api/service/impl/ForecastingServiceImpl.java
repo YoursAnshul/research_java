@@ -26,7 +26,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Override
 	public PageResponse<ForecastingResponse> getList() {
-		String sql = "SELECT u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
+		String sql = "SELECT concat(u.fname,' ',u.lname) as userName, u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
 				+ "c.month2, c.corehours2, " + "c.month3, c.corehours3, " + "c.month4, c.corehours4, "
 				+ "c.month5, c.corehours5, " + "c.month6, c.corehours6, " + "c.month7, c.corehours7, "
 				+ "c.month8, c.corehours8, " + "c.month9, c.corehours9, " + "c.month10, c.corehours10, "
@@ -35,7 +35,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE  u.status = '1' ";
 
 		
-		sql += " ORDER BY c.corehoursid DESC ";
+		sql += " ORDER BY userName asc ";
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setCoreHoursId(rs.getLong("corehoursid"));
@@ -79,7 +79,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 order by fh.forecasthoursid DESC";
+				+ "WHERE p.active = 1 AND p.projecttype = 2 order by p.projectname asc";
 
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
