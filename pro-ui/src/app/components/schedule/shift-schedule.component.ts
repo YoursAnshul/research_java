@@ -1801,7 +1801,7 @@ export class ShiftScheduleComponent implements OnInit {
           }
 
           this.saveNewRequest(res?.Subject?.preschedulekey);
-
+          this.homeSelectedDate = this.shiftForm.get('dayWiseDate')?.value;
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
         },
@@ -2043,6 +2043,7 @@ export class ShiftScheduleComponent implements OnInit {
           if (this.selectedProject) {
             this.updateNewRequest(shift.id);
           }
+          this.homeSelectedDate = this.shiftForm.get('dayWiseDate')?.value;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
