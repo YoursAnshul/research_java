@@ -1450,6 +1450,61 @@ export class ShiftScheduleComponent implements OnInit {
     });
     this.previousShift = this.shiftForm.value;
   }
+
+  //   getProjectInfo(dempoId: string): void {
+  //   if (this.selectedUser) {
+  //     dempoId = this.selectedUser.dempoId;
+  //   }
+  //   const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
+  //   this.http.get(apiUrl).subscribe({
+  //     next: (data: any) => {
+  //       this.allProjects = Array.isArray(data) ? data : [];
+  //       this.adminProjects = this.allProjects.filter(
+  //         (project: { projectType: number }) => project.projectType === 4
+  //       );
+
+  //       const uniqueProjects = new Map();
+  //       this.allProjects.forEach(
+  //         (project: { projectId: number; projectType: number }) => {
+  //           if (
+  //             project.projectType != 4 &&
+  //             !uniqueProjects.has(project.projectId)
+  //           ) {
+  //             uniqueProjects.set(project.projectId, project);
+  //           }
+  //         }
+  //       );
+
+  //       this.otherProjects = Array.from(uniqueProjects.values());
+  //       if (this.selectedProject) {
+  //         this.selectedProject =
+  //           this.allProjects.find(
+  //             (project: { projectId: number }) =>
+  //               project.projectId ===
+  //               (this.selectedProject?.projectId ??
+  //                 this.selectedProject?.projectId)
+  //           ) || null;
+  //       } else {
+  //         if (this.selectedUser) {
+  //           let defaultProjectId = 0;
+  //           for (let obj of this.allProjects) {
+  //             if (obj.defualtProject && obj.defualtProject > 0) {
+  //               defaultProjectId = obj.defualtProject;
+  //               break;
+  //             }
+  //           }
+  //           this.selectedProject =
+  //             this.allProjects.find(
+  //               (project: { projectId: number }) =>
+  //                 project.projectId === defaultProjectId
+  //             ) || null;
+  //         }
+  //       }
+  //     },
+  //     error: (error) => console.error('Error fetching projects:', error),
+  //   });
+  //   this.previousShift = this.shiftForm.value;
+  // }
   getProjectInfoNew(dempoId: string, schedule: any): void {
     if (this.selectedUser) {
       dempoId = this.selectedUser.dempoId;
@@ -1801,7 +1856,7 @@ export class ShiftScheduleComponent implements OnInit {
           }
 
           this.saveNewRequest(res?.Subject?.preschedulekey);
-
+          this.homeSelectedDate = this.shiftForm.get('dayWiseDate')?.value;
           this.onResetShiftSchedule();
           localStorage.removeItem('shiftSchedule');
         },
@@ -2043,6 +2098,7 @@ export class ShiftScheduleComponent implements OnInit {
           if (this.selectedProject) {
             this.updateNewRequest(shift.id);
           }
+          this.homeSelectedDate = this.shiftForm.get('dayWiseDate')?.value;
           this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
