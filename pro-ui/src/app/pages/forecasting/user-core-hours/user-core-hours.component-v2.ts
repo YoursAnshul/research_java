@@ -149,6 +149,7 @@ export class UserCoreHoursComponentV2 implements OnInit {
 
     this.paginatedList = this.list.slice(start, end);
     this.calculateTotals();
+    this.recalculateLocalTotals();
     this.calculateProjectTotals();
   }
 
@@ -206,13 +207,25 @@ export class UserCoreHoursComponentV2 implements OnInit {
   }
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
     const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 0);
+    const value = parseInt(input.value, 10);
     if (isNaN(value) || value < 0) {
       input.value = '';
       return;
     }
-    res.coreHoursByMonth ??= {};
-    res.coreHoursByMonth[monthKey] = value;
+
+    if (!res.coreHoursByMonth) {
+      res.coreHoursByMonth = [];
+    }
+
+    const existingMonth = res.coreHoursByMonth.find(
+      (m: any) => m.first === monthKey
+    );
+    if (existingMonth) {
+      existingMonth.second = value;
+    } else {
+      res.coreHoursByMonth.push({ first: monthKey, second: value });
+    }
+
     const existing = this.editedCoreHours.find(
       (e) => e.coreHoursId === res.coreHoursId && e.date === monthKey
     );
@@ -224,6 +237,20 @@ export class UserCoreHoursComponentV2 implements OnInit {
         date: monthKey,
         coreHours: value,
       });
+    }
+    this.recalculateLocalTotals();
+  }
+  recalculateLocalTotals(): void {
+    const monthLength = this.monthKeys.length;
+    this.totalCoreHours = new Array(monthLength).fill(0);
+
+    for (const res of this.list) {
+      for (let i = 0; i < monthLength; i++) {
+        const key = this.monthKeys[i];
+        const match = res.coreHoursByMonth?.find((m: any) => m.first === key);
+        const val = match?.second ?? 0;
+        this.totalCoreHours[i] += val;
+      }
     }
   }
 
