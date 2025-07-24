@@ -37,8 +37,11 @@ export class ProjectForecastingComponentV2 implements OnInit {
           (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
         this.dropDownValues.unshift({
           codeValues: 0,
-          dropDownItem: 'All Roles',
+          dropDownItem: 'All Users',
         });
+        this.dropDownValues = this.dropDownValues.filter(
+          (item) => item.codeValues !== 1 && item.codeValues !== 4
+        );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
         );
@@ -99,9 +102,11 @@ export class ProjectForecastingComponentV2 implements OnInit {
 
         this.dropDownValues.unshift({
           codeValues: 0,
-          dropDownItem: 'All Roles',
+          dropDownItem: 'All Users',
         });
-
+        this.dropDownValues = this.dropDownValues.filter(
+          (item) => item.codeValues !== 1 && item.codeValues !== 4
+        );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
         );
