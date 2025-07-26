@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectedValue } from '../../../models/presentation/selected-value';
 import {
+  IAuthenticatedUser,
   IDropDownValue,
   IFormFieldVariable,
 } from '../../../interfaces/interfaces';
@@ -12,6 +13,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ConfigurationService } from '../../../services/configuration/configuration.service';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-user-core-hours-v2',
@@ -22,9 +24,34 @@ export class UserCoreHoursComponentV2 implements OnInit {
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
-    private configurationService: ConfigurationService
+    private configurationService: ConfigurationService,
+    private authenticationService: AuthenticationService
   ) {
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() == 'SUCCESS') {
+        this.dropDownValues =
+          (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
+        this.dropDownValues.unshift({
+          codeValues: 0,
+          dropDownItem: 'All Users',
+        });
+        this.dropDownValues = this.dropDownValues.filter(item =>
+      ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+    );
+        const selectedItem = this.dropDownValues.find(
+          (item) => item.codeValues === 3
+        );
 
+        this.selectedValues = selectedItem
+          ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
+          : [];
+      }
+    });
+    this.authenticationService.authenticatedUser.subscribe(
+      (authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+      }
+    );
   }
 
   monthsHeader: string[] = [];
@@ -36,23 +63,44 @@ export class UserCoreHoursComponentV2 implements OnInit {
   totalCoreHours: number[] = [];
   projectTotalCorehours: number[] = [];
 
+  dropDownValues: any[] = [];
+  selectedValues: SelectedValue[] = [];
   editedCoreHours: {
     date: string;
     coreHours: number;
     coreHoursId: number;
+    entryBy?: string;
   }[] = [];
-  dropDownValues: IDropDownValue[] = [
-    { codeValues: 1, dropDownItem: 'Interviewer' },
-    { codeValues: 2, dropDownItem: 'Resource Group' },
-  ];
-  selectedValues: SelectedValue[] = [
-    new SelectedValue(1, { codeValues: 1, dropDownItem: 'Interviewer' }),
-  ];
+  authenticatedUser!: IAuthenticatedUser;
   ngOnInit(): void {
-    this.getMonths();
-    this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
-    this.calculateProjectTotals();
-    this.calculateTotals();
+    this.configurationService.getFormField('Role').subscribe((response) => {
+      if ((response.Status || '').toUpperCase() === 'SUCCESS') {
+        this.dropDownValues =
+          (response?.Subject?.dropDownValues as IFormFieldVariable[]) || [];
+
+        this.dropDownValues.unshift({
+          codeValues: 0,
+          dropDownItem: 'All Users',
+        });
+        this.dropDownValues = this.dropDownValues.filter(item =>
+      ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+    );
+console.log("dropDownValues",this.dropDownValues);
+        const selectedItem = this.dropDownValues.find(
+          (item) => item.codeValues === 3
+        );
+
+        this.selectedValues = selectedItem
+          ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
+          : [];
+        
+        
+        this.getMonths();
+        this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
+        this.calculateProjectTotals();
+        this.calculateTotals();
+      }
+    });
   }
 
   getMonths() {
@@ -78,7 +126,7 @@ export class UserCoreHoursComponentV2 implements OnInit {
   }
 
   getList(codeValues: number): void {
-    const apiUrl = `${environment.DataAPIUrl}/forecasting/list`;
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/list?codeValues=${codeValues}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
@@ -114,10 +162,27 @@ export class UserCoreHoursComponentV2 implements OnInit {
     return match?.second ?? 0;
   }
 
+  validateKeyDown(event: KeyboardEvent): void {
+    const allowedKeys = [
+      'Backspace',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+      'Delete',
+    ];
+    if (allowedKeys.includes(event.key) || /^[0-9]$/.test(event.key)) {
+      return;
+    }
+
+    event.preventDefault();
+  }
+
   calculateTotals(): void {
-    const apiUrl = `${environment.DataAPIUrl
-      }/forecasting/user-total-hours?codeValues=${this.selectedValues[0]?.item?.codeValues || 0
-      }  `;
+    const apiUrl = `${
+      environment.DataAPIUrl
+    }/forecasting/user-total-hours?codeValues=${
+      this.selectedValues[0]?.item?.codeValues || 0
+    }  `;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -166,18 +231,5 @@ export class UserCoreHoursComponentV2 implements OnInit {
     }
   }
 
-  validateKeyDown(event: KeyboardEvent): void {
-    const allowedKeys = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
-    ];
-    if (
-      allowedKeys.includes(event.key) ||
-      /^[0-9]$/.test(event.key)
-    ) {
-      return;
-    }
-
-    event.preventDefault();
-  }
-
+  
 }

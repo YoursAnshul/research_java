@@ -25,21 +25,24 @@ public class ForecastingController {
 	private ForecastingService forecastingService;
 
 	@GetMapping("/list")
-	public ResponseEntity<PageResponse<ForecastingResponse>> getList() {
-		PageResponse<ForecastingResponse> response = forecastingService.getList();
+	public ResponseEntity<PageResponse<ForecastingResponse>> getList(
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
+		PageResponse<ForecastingResponse> response = forecastingService.getList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 
 	@GetMapping("/project-list")
-	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList() {
-		PageResponse<ForecastingResponse> response = forecastingService.getProjectCoreHoursList();
+	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList(
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
+		PageResponse<ForecastingResponse> response = forecastingService.getProjectCoreHoursList(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/user-total-hours")
-	public ResponseEntity<List<Long>> getUserTotalHours() {
-		List<Long> response = forecastingService.getUserTotalHours();
+	public ResponseEntity<List<Long>> getUserTotalHours(
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
+		List<Long> response = forecastingService.getUserTotalHours(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 

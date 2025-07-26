@@ -5,7 +5,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -25,31 +28,34 @@ public class ForecastingServiceImpl implements ForecastingService {
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public PageResponse<ForecastingResponse> getList() {
-		String sql = "SELECT concat(u.fname,' ',u.lname) as userName, u.dempoid, u.fname, u.lname, " + " c.corehoursid, c.month1, c.corehours1, "
-				+ "c.month2, c.corehours2, " + "c.month3, c.corehours3, " + "c.month4, c.corehours4, "
-				+ "c.month5, c.corehours5, " + "c.month6, c.corehours6, " + "c.month7, c.corehours7, "
-				+ "c.month8, c.corehours8, " + "c.month9, c.corehours9, " + "c.month10, c.corehours10, "
-				+ "c.month11, c.corehours11, " + "c.month12, c.corehours12, " + "c.month13, c.corehours13, "
-				+ "c.month14, c.corehours14 "
-				+ "FROM  core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE  u.status = '1' ";
+	public PageResponse<ForecastingResponse> getList(String codeValues) {
+		String sql = "SELECT u.dempoid, u.fname, u.lname, " + "c.corehoursid, "
+				+ "c.corehours1, c.corehours2, c.corehours3, c.corehours4, c.corehours5, c.corehours6, "
+				+ "c.corehours7, c.corehours8, c.corehours9, c.corehours10, c.corehours11, c.corehours12, "
+				+ "c.corehours13, c.corehours14 " + "FROM core.corehours c "
+				+ "INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE u.status = '1'";
 
-		
-		sql += " ORDER BY userName asc ";
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
+			sql += " AND u.role = " + codeValues;
+		}
+
+		sql += " ORDER BY u.fname ASC";
+
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setCoreHoursId(rs.getLong("corehoursid"));
 			response.setFname(rs.getString("fname"));
 			response.setLname(rs.getString("lname"));
 
+			LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
-			for (int i = 1; i <= 14; i++) {
-				Date date = rs.getDate("month" + i);
-				Integer hours = rs.getObject("corehours" + i, Integer.class);
-				if (date != null) {
-					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
-				}
+
+			for (int i = 0; i < 14; i++) {
+				Integer hours = rs.getObject("corehours" + (i + 1), Integer.class);
+				int value = (hours != null) ? hours : 0;
+				monthHoursList.add(Pair.of(baseMonth.plusMonths(i), value));
 			}
+
 			response.setCoreHoursByMonth(monthHoursList);
 			return response;
 		});
@@ -62,7 +68,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 
 	@Override
-	public PageResponse<ForecastingResponse> getProjectCoreHoursList() {
+	public PageResponse<ForecastingResponse> getProjectCoreHoursList(String codeValues) {
 		String sql = "SELECT p.projectid, p.projectname, p.projectcolor, fh.forecasthoursid, "
 				+ "fh.month1 AS month1, fh.forecasthours1 AS forecasthours1, "
 				+ "fh.month2 AS month2, fh.forecasthours2 AS forecasthours2, "
@@ -79,21 +85,38 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 order by p.projectname asc";
+				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
+			sql += "AND p.projectid IN (" + codeValues + ") ";
+		}
 
+		sql += "ORDER BY p.projectname ASC";
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setForecastHoursId(rs.getLong("forecasthoursid"));
 			response.setProjectColor(rs.getString("projectcolor"));
 			response.setProjectName(rs.getString("projectname"));
 
-			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
+			Map<LocalDate, Integer> monthTotals = new LinkedHashMap<>();
+			for (int i = 0; i < 14; i++) {
+				monthTotals.put(currentMonth.plusMonths(i), 0);
+			}
+
 			for (int i = 1; i <= 14; i++) {
 				Date date = rs.getDate("month" + i);
 				Integer hours = rs.getObject("forecasthours" + i, Integer.class);
-				if (date != null) {
-					monthHoursList.add(Pair.of(date.toLocalDate(), hours != null ? hours : 0));
+				if (date != null && hours != null) {
+					LocalDate recordMonth = date.toLocalDate().withDayOfMonth(1);
+					if (monthTotals.containsKey(recordMonth)) {
+						monthTotals.put(recordMonth, monthTotals.get(recordMonth) + hours);
+					}
 				}
+			}
+
+			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
+			for (Map.Entry<LocalDate, Integer> entry : monthTotals.entrySet()) {
+				monthHoursList.add(Pair.of(entry.getKey(), entry.getValue()));
 			}
 			response.setCoreHoursByMonth(monthHoursList);
 			return response;
@@ -106,20 +129,29 @@ public class ForecastingServiceImpl implements ForecastingService {
 	}
 
 	@Override
-	public List<Long> getUserTotalHours() {
-		String sql = "SELECT  SUM(c.corehours1), SUM(c.corehours2), SUM(c.corehours3), SUM(c.corehours4), SUM(c.corehours5), "
-				+ " SUM(c.corehours6), SUM(c.corehours7), SUM(c.corehours8), SUM(c.corehours9), SUM(c.corehours10), SUM(c.corehours11), "
-				+ " SUM(c.corehours12), SUM(c.corehours13), SUM(c.corehours14) "
-				+ "FROM core.corehours c INNER JOIN core.users u ON u.dempoid = c.dempoid WHERE u.status = '1'";
+	public List<Long> getUserTotalHours(String codeValues) {
+		String sql = "SELECT " + "c.corehours1, c.corehours2, c.corehours3, c.corehours4, c.corehours5, c.corehours6, "
+				+ "c.corehours7, c.corehours8, c.corehours9, c.corehours10, c.corehours11, c.corehours12, "
+				+ "c.corehours13, c.corehours14 " + "FROM core.corehours c "
+				+ "INNER JOIN core.users u ON u.dempoid = c.dempoid " + "WHERE u.status = '1'";
+
+		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
+			sql += " AND u.role = " + codeValues;
+		}
 
 		return jdbcTemplate.query(sql, rs -> {
-			List<Long> result = new ArrayList<>();
-			if (rs.next()) {
-				for (int i = 1; i <= 14; i++) {
-					result.add(rs.getLong(i));
+			List<Long> totals = new ArrayList<>(Collections.nCopies(14, 0L));
+
+			while (rs.next()) {
+				for (int i = 0; i < 14; i++) {
+					Integer hours = rs.getObject("corehours" + (i + 1), Integer.class);
+					if (hours != null) {
+						totals.set(i, totals.get(i) + hours);
+					}
 				}
 			}
-			return result;
+
+			return totals;
 		});
 	}
 
