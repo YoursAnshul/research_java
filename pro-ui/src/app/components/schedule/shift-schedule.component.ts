@@ -187,7 +187,7 @@ export class ShiftScheduleComponent implements OnInit {
   dateOptionValue: number = 0;
   isDateBlockDate: boolean = false;
   private skipValidation = false;
-  canEdit: boolean = false;
+  canEdit: boolean | undefined;
   validationMessages: IValidationMessage[] = [];
   validationMessagesExpanded: boolean = false;
   validationMessagesChecked: boolean = false;
@@ -388,7 +388,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          if (!this.canEdit) {
+          if (this.canEdit === false) {
             this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
           }
         }
@@ -521,7 +521,6 @@ export class ShiftScheduleComponent implements OnInit {
         const selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.defaultproject) ||
           null;
-        console.log('selectedProject------->', selectedProject);
 
         // if(this.authenticatedUser?.interviewer){
         //   this.homeSelectedProject = selectedProject;
@@ -560,12 +559,9 @@ export class ShiftScheduleComponent implements OnInit {
           this.userList.find((user) => user?.userId === data?.userid) || null;
         this.homeUser = selectedUser;
         this.selectedUser = this.homeUser;
-        const selectedProject =
+        let selectedProject =
           this.allProjects.find((p) => p?.projectId === data?.projectid) ||
           null;
-        // if (this.selectedUser) {
-        //   this.getProjectInfo(this.selectedUser.dempoId);
-        // }
         this.homeSelectedProject = selectedProject;
         this.selectedProject = selectedProject;
 
@@ -1232,6 +1228,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   saveNewRequest(id: number): void {
+
     if (
       !(
         this.selectedProject.projectName == 'Sick' ||
@@ -1306,6 +1303,8 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   updateNewRequest(id: number): void {
+   
+
     if (
       !(
         this.selectedProject.projectName == 'Sick' ||
@@ -1316,6 +1315,7 @@ export class ShiftScheduleComponent implements OnInit {
     ) {
       return;
     }
+
     let requestCodeIdValue = 0;
     let requestTypeValue = '';
     if (this.selectedProject.projectName == 'Sick') {
@@ -1431,80 +1431,35 @@ export class ShiftScheduleComponent implements OnInit {
         );
 
         this.otherProjects = Array.from(uniqueProjects.values());
-        if (this.selectedUser) {
-          let defaultProjectId = 0;
-          for (let obj of this.allProjects) {
-            if (obj.defualtProject && obj.defualtProject > 0) {
-              defaultProjectId = obj.defualtProject;
-              break;
-            }
-          }
+        if (this.selectedProject) {
           this.selectedProject =
             this.allProjects.find(
               (project: { projectId: number }) =>
-                project.projectId === defaultProjectId
+                project.projectId ===
+                (this.selectedProject?.projectId ??
+                  this.selectedProject?.projectId)
             ) || null;
+        } else {
+          if (this.selectedUser) {
+            let defaultProjectId = 0;
+            for (let obj of this.allProjects) {
+              if (obj.defualtProject && obj.defualtProject > 0) {
+                defaultProjectId = obj.defualtProject;
+                break;
+              }
+            }
+            this.selectedProject =
+              this.allProjects.find(
+                (project: { projectId: number }) =>
+                  project.projectId === defaultProjectId
+              ) || null;
+          }
         }
       },
       error: (error) => console.error('Error fetching projects:', error),
     });
     this.previousShift = this.shiftForm.value;
   }
-
-  //   getProjectInfo(dempoId: string): void {
-  //   if (this.selectedUser) {
-  //     dempoId = this.selectedUser.dempoId;
-  //   }
-  //   const apiUrl = `${environment.DataAPIUrl}/manage-announement/projects?dempo_id=${dempoId}`;
-  //   this.http.get(apiUrl).subscribe({
-  //     next: (data: any) => {
-  //       this.allProjects = Array.isArray(data) ? data : [];
-  //       this.adminProjects = this.allProjects.filter(
-  //         (project: { projectType: number }) => project.projectType === 4
-  //       );
-
-  //       const uniqueProjects = new Map();
-  //       this.allProjects.forEach(
-  //         (project: { projectId: number; projectType: number }) => {
-  //           if (
-  //             project.projectType != 4 &&
-  //             !uniqueProjects.has(project.projectId)
-  //           ) {
-  //             uniqueProjects.set(project.projectId, project);
-  //           }
-  //         }
-  //       );
-
-  //       this.otherProjects = Array.from(uniqueProjects.values());
-  //       if (this.selectedProject) {
-  //         this.selectedProject =
-  //           this.allProjects.find(
-  //             (project: { projectId: number }) =>
-  //               project.projectId ===
-  //               (this.selectedProject?.projectId ??
-  //                 this.selectedProject?.projectId)
-  //           ) || null;
-  //       } else {
-  //         if (this.selectedUser) {
-  //           let defaultProjectId = 0;
-  //           for (let obj of this.allProjects) {
-  //             if (obj.defualtProject && obj.defualtProject > 0) {
-  //               defaultProjectId = obj.defualtProject;
-  //               break;
-  //             }
-  //           }
-  //           this.selectedProject =
-  //             this.allProjects.find(
-  //               (project: { projectId: number }) =>
-  //                 project.projectId === defaultProjectId
-  //             ) || null;
-  //         }
-  //       }
-  //     },
-  //     error: (error) => console.error('Error fetching projects:', error),
-  //   });
-  //   this.previousShift = this.shiftForm.value;
-  // }
   getProjectInfoNew(dempoId: string, schedule: any): void {
     if (this.selectedUser) {
       dempoId = this.selectedUser.dempoId;
@@ -1553,19 +1508,6 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousShift = this.shiftForm.value;
       },
       error: (error) => console.error('Error fetching projects:', error),
-    });
-  }
-
-  getAuthor(userId: any): void {
-    const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors?user_id=${userId}`;
-    this.http.get(apiUrl).subscribe({
-      next: (data: any) => {
-        this.userList = Array.isArray(data) ? data : [];
-        if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
-          this.getLoginUser(this.userObj.eppn);
-        }
-      },
-      error: (error) => console.error('Error fetching authors:', error),
     });
   }
 
@@ -1779,11 +1721,11 @@ export class ShiftScheduleComponent implements OnInit {
             .subscribe((response) => {
               this.canEdit = response?.Subject?.canedit;
               this.schedulinglevel = response?.Subject?.schedulinglevel;
-              if (!this.canEdit) {
+              if (this.canEdit === false) {
                 this.getOptionValue();
               }
             });
-        } else {
+        } else if (this.authenticatedUser?.admin) {
           this.getProjectInfo('');
         }
       },
@@ -2255,11 +2197,27 @@ export class ShiftScheduleComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.dateOptionValue = data?.Subject?.optionValue;
-        this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
+        if (this.dateOptionValue) {
+          if (!this.isHomeRedirect) {
+            const resultDate = new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              this.dateOptionValue
+            );
+            
+            let calculatedDate = new Date(
+              resultDate.getFullYear(),
+              resultDate.getMonth() + 2,
+              1
+            );
+            this.shiftForm.get('dayWiseDate')?.setValue(calculatedDate);
+          }
+
+          this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
+        }
       },
     });
   }
-
 
   coreHoursValidation(date: Date, dempoId: string): void {
     if (!date) {

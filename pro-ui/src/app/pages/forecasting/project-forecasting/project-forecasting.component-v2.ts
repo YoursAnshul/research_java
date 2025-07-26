@@ -42,8 +42,6 @@ export class ProjectForecastingComponentV2 implements OnInit {
         this.dropDownValues = this.dropDownValues.filter(item =>
           ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
         );
-        console.log("dropdonw------ ", this.dropDownValues);
-
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
         );
@@ -183,9 +181,17 @@ export class ProjectForecastingComponentV2 implements OnInit {
 
   getCoreHour(res: any, monthIndex: number): number {
     const key = this.monthKeys[monthIndex];
-    const match = res.coreHoursByMonth?.find((m: any) => m.first === key);
+    if (
+      res.coreHoursByMonth &&
+      typeof res.coreHoursByMonth === 'object' &&
+      !Array.isArray(res.coreHoursByMonth)
+    ) {
+      return res.coreHoursByMonth[key] ?? 0;
+    }
+    const match = res.coreHoursByMonth?.find?.((m: any) => m.first === key);
     return match?.second ?? 0;
   }
+
   calculateTotals(): void {
     const apiUrl = `${environment.DataAPIUrl
       }/forecasting/user-total-hours?codeValues=${this.selectedValues[0]?.item?.codeValues || 0
@@ -223,16 +229,30 @@ export class ProjectForecastingComponentV2 implements OnInit {
   }
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
     const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 0);
+    const value = parseInt(input.value, 10);
+
     if (isNaN(value) || value < 0) {
       input.value = '';
       return;
     }
+
+    if (Array.isArray(res.coreHoursByMonth)) {
+      const obj: { [key: string]: number } = {};
+      for (const item of res.coreHoursByMonth) {
+        if (item?.first && typeof item?.second === 'number') {
+          obj[item.first] = item.second;
+        }
+      }
+      res.coreHoursByMonth = obj;
+    }
+
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
+
     const existing = this.editedCoreHours.find(
       (e) => e.forecastHoursId === res.forecastHoursId && e.date === monthKey
     );
+
     if (existing) {
       existing.coreHours = value;
     } else {
@@ -259,9 +279,50 @@ export class ProjectForecastingComponentV2 implements OnInit {
     event.preventDefault();
   }
 
+  saveCoreHours(): void {
+    if (this.editedCoreHours.length === 0) {
+      this.showToastMessage('No changes to save.', 'error');
+      return;
+    }
+
+    this.editedCoreHours = this.editedCoreHours.map((e) => ({
+      ...e,
+      entryBy: this.authenticatedUser.netID,
+    }));
+
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/update`;
+
+    this.http.put(apiUrl, this.editedCoreHours).subscribe({
+      next: (response: any) => {
+        this.showToastMessage('Core hours saved successfully!', 'success');
+        this.editedCoreHours = [];
+        this.getList();
+      },
+      error: (error: any) => {
+        console.error('Error saving core hours:', error);
+        this.showToastMessage('Failed to save core hours.', 'error');
+      },
+    });
+  }
+
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+    });
+  }
   projectFilterChange(event: any): void {
     this.selectedProjects = event;
     this.getList();
   }
-
 }

@@ -36,8 +36,8 @@ export class UserCoreHoursComponentV2 implements OnInit {
           dropDownItem: 'All Users',
         });
         this.dropDownValues = this.dropDownValues.filter(item =>
-      ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
-    );
+          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
         );
@@ -83,9 +83,8 @@ export class UserCoreHoursComponentV2 implements OnInit {
           dropDownItem: 'All Users',
         });
         this.dropDownValues = this.dropDownValues.filter(item =>
-      ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
-    );
-console.log("dropDownValues",this.dropDownValues);
+          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
         );
@@ -93,8 +92,7 @@ console.log("dropDownValues",this.dropDownValues);
         this.selectedValues = selectedItem
           ? [new SelectedValue(selectedItem.dropDownItem, selectedItem)]
           : [];
-        
-        
+
         this.getMonths();
         this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
         this.calculateProjectTotals();
@@ -178,11 +176,9 @@ console.log("dropDownValues",this.dropDownValues);
   }
 
   calculateTotals(): void {
-    const apiUrl = `${
-      environment.DataAPIUrl
-    }/forecasting/user-total-hours?codeValues=${
-      this.selectedValues[0]?.item?.codeValues || 0
-    }  `;
+    const apiUrl = `${environment.DataAPIUrl
+      }/forecasting/user-total-hours?codeValues=${this.selectedValues[0]?.item?.codeValues || 0
+      }  `;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -210,13 +206,25 @@ console.log("dropDownValues",this.dropDownValues);
   }
   onCoreHourChange(event: Event, monthKey: string, res: any): void {
     const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 0);
+    const value = parseInt(input.value, 10);
     if (isNaN(value) || value < 0) {
       input.value = '';
       return;
     }
-    res.coreHoursByMonth ??= {};
-    res.coreHoursByMonth[monthKey] = value;
+
+    if (!res.coreHoursByMonth) {
+      res.coreHoursByMonth = [];
+    }
+
+    const existingMonth = res.coreHoursByMonth.find(
+      (m: any) => m.first === monthKey
+    );
+    if (existingMonth) {
+      existingMonth.second = value;
+    } else {
+      res.coreHoursByMonth.push({ first: monthKey, second: value });
+    }
+
     const existing = this.editedCoreHours.find(
       (e) => e.coreHoursId === res.coreHoursId && e.date === monthKey
     );
@@ -230,6 +238,4 @@ console.log("dropDownValues",this.dropDownValues);
       });
     }
   }
-
-  
 }

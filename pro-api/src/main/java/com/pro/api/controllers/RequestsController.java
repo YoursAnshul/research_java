@@ -62,97 +62,6 @@ public class RequestsController {
 
 		return response;
 	}
-		@PostMapping("/update")
-		public GeneralResponse updateRequests(HttpServletRequest httpServletRequest, @RequestBody List<Request> requests) {
-			GeneralResponse response = new GeneralResponse();
-			String netId = "Unknown";
-			// Retrieve NetId from session if available
-			Object netIdObj = httpServletRequest.getSession().getAttribute("NetId");
-			if (netIdObj != null) {
-				netId = (String) netIdObj;
-			}
-			List<Request> savedRequests = new ArrayList<Request>();
-			List<String> errorMessages = new ArrayList<String>();
-			try {
-				for (Request request : requests) {
-					try {
-						try {
-							auditService.updateNetId(request.getModBy());
-							Request existRequest = requestRepository.findByScheduleId(request.getScheduleId());
-							if (existRequest != null) {
-
-								if (request.getRequestCodeId() != null) {
-									existRequest.setRequestCodeId(request.getRequestCodeId());
-								}
-
-								if (request.getInterviewerEmpId() != null) {
-									existRequest.setInterviewerEmpId(request.getInterviewerEmpId());
-								}
-
-								if (request.getResourceTeamMemberId() != null) {
-									existRequest.setResourceTeamMemberId(request.getResourceTeamMemberId());
-								}
-
-								if (request.getRequestDate() != null) {
-									existRequest.setRequestDate(request.getRequestDate());
-								}
-
-								if (request.getRequestDetails() != null) {
-									existRequest.setRequestDetails(request.getRequestDetails());
-								}
-
-								if (request.getDecisionId() != null) {
-									existRequest.setDecisionId(request.getDecisionId());
-								}
-
-								if (request.getNotes() != null) {
-									existRequest.setNotes(request.getNotes());
-								}
-
-								if (request.getEntryBy() != null) {
-									existRequest.setEntryBy(request.getEntryBy());
-								}
-
-								if (request.getEntryDt() != null) {
-									existRequest.setEntryDt(request.getEntryDt());
-								}
-
-								if (request.getModBy() != null) {
-									existRequest.setModBy(request.getModBy());
-								}
-
-								existRequest.setModDt(LocalDateTime.now());
-								Request rq = requestRepository.save(existRequest);
-								savedRequests.add(rq);
-							} else {
-								Request rq = requestRepository.save(request);
-								savedRequests.add(rq);
-							}
-
-						} catch (Exception ex) {
-							throw new Exception("Unspecified error saving to database");
-						}
-					} catch (Exception ex) {
-						errorMessages.add(ex.getMessage());
-					}
-				}
-				response.Status = "Success";
-				response.Message = "Successfully update request(s)";
-				response.Subject = savedRequests;
-				if (errorMessages.size() > 0) {
-					response.Message = String.format("%d requests saved, %d requests failed to save:\n%s",
-							savedRequests.size(), errorMessages.size(), String.join("\n", errorMessages));
-				}
-				if (savedRequests.size() < 1) {
-					throw new Exception("No request(s) were saved in the database");
-				}
-			} catch (Exception ex) {
-				response.Status = "Failure";
-				response.Message = ex.getMessage();
-			}
-
-			return response;
-		}
 
 	@PostMapping
 	public GeneralResponse saveRequests(HttpServletRequest httpServletRequest, @RequestBody List<Request> requests) {
@@ -236,7 +145,97 @@ public class RequestsController {
 		return response;
 	}
 
-	
+	@PostMapping("/update")
+	public GeneralResponse updateRequests(HttpServletRequest httpServletRequest, @RequestBody List<Request> requests) {
+		GeneralResponse response = new GeneralResponse();
+		String netId = "Unknown";
+		// Retrieve NetId from session if available
+		Object netIdObj = httpServletRequest.getSession().getAttribute("NetId");
+		if (netIdObj != null) {
+			netId = (String) netIdObj;
+		}
+		List<Request> savedRequests = new ArrayList<Request>();
+		List<String> errorMessages = new ArrayList<String>();
+		try {
+			for (Request request : requests) {
+				try {
+					try {
+						auditService.updateNetId(request.getModBy());
+						Request existRequest = requestRepository.findByScheduleId(request.getScheduleId());
+						if (existRequest != null) {
+
+							if (request.getRequestCodeId() != null) {
+								existRequest.setRequestCodeId(request.getRequestCodeId());
+							}
+
+							if (request.getInterviewerEmpId() != null) {
+								existRequest.setInterviewerEmpId(request.getInterviewerEmpId());
+							}
+
+							if (request.getResourceTeamMemberId() != null) {
+								existRequest.setResourceTeamMemberId(request.getResourceTeamMemberId());
+							}
+
+							if (request.getRequestDate() != null) {
+								existRequest.setRequestDate(request.getRequestDate());
+							}
+
+							if (request.getRequestDetails() != null) {
+								existRequest.setRequestDetails(request.getRequestDetails());
+							}
+
+							if (request.getDecisionId() != null) {
+								existRequest.setDecisionId(request.getDecisionId());
+							}
+
+							if (request.getNotes() != null) {
+								existRequest.setNotes(request.getNotes());
+							}
+
+							if (request.getEntryBy() != null) {
+								existRequest.setEntryBy(request.getEntryBy());
+							}
+
+							if (request.getEntryDt() != null) {
+								existRequest.setEntryDt(request.getEntryDt());
+							}
+
+							if (request.getModBy() != null) {
+								existRequest.setModBy(request.getModBy());
+							}
+
+							existRequest.setModDt(LocalDateTime.now());
+							Request rq = requestRepository.save(existRequest);
+							savedRequests.add(rq);
+						} else {
+							Request rq = requestRepository.save(request);
+							savedRequests.add(rq);
+						}
+
+					} catch (Exception ex) {
+						throw new Exception("Unspecified error saving to database");
+					}
+				} catch (Exception ex) {
+					errorMessages.add(ex.getMessage());
+				}
+			}
+			response.Status = "Success";
+			response.Message = "Successfully update request(s)";
+			response.Subject = savedRequests;
+			if (errorMessages.size() > 0) {
+				response.Message = String.format("%d requests saved, %d requests failed to save:\n%s",
+						savedRequests.size(), errorMessages.size(), String.join("\n", errorMessages));
+			}
+			if (savedRequests.size() < 1) {
+				throw new Exception("No request(s) were saved in the database");
+			}
+		} catch (Exception ex) {
+			response.Status = "Failure";
+			response.Message = ex.getMessage();
+		}
+
+		return response;
+	}
 
 	@DeleteMapping("/{id}")
 	public GeneralResponse deleteRequest(@PathVariable Long id) {
@@ -252,7 +251,5 @@ public class RequestsController {
 		}
 		return response;
 	}
-
-	
 
 }

@@ -1,5 +1,6 @@
 package com.pro.api.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import com.pro.api.response.PageResponse;
 import com.pro.api.service.CoreHoursRequest;
 import com.pro.api.service.ForecastingService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/forecasting")
 public class ForecastingController {
@@ -31,6 +34,11 @@ public class ForecastingController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@PutMapping("/update")
+	public ResponseEntity<GeneralResponse> updateCoreHours(@RequestBody List<CoreHoursRequest> requests) {
+		GeneralResponse response = forecastingService.updateForeCastingHours(requests);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
 
 	@GetMapping("/project-list")
 	public ResponseEntity<PageResponse<ForecastingResponse>> geProjectList(
@@ -47,10 +55,9 @@ public class ForecastingController {
 	}
 
 	@GetMapping("/project-total-hours")
-	public ResponseEntity<List<Long>> getProjectTotalHours() {
-		List<Long> response = forecastingService.getProjectTotalHours();
+	public ResponseEntity<List<Long>> getProjectTotalHours(
+			@RequestParam(value = "codeValues", required = false) String codeValues) {
+		List<Long> response = forecastingService.getProjectTotalHours(codeValues);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
 }
-

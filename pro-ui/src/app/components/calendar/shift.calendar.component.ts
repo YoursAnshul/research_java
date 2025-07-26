@@ -333,8 +333,8 @@ export class ShifCalendarComponent implements OnInit {
     if (!email) {
       console.error('Email is required to fetch login author');
       return;
-    }
-
+    } 
+    
     const params = new HttpParams().set('email', email);
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/user`;
 
