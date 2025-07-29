@@ -2207,12 +2207,14 @@ export class ShiftScheduleComponent implements OnInit {
               new Date().getMonth(),
               this.dateOptionValue
             );
-            let calculatedDate = new Date(
-              resultDate.getFullYear(),
-              resultDate.getMonth() + 2,
-              1
-            );
-            this.shiftForm.get('dayWiseDate')?.setValue(calculatedDate);
+            if (resultDate < new Date()) {
+              let calculatedDate = new Date(
+                resultDate.getFullYear(),
+                resultDate.getMonth() + 2,
+                1
+              );
+              this.shiftForm.get('dayWiseDate')?.setValue(calculatedDate);
+            }
           }
 
           this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);

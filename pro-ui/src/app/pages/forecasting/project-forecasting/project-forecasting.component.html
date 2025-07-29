@@ -1,491 +1,154 @@
-<div class="flex items-center justify-between mb-4">
-  <div class="flex items-center">
-    <div class="min-w-[225px] pr-4 py-1">
-      <app-select
-        id="status-filter"
-        [fieldLabel]="'User Role (for Core Hr. Totals)'"
-        [dropDownValues]="dropDownValues"
-        [selectedValues]="selectedValues"
-        (selectedValuesChange)="userRoleChange($event)"
+<div
+  class="inner-container"
+  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+>
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>
+    Please contact someone in the resource team if you believe this was a
+    mistake.
+  </p>
+</div>
+<div *ngIf="isLoading" class="spinner-container">
+  <mat-spinner color="primary" [diameter]="30"></mat-spinner>
+</div>
+<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin && !isLoading">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center">
+      <div class="min-w-[225px] pr-4 py-1">
+        <!-- <app-select
+        id="projects-filter"
+        [fieldLabel]="'Projects'"
+        [anyLabel]="'Project'"
+        [multiSelect]="true"
+        [dropDownValues]="activeProjectsDv"
+        [(selectedValues)]="selectedProjects"
+        [(anyValueSelected)]="projectsAnySelected"
+        (selectedValuesChange)="projectFilterChange($event)"
       >
-      </app-select>
+      </app-select> -->
+        <app-select
+          id="status-filter"
+          [fieldLabel]="'User Role (for Core Hr. Totals)'"
+          [dropDownValues]="dropDownValues"
+          [selectedValues]="selectedValues"
+          (selectedValuesChange)="userRoleChange($event)"
+        >
+        </app-select>
+      </div>
+    </div>
+    <div class="flex space-x-2">
+      <button
+        (click)="saveCoreHours()"
+        class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+      >
+        Save
+      </button>
+      <button
+        (click)="export()"
+        class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+      >
+        Export
+      </button>
     </div>
   </div>
-  <div class="flex space-x-2">
-    <button
-      class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+  <div
+    class="overflow-x-auto border border-blue-600 max-h-[600px]"
+    style="border-width: 1px !important"
+  >
+    <table
+      class="text-black min-w-full text-s border-separate border-spacing-0"
     >
-      Save
-    </button>
-    <button
-      class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
-    >
-      Export
-    </button>
+      <thead class="sticky top-0 bg-gray-200 z-10">
+        <tr class="bg-[#E7F3FA] border border-blue-600">
+          <th
+            class="text-center px-2 py-1 border-r border-b border-blue-600 text-left font-semibold w-48 whitespace-nowrap"
+          >
+            Project (hrs. per week)
+          </th>
+          @for (month of monthsHeader; track $index) {
+          <th
+            class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
+          >
+            {{ month }}
+          </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (res of list; track res) {
+        <tr class="bg-white">
+          <td class="px-2 py-1 border">
+            <span class="inline-flex items-center">
+              <app-project-swatch
+                class="w-3 mr-2"
+                [projectColor]="res.projectColor"
+                [size]="'12px'"
+              ></app-project-swatch>
+              {{ res.projectName }}
+            </span>
+          </td>
+
+          @for (month of monthsHeader; track month) {
+          <td class="px-3 py-2 border text-center">
+            <input
+              class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
+              [value]="getCoreHour(res, monthsHeader.indexOf(month))"
+              (keydown)="validateKeyDown($event)"
+              (input)="onCoreHourChange($event, monthKeys[monthsHeader.indexOf(month)], res)"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              min="0"
+            />
+          </td>
+          }
+        </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr
+          class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10"
+        >
+          <td
+            class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap"
+          >
+            Project Core Hr. Totals
+          </td>
+          @for (total of projectTotalCorehours; track $index) {
+          <td
+            class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
+          >
+            {{ total }}
+          </td>
+          }
+        </tr>
+
+        <tr class="bg-gray-100 sticky bottom-[38px] z-10">
+          <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
+          @for (total of totalCoreHours; track $index) {
+          <td class="p-2 border text-center">{{ total }}</td>
+          }
+        </tr>
+
+        <tr class="bg-gray-100 sticky bottom-0 z-10">
+          <td class="p-2 border font-semibold whitespace-nowrap">
+            Coverage Calculation
+          </td>
+          @for (val of totalCoreHours; track $index) {
+          <td
+            class="p-2 border text-center font-bold"
+            [ngClass]="{
+          'text-green-600': (val - projectTotalCorehours[$index]) >= 0,
+          'text-red-600': (val - projectTotalCorehours[$index]) < 0
+        }"
+          >
+            {{ val - projectTotalCorehours[$index] }}
+          </td>
+          }
+        </tr>
+      </tfoot>
+    </table>
+    <!-- <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
+    (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator> -->
   </div>
-</div>
-<div
-  class="overflow-x-auto border border-blue-600"
-  style="border-width: 1px !important"
->
-  <table class="text-black min-w-full text-s border-separate border-spacing-0">
-    <thead>
-      <tr class="bg-[#E7F3FA] border border-blue-600">
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 text-left font-semibold w-48 whitespace-nowrap"
-        >
-          Project (hrs. per week)
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Dec-23
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Jan-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Feb-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Mar-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Apr-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          May-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Jun-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Jul-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Aug-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Sep-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Oct-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
-        >
-          Nov-24
-        </th>
-        <th
-          class="text-center px-2 py-1 border-b border-blue-600 font-semibold"
-        >
-          Dec-24
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Project rows: alternate bg-white and bg-gray-50 -->
-      <tr class="bg-white">
-        <td class="px-2 py-1 border">
-          <span class="inline-flex items-center">
-            <app-project-swatch
-              class="w-3 mr-2"
-              [projectColor]="'#60a5fa'"
-              [size]="'12px'"
-            ></app-project-swatch>
-            ACTIV 6
-          </span>
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="40"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-      </tr>
-      <tr class="bg-gray-50">
-        <td class="px-2 py-1 border">
-          <span class="inline-flex items-center">
-            <app-project-swatch
-              class="w-3 mr-2"
-              [projectColor]="'#4ade80'"
-              [size]="'12px'"
-            ></app-project-swatch>
-            CARRA
-          </span>
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="10"
-          />
-        </td>
-      </tr>
-      <tr class="bg-white">
-        <td class="px-2 py-1 border">
-          <span class="inline-flex items-center">
-            <app-project-swatch
-              class="w-3 mr-2"
-              [projectColor]="'#facc15'"
-              [size]="'12px'"
-            ></app-project-swatch>
-            HERO Together
-          </span>
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="40"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="40"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-        <td class="px-3 py-2 border text-center">
-          <input
-            class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-            value="20"
-          />
-        </td>
-      </tr>
-      <!-- Add more alternating rows as needed -->
-      <!-- Totals and summary rows -->
-      <tr class="bg-[#E7F3FA] border border-blue-600">
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap"
-        >
-          Project Forecasting Totals
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          98
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          148
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          98
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          170
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td
-          class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
-        >
-          146
-        </td>
-        <td class="p-2 border-t border-b border-blue-600 text-center font-bold">
-          146
-        </td>
-      </tr>
-      <tr class="bg-gray-100">
-        <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
-        <td class="p-2 border text-center">228</td>
-        <td class="p-2 border text-center">118</td>
-        <td class="p-2 border text-center">228</td>
-        <td class="p-2 border text-center">156</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-        <td class="p-2 border text-center">256</td>
-      </tr>
-      <tr class="bg-gray-100">
-        <td class="p-2 border font-semibold whitespace-nowrap">
-          Coverage Calculation
-        </td>
-        <td class="p-2 border text-green-600 font-bold text-center">+130</td>
-        <td class="p-2 border text-red-500 font-bold text-center">-30</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+130</td>
-        <td class="p-2 border text-red-500 font-bold text-center">-12</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+110</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+10</td>
-        <td class="p-2 border text-green-600 font-bold text-center">+10</td>
-      </tr>
-    </tbody>
-  </table>
-  <app-table-paginator
-    [sourceData]="filterData"
-    [(currentPage)]="currentPage"
-    [(paginatedData)]="paginatedData"
-  ></app-table-paginator>
 </div>
