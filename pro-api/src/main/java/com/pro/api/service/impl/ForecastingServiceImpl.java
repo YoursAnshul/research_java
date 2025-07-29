@@ -247,4 +247,30 @@ public class ForecastingServiceImpl implements ForecastingService {
 			return 0;
 		}
 	}
+
+	@Override
+	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests) {
+		GeneralResponse response = new GeneralResponse();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		for (CoreHoursRequest request : requests) {
+			int val = getValue(request.getDate());
+
+			if (val < 1 || val > 14) {
+				continue;
+			}
+			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+			Date sqlDate = Date.valueOf(parsedDate);
+
+			String sql = "UPDATE core.corehours SET moddt = NOW(), corehours" + val + " = ?, month" + val
+					+ " = ?, modby = ?  WHERE corehoursid = ?";
+			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
+					request.getCoreHoursId());
+		}
+
+		response.Status = "success";
+		response.Message = "Core hours updated successfully";
+		return response;
+	}
 }

@@ -238,4 +238,42 @@ export class UserCoreHoursComponentV2 implements OnInit {
       });
     }
   }
+
+  saveCoreHours(): void {
+    if (this.editedCoreHours.length === 0) {
+      this.showToastMessage('No changes to save.', 'error');
+      return;
+    }
+    this.editedCoreHours = this.editedCoreHours.map((e) => ({
+      ...e,
+      entryBy: this.authenticatedUser.netID,
+    }));
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/user-core-update`;
+    this.http.put(apiUrl, this.editedCoreHours).subscribe({
+      next: (response: any) => {
+        this.showToastMessage('Core hours saved successfully!', 'success');
+        this.editedCoreHours = [];
+        this.getList(this.selectedValues[0]?.item?.codeValues ?? 0);
+      },
+      error: (error: any) => {
+        console.error('Error saving core hours:', error);
+      },
+    });
+  }
+  showToastMessage(message: string, type: string): void {
+    let snackBarClass = 'success-snackbar';
+    if (type === 'error') {
+      snackBarClass = 'error-snackbar';
+    }
+
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [snackBarClass],
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+    });
+  }
 }
