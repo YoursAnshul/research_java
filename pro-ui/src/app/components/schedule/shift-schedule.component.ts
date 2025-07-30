@@ -388,7 +388,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          if (this.canEdit === false) {
+          if (this.canEdit == null ||  this.canEdit === false) {
             this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
           }
         }
@@ -1724,7 +1724,7 @@ export class ShiftScheduleComponent implements OnInit {
             .subscribe((response) => {
               this.canEdit = response?.Subject?.canedit;
               this.schedulinglevel = response?.Subject?.schedulinglevel;
-              if (this.canEdit === false) {
+              if (this.canEdit == null || this.canEdit === false) {
                 this.getOptionValue();
               }
             });
