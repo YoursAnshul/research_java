@@ -72,7 +72,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append(" SELECT userid, CONCAT(fname, ' ', lname) AS userName, dispauthor  ");
 		sql.append(
 				" FROM core.users u LEFT JOIN core.announcements a ON CAST(a.author AS smallint) = u.userid  WHERE active = true AND emailaddr = '"
-						+ email + "' ");
+						+ email.trim() + "' ");
 		sql.append(" ORDER BY userName ASC ");
 		List<AuthorResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 			AuthorResponse obj = new AuthorResponse();
@@ -321,7 +321,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		} else {
 			sql.append(" ORDER BY a.startdate  desc ");
 		}
-if (limit != null) {
+		if (limit != null) {
 			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
 		}
 		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
