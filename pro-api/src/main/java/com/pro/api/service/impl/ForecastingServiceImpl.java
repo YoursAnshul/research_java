@@ -299,6 +299,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			CellStyle boldBlack = workbook.createCellStyle();
 			Font boldBlackFont = workbook.createFont();
 			boldBlackFont.setBold(true);
+			boldBlackFont.setColor(IndexedColors.GREEN.getIndex());
 			boldBlack.setFont(boldBlackFont);
 
 			CellStyle boldRed = workbook.createCellStyle();
