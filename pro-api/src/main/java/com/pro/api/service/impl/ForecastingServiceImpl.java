@@ -25,6 +25,15 @@ import com.pro.api.service.ForecastingService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 @Service
 public class ForecastingServiceImpl implements ForecastingService {
 
@@ -272,5 +281,174 @@ public class ForecastingServiceImpl implements ForecastingService {
 		response.Status = "success";
 		response.Message = "Core hours updated successfully";
 		return response;
+	}
+
+	public void exportForecastingExcel(String codeValues, HttpServletResponse response, String projectIds)
+			throws IOException {
+		List<ForecastingResponse> userData = getList(codeValues).getData();
+		List<ForecastingResponse> projectData = getProjectCoreHoursList(projectIds).getData();
+		List<Long> userTotalHours = getUserTotalHours(codeValues);
+		List<Long> projectTotalHours = getProjectTotalHours(projectIds);
+
+		try (Workbook workbook = new XSSFWorkbook()) {
+			// ========== Define styles ==========
+			CellStyle boldStyle = workbook.createCellStyle();
+			Font boldFont = workbook.createFont();
+			boldFont.setBold(true);
+			boldStyle.setFont(boldFont);
+
+			CellStyle boldBlack = workbook.createCellStyle();
+			Font boldBlackFont = workbook.createFont();
+			boldBlackFont.setBold(true);
+			boldBlackFont.setColor(IndexedColors.GREEN.getIndex());
+			boldBlack.setFont(boldBlackFont);
+
+			CellStyle boldRed = workbook.createCellStyle();
+			Font boldRedFont = workbook.createFont();
+			boldRedFont.setBold(true);
+			boldRedFont.setColor(IndexedColors.RED.getIndex());
+			boldRed.setFont(boldRedFont);
+
+			// ========== Date format ==========
+			List<LocalDate> monthDates = new ArrayList<>();
+			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
+			DateTimeFormatter monthLabelFormatter = DateTimeFormatter.ofPattern("MMM-yy");
+			DateTimeFormatter keyFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			for (int i = 0; i < 14; i++) {
+				monthDates.add(currentMonth.plusMonths(i));
+			}
+
+			// ========== Sheet 1: User Forecasting ==========
+			Sheet sheet1 = workbook.createSheet("user_forecasting");
+
+			Row headerRow1 = sheet1.createRow(0);
+			int col = 0;
+			headerRow1.createCell(col++).setCellValue("User (hrs. per week)");
+			for (LocalDate month : monthDates) {
+				Cell cell = headerRow1.createCell(col++);
+				cell.setCellValue(month.format(monthLabelFormatter));
+				cell.setCellStyle(boldStyle);
+			}
+
+			int rowIdx1 = 1;
+			for (ForecastingResponse record : userData) {
+				Row row = sheet1.createRow(rowIdx1++);
+				int c = 0;
+				row.createCell(c++).setCellValue(record.getFname() + " " + record.getLname());
+
+				Map<String, Integer> monthMap = new HashMap<>();
+				for (Pair<LocalDate, Integer> entry : record.getCoreHoursByMonth()) {
+					monthMap.put(entry.getFirst().format(keyFormatter), entry.getSecond());
+				}
+
+				for (LocalDate month : monthDates) {
+					Integer hours = monthMap.getOrDefault(month.format(keyFormatter), 0);
+					row.createCell(c++).setCellValue(hours);
+				}
+			}
+
+			// Totals
+			Row userTotalRow = sheet1.createRow(rowIdx1++);
+			userTotalRow.createCell(0).setCellValue("User Core Hr. Totals");
+			userTotalRow.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = userTotalRow.createCell(i + 1);
+				cell.setCellValue(userTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row projectTotalRow = sheet1.createRow(rowIdx1++);
+			projectTotalRow.createCell(0).setCellValue("User Project Hr. Totals");
+			projectTotalRow.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = projectTotalRow.createCell(i + 1);
+				cell.setCellValue(projectTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row coverageRow1 = sheet1.createRow(rowIdx1++);
+			coverageRow1.createCell(0).setCellValue("Coverage Calculation");
+			coverageRow1.getCell(0).setCellStyle(boldBlack);
+
+			for (int i = 0; i < 14; i++) {
+				long diff = projectTotalHours.get(i) - userTotalHours.get(i);
+				Cell cell = coverageRow1.createCell(i + 1);
+				cell.setCellValue(diff);
+				cell.setCellStyle(diff < 0 ? boldRed : boldBlack);
+			}
+
+			for (int i = 0; i < sheet1.getRow(0).getLastCellNum(); i++) {
+				sheet1.autoSizeColumn(i);
+			}
+
+			// ========== Sheet 2: Project Forecasting ==========
+			Sheet sheet2 = workbook.createSheet("project_forecasting");
+
+			Row headerRow2 = sheet2.createRow(0);
+			int col2 = 0;
+			headerRow2.createCell(col2++).setCellValue("Project (hrs. per week)");
+			for (LocalDate month : monthDates) {
+				Cell cell = headerRow2.createCell(col2++);
+				cell.setCellValue(month.format(monthLabelFormatter));
+				cell.setCellStyle(boldStyle);
+			}
+
+			int rowIdx2 = 1;
+			for (ForecastingResponse record : projectData) {
+				Row row = sheet2.createRow(rowIdx2++);
+				int c = 0;
+				row.createCell(c++).setCellValue(record.getProjectName());
+
+				Map<String, Integer> monthMap = new HashMap<>();
+				for (Pair<LocalDate, Integer> entry : record.getCoreHoursByMonth()) {
+					monthMap.put(entry.getFirst().format(keyFormatter), entry.getSecond());
+				}
+
+				for (LocalDate month : monthDates) {
+					String key = month.format(keyFormatter);
+					Integer hours = monthMap.getOrDefault(key, 0);
+					row.createCell(c++).setCellValue(hours);
+				}
+			}
+
+			// Totals in reverse order
+			Row projectTotalRow2 = sheet2.createRow(rowIdx2++);
+			projectTotalRow2.createCell(0).setCellValue("Project Core Hr. Totals");
+			projectTotalRow2.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = projectTotalRow2.createCell(i + 1);
+				cell.setCellValue(projectTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row userTotalRow2 = sheet2.createRow(rowIdx2++);
+			userTotalRow2.createCell(0).setCellValue("User Core Hr. Totals");
+			userTotalRow2.getCell(0).setCellStyle(boldStyle);
+			for (int i = 0; i < 14; i++) {
+				Cell cell = userTotalRow2.createCell(i + 1);
+				cell.setCellValue(userTotalHours.get(i));
+				cell.setCellStyle(boldStyle);
+			}
+
+			Row coverageRow2 = sheet2.createRow(rowIdx2++);
+			coverageRow2.createCell(0).setCellValue("Coverage Calculation");
+			coverageRow2.getCell(0).setCellStyle(boldBlack);
+			for (int i = 0; i < 14; i++) {
+				long diff = userTotalHours.get(i) - projectTotalHours.get(i); // reversed logic
+				Cell cell = coverageRow2.createCell(i + 1);
+				cell.setCellValue(diff);
+				cell.setCellStyle(diff < 0 ? boldRed : boldBlack);
+			}
+
+			for (int i = 0; i < sheet2.getRow(0).getLastCellNum(); i++) {
+				sheet2.autoSizeColumn(i);
+			}
+
+			// ========== Export ==========
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			response.setHeader("Content-Disposition", "attachment; filename=forecasting.xlsx");
+			workbook.write(response.getOutputStream());
+		}
 	}
 }

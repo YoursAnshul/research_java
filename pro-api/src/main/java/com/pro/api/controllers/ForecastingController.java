@@ -66,4 +66,14 @@ public class ForecastingController {
 		GeneralResponse response = forecastingService.updateCoreHours(requests);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
+
+	@GetMapping("/export")
+	public void exportForecastingExcel(@RequestParam(required = false) String codeValues, HttpServletResponse response,
+			@RequestParam(value = "projectIds", required = false) String projectIds) {
+		try {
+			forecastingService.exportForecastingExcel(codeValues, response, projectIds);
+		} catch (IOException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
 }

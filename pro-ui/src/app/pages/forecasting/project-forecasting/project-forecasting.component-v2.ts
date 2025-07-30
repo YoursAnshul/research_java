@@ -325,4 +325,33 @@ export class ProjectForecastingComponentV2 implements OnInit {
     this.selectedProjects = event;
     this.getList();
   }
+
+  export() {
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
+    // let codeValues = [];
+    // for (let i = 0; i < this.selectedProjects.length; i++) {
+    //   if (this.selectedProjects[i]?.value !== 0) {
+    //     codeValues.push(this.selectedProjects[i].value);
+    //   }
+    // }
+    const params = new HttpParams().set(
+      'codeValues',
+      this.selectedValues[0]?.item?.codeValues || 0
+    );
+
+    this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'forecasting.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error: any) => {
+        console.error('Error exporting core hours:', error);
+      },
+    });
+  }
 }

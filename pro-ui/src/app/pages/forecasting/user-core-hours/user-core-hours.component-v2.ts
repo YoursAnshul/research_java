@@ -276,4 +276,27 @@ export class UserCoreHoursComponentV2 implements OnInit {
       verticalPosition: verticalPosition,
     });
   }
+
+   export() {
+    const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
+    const params = new HttpParams().set(
+      'codeValues',
+      this.selectedValues[0]?.item?.codeValues || 0
+    );
+
+    this.http.get(apiUrl, { params, responseType: 'blob' }).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'forecasting.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error: any) => {
+        console.error('Error exporting core hours:', error);
+      },
+    });
+  }
 }

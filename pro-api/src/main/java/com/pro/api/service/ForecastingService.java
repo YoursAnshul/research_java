@@ -25,4 +25,7 @@ public interface ForecastingService {
 	public List<Long> getProjectTotalHours(String codeValues);
 
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests);
+
+	public void exportForecastingExcel(String codeValues, HttpServletResponse response, String projectIds)
+			throws IOException;
 }
