@@ -12,6 +12,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,15 +32,6 @@ import com.pro.api.service.CoreHoursRequest;
 import com.pro.api.service.ForecastingService;
 
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Service
 public class ForecastingServiceImpl implements ForecastingService {
@@ -95,7 +94,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			Date sqlDate = Date.valueOf(parsedDate);
 
 			String sql = "UPDATE core.forecasthours SET moddt = NOW(), forecasthours" + val + " = ?, month" + val
-					+ " = ?, entryby = ? WHERE forecasthoursid = ?";
+					+ " = ?, modby = ? WHERE forecasthoursid = ?";
 			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
 					request.getForecastHoursId());
 		}
@@ -302,6 +301,11 @@ public class ForecastingServiceImpl implements ForecastingService {
 			boldBlackFont.setBold(true);
 			boldBlackFont.setColor(IndexedColors.GREEN.getIndex());
 			boldBlack.setFont(boldBlackFont);
+			
+			CellStyle boldBlack1 = workbook.createCellStyle();
+			Font boldBlackFont1 = workbook.createFont();
+			boldBlackFont1.setBold(true);
+			boldBlack1.setFont(boldBlackFont1);
 
 			CellStyle boldRed = workbook.createCellStyle();
 			Font boldRedFont = workbook.createFont();
@@ -369,7 +373,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 			Row coverageRow1 = sheet1.createRow(rowIdx1++);
 			coverageRow1.createCell(0).setCellValue("Coverage Calculation");
-			coverageRow1.getCell(0).setCellStyle(boldBlack);
+			coverageRow1.getCell(0).setCellStyle(boldBlack1);
 
 			for (int i = 0; i < 14; i++) {
 				long diff = projectTotalHours.get(i) - userTotalHours.get(i);
@@ -433,7 +437,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 			Row coverageRow2 = sheet2.createRow(rowIdx2++);
 			coverageRow2.createCell(0).setCellValue("Coverage Calculation");
-			coverageRow2.getCell(0).setCellStyle(boldBlack);
+			coverageRow2.getCell(0).setCellStyle(boldBlack1);
 			for (int i = 0; i < 14; i++) {
 				long diff = userTotalHours.get(i) - projectTotalHours.get(i); // reversed logic
 				Cell cell = coverageRow2.createCell(i + 1);
@@ -451,4 +455,5 @@ public class ForecastingServiceImpl implements ForecastingService {
 			workbook.write(response.getOutputStream());
 		}
 	}
+
 }
