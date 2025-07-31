@@ -1,4 +1,15 @@
-<div class="p-4 bg-white rounded-lg border-2 border-gray-300">
+<div
+  class="inner-container"
+  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+>
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>
+    Please contact someone in the resource team if you believe this was a
+    mistake.
+  </p>
+</div>
+<div class="p-4 bg-white rounded-lg border-2 border-gray-300" *ngIf="authenticatedUser?.netID && authenticatedUser?.admin">
   <h2 class="text-xl font-semibold mb-2">Forecasting</h2>
   <div class="mb-4">
     <nav class="flex space-x-8" aria-label="Tabs">
