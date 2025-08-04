@@ -321,7 +321,7 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		} else {
 			sql.append(" ORDER BY a.startdate  desc ");
 		}
-if (limit != null) {
+		if (limit != null) {
 			sql.append(" LIMIT " + limit + " OFFSET  " + offset + "");
 		}
 		List<AnnouncementResponse> list = this.jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {

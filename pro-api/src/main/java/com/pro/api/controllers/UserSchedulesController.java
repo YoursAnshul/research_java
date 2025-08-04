@@ -288,6 +288,52 @@ public class UserSchedulesController {
 
 				int numOfWeeks = (firstDayOfMonth + daysInMonth) / 7;
 				List<Schedule> schedulesTemp = new ArrayList<Schedule>();
+
+
+				// ------------------------------------
+				// all schedule levels
+				// ------------------------------------
+				if (schedulinglevel == 1 || schedulinglevel == 2 || schedulinglevel == 3) {
+					// An Interviewer's weekly schedule should at a minimum match their core hours
+					// total.
+					List<LocalDateTime> schedulesWeeklyDistinct = schedulesWeekly.stream()
+							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null)
+							.map(ViUserSchedule::getWeekStart).distinct().sorted().collect(Collectors.toList());
+					boolean hoursDontMatch = false;
+					List<String> coreHoursDetails = new ArrayList<String>();
+					List<String> coreHoursWeeks = new ArrayList<String>();
+
+					for (LocalDateTime weekStart : schedulesWeeklyDistinct) {
+						double totalHours = schedulesWeekly.stream()
+								.filter(s -> s.getWeekStart().getYear() == weekStart.getYear()
+										&& s.getWeekStart().getMonth() == weekStart.getMonth()
+										&& s.getWeekStart().getDayOfMonth() == weekStart.getDayOfMonth()
+										&& s.getStartdatetime() != null && s.getEnddatetime() != null
+										&& s.getWeekStart() != null)
+								.mapToDouble(s -> (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour()
+										- s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour())
+										+ (s.getEnddatetime().atZoneSameInstant(serverZoneId).getMinute()
+												- s.getStartdatetime().atZoneSameInstant(serverZoneId).getMinute()) / 60.0)
+								.sum();
+						logger.info("Total hours {} for week {} are : ", totalHours, weekStart);
+						if (totalHours < currentCoreHours || totalHours > currentCoreHours) {
+							if (coreHoursDetails.size() < 1) {
+								coreHoursDetails.add(String.format("Core Hours: %.2f", (double) currentCoreHours));
+							}
+
+							hoursDontMatch = true;
+							coreHoursDetails.add(String.format("Week of %s: %.2f hours",
+									weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), totalHours));
+							coreHoursWeeks.add(weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+						}
+					}
+
+					if (hoursDontMatch) {
+						addMessage(validationMessages, 7, um.getInMonth(), um.getDempoId(),
+								String.join("|", coreHoursDetails) + "|||" + String.join("|", coreHoursWeeks));
+					}
+				}
+
 				// ------------------------------------
 				// schedule level 1/2 only
 				// ------------------------------------
@@ -359,12 +405,10 @@ public class UserSchedulesController {
 
 					addMessageByResult(validationMessages, schedulesTemp, 6, um.getInMonth(), um.getDempoId());
 				}
-				// An Interviewer's weekly schedule should at a minimum match their core hours
-				// total.
+				
 				List<LocalDateTime> schedulesWeeklyDistinct = schedulesWeekly.stream()
 						.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null)
 						.map(ViUserSchedule::getWeekStart).distinct().sorted().collect(Collectors.toList());
-				boolean hoursDontMatch = false;
 				List<String> coreHoursDetails = new ArrayList<String>();
 				List<String> coreHoursWeeks = new ArrayList<String>();
 
@@ -387,16 +431,6 @@ public class UserSchedulesController {
 											- s.getStartdatetime().atZoneSameInstant(serverZoneId).getMinute()) / 60.0)
 							.sum();
 					logger.info("Total hours {} for week {} are : ", totalHours, weekStart);
-					if (totalHours < currentCoreHours) {
-						if (coreHoursDetails.size() < 1) {
-							coreHoursDetails.add(String.format("Core Hours: %.2f", (double) currentCoreHours));
-						}
-
-						hoursDontMatch = true;
-						coreHoursDetails.add(String.format("Week of %s: %.2f hours",
-								weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), totalHours));
-						coreHoursWeeks.add(weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
-					}
 
 					// An Interviewer's weekly schedule should not exceed 20 hours total.
 					if (totalHours > 20) {
@@ -412,11 +446,6 @@ public class UserSchedulesController {
 								weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")), totalHours));
 						greaterThan40Weeks.add(weekStart.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
 					}
-				}
-
-				if (hoursDontMatch) {
-					addMessage(validationMessages, 7, um.getInMonth(), um.getDempoId(),
-							String.join("|", coreHoursDetails) + "|||" + String.join("|", coreHoursWeeks));
 				}
 
 				// ------------------------------------
@@ -485,20 +514,19 @@ public class UserSchedulesController {
 
 					// get week starts having: A Saturday and / or Sunday shift schedule should be 6
 					// hours minimum.
-					List<LocalDateTime> satSunSchedules = schedulesWeekly.stream()
+					// Get all weekend shifts that are at least 4 hours long
+					List<OffsetDateTime> weekendShifts = schedulesWeekly.stream()
 							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
 									&& (s.getStartdatetime().getDayOfWeek() == DayOfWeek.SATURDAY
 											|| s.getStartdatetime().getDayOfWeek() == DayOfWeek.SUNDAY)
 									&& (s.getEnddatetime().toLocalTime().toSecondOfDay()
 											- s.getStartdatetime().toLocalTime().toSecondOfDay()) / 3600 >= 4)
-							.map(ViUserSchedule::getWeekStart).distinct().collect(Collectors.toList());
+							.map(ViUserSchedule::getStartdatetime)
+							.distinct()
+							.collect(Collectors.toList());
 
-					boolean everyOtherWeek = false;
-					if (everyOtherWeekStart(satSunSchedules)) {
-						everyOtherWeek = true;
-					}
-
-					if (!everyOtherWeek) {
+					// Check if there are at least 2 weekend shifts in the month
+					if (weekendShifts.size() < 2) {
 						addMessage(validationMessages, 11, um.getInMonth(), um.getDempoId(), null);
 					}
 				}
@@ -553,20 +581,6 @@ public class UserSchedulesController {
 		return response;
 	}
 
-	public boolean everyOtherWeekStart(List<LocalDateTime> weekStartsToCheck) {
-		boolean twoConsecutive = false;
-		if (weekStartsToCheck.size() == 2) {
-			if (ChronoUnit.DAYS.between(weekStartsToCheck.get(0), weekStartsToCheck.get(1)) <= 7) {
-				twoConsecutive = true;
-			}
-		}
-
-		if (weekStartsToCheck.size() < 2 || (weekStartsToCheck.size() == 2 && twoConsecutive)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 
 	private void deleteValidationMessages(ValidationMessage userMonth) {
 		List<ValidationMessage> existingValidationMessages = validationMessageRepository

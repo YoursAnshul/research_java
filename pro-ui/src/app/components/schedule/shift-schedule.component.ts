@@ -211,6 +211,8 @@ export class ShiftScheduleComponent implements OnInit {
   invalidScheduleKeys: string[] = [];
   invalidWeeks: string[] = [];
   isChange: boolean = false;
+  contextDate: Date = new Date();
+
   constructor(
     private http: HttpClient,
     private dialogRef: MatDialogRef<ShifCalendarComponent>,
@@ -588,9 +590,10 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onDateRangeReceived(dateRange: any): void {
-    this.tryValidateSchedules(dateRange.startDate);
+    this.tryValidateSchedules();
     if (this.tabValue != 'Day') {
       this.dateRange = dateRange;
+      this.contextDate = dateRange.startDate;
     }
   }
   validateDateOption(selectedDate: any): void {
@@ -735,7 +738,27 @@ export class ShiftScheduleComponent implements OnInit {
     return blockedTimes;
   }
 
+  private isWeekday(day: string): boolean {
+    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].includes(day);
+  }
+
+  private isBeforeOnePM(time: string): boolean {
+    const hour = parseInt(time.split(':')[0]);
+    return time.includes('AM') || (time.includes('PM') && hour === 12);
+  }
+
   isTimeBlocked(time: string): boolean {
+    // Check if user is level 1 interviewer (role 3) and it's a weekday before 1 PM
+    if (
+      this.authenticatedUser?.role === 3 && 
+      this.schedulinglevel === 1 &&
+      this.isWeekday(this.currentDay) &&
+      this.isBeforeOnePM(time)
+    ) {
+      return true;
+    }
+    
+    // Check other blocked time slots
     return this.blockedTimeSlots.includes(time);
   }
 
@@ -1123,7 +1146,8 @@ export class ShiftScheduleComponent implements OnInit {
       const formData = this.shiftForm.value;
       const selectedDate = formData.dayWiseDate;
       this.changeDate = new Date(selectedDate);
-      this.tryValidateSchedules(selectedDate || new Date());
+
+      this.tryValidateSchedules();
     }
     const storedSchedule = localStorage.getItem('shiftSchedule');
     if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
@@ -1224,12 +1248,13 @@ export class ShiftScheduleComponent implements OnInit {
       } else {
         this.editSchedule();
       }
-      this.tryValidateSchedules(selectedDate || new Date());
+
+      this.tryValidateSchedules();
     }
   }
   saveNewRequest(id: number): void {
-
-    if (!(
+    if (
+      !(
         this.selectedProject.projectName == 'Sick' ||
         this.selectedProject.projectName == 'Absent' ||
         this.selectedProject.projectName == 'Arriving Late' ||
@@ -1302,7 +1327,6 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
   updateNewRequest(id: number): void {
-
     if (
       !(
         this.selectedProject.projectName == 'Sick' ||
@@ -1594,6 +1618,7 @@ export class ShiftScheduleComponent implements OnInit {
     }
     selectedDt.setDate(selectedDt.getDate() + unit);
     this.selectedDate.setValue(selectedDt);
+    this.contextDate = selectedDt;
     this.emitSelectedDate();
   }
 
@@ -1658,6 +1683,7 @@ export class ShiftScheduleComponent implements OnInit {
         null,
         Validators.required
       );
+      this.contextDate = this.selectedDate.value || new Date();
       this.shiftForm.get('startTime')?.setErrors({ required: true });
       this.shiftForm.get('endTime')?.setErrors({ required: true });
     } else {
@@ -1691,7 +1717,7 @@ export class ShiftScheduleComponent implements OnInit {
   handleUser(user: any): void {
     this.filterUser = user;
     this.selectedUser = user;
-    this.tryValidateSchedules(this.selectedDate.value || new Date());
+    this.tryValidateSchedules();
   }
   handleProject(project: any): void {
     this.filterProject = project;
@@ -1955,11 +1981,13 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   onSeletedDayDate(day: any): void {
-    this.tryValidateSchedules(day);
     if (this.tabValue == 'Day') {
       this.dateRange = null;
       this.selectedDayDate = day;
+      this.contextDate = day;
       // this.getScheduleList();
+
+      this.tryValidateSchedules();
     }
   }
 
@@ -2104,7 +2132,7 @@ export class ShiftScheduleComponent implements OnInit {
       });
       this.isEditAble = false;
     }
-    this.tryValidateSchedules(this.selectedDate.value || new Date());
+    this.tryValidateSchedules();
   }
 
   deleteSchedule() {
@@ -2217,6 +2245,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
+
 
   coreHoursValidation(date: Date, dempoId: string): void {
     if (!date) {
@@ -2506,7 +2535,8 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-  public tryValidateSchedules(day: Date): void {
+  public tryValidateSchedules(): void {
+    let day: Date = this.contextDate;
     if (
       (this.selectedUser?.dempoId?.length || 0) < 1 &&
       this.authenticatedUser?.role == UserRole.Interviewer
@@ -2563,4 +2593,5 @@ export class ShiftScheduleComponent implements OnInit {
     const total = diffHours + formattedMinutes;
     return parseFloat(String(total)) || 0;
   }
+  
 }
