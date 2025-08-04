@@ -19,11 +19,11 @@ import { ProjectsService } from '../../../services/projects/projects.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 
 @Component({
-  selector: 'app-project-forecasting-v2',
-  templateUrl: './project-forecasting.component-v2.html',
+  selector: 'app-project-forecasting',
+  templateUrl: './project-forecasting.component.html',
   styleUrl: './project-forecasting.component.css',
 })
-export class ProjectForecastingComponentV2 implements OnInit {
+export class ProjectForecastingComponent implements OnInit {
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
@@ -193,9 +193,11 @@ export class ProjectForecastingComponentV2 implements OnInit {
   }
 
   calculateTotals(): void {
-    const apiUrl = `${environment.DataAPIUrl
-      }/forecasting/user-total-hours?codeValues=${this.selectedValues[0]?.item?.codeValues || 0
-      }`;
+    const apiUrl = `${
+      environment.DataAPIUrl
+    }/forecasting/user-total-hours?codeValues=${
+      this.selectedValues[0]?.item?.codeValues || 0
+    }`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.totalCoreHours = data ?? [];
@@ -262,7 +264,9 @@ export class ProjectForecastingComponentV2 implements OnInit {
         coreHours: value,
       });
     }
+
   }
+
 
   validateKeyDown(event: KeyboardEvent): void {
     const allowedKeys = [
@@ -325,7 +329,6 @@ export class ProjectForecastingComponentV2 implements OnInit {
     this.selectedProjects = event;
     this.getList();
   }
-
   export() {
     const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
     // let codeValues = [];

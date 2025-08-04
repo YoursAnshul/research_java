@@ -1,5 +1,16 @@
+<div
+  class="inner-container"
+  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+>
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>
+    Please contact someone in the resource team if you believe this was a
+    mistake.
+  </p>
+</div>
 
-<div *ngIf="authenticatedUser?.netID">
+<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin">
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center">
       <div class="min-w-[225px] pr-4 py-1">
@@ -32,7 +43,7 @@
         Save
       </button>
       <button
-       (click)="export()"
+        (click)="export()"
         class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
       >
         Export
