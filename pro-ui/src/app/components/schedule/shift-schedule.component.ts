@@ -4,6 +4,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  NgZone,
   OnInit,
   Output,
   ViewChild,
@@ -223,7 +224,8 @@ export class ShiftScheduleComponent implements OnInit {
     private requestsService: RequestsService,
     private userService: UsersService,
     private globalsService: GlobalsService,
-    private userScheduleService: UserSchedulesService
+    private userScheduleService: UserSchedulesService,
+    private zone: NgZone
   ) {
     localStorage.removeItem('resultDate');
     this.authenticationService.authenticatedUser.subscribe(
@@ -388,7 +390,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          if (this.canEdit == null ||  this.canEdit === false) {
+          if (this.canEdit == null || this.canEdit === false) {
             this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
           }
         }
@@ -608,13 +610,13 @@ export class ShiftScheduleComponent implements OnInit {
       let monthVal = selectedDate.getMonth();
       let resultMonth = resultDate.getMonth();
       if (resultMonth > monthVal) {
+        if (this.isChange) {
+          Promise.resolve().then(() => this.openMonthlyBlockDialog());
+        }
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
         this.isDateBlockDate = true;
-        if (this.isChange) {
-          this.openMonthlyBlockDialog();
-        }
         return;
       }
     } else {
@@ -622,13 +624,13 @@ export class ShiftScheduleComponent implements OnInit {
       let resultMonth = resultDate.getMonth();
       // localStorage.setItem('resultDate', resultDate.toLocaleDateString());
       if (resultMonth === monthVal || resultMonth + 1 >= monthVal) {
+        if (this.isChange) {
+          Promise.resolve().then(() => this.openMonthlyBlockDialog());
+        }
         this.shiftForm.get('dayWiseDate')?.setErrors({ required: true });
         this.shiftForm.get('startTime')?.disable();
         this.shiftForm.get('endTime')?.disable();
         this.isDateBlockDate = true;
-        if (this.isChange) {
-          this.openMonthlyBlockDialog();
-        }
         return;
       }
     }
@@ -765,17 +767,20 @@ export class ShiftScheduleComponent implements OnInit {
       (dialog) => dialog.componentInstance instanceof MonthlyBlockDate
     );
 
-    if (existingDialog) {
-      return;
-    }
-    const dialogRef = this.dialog.open(MonthlyBlockDate, {
-      panelClass: 'custom-dialog-container',
-    });
+    if (existingDialog) return;
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.closeDialog();
-      }
+    this.zone.run(() => {
+      const dialogRef = this.dialog.open(MonthlyBlockDate, {
+        panelClass: 'custom-dialog-container',
+        disableClose: true,
+        autoFocus: false,
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.closeDialog();
+        }
+      });
     });
   }
 
