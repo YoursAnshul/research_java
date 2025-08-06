@@ -1,6 +1,6 @@
 <div
   class="inner-container"
-  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+  *ngIf="authenticatedUser?.netID && !authenticatedUser?.admin"
 >
   <h2>No Access</h2>
   <p>Your user account does not have access to view this page.</p>
@@ -84,41 +84,48 @@
         }
       </tbody>
       <tfoot>
+        <!-- Row 1: User Core Hr. Totals -->
         <tr
-          class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10"
+          class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[68px] z-[15]"
         >
           <td
-            class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap"
+            class="p-2 border-r border-blue-600 font-bold whitespace-nowrap bg-[#E7F3FA]"
           >
             User Core Hr. Totals
           </td>
           @for (total of totalCoreHours; track $index) {
           <td
-            class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
+            class="p-2 border-r border-blue-600 text-center font-bold bg-[#E7F3FA]"
           >
             {{ total }}
           </td>
           }
         </tr>
 
-        <tr class="bg-gray-100 sticky bottom-[38px] z-10">
-          <td class="p-2 border whitespace-nowrap">User Project Hr. Totals</td>
+        <!-- Row 2: User Project Hr. Totals -->
+        <tr class="bg-gray-100 sticky bottom-[34px] z-[10]">
+          <td class="p-2 border whitespace-nowrap bg-gray-100">
+            User Project Hr. Totals
+          </td>
           @for (total of projectTotalCorehours; track $index) {
-          <td class="p-2 border text-center">{{ total }}</td>
+          <td class="p-2 border text-center bg-gray-100">
+            {{ total }}
+          </td>
           }
         </tr>
 
-        <tr class="bg-gray-100 sticky bottom-0 z-10">
-          <td class="p-2 border font-semibold whitespace-nowrap">
+        <!-- Row 3: Coverage Calculation -->
+        <tr class="bg-gray-100 sticky bottom-0 z-[5]">
+          <td class="p-2 border font-semibold whitespace-nowrap bg-gray-100">
             Coverage Calculation
           </td>
           @for (val of projectTotalCorehours; track $index) {
           <td
-            class="p-2 border text-center font-bold"
+            class="p-2 border text-center font-bold bg-gray-100"
             [ngClass]="{
-          'text-green-600': (val - totalCoreHours[$index]) >= 0,
-          'text-red-600': (val - totalCoreHours[$index]) < 0
-        }"
+              'text-green-600': val - totalCoreHours[$index] >= 0,
+              'text-red-600': val - totalCoreHours[$index] < 0
+            }"
           >
             {{ val - totalCoreHours[$index] }}
           </td>
