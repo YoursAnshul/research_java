@@ -1,6 +1,6 @@
 <div
   class="inner-container"
-  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+  *ngIf="authenticatedUser?.netID && !authenticatedUser?.admin"
 >
   <h2>No Access</h2>
   <p>Your user account does not have access to view this page.</p>
@@ -95,9 +95,16 @@
               class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
               [value]="getCoreHour(res, monthsHeader.indexOf(month))"
               (keydown)="validateKeyDown($event)"
-              (input)="onCoreHourChange($event, monthKeys[monthsHeader.indexOf(month)], res)"
+              (input)="
+                onCoreHourChange(
+                  $event,
+                  monthKeys[monthsHeader.indexOf(month)],
+                  res
+                )
+              "
               inputmode="numeric"
               pattern="[0-9]*"
+              maxlength="3"
               min="0"
             />
           </td>
@@ -138,9 +145,9 @@
           <td
             class="p-2 border text-center font-bold"
             [ngClass]="{
-          'text-green-600': (val - projectTotalCorehours[$index]) >= 0,
-          'text-red-600': (val - projectTotalCorehours[$index]) < 0
-        }"
+              'text-green-600': val - projectTotalCorehours[$index] >= 0,
+              'text-red-600': val - projectTotalCorehours[$index] < 0
+            }"
           >
             {{ val - projectTotalCorehours[$index] }}
           </td>

@@ -572,6 +572,7 @@
                   class="coreHoursInput"
                   style="
                     height: 50px;
+                    width: 65px;
                     border: 1px solid black !important;
                     border-radius: 4px;
                   "
@@ -585,7 +586,8 @@
                     (keypress)="numberRestrict($event)"
                     name="core-hours-{{ i }}"
                     autocomplete="off"
-                    maxlength="4"
+                    maxlength="3"
+                    minlength="0"
                     [disabled]="isEdit || readOnly"
                   />
                 </mat-form-field>
