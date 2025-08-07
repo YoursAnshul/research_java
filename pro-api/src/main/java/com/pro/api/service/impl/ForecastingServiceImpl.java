@@ -20,6 +20,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,6 +37,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class ForecastingServiceImpl implements ForecastingService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ForecastingServiceImpl.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -301,6 +305,11 @@ public class ForecastingServiceImpl implements ForecastingService {
 			boldBlackFont.setBold(true);
 			boldBlackFont.setColor(IndexedColors.GREEN.getIndex());
 			boldBlack.setFont(boldBlackFont);
+			
+			CellStyle boldBlack1 = workbook.createCellStyle();
+			Font boldBlackFont1 = workbook.createFont();
+			boldBlackFont1.setBold(true);
+			boldBlack1.setFont(boldBlackFont1);
 
 			CellStyle boldRed = workbook.createCellStyle();
 			Font boldRedFont = workbook.createFont();
@@ -368,7 +377,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 			Row coverageRow1 = sheet1.createRow(rowIdx1++);
 			coverageRow1.createCell(0).setCellValue("Coverage Calculation");
-			coverageRow1.getCell(0).setCellStyle(boldBlack);
+			coverageRow1.getCell(0).setCellStyle(boldBlack1);
 
 			for (int i = 0; i < 14; i++) {
 				long diff = projectTotalHours.get(i) - userTotalHours.get(i);
@@ -378,7 +387,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 			}
 
 			for (int i = 0; i < sheet1.getRow(0).getLastCellNum(); i++) {
-				sheet1.autoSizeColumn(i);
+				try {
+					sheet1.autoSizeColumn(i);
+				} catch (Exception e) {
+					sheet1.setColumnWidth(i, 15 * 256); 
+					logger.warn("Auto-sizing failed for column {} in sheet1, using manual width", i);
+				}
 			}
 
 			// ========== Sheet 2: Project Forecasting ==========
@@ -432,7 +446,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 			Row coverageRow2 = sheet2.createRow(rowIdx2++);
 			coverageRow2.createCell(0).setCellValue("Coverage Calculation");
-			coverageRow2.getCell(0).setCellStyle(boldBlack);
+			coverageRow2.getCell(0).setCellStyle(boldBlack1);
 			for (int i = 0; i < 14; i++) {
 				long diff = userTotalHours.get(i) - projectTotalHours.get(i); // reversed logic
 				Cell cell = coverageRow2.createCell(i + 1);
@@ -441,7 +455,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 			}
 
 			for (int i = 0; i < sheet2.getRow(0).getLastCellNum(); i++) {
-				sheet2.autoSizeColumn(i);
+				try {
+					sheet2.autoSizeColumn(i);
+				} catch (Exception e) {
+					sheet2.setColumnWidth(i, 15 * 256);
+					logger.warn("Auto-sizing failed for column {} in sheet2, using manual width", i);
+				}
 			}
 
 			// ========== Export ==========
