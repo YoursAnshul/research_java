@@ -282,7 +282,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.shiftForm = new FormGroup({
       user: new FormControl(null, Validators.required),
       projects: new FormControl([], Validators.required),
-      dayWiseDate: new FormControl(new Date(), Validators.required),
+      dayWiseDate: new FormControl(null, Validators.required),
       startTime: new FormControl(null, Validators.required),
       endTime: new FormControl(null, Validators.required),
       comments: new FormControl(''),
@@ -335,6 +335,9 @@ export class ShiftScheduleComponent implements OnInit {
         console.error('Error loading authors/projects:', error);
       },
     });
+    if (this.authenticatedUser.admin) {
+      this.shiftForm.get('dayWiseDate')?.setValue(new Date());
+    }
 
     this.shiftForm.valueChanges.subscribe(() => {
       this.updateDuration();
@@ -392,7 +395,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          if (this.canEdit == null ||  this.canEdit === false) {
+          if (this.canEdit == null || this.canEdit === false) {
             this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
           }
         }
@@ -741,7 +744,9 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   private isWeekday(day: string): boolean {
-    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].includes(day);
+    return ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].includes(
+      day
+    );
   }
 
   private isBeforeOnePM(time: string): boolean {
@@ -752,14 +757,14 @@ export class ShiftScheduleComponent implements OnInit {
   isTimeBlocked(time: string): boolean {
     // Check if user is level 1 interviewer (role 3) and it's a weekday before 1 PM
     if (
-      this.authenticatedUser?.role === 3 && 
+      this.authenticatedUser?.role === 3 &&
       this.schedulinglevel === 1 &&
       this.isWeekday(this.currentDay) &&
       this.isBeforeOnePM(time)
     ) {
       return true;
     }
-    
+
     // Check other blocked time slots
     return this.blockedTimeSlots.includes(time);
   }
@@ -803,7 +808,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.closeDialog();
         }
       });
-      });
+    });
   }
 
   closeDialog(): void {
@@ -1257,7 +1262,6 @@ export class ShiftScheduleComponent implements OnInit {
     }
   }
   saveNewRequest(id: number): void {
-    
     if (
       !(
         this.selectedProject.projectName == 'Sick' ||
@@ -1752,6 +1756,8 @@ export class ShiftScheduleComponent implements OnInit {
               this.schedulinglevel = response?.Subject?.schedulinglevel;
               if (this.canEdit == null || this.canEdit === false) {
                 this.getOptionValue();
+              } else {
+                this.shiftForm.get('dayWiseDate')?.setValue(new Date());
               }
             });
         } else if (this.authenticatedUser?.admin) {
@@ -2242,9 +2248,10 @@ export class ShiftScheduleComponent implements OnInit {
                 1
               );
               this.shiftForm.get('dayWiseDate')?.setValue(calculatedDate);
+            } else {
+              this.shiftForm.get('dayWiseDate')?.setValue(new Date());
             }
           }
-
           this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
         }
       },
@@ -2607,5 +2614,4 @@ export class ShiftScheduleComponent implements OnInit {
     const total = diffHours + formattedMinutes;
     return parseFloat(String(total)) || 0;
   }
-  
 }
