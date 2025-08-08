@@ -31,8 +31,7 @@
     </div>
   </div>
 
-  <div class="border border-blue-600">
-    <!-- Table Header -->
+  <div class="border border-blue-600 max-h-[600px] overflow-y-auto">
     <table class="min-w-full border-separate border-spacing-0 table-fixed">
       <colgroup>
         <col class="w-48" />
@@ -40,7 +39,9 @@
         <col />
         }
       </colgroup>
-      <thead class="bg-[#E7F3FA]">
+
+      <!-- Sticky Header -->
+      <thead class="bg-[#E7F3FA] sticky top-0 z-10">
         <tr>
           <th class="text-left px-2 py-1 border-r border-b border-blue-600 font-semibold whitespace-nowrap">
             User (hrs. per week)
@@ -52,47 +53,28 @@
           }
         </tr>
       </thead>
-    </table>
 
-    <!-- Scrollable Body -->
-    <div class="max-h-[500px] overflow-y-auto">
-      <table class="min-w-full border-separate border-spacing-0 table-fixed">
-        <colgroup>
-          <col class="w-48" />
+      <!-- Body -->
+      <tbody>
+        @for (res of list; track res) {
+        <tr class="bg-white">
+          <td class="px-2 py-1 border">
+            {{ res.fname }} {{ res.lname }}
+          </td>
           @for (month of monthsHeader; track $index) {
-          <col />
+          <td class="px-3 py-2 border text-center">
+            <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
+              [value]="getCoreHour(res, $index)" (keydown)="validateKeyDown($event)"
+              (input)="onCoreHourChange($event, monthKeys[$index], res)" inputmode="numeric" pattern="[0-9]*"
+              maxlength="3" min="0" />
+          </td>
           }
-        </colgroup>
-        <tbody>
-          @for (res of list; track res) {
-          <tr class="bg-white">
-            <td class="px-2 py-1 border">
-              {{ res.fname }} {{ res.lname }}
-            </td>
-            @for (month of monthsHeader; track $index) {
-            <td class="px-3 py-2 border text-center">
-              <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-                [value]="getCoreHour(res, $index)" (keydown)="validateKeyDown($event)"
-                (input)="onCoreHourChange($event, monthKeys[$index], res)" inputmode="numeric" pattern="[0-9]*"
-                maxlength="3" min="0" />
-            </td>
-            }
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Fixed Footer -->
-    <table class="min-w-full border-separate border-spacing-0 table-fixed">
-      <colgroup>
-        <col class="w-48" />
-        @for (month of monthsHeader; track $index) {
-        <col />
+        </tr>
         }
-      </colgroup>
-      <tfoot>
-        <!-- Row 1 -->
+      </tbody>
+
+      <!-- Sticky Footer -->
+      <tfoot class="sticky bottom-0 bg-white z-20">
         <tr class="bg-[#E7F3FA]">
           <td class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap">
             User Core Hr. Totals
@@ -103,8 +85,6 @@
           </td>
           }
         </tr>
-
-        <!-- Row 2 -->
         <tr class="bg-gray-100">
           <td class="p-2 border whitespace-nowrap bg-gray-100">
             User Project Hr. Totals
@@ -115,8 +95,6 @@
           </td>
           }
         </tr>
-
-        <!-- Row 3 -->
         <tr class="bg-gray-100">
           <td class="p-2 border font-semibold whitespace-nowrap bg-gray-100">
             Coverage Calculation
@@ -133,4 +111,5 @@
       </tfoot>
     </table>
   </div>
+
 </div>

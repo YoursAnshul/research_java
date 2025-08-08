@@ -41,15 +41,17 @@
       </button>
     </div>
   </div>
-  <div class="border border-blue-600">
-    <!-- Table Header -->
+  <div class="border border-blue-600 max-h-[600px] overflow-y-auto">
     <table class="min-w-full border-separate border-spacing-0 table-fixed text-black text-s">
+      <!-- One colgroup shared by all rows -->
       <colgroup>
         <col class="w-48" />
         @for (month of monthsHeader; track $index) {
         <col />
         }
       </colgroup>
+
+      <!-- Sticky Header -->
       <thead class="bg-[#E7F3FA] sticky top-0 z-10">
         <tr>
           <th class="text-left px-2 py-1 border-r border-b border-blue-600 font-semibold whitespace-nowrap">
@@ -62,56 +64,34 @@
           }
         </tr>
       </thead>
-    </table>
 
-    <!-- Scrollable Body -->
-    <div class="max-h-[500px] overflow-y-auto">
-      <table class="min-w-full border-separate border-spacing-0 table-fixed">
-        <colgroup>
-          <col class="w-48" />
-          @for (month of monthsHeader; track $index) {
-          <col />
+      <!-- Scrollable Body -->
+      <tbody>
+        @for (res of list; track res) {
+        <tr class="bg-white">
+          <td class="px-2 py-1 border">
+            <span class="inline-flex items-center">
+              <app-project-swatch class="w-3 mr-2" [projectColor]="res.projectColor"
+                [size]="'12px'"></app-project-swatch>
+              {{ res.projectName }}
+            </span>
+          </td>
+          @for (month of monthsHeader; track month) {
+          <td class="px-3 py-2 border text-center">
+            <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
+              [value]="getCoreHour(res, monthsHeader.indexOf(month))" (keydown)="validateKeyDown($event)" (input)="onCoreHourChange(
+              $event,
+              monthKeys[monthsHeader.indexOf(month)],
+              res
+            )" inputmode="numeric" pattern="[0-9]*" maxlength="3" min="0" />
+          </td>
           }
-        </colgroup>
-        <tbody>
-          @for (res of list; track res) {
-          <tr class="bg-white">
-            <td class="px-2 py-1 border">
-              <span class="inline-flex items-center">
-                <app-project-swatch class="w-3 mr-2" [projectColor]="res.projectColor"
-                  [size]="'12px'"></app-project-swatch>
-                {{ res.projectName }}
-              </span>
-            </td>
-
-            @for (month of monthsHeader; track month) {
-            <td class="px-3 py-2 border text-center">
-              <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-                [value]="getCoreHour(res, monthsHeader.indexOf(month))" (keydown)="validateKeyDown($event)" (input)="
-                    onCoreHourChange(
-                      $event,
-                      monthKeys[monthsHeader.indexOf(month)],
-                      res
-                    )
-                  " inputmode="numeric" pattern="[0-9]*" maxlength="3" min="0" />
-            </td>
-            }
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Fixed Footer -->
-    <table class="min-w-full border-separate border-spacing-0 table-fixed">
-      <colgroup>
-        <col class="w-48" />
-        @for (month of monthsHeader; track $index) {
-        <col />
+        </tr>
         }
-      </colgroup>
-      <tfoot>
-        <!-- Row 1 -->
+      </tbody>
+
+      <!-- Sticky Footer -->
+      <tfoot class="sticky bottom-0 bg-white">
         <tr class="bg-[#E7F3FA]">
           <td class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap">
             Project Core Hr. Totals
@@ -123,7 +103,6 @@
           }
         </tr>
 
-        <!-- Row 2 -->
         <tr class="bg-gray-100">
           <td class="p-2 border whitespace-nowrap">
             User Core Hr. Totals
@@ -135,16 +114,15 @@
           }
         </tr>
 
-        <!-- Row 3 -->
         <tr class="bg-gray-100">
           <td class="p-2 border font-semibold whitespace-nowrap">
             Coverage Calculation
           </td>
           @for (val of totalCoreHours; track $index) {
           <td class="p-2 border text-center font-bold" [ngClass]="{
-              'text-green-600': val - projectTotalCorehours[$index] >= 0,
-              'text-red-600': val - projectTotalCorehours[$index] < 0
-            }">
+          'text-green-600': val - projectTotalCorehours[$index] >= 0,
+          'text-red-600': val - projectTotalCorehours[$index] < 0
+        }">
             {{ val - projectTotalCorehours[$index] }}
           </td>
           }
@@ -152,5 +130,6 @@
       </tfoot>
     </table>
   </div>
+
 
 </div>
