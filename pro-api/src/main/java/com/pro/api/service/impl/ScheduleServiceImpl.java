@@ -12,11 +12,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,8 +64,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-		ZoneId localZone = ZoneId.systemDefault(); 
-												
+		ZoneId localZone = ZoneId.systemDefault();
+
 		ZoneId utcZone = ZoneOffset.UTC;
 
 		for (ShiftScheduleRequest request : list) {
@@ -178,6 +180,17 @@ public class ScheduleServiceImpl implements ScheduleService {
 		return jdbcTemplate.query(query.toString(), (rs, rowNum) -> {
 			Timestamp startTime = rs.getTimestamp("startdatetime");
 			Timestamp endTime = rs.getTimestamp("enddatetime");
+
+			Timestamp timestamp = rs.getTimestamp("daywisedate");
+			this.isDstEndDate(timestamp);
+			if (timestamp != null) {
+				boolean isDstEnd = isDstEndDate(timestamp);
+				if (isDstEnd) {
+					startTime = addOneHour(startTime);
+					endTime = addOneHour(endTime);
+				}
+			}
+
 			double duration = calculateDuration(startTime, endTime);
 
 			return new ScheduleResponse(rs.getString("comments"), formatTime(startTime), formatTime(endTime), duration,
@@ -186,6 +199,83 @@ public class ScheduleServiceImpl implements ScheduleService {
 					new Projects(rs.getInt("projectid"), rs.getString("projectcolor"), rs.getString("projectname")),
 					rs.getLong("preschedulekey"), rs.getString("language"), rs.getInt("corehours1"));
 		}, params.toArray());
+	}
+
+	public Timestamp addOneHour(Timestamp original) {
+		if (original == null) {
+			return null;
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(original.getTime());
+		cal.add(Calendar.HOUR_OF_DAY, 1);
+		return new Timestamp(cal.getTimeInMillis());
+	}
+
+	public boolean isDstEndDate(Timestamp timestamp) {
+		if (timestamp == null)
+			return false;
+
+		TimeZone tz = TimeZone.getDefault();
+
+		// Use Calendar to extract the year properly
+		Calendar calendar = Calendar.getInstance(tz);
+		calendar.setTime(timestamp);
+		int year = calendar.get(Calendar.YEAR);
+
+		Calendar cal = Calendar.getInstance(tz);
+		cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		Date prevDate = cal.getTime();
+		boolean prevInDst = tz.inDaylightTime(prevDate);
+
+		Date dstStart = null;
+		Date dstEnd = null;
+
+		for (int day = 1; day <= 366; day++) {
+			cal.add(Calendar.DAY_OF_YEAR, 1);
+			Date currentDate = cal.getTime();
+			boolean currentInDst = tz.inDaylightTime(currentDate);
+
+			if (prevInDst != currentInDst) {
+				if (currentInDst) {
+					dstStart = currentDate;
+				} else {
+					dstEnd = currentDate;
+				}
+			}
+			prevInDst = currentInDst;
+		}
+
+		if (dstEnd != null) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(dstEnd);
+			c.add(Calendar.DAY_OF_YEAR, -1);
+			dstEnd = c.getTime();
+			System.out.println("Year: " + year);
+			Date inputDateMidnight = truncateTime(timestamp);
+			Date dstEndMidnight = truncateTime(dstEnd);
+
+			System.out.println("DST End Date: " + dstEnd);
+			System.out.println("Input Date: " + inputDateMidnight);
+			return inputDateMidnight.equals(dstEndMidnight);
+
+		} else {
+			return false;
+		}
+
+	}
+
+	private Date truncateTime(Date date) {
+		if (date == null)
+			return null;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
 	}
 
 	private double calculateDuration(Date start, Date end) {
@@ -229,7 +319,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 				response.Message = "End time must be after start time.";
 				return response;
 			}
-
 
 			ZoneId localZone = ZoneId.systemDefault();
 			ZoneId utcZone = ZoneOffset.UTC;
