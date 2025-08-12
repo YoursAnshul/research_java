@@ -39,8 +39,10 @@ export class ProjectForecastingComponent implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Users',
         });
-        this.dropDownValues = this.dropDownValues.filter(item =>
-          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        this.dropDownValues = this.dropDownValues.filter((item) =>
+          ['All Users', 'Project Team', 'Interviewer'].includes(
+            item.dropDownItem
+          )
         );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
@@ -94,6 +96,8 @@ export class ProjectForecastingComponent implements OnInit {
   public projectsAnySelected: boolean = true;
   authenticatedUser!: IAuthenticatedUser;
   isLoading: boolean = false;
+  spin = false;
+  exportIsDisabled = false;
 
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
@@ -105,8 +109,10 @@ export class ProjectForecastingComponent implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Users',
         });
-        this.dropDownValues = this.dropDownValues.filter(item =>
-          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        this.dropDownValues = this.dropDownValues.filter((item) =>
+          ['All Users', 'Project Team', 'Interviewer'].includes(
+            item.dropDownItem
+          )
         );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
@@ -327,6 +333,8 @@ export class ProjectForecastingComponent implements OnInit {
       return;
     }
 
+    this.spin = true;
+
     this.editedCoreHours = this.editedCoreHours.map((e) => ({
       ...e,
       entryBy: this.authenticatedUser.netID,
@@ -339,10 +347,12 @@ export class ProjectForecastingComponent implements OnInit {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
         this.getList();
+        this.spin = false;
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);
         this.showToastMessage('Failed to save core hours.', 'error');
+        this.spin = false;
       },
     });
   }
@@ -368,6 +378,7 @@ export class ProjectForecastingComponent implements OnInit {
     this.getList();
   }
   export() {
+    this.exportIsDisabled = true;
     const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
     // let codeValues = [];
     // for (let i = 0; i < this.selectedProjects.length; i++) {
@@ -389,8 +400,10 @@ export class ProjectForecastingComponent implements OnInit {
         a.download = 'forecasting.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
+        this.exportIsDisabled = false;
       },
       error: (error: any) => {
+        this.exportIsDisabled = false;
         console.error('Error exporting core hours:', error);
       },
     });

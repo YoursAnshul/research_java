@@ -1,4 +1,7 @@
-<div class="inner-container" *ngIf="authenticatedUser?.netID && !authenticatedUser?.admin">
+<div
+  class="inner-container"
+  *ngIf="authenticatedUser?.netID && !authenticatedUser?.admin"
+>
   <h2>No Access</h2>
   <p>Your user account does not have access to view this page.</p>
   <p>
@@ -24,25 +27,42 @@
         (selectedValuesChange)="projectFilterChange($event)"
       >
       </app-select> -->
-        <app-select id="status-filter" [fieldLabel]="'User Role (for Core Hr. Totals)'"
-          [dropDownValues]="dropDownValues" [selectedValues]="selectedValues"
-          (selectedValuesChange)="userRoleChange($event)">
+        <app-select
+          id="status-filter"
+          [fieldLabel]="'User Role (for Core Hr. Totals)'"
+          [dropDownValues]="dropDownValues"
+          [selectedValues]="selectedValues"
+          (selectedValuesChange)="userRoleChange($event)"
+        >
         </app-select>
       </div>
     </div>
     <div class="flex space-x-2">
-      <button (click)="saveCoreHours()"
-        class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400">
-        Save
+      <button
+        (click)="saveCoreHours()"
+        [disabled]="spin"
+        class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400 flex items-center justify-center"
+      >
+        <i class="fa fa-spinner fa-spin" *ngIf="spin"></i>
+        <span class="ml-2">{{ spin ? "Saving..." : "Save" }}</span>
       </button>
-      <button (click)="export()"
-        class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400">
-        Export
+
+      <button
+        (click)="export()"
+        [disabled]="exportIsDisabled"
+        class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+      >
+        <i class="fa fa-spinner fa-spin" *ngIf="exportIsDisabled"></i>
+        <span class="ml-2">{{
+          exportIsDisabled ? "Export..." : "Export"
+        }}</span>
       </button>
     </div>
   </div>
   <div class="border border-blue-600 max-h-[600px] overflow-y-auto">
-    <table class="min-w-full border-separate border-spacing-0 table-fixed text-black text-s">
+    <table
+      class="min-w-full border-separate border-spacing-0 table-fixed text-black text-s"
+    >
       <!-- One colgroup shared by all rows -->
       <colgroup>
         <col class="w-48" />
@@ -54,11 +74,15 @@
       <!-- Sticky Header -->
       <thead class="bg-[#E7F3FA] sticky top-0 z-10">
         <tr>
-          <th class="text-left px-2 py-1 border-r border-b border-blue-600 font-semibold whitespace-nowrap">
+          <th
+            class="text-left px-2 py-1 border-r border-b border-blue-600 font-semibold whitespace-nowrap"
+          >
             Project (hrs. per week)
           </th>
           @for (month of monthsHeader; track $index) {
-          <th class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold">
+          <th
+            class="text-center px-2 py-1 border-r border-b border-blue-600 font-semibold"
+          >
             {{ month }}
           </th>
           }
@@ -71,19 +95,32 @@
         <tr class="bg-white">
           <td class="px-2 py-1 border">
             <span class="inline-flex items-center">
-              <app-project-swatch class="w-3 mr-2" [projectColor]="res.projectColor"
-                [size]="'12px'"></app-project-swatch>
+              <app-project-swatch
+                class="w-3 mr-2"
+                [projectColor]="res.projectColor"
+                [size]="'12px'"
+              ></app-project-swatch>
               {{ res.projectName }}
             </span>
           </td>
           @for (month of monthsHeader; track month) {
           <td class="px-3 py-2 border text-center">
-            <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
-              [value]="getCoreHour(res, monthsHeader.indexOf(month))" (keydown)="validateKeyDown($event)" (input)="onCoreHourChange(
-              $event,
-              monthKeys[monthsHeader.indexOf(month)],
-              res
-            )" inputmode="numeric" pattern="[0-9]*" maxlength="3" min="0" />
+            <input
+              class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
+              [value]="getCoreHour(res, monthsHeader.indexOf(month))"
+              (keydown)="validateKeyDown($event)"
+              (input)="
+                onCoreHourChange(
+                  $event,
+                  monthKeys[monthsHeader.indexOf(month)],
+                  res
+                )
+              "
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="3"
+              min="0"
+            />
           </td>
           }
         </tr>
@@ -93,20 +130,22 @@
       <!-- Sticky Footer -->
       <tfoot class="sticky bottom-0 bg-white">
         <tr class="bg-[#E7F3FA]">
-          <td class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap">
+          <td
+            class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap"
+          >
             Project Core Hr. Totals
           </td>
           @for (total of projectTotalCorehours; track $index) {
-          <td class="p-2 border-r border-t border-b border-blue-600 text-center font-bold">
+          <td
+            class="p-2 border-r border-t border-b border-blue-600 text-center font-bold"
+          >
             {{ total }}
           </td>
           }
         </tr>
 
         <tr class="bg-gray-100">
-          <td class="p-2 border whitespace-nowrap">
-            User Core Hr. Totals
-          </td>
+          <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
           @for (total of totalCoreHours; track $index) {
           <td class="p-2 border text-center">
             {{ total }}
@@ -119,10 +158,13 @@
             Coverage Calculation
           </td>
           @for (val of totalCoreHours; track $index) {
-          <td class="p-2 border text-center font-bold" [ngClass]="{
-          'text-green-600': val - projectTotalCorehours[$index] >= 0,
-          'text-red-600': val - projectTotalCorehours[$index] < 0
-        }">
+          <td
+            class="p-2 border text-center font-bold"
+            [ngClass]="{
+              'text-green-600': val - projectTotalCorehours[$index] >= 0,
+              'text-red-600': val - projectTotalCorehours[$index] < 0
+            }"
+          >
             {{ val - projectTotalCorehours[$index] }}
           </td>
           }
@@ -130,6 +172,4 @@
       </tfoot>
     </table>
   </div>
-
-
 </div>
