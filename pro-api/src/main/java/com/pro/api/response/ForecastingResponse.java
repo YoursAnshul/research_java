@@ -15,6 +15,7 @@ public class ForecastingResponse {
 	private List<Long> userTotalCoreHours;
 	private List<Long> projectTotalCoreHours;
 	private Long coreHoursId;
+	private Long projectId;
 
 	List<Pair<LocalDate, Integer>> coreHoursByMonth;
 
@@ -88,6 +89,14 @@ public class ForecastingResponse {
 
 	public void setCoreHoursId(Long coreHoursId) {
 		this.coreHoursId = coreHoursId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 }

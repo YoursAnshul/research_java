@@ -84,6 +84,7 @@ export class ProjectForecastingComponent implements OnInit {
     date: string;
     coreHours: number;
     entryBy?: string;
+    projectId?: number;
   }[] = [];
   dropDownValues: any[] = [];
   selectedValues: SelectedValue[] = [];
@@ -265,6 +266,7 @@ export class ProjectForecastingComponent implements OnInit {
         forecastHoursId: res.forecastHoursId ?? 0,
         date: monthKey,
         coreHours: value,
+        projectId: res.projectId,
       });
     }
 

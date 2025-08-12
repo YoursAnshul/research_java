@@ -87,6 +87,14 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+		String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
+		Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, requests.get(0).getProjectId());
+
+		if (count == null || count == 0) {
+			String insertSql = "INSERT INTO core.forecasthours (projectid) VALUES (?)";
+			jdbcTemplate.update(insertSql, requests.get(0).getProjectId());
+		}
+
 		for (CoreHoursRequest request : requests) {
 			int val = getValue(request.getDate());
 
@@ -98,9 +106,9 @@ public class ForecastingServiceImpl implements ForecastingService {
 			Date sqlDate = Date.valueOf(parsedDate);
 
 			String sql = "UPDATE core.forecasthours SET moddt = NOW(), forecasthours" + val + " = ?, month" + val
-					+ " = ?, modby = ? WHERE forecasthoursid = ?";
+					+ " = ?, modby = ? WHERE projectid = ?";
 			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
-					request.getForecastHoursId());
+					request.getProjectId());
 		}
 
 		response.Status = "success";
@@ -137,6 +145,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			response.setForecastHoursId(rs.getLong("forecasthoursid"));
 			response.setProjectColor(rs.getString("projectcolor"));
 			response.setProjectName(rs.getString("projectname"));
+			response.setProjectId(rs.getLong("projectid"));
 
 			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
 			Map<LocalDate, Integer> monthTotals = new LinkedHashMap<>();
@@ -305,7 +314,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			boldBlackFont.setBold(true);
 			boldBlackFont.setColor(IndexedColors.GREEN.getIndex());
 			boldBlack.setFont(boldBlackFont);
-			
+
 			CellStyle boldBlack1 = workbook.createCellStyle();
 			Font boldBlackFont1 = workbook.createFont();
 			boldBlackFont1.setBold(true);
@@ -390,7 +399,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				try {
 					sheet1.autoSizeColumn(i);
 				} catch (Exception e) {
-					sheet1.setColumnWidth(i, 15 * 256); 
+					sheet1.setColumnWidth(i, 15 * 256);
 					logger.warn("Auto-sizing failed for column {} in sheet1, using manual width", i);
 				}
 			}
