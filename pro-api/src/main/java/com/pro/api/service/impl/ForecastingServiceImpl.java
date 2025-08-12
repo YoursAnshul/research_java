@@ -125,7 +125,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month12 AS month12, fh.forecasthours12 AS forecasthours12, "
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
-				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
+				+ "LEFT OUTER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
 				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
 		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
 			sql += "AND p.projectid IN (" + codeValues + ") ";

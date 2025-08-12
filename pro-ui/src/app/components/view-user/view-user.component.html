@@ -562,24 +562,24 @@
           </thead>
           <tbody>
             <tr>
-              <td
+             <td class="px-3 py-2 border text-center"
                 *ngFor="let ch of numSequence(14); let i = index"
                 [class.current-month-highlight1]="
                   isCurrentMonth(coreHours['month' + (i + 1)])
                 "
               >
-                <mat-form-field
+                <!-- <mat-form-field
                   class="coreHoursInput"
                   style="
                     height: 50px;
-                    width: 65px;
                     border: 1px solid black !important;
                     border-radius: 4px;
                   "
-                >
+                > -->
                   <input
-                    style="align-items: center"
+                    class="w-12 py-2 border  rounded text-center bg-white"
                     type="text"
+                    style="border: 1px solid black !important;border-radius: 4px;"
                     matInput
                     [(ngModel)]="coreHours['coreHours' + (i + 1)]"
                     (keyup)="setChanged(); nvlHours(coreHours, i + 1)"
@@ -587,10 +587,13 @@
                     name="core-hours-{{ i }}"
                     autocomplete="off"
                     maxlength="3"
-                    minlength="0"
                     [disabled]="isEdit || readOnly"
                   />
-                </mat-form-field>
+            <!-- <input class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
+              [value]="getCoreHour(res, $index)" (keydown)="validateKeyDown($event)"
+              (input)="onCoreHourChange($event, monthKeys[$index], res)" inputmode="numeric" pattern="[0-9]*"
+              maxlength="3" min="0" /> -->
+                <!-- </mat-form-field> -->
               </td>
             </tr>
           </tbody>

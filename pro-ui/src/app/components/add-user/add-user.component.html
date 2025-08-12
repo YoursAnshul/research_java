@@ -147,13 +147,14 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td *ngFor="let ch of numSequence(14); let i = index" [class.current-month-highlight1]="isCurrentMonth(coreHours['month' + (i + 1)])">
-                        <mat-form-field class="coreHoursInput" style="height: 50px; border: 1px solid black !important; border-radius: 4px; width: 55px;">
-                          <input style="align-items: center; " type="text" matInput [(ngModel)]="coreHours['coreHours' + (i + 1)]"
-                            (keyup)="setChanged(); nvlHours(coreHours, (i + 1))" (keypress)="numberRestrict($event)"
-                            name="core-hours-{{i}}" autocomplete="off" maxlength="4">
-                        </mat-form-field>
-                      </td>
+                      <td class="px-3 py-2 border text-center" *ngFor="let ch of numSequence(14); let i = index"
+              [class.current-month-highlight1]="isCurrentMonth(coreHours['month' + (i + 1)])">
+              <!-- <mat-form-field class="coreHoursInput" style="height: 50px; border: 1px solid black !important; border-radius: 4px; width: 55px;"> -->
+              <input class="w-12 py-2 border  rounded text-center bg-white" type="text" matInput
+                [(ngModel)]="coreHours['coreHours' + (i + 1)]" (keyup)="setChanged(); nvlHours(coreHours, (i + 1))"
+                (keypress)="numberRestrict($event)" name="core-hours-{{i}}" autocomplete="off" maxlength="3">
+              <!-- </mat-form-field> -->
+            </td>
                     </tr>
                   </tbody>
                 </table>
