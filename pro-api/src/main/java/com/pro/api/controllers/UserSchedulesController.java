@@ -382,8 +382,8 @@ public class UserSchedulesController {
 					// A shift schedule for a weekday, Monday thru Friday, should begin at or after
 					// 1 PM.
 					schedulesTemp = schedules.stream().filter(s -> s.getStartdatetime() != null)
-							.filter(s -> s.getStartdatetime().getDayOfWeek() != DayOfWeek.SATURDAY
-									&& s.getStartdatetime().getDayOfWeek() != DayOfWeek.SUNDAY
+							.filter(s -> s.getStartdatetime().atZoneSameInstant(serverZoneId).getDayOfWeek() != DayOfWeek.SATURDAY
+									&& s.getStartdatetime().atZoneSameInstant(serverZoneId).getDayOfWeek() != DayOfWeek.SUNDAY
 									&& s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour() < 13)
 							.collect(Collectors.toList());
 
@@ -391,7 +391,7 @@ public class UserSchedulesController {
 
 					// A shift schedule for Saturday should begin at or after 9 AM.
 					schedulesTemp = schedules.stream().filter(s -> s.getStartdatetime() != null)
-							.filter(s -> s.getStartdatetime().getDayOfWeek() == DayOfWeek.SATURDAY
+							.filter(s -> s.getStartdatetime().atZoneSameInstant(serverZoneId).getDayOfWeek() == DayOfWeek.SATURDAY
 									&& s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour() < 9)
 							.collect(Collectors.toList());
 
@@ -399,7 +399,7 @@ public class UserSchedulesController {
 
 					// A shift schedule for Sunday should begin at or after 12 noon.
 					schedulesTemp = schedules.stream().filter(s -> s.getStartdatetime() != null)
-							.filter(s -> s.getStartdatetime().getDayOfWeek() == DayOfWeek.SUNDAY
+							.filter(s -> s.getStartdatetime().atZoneSameInstant(serverZoneId).getDayOfWeek() == DayOfWeek.SUNDAY
 									&& s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour() < 12)
 							.collect(Collectors.toList());
 
@@ -473,22 +473,15 @@ public class UserSchedulesController {
 				// ------------------------------------
 				// schedule level 1 only
 				// ------------------------------------
-				//TODO: change to 2 night shifts every month instead of 1 every week
+				// An interviewer's schedule should include 2-night shifts, until at or after 9 p.m., each month
 				if (schedulinglevel == 1) {
 					List<LocalDateTime> schedulesWeeklyTemp = schedulesWeekly.stream()
 							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
 									&& (s.getEnddatetime().atZoneSameInstant(serverZoneId).getHour() >= 21
 											|| s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour() >= 21))
 							.map(ViUserSchedule::getWeekStart).distinct().sorted().collect(Collectors.toList());
-					boolean twoConsecutive = false;
-					if (schedulesWeeklyTemp.size() == 2) {
-						long daysDifference = java.time.temporal.ChronoUnit.DAYS.between(schedulesWeeklyTemp.get(0),
-								schedulesWeeklyTemp.get(1));
-						if (daysDifference <= 7) {
-							twoConsecutive = true;
-						}
-					}
-					if (schedulesWeeklyTemp.size() < 2 || (schedulesWeeklyTemp.size() == 2 && twoConsecutive)) {
+
+					if (schedulesWeeklyTemp.size() < 2 || schedulesWeeklyTemp.size() > 2) {
 						addMessage(validationMessages, 10, um.getInMonth(), um.getDempoId(), null);
 					}
 				}
@@ -517,16 +510,15 @@ public class UserSchedulesController {
 					// Get all weekend shifts that are at least 4 hours long
 					List<OffsetDateTime> weekendShifts = schedulesWeekly.stream()
 							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
-									&& (s.getStartdatetime().getDayOfWeek() == DayOfWeek.SATURDAY
-											|| s.getStartdatetime().getDayOfWeek() == DayOfWeek.SUNDAY)
-									&& (s.getEnddatetime().toLocalTime().toSecondOfDay()
-											- s.getStartdatetime().toLocalTime().toSecondOfDay()) / 3600 >= 4)
+									&& (s.getStartdatetime().atZoneSameInstant(serverZoneId).getDayOfWeek() == DayOfWeek.SATURDAY
+											|| s.getStartdatetime().atZoneSameInstant(serverZoneId).getDayOfWeek() == DayOfWeek.SUNDAY)
+							)
 							.map(ViUserSchedule::getStartdatetime)
 							.distinct()
 							.collect(Collectors.toList());
 
-					// Check if there are at least 2 weekend shifts in the month
-					if (weekendShifts.size() < 2) {
+					// Check if there are at 2 weekend shifts in the month
+					if (weekendShifts.size() < 2 || weekendShifts.size() > 2) {
 						addMessage(validationMessages, 11, um.getInMonth(), um.getDempoId(), null);
 					}
 				}
@@ -583,11 +575,17 @@ public class UserSchedulesController {
 
 
 	private void deleteValidationMessages(ValidationMessage userMonth) {
-		List<ValidationMessage> existingValidationMessages = validationMessageRepository
-				.findByDempoIdAndInMonthYearAndInMonthMonth(userMonth.getDempoId(), userMonth.getInMonth().getYear(),
-						userMonth.getInMonth().getMonthValue());
-		if (existingValidationMessages.size() > 0) {
-			validationMessageRepository.deleteAll(existingValidationMessages);
+		try {
+			List<ValidationMessage> existingValidationMessages = validationMessageRepository
+					.findByDempoIdAndInMonthYearAndInMonthMonth(userMonth.getDempoId(), userMonth.getInMonth().getYear(),
+							userMonth.getInMonth().getMonthValue());
+			if (existingValidationMessages.size() > 0) {
+				validationMessageRepository.deleteAll(existingValidationMessages);
+			}
+		} catch (Exception ex) {
+			// If deletion fails due to concurrent modification, log and continue
+			// The next save operation will handle the conflict
+			logger.warn("Concurrent deletion detected for validation messages. Will retry on save.", ex);
 		}
 	}
 
