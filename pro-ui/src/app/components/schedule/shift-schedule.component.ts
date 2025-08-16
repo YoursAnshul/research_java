@@ -242,11 +242,38 @@ export class ShiftScheduleComponent implements OnInit {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   confirmatationClose(): void {
-    if (this.isModified) {
-      const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
+    let shouldShowConfirmation = false;
+    
+    if (this.authenticatedUser.interviewer) {
+      const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
+      const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
+      const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
+      const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate;
+    } else if (this.authenticatedUser.admin &&  this.profileType != 'user-profile') {
+      const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
+      const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
+      const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
+      const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
+      const userChanged = this.shiftForm.get('user')?.dirty && this.shiftForm.get('user')?.value;
+      const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
+      
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || projectsChanged || userChanged || userDate;
+    }
+    else if (this.authenticatedUser.admin &&  this.profileType == 'user-profile') {
+      const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
+      const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
+      const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
+      // const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
+      const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
+      
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate ;
+    }
+
+    if (shouldShowConfirmation) {
+     const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
-
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           this.onClose();
