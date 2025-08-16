@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -84,7 +85,6 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
@@ -95,20 +95,30 @@ public class ForecastingServiceImpl implements ForecastingService {
 			jdbcTemplate.update(insertSql, requests.get(0).getProjectId());
 		}
 
-		for (CoreHoursRequest request : requests) {
-			int val = getValue(request.getDate());
+		Map<LocalDate, List<CoreHoursRequest>> groupedByDate = requests.stream()
+				.collect(Collectors.groupingBy(req -> LocalDate.parse(req.getDate(), formatter)));
 
-			if (val < 1 || val > 14) {
-				continue;
-			}
-
-			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+		for (Map.Entry<LocalDate, List<CoreHoursRequest>> entry : groupedByDate.entrySet()) {
+			LocalDate parsedDate = entry.getKey();
 			Date sqlDate = Date.valueOf(parsedDate);
 
-			String sql = "UPDATE core.forecasthours SET moddt = NOW(), forecasthours" + val + " = ?, month" + val
-					+ " = ?, modby = ? WHERE projectid = ?";
-			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
-					request.getProjectId());
+			for (int i = 1; i <= 14; i++) {
+				String resetSql = "UPDATE core.forecasthours " + "SET forecasthours" + i
+						+ " = 0, moddt = NOW(), modby = ? " + "WHERE projectid = ? AND month" + i + " = ?";
+				jdbcTemplate.update(resetSql, requests.get(0).getEntryBy(), // modby
+						requests.get(0).getProjectId(), sqlDate);
+			}
+
+			for (CoreHoursRequest request : entry.getValue()) {
+				int val = getValue(request.getDate());
+				if (val < 1 || val > 14) {
+					continue;
+				}
+
+				String sql = "UPDATE core.forecasthours " + "SET moddt = NOW(), forecasthours" + val + " = ?, month"
+						+ val + " = ?, modby = ? " + "WHERE projectid = ?";
+				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(), request.getProjectId());
+			}
 		}
 
 		response.Status = "success";
@@ -272,22 +282,34 @@ public class ForecastingServiceImpl implements ForecastingService {
 	@Override
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		for (CoreHoursRequest request : requests) {
-			int val = getValue(request.getDate());
+		Map<LocalDate, List<CoreHoursRequest>> groupedByDate = requests.stream()
+				.collect(Collectors.groupingBy(req -> LocalDate.parse(req.getDate(), formatter)));
 
-			if (val < 1 || val > 14) {
-				continue;
-			}
-			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+		for (Map.Entry<LocalDate, List<CoreHoursRequest>> entry : groupedByDate.entrySet()) {
+			LocalDate parsedDate = entry.getKey();
 			Date sqlDate = Date.valueOf(parsedDate);
 
-			String sql = "UPDATE core.corehours SET moddt = NOW(), corehours" + val + " = ?, month" + val
-					+ " = ?, modby = ?  WHERE corehoursid = ?";
-			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
-					request.getCoreHoursId());
+			for (int i = 1; i <= 14; i++) {
+				String resetSql = "UPDATE core.corehours " + "SET corehours" + i + " = 0, moddt = NOW(), modby = ? "
+						+ "WHERE corehoursid = ? AND month" + i + " = ?";
+				jdbcTemplate.update(resetSql, requests.get(0).getEntryBy(), // modby
+						requests.get(0).getCoreHoursId(), // same record
+						sqlDate);
+			}
+
+			for (CoreHoursRequest request : entry.getValue()) {
+				int val = getValue(request.getDate());
+				if (val < 1 || val > 14) {
+					continue;
+				}
+
+				String sql = "UPDATE core.corehours " + "SET moddt = NOW(), corehours" + val + " = ?, month" + val
+						+ " = ?, modby = ? " + "WHERE corehoursid = ?";
+				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
+						request.getCoreHoursId());
+			}
 		}
 
 		response.Status = "success";
