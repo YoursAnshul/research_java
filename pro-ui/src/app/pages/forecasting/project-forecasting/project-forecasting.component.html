@@ -1,6 +1,6 @@
 <div
   class="inner-container"
-  *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)"
+  *ngIf="authenticatedUser?.netID && !authenticatedUser?.admin"
 >
   <h2>No Access</h2>
   <p>Your user account does not have access to view this page.</p>
@@ -10,7 +10,7 @@
   </p>
 </div>
 
-<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin">
+<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin ">
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center">
       <div class="min-w-[225px] pr-4 py-1">
@@ -38,29 +38,36 @@
     <div class="flex space-x-2">
       <button
         (click)="saveCoreHours()"
-        class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
+        class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400 flex items-center justify-center"
       >
-        Save
+        <span class="ml-2">Save</span>
       </button>
+
       <button
         (click)="export()"
         class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
       >
-        Export
+        <span class="ml-2">Export</span>
       </button>
     </div>
   </div>
-  <div
-    class="overflow-x-auto border border-blue-600 max-h-[600px]"
-    style="border-width: 1px !important"
-  >
+  <div class="border border-blue-600 max-h-[600px] overflow-y-auto">
     <table
-      class="text-black min-w-full text-s border-separate border-spacing-0"
+      class="min-w-full border-separate border-spacing-0 table-fixed text-black text-s"
     >
-      <thead class="sticky top-0 bg-gray-200 z-10">
-        <tr class="bg-[#E7F3FA] border border-blue-600">
+      <!-- One colgroup shared by all rows -->
+      <colgroup>
+        <col class="w-48" />
+        @for (month of monthsHeader; track $index) {
+        <col />
+        }
+      </colgroup>
+
+      <!-- Sticky Header -->
+      <thead class="bg-[#E7F3FA] sticky top-0 z-10">
+        <tr>
           <th
-            class="text-center px-2 py-1 border-r border-b border-blue-600 text-left font-semibold w-48 whitespace-nowrap"
+            class="text-left px-2 py-1 border-r border-b border-blue-600 font-semibold whitespace-nowrap"
           >
             Project (hrs. per week)
           </th>
@@ -73,6 +80,8 @@
           }
         </tr>
       </thead>
+
+      <!-- Scrollable Body -->
       <tbody>
         @for (res of list; track res) {
         <tr class="bg-white">
@@ -86,14 +95,19 @@
               {{ res.projectName }}
             </span>
           </td>
-
           @for (month of monthsHeader; track month) {
           <td class="px-3 py-2 border text-center">
             <input
               class="w-12 py-2 border border-blue-600 rounded text-center bg-white"
               [value]="getCoreHour(res, monthsHeader.indexOf(month))"
               (keydown)="validateKeyDown($event)"
-              (input)="onCoreHourChange($event, monthKeys[monthsHeader.indexOf(month)], res)"
+              (input)="
+                onCoreHourChange(
+                  $event,
+                  monthKeys[monthsHeader.indexOf(month)],
+                  res
+                )
+              "
               inputmode="numeric"
               pattern="[0-9]*"
               maxlength="3"
@@ -104,10 +118,10 @@
         </tr>
         }
       </tbody>
-      <tfoot>
-        <tr
-          class="bg-[#E7F3FA] border border-blue-600 sticky bottom-[76px] z-10"
-        >
+
+      <!-- Sticky Footer -->
+      <tfoot class="sticky bottom-0 bg-white">
+        <tr class="bg-[#E7F3FA]">
           <td
             class="p-2 border-r border-t border-b border-blue-600 font-bold whitespace-nowrap"
           >
@@ -122,14 +136,16 @@
           }
         </tr>
 
-        <tr class="bg-gray-100 sticky bottom-[38px] z-10">
+        <tr class="bg-gray-100">
           <td class="p-2 border whitespace-nowrap">User Core Hr. Totals</td>
           @for (total of totalCoreHours; track $index) {
-          <td class="p-2 border text-center">{{ total }}</td>
+          <td class="p-2 border text-center">
+            {{ total }}
+          </td>
           }
         </tr>
 
-        <tr class="bg-gray-100 sticky bottom-0 z-10">
+        <tr class="bg-gray-100">
           <td class="p-2 border font-semibold whitespace-nowrap">
             Coverage Calculation
           </td>
@@ -137,9 +153,9 @@
           <td
             class="p-2 border text-center font-bold"
             [ngClass]="{
-          'text-green-600': (val - projectTotalCorehours[$index]) >= 0,
-          'text-red-600': (val - projectTotalCorehours[$index]) < 0
-        }"
+              'text-green-600': val - projectTotalCorehours[$index] >= 0,
+              'text-red-600': val - projectTotalCorehours[$index] < 0
+            }"
           >
             {{ val - projectTotalCorehours[$index] }}
           </td>
@@ -147,7 +163,5 @@
         </tr>
       </tfoot>
     </table>
-    <!-- <app-table-paginator [sourceData]="list" [(currentPage)]="currentPage" [(paginatedData)]="paginatedList"
-    (pageChange)="onPageChanged()" class="custom-paginator"></app-table-paginator> -->
   </div>
 </div>

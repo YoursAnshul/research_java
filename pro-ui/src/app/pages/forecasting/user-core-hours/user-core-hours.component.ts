@@ -35,8 +35,10 @@ export class UserCoreHoursComponent implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Users',
         });
-        this.dropDownValues = this.dropDownValues.filter(item =>
-          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        this.dropDownValues = this.dropDownValues.filter((item) =>
+          ['All Users', 'Project Team', 'Interviewer'].includes(
+            item.dropDownItem
+          )
         );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
@@ -82,8 +84,10 @@ export class UserCoreHoursComponent implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Users',
         });
-        this.dropDownValues = this.dropDownValues.filter(item =>
-          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        this.dropDownValues = this.dropDownValues.filter((item) =>
+          ['All Users', 'Project Team', 'Interviewer'].includes(
+            item.dropDownItem
+          )
         );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
@@ -255,9 +259,9 @@ export class UserCoreHoursComponent implements OnInit {
         coreHours: value,
       });
     }
-
   }
 
+  
 
   saveCoreHours(): void {
     if (this.editedCoreHours.length === 0) {

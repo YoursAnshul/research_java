@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -20,6 +21,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,6 +38,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class ForecastingServiceImpl implements ForecastingService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ForecastingServiceImpl.class);
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -80,23 +85,46 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		for (CoreHoursRequest request : requests) {
-			int val = getValue(request.getDate());
+		String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
+		Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, requests.get(0).getProjectId());
 
-			if (val < 1 || val > 14) {
-				continue;
-			}
+		if (count == null || count == 0) {
+			String insertSql = "INSERT INTO core.forecasthours (projectid) VALUES (?)";
+			jdbcTemplate.update(insertSql, requests.get(0).getProjectId());
+		}
 
-			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+		Map<LocalDate, List<CoreHoursRequest>> groupedByDate = requests.stream()
+				.collect(Collectors.groupingBy(req -> LocalDate.parse(req.getDate(), formatter)));
+
+		for (Map.Entry<LocalDate, List<CoreHoursRequest>> entry : groupedByDate.entrySet()) {
+			LocalDate parsedDate = entry.getKey();
 			Date sqlDate = Date.valueOf(parsedDate);
 
-			String sql = "UPDATE core.forecasthours SET moddt = NOW(), forecasthours" + val + " = ?, month" + val
-					+ " = ?, modby = ? WHERE forecasthoursid = ?";
-			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
-					request.getForecastHoursId());
+			for (int i = 1; i <= 14; i++) {
+				String resetSql = "UPDATE core.forecasthours " + "SET forecasthours" + i
+						+ " = 0, moddt = NOW(), modby = ? " + "WHERE projectid = ? AND month" + i + " = ?";
+				jdbcTemplate.update(resetSql, requests.get(0).getEntryBy(), // modby
+						requests.get(0).getProjectId(), sqlDate);
+			}
+
+			for (CoreHoursRequest request : entry.getValue()) {
+				int val = getValue(request.getDate());
+				if (val < 1 || val > 14) {
+					continue;
+				}
+
+				String sql = "UPDATE core.forecasthours " + "SET moddt = NOW(), forecasthours" + val + " = ?, month"
+						+ val + " = ?, modby = ? " + "WHERE projectid = ?";
+				System.out.println("ANshullll-----"+sql);
+				System.out.println("parsedDate==="+parsedDate);
+				System.out.println("sqlDate==="+sqlDate);
+				System.out.println(request.getCoreHours());
+				System.out.println(request.getProjectId());
+				System.out.println(request.getDate());
+				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(), request.getProjectId());
+			}
 		}
 
 		response.Status = "success";
@@ -128,11 +156,13 @@ public class ForecastingServiceImpl implements ForecastingService {
 		}
 
 		sql += "ORDER BY p.projectname ASC";
+		System.out.println(sql);
 		List<ForecastingResponse> result = jdbcTemplate.query(sql, (rs, rowNum) -> {
 			ForecastingResponse response = new ForecastingResponse();
 			response.setForecastHoursId(rs.getLong("forecasthoursid"));
 			response.setProjectColor(rs.getString("projectcolor"));
 			response.setProjectName(rs.getString("projectname"));
+			response.setProjectId(rs.getLong("projectid"));
 
 			LocalDate currentMonth = LocalDate.now().withDayOfMonth(1);
 			Map<LocalDate, Integer> monthTotals = new LinkedHashMap<>();
@@ -259,22 +289,34 @@ public class ForecastingServiceImpl implements ForecastingService {
 	@Override
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
-
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		for (CoreHoursRequest request : requests) {
-			int val = getValue(request.getDate());
+		Map<LocalDate, List<CoreHoursRequest>> groupedByDate = requests.stream()
+				.collect(Collectors.groupingBy(req -> LocalDate.parse(req.getDate(), formatter)));
 
-			if (val < 1 || val > 14) {
-				continue;
-			}
-			LocalDate parsedDate = LocalDate.parse(request.getDate(), formatter);
+		for (Map.Entry<LocalDate, List<CoreHoursRequest>> entry : groupedByDate.entrySet()) {
+			LocalDate parsedDate = entry.getKey();
 			Date sqlDate = Date.valueOf(parsedDate);
 
-			String sql = "UPDATE core.corehours SET moddt = NOW(), corehours" + val + " = ?, month" + val
-					+ " = ?, modby = ?  WHERE corehoursid = ?";
-			this.jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
-					request.getCoreHoursId());
+			for (int i = 1; i <= 14; i++) {
+				String resetSql = "UPDATE core.corehours " + "SET corehours" + i + " = 0, moddt = NOW(), modby = ? "
+						+ "WHERE corehoursid = ? AND month" + i + " = ?";
+				jdbcTemplate.update(resetSql, requests.get(0).getEntryBy(), // modby
+						requests.get(0).getCoreHoursId(), // same record
+						sqlDate);
+			}
+
+			for (CoreHoursRequest request : entry.getValue()) {
+				int val = getValue(request.getDate());
+				if (val < 1 || val > 14) {
+					continue;
+				}
+
+				String sql = "UPDATE core.corehours " + "SET moddt = NOW(), corehours" + val + " = ?, month" + val
+						+ " = ?, modby = ? " + "WHERE corehoursid = ?";
+				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
+						request.getCoreHoursId());
+			}
 		}
 
 		response.Status = "success";
@@ -301,7 +343,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			boldBlackFont.setBold(true);
 			boldBlackFont.setColor(IndexedColors.GREEN.getIndex());
 			boldBlack.setFont(boldBlackFont);
-			
+
 			CellStyle boldBlack1 = workbook.createCellStyle();
 			Font boldBlackFont1 = workbook.createFont();
 			boldBlackFont1.setBold(true);
@@ -383,7 +425,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 			}
 
 			for (int i = 0; i < sheet1.getRow(0).getLastCellNum(); i++) {
-				sheet1.autoSizeColumn(i);
+				try {
+					sheet1.autoSizeColumn(i);
+				} catch (Exception e) {
+					sheet1.setColumnWidth(i, 15 * 256);
+					logger.warn("Auto-sizing failed for column {} in sheet1, using manual width", i);
+				}
 			}
 
 			// ========== Sheet 2: Project Forecasting ==========
@@ -446,7 +493,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 			}
 
 			for (int i = 0; i < sheet2.getRow(0).getLastCellNum(); i++) {
-				sheet2.autoSizeColumn(i);
+				try {
+					sheet2.autoSizeColumn(i);
+				} catch (Exception e) {
+					sheet2.setColumnWidth(i, 15 * 256);
+					logger.warn("Auto-sizing failed for column {} in sheet2, using manual width", i);
+				}
 			}
 
 			// ========== Export ==========

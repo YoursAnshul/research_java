@@ -39,8 +39,10 @@ export class ProjectForecastingComponent implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Users',
         });
-        this.dropDownValues = this.dropDownValues.filter(item =>
-          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        this.dropDownValues = this.dropDownValues.filter((item) =>
+          ['All Users', 'Project Team', 'Interviewer'].includes(
+            item.dropDownItem
+          )
         );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
@@ -84,6 +86,7 @@ export class ProjectForecastingComponent implements OnInit {
     date: string;
     coreHours: number;
     entryBy?: string;
+    projectId?: number;
   }[] = [];
   dropDownValues: any[] = [];
   selectedValues: SelectedValue[] = [];
@@ -103,8 +106,10 @@ export class ProjectForecastingComponent implements OnInit {
           codeValues: 0,
           dropDownItem: 'All Users',
         });
-        this.dropDownValues = this.dropDownValues.filter(item =>
-          ['All Users', 'Project Team', 'Interviewer'].includes(item.dropDownItem)
+        this.dropDownValues = this.dropDownValues.filter((item) =>
+          ['All Users', 'Project Team', 'Interviewer'].includes(
+            item.dropDownItem
+          )
         );
         const selectedItem = this.dropDownValues.find(
           (item) => item.codeValues === 3
@@ -262,11 +267,11 @@ export class ProjectForecastingComponent implements OnInit {
         forecastHoursId: res.forecastHoursId ?? 0,
         date: monthKey,
         coreHours: value,
+        projectId: res.projectId,
       });
     }
 
   }
-
 
   validateKeyDown(event: KeyboardEvent): void {
     const allowedKeys = [
@@ -288,6 +293,7 @@ export class ProjectForecastingComponent implements OnInit {
       this.showToastMessage('No changes to save.', 'error');
       return;
     }
+
 
     this.editedCoreHours = this.editedCoreHours.map((e) => ({
       ...e,

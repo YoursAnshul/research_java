@@ -7,6 +7,7 @@ public class CoreHoursRequest {
 	private int coreHours;
 	private Long coreHoursId;
 	private String entryBy;
+	private Long projectId;
 
 	public int getCoreHours() {
 		return coreHours;
@@ -46,6 +47,14 @@ public class CoreHoursRequest {
 
 	public void setEntryBy(String entryBy) {
 		this.entryBy = entryBy;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 }
