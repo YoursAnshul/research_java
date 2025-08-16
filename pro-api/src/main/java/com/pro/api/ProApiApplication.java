@@ -13,7 +13,6 @@ public class ProApiApplication {
 	public static void main(String[] args) {
 
 		SpringApplication.run(ProApiApplication.class, args);
-		System.setProperty("java.awt.headless", "true");
 		 logger.info("Hello PRO!");
 	}
 }
