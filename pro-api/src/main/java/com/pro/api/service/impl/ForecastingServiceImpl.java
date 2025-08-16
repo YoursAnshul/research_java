@@ -117,12 +117,6 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 				String sql = "UPDATE core.forecasthours " + "SET moddt = NOW(), forecasthours" + val + " = ?, month"
 						+ val + " = ?, modby = ? " + "WHERE projectid = ?";
-				System.out.println("ANshullll-----"+sql);
-				System.out.println("parsedDate==="+parsedDate);
-				System.out.println("sqlDate==="+sqlDate);
-				System.out.println(request.getCoreHours());
-				System.out.println(request.getProjectId());
-				System.out.println(request.getDate());
 				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(), request.getProjectId());
 			}
 		}

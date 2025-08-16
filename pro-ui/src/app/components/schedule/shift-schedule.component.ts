@@ -610,12 +610,18 @@ export class ShiftScheduleComponent implements OnInit {
     selectedDate.setHours(0, 0, 0, 0);
     this.isDateBlockDate = false;
 
-       if (selectedDate.getFullYear() !== today.getFullYear()) {
-    this.shiftForm.get('startTime')?.enable();
-    this.shiftForm.get('endTime')?.enable();
-    this.shiftForm.get('dayWiseDate')?.setErrors(null);
-    return;
-  
+    if (selectedDate.getFullYear() !== today.getFullYear()) {
+      this.shiftForm.get('startTime')?.enable();
+      this.shiftForm.get('endTime')?.enable();
+      this.shiftForm.get('dayWiseDate')?.setErrors(null);
+      return;
+    }
+
+    if (selectedDate.getMonth() < today.getMonth()) {
+      this.shiftForm.get('startTime')?.enable();
+      this.shiftForm.get('endTime')?.enable();
+      this.shiftForm.get('dayWiseDate')?.setErrors(null);
+      return;
     }
     if (resultDate >= today) {
       let monthVal = selectedDate.getMonth();
