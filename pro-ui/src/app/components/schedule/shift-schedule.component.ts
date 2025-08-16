@@ -237,41 +237,41 @@ export class ShiftScheduleComponent implements OnInit {
     );
   }
 
-  ngOnChanges(): void {}
+  ngOnChanges(): void { }
   getBackgroundColor(time: string): string {
     return time.includes('AM') ? '#FFF5BF' : '#DDE0EF';
   }
   confirmatationClose(): void {
     let shouldShowConfirmation = false;
-    
+
     if (this.authenticatedUser.interviewer) {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
       const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
       const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
       shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate;
-    } else if (this.authenticatedUser.admin &&  this.profileType != 'user-profile') {
+    } else if (this.authenticatedUser.admin && this.profileType != 'user-profile') {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
       const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
       const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
       const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
       const userChanged = this.shiftForm.get('user')?.dirty && this.shiftForm.get('user')?.value;
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-      
+
       shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || projectsChanged || userChanged || userDate;
     }
-    else if (this.authenticatedUser.admin &&  this.profileType == 'user-profile') {
+    else if (this.authenticatedUser.admin && this.profileType == 'user-profile') {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
       const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
       const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
       // const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-      
-      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate ;
+
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate;
     }
 
     if (shouldShowConfirmation) {
-     const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
+      const dialogRef = this.dialog.open(ScheduleCloseDialogComponent, {
         panelClass: 'custom-dialog-container',
       });
       dialogRef.afterClosed().subscribe((result) => {
@@ -419,12 +419,16 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDate = new Date(date);
         if (this.authenticatedUser?.interviewer) {
           this.validateBlockOutDate(date);
-          if (this.canEdit == null ||  this.canEdit === false) {
+          if (this.canEdit == null || this.canEdit === false) {
             this.validateDateOption(this.shiftForm.get('dayWiseDate')?.value);
           }
         }
 
         this.updateDayLabel(date);
+
+        // Trigger change detection to re-evaluate time blocking rules
+        // This ensures Saturday and Sunday time restrictions are applied when date changes
+        this.cdr.detectChanges();
       });
 
     this.shiftForm.get('startTime')?.valueChanges.subscribe((startTime) => {
@@ -702,6 +706,7 @@ export class ShiftScheduleComponent implements OnInit {
 
     const blockedEntries = this.blockOutDates.filter((blockOut) => {
       const blockOutDate = new Date(blockOut.blockOutDay!);
+
       const blockOutDateOnly = new Date(
         blockOutDate.getFullYear(),
         blockOutDate.getMonth(),
@@ -709,7 +714,6 @@ export class ShiftScheduleComponent implements OnInit {
       );
       return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
     });
-
     if (blockedEntries.length === 0) {
       this.shiftForm.get('startTime')?.enable();
       this.shiftForm.get('endTime')?.enable();
@@ -720,7 +724,6 @@ export class ShiftScheduleComponent implements OnInit {
     const hasTimeBlock = blockedEntries.some(
       (blockOut) => blockOut.startTime && blockOut.endTime
     );
-
     if (!hasTimeBlock) {
       this.shiftForm.get('dayWiseDate')?.setErrors({ dateBlocked: true });
       this.shiftForm.get('startTime')?.disable();
@@ -736,7 +739,6 @@ export class ShiftScheduleComponent implements OnInit {
       if (blockOut.startTime && blockOut.endTime) {
         const normalizedStart = this.removeLeadingZero(blockOut.startTime);
         const normalizedEnd = this.removeLeadingZero(blockOut.endTime);
-
         this.blockedTimeSlots.push(
           ...this.generateBlockedTimeSlots(normalizedStart, normalizedEnd)
         );
@@ -754,28 +756,16 @@ export class ShiftScheduleComponent implements OnInit {
   generateBlockedTimeSlots(startTime: string, endTime: string): string[] {
     const blockedTimes: string[] = [];
 
-    // Separate AM and PM slots
-    const amSlots = this.timeSlots.filter((time) => time.includes('AM'));
-    const pmSlots = this.timeSlots.filter((time) => time.includes('PM'));
+    const startIndex = this.timeSlots.indexOf(startTime);
+    const endIndex = this.timeSlots.indexOf(endTime);
 
-    // Determine if the blocked range is AM or PM
-    const isAMBlock = startTime.includes('AM') && endTime.includes('AM');
-    const isPMBlock = startTime.includes('PM') && endTime.includes('PM');
+    if (startIndex === -1 || endIndex === -1) {
+      console.warn(`Time not found in timeSlots: startTime=${startTime}, endTime=${endTime}`);
+      return blockedTimes;
+    }
 
-    let isWithinRange = false;
-
-    if (isAMBlock) {
-      for (const time of amSlots) {
-        if (time === startTime) isWithinRange = true;
-        if (isWithinRange) blockedTimes.push(time);
-        if (time === endTime) break; // Stop after endTime
-      }
-    } else if (isPMBlock) {
-      for (const time of pmSlots) {
-        if (time === startTime) isWithinRange = true;
-        if (isWithinRange) blockedTimes.push(time);
-        if (time === endTime) break; // Stop after endTime
-      }
+    for (let i = startIndex; i <= endIndex; i++) {
+      blockedTimes.push(this.timeSlots[i]);
     }
 
     return blockedTimes;
@@ -790,48 +780,69 @@ export class ShiftScheduleComponent implements OnInit {
     return time.includes('AM') || (time.includes('PM') && hour === 12);
   }
 
-  isTimeBlocked(time: string): boolean {
+  isStartTimeBlocked(time: string): boolean {
+
+    if (this.authenticatedUser.interviewer && this.schedulinglevel && this.schedulinglevel == 1) {
+      if (this.currentDay === 'Saturday') {
+        const saturdayStartBlocked = ['8:00 AM', '8:30 AM'];
+        if (saturdayStartBlocked.includes(time)) {
+          return true;
+        }
+      }
+
+      if (this.currentDay === 'Sunday') {
+        const sundayStartBlocked = [
+          '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM',
+          '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM'
+        ];
+        if (sundayStartBlocked.includes(time)) {
+          return true;
+        }
+      }
+    }
     // Check if user is level 1 interviewer (role 3) and it's a weekday before 1 PM
-    // if (
-    //   this.authenticatedUser?.role === 3 && 
-    //   this.schedulinglevel === 1 &&
-    //   this.isWeekday(this.currentDay) &&
-    //   this.isBeforeOnePM(time)
-    // ) {
-    //   return true;
-    // }
-    if(this.authenticatedUser.interviewer && this.schedulinglevel && this.schedulinglevel == 1){
-    if (this.currentDay === 'Saturday') {
-      const saturdayStartBlocked = ['8:00 AM', '8:30 AM'];
-      if (saturdayStartBlocked.includes(time)) {
-        return true;
-      }
-      
-      const saturdayEndBlocked = ['8:00 AM', '8:30 AM', '9:00 AM'];
-      if (saturdayEndBlocked.includes(time)) {
-        return true;
-      }
+    if (
+      this.authenticatedUser?.role === 3 &&
+      this.schedulinglevel === 1 &&
+      this.isWeekday(this.currentDay) &&
+      this.isBeforeOnePM(time)
+    ) {
+      return true;
     }
-    
-    if (this.currentDay === 'Sunday') {
-      const sundayStartBlocked = [
-        '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', 
-        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM'
-      ];
-      if (sundayStartBlocked.includes(time)) {
-        return true;
-      }
-      
-      const sundayEndBlocked = [
-        '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', 
-        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM'
-      ];
-      if (sundayEndBlocked.includes(time)) {
-        return true;
-      }
-    }
+    return this.blockedTimeSlots.includes(time);
+
   }
-      return this.blockedTimeSlots.includes(time);
+
+  isEndTimeBlocked(time: string): boolean {
+
+    if (this.authenticatedUser.interviewer && this.schedulinglevel && this.schedulinglevel == 1) {
+      if (this.currentDay === 'Saturday') {
+        const saturdayEndBlocked = ['8:00 AM', '8:30 AM', '9:00 AM'];
+        if (saturdayEndBlocked.includes(time)) {
+          return true;
+        }
+      }
+
+      if (this.currentDay === 'Sunday') {
+        const sundayEndBlocked = [
+          '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM',
+          '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM'
+        ];
+        if (sundayEndBlocked.includes(time)) {
+          return true;
+        }
+      }
+    }
+    // Check if user is level 1 interviewer (role 3) and it's a weekday before 1 PM
+    if (
+      this.authenticatedUser?.role === 3 &&
+      this.schedulinglevel === 1 &&
+      this.isWeekday(this.currentDay) &&
+      this.isBeforeOnePM(time)
+    ) {
+      return true;
+    }
+    return this.blockedTimeSlots.includes(time);
   }
 
   openBlockDialog(isTimeSlot: boolean): void {
@@ -873,7 +884,7 @@ export class ShiftScheduleComponent implements OnInit {
           this.closeDialog();
         }
       });
-      });
+    });
   }
 
   closeDialog(): void {
@@ -1304,11 +1315,11 @@ export class ShiftScheduleComponent implements OnInit {
           !this.shiftSchedule.some(
             (shift) =>
               formatDate(shift.dayWiseDate) ===
-                formatDate(newShift.dayWiseDate) &&
+              formatDate(newShift.dayWiseDate) &&
               shift.startTime.trim().toLowerCase() ===
-                newShift.startTime.trim().toLowerCase() &&
+              newShift.startTime.trim().toLowerCase() &&
               shift.endTime.trim().toLowerCase() ===
-                newShift.endTime.trim().toLowerCase() &&
+              newShift.endTime.trim().toLowerCase() &&
               shift.user.dempoId === newShift.user.dempoId
           )
       );
@@ -1397,7 +1408,7 @@ export class ShiftScheduleComponent implements OnInit {
         } else {
         }
       },
-      (error) => {}
+      (error) => { }
     );
   }
   updateNewRequest(id: number): void {
@@ -1472,7 +1483,7 @@ export class ShiftScheduleComponent implements OnInit {
         } else {
         }
       },
-      (error) => {}
+      (error) => { }
     );
   }
   formatDateForRequest(date: Date): string {
@@ -1683,7 +1694,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
 
   // Emit selected date
-  emitSelectedDate(): void {}
+  emitSelectedDate(): void { }
 
   addDateUnitsToSelectedDate(unit: number): void {
     let selectedDt = new Date();
@@ -1730,8 +1741,8 @@ export class ShiftScheduleComponent implements OnInit {
       period === 'PM' && hours !== 12
         ? hours + 12
         : period === 'AM' && hours === 12
-        ? 0
-        : hours;
+          ? 0
+          : hours;
 
     date.setHours(hours, minutes, 0, 0);
     return date;
@@ -2427,7 +2438,7 @@ export class ShiftScheduleComponent implements OnInit {
             this.validationMessagesChecked = true;
           }
         },
-        (error) => {}
+        (error) => { }
       );
   }
 
@@ -2573,7 +2584,7 @@ export class ShiftScheduleComponent implements OnInit {
         (x) =>
           x.dempoId == sourceSchedules[i].dempoid &&
           Utils.formatDateOnlyToStringUTC(x.inMonth) ==
-            Utils.formatDateOnlyToStringUTC(schedFirstOf)
+          Utils.formatDateOnlyToStringUTC(schedFirstOf)
       );
 
       if (match.length < 1) {
@@ -2666,5 +2677,5 @@ export class ShiftScheduleComponent implements OnInit {
     const total = diffHours + formattedMinutes;
     return parseFloat(String(total)) || 0;
   }
-  
+
 }
