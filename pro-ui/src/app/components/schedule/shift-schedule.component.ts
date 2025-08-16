@@ -792,17 +792,46 @@ export class ShiftScheduleComponent implements OnInit {
 
   isTimeBlocked(time: string): boolean {
     // Check if user is level 1 interviewer (role 3) and it's a weekday before 1 PM
-    if (
-      this.authenticatedUser?.role === 3 && 
-      this.schedulinglevel === 1 &&
-      this.isWeekday(this.currentDay) &&
-      this.isBeforeOnePM(time)
-    ) {
-      return true;
+    // if (
+    //   this.authenticatedUser?.role === 3 && 
+    //   this.schedulinglevel === 1 &&
+    //   this.isWeekday(this.currentDay) &&
+    //   this.isBeforeOnePM(time)
+    // ) {
+    //   return true;
+    // }
+    if(this.authenticatedUser.interviewer && this.schedulinglevel && this.schedulinglevel == 1){
+    if (this.currentDay === 'Saturday') {
+      const saturdayStartBlocked = ['8:00 AM', '8:30 AM'];
+      if (saturdayStartBlocked.includes(time)) {
+        return true;
+      }
+      
+      const saturdayEndBlocked = ['8:00 AM', '8:30 AM', '9:00 AM'];
+      if (saturdayEndBlocked.includes(time)) {
+        return true;
+      }
     }
     
-    // Check other blocked time slots
-    return this.blockedTimeSlots.includes(time);
+    if (this.currentDay === 'Sunday') {
+      const sundayStartBlocked = [
+        '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', 
+        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM'
+      ];
+      if (sundayStartBlocked.includes(time)) {
+        return true;
+      }
+      
+      const sundayEndBlocked = [
+        '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', 
+        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM'
+      ];
+      if (sundayEndBlocked.includes(time)) {
+        return true;
+      }
+    }
+  }
+      return this.blockedTimeSlots.includes(time);
   }
 
   openBlockDialog(isTimeSlot: boolean): void {
