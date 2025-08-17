@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -85,39 +84,37 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	public GeneralResponse updateForeCastingHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-		String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
-		Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, requests.get(0).getProjectId());
-
-		if (count == null || count == 0) {
-			String insertSql = "INSERT INTO core.forecasthours (projectid) VALUES (?)";
-			jdbcTemplate.update(insertSql, requests.get(0).getProjectId());
+		if (requests == null || requests.isEmpty()) {
+			response.Status = "error";
+			response.Message = "No requests provided";
+			return response;
 		}
 
-		Map<LocalDate, List<CoreHoursRequest>> groupedByDate = requests.stream()
-				.collect(Collectors.groupingBy(req -> LocalDate.parse(req.getDate(), formatter)));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
-		for (Map.Entry<LocalDate, List<CoreHoursRequest>> entry : groupedByDate.entrySet()) {
-			LocalDate parsedDate = entry.getKey();
-			Date sqlDate = Date.valueOf(parsedDate);
+		for (CoreHoursRequest request : requests) {
+			Map<String, Integer> map = request.getCoreHoursByMonth();
+			if (map == null || map.isEmpty())
+				continue;
 
-			for (int i = 1; i <= 14; i++) {
-				String resetSql = "UPDATE core.forecasthours " + "SET forecasthours" + i
-						+ " = 0, moddt = NOW(), modby = ? " + "WHERE projectid = ? AND month" + i + " = ?";
-				jdbcTemplate.update(resetSql, requests.get(0).getEntryBy(), // modby
-						requests.get(0).getProjectId(), sqlDate);
-			}
+			for (Map.Entry<String, Integer> e : map.entrySet()) {
+				String dateStr = e.getKey();
+				Integer hours = e.getValue();
+				if (hours == null)
+					hours = 0;
 
-			for (CoreHoursRequest request : entry.getValue()) {
-				int val = getValue(request.getDate());
-				if (val < 1 || val > 14) {
+				LocalDate month = LocalDate.parse(dateStr, formatter).withDayOfMonth(1);
+				int slot = (int) ChronoUnit.MONTHS.between(baseMonth, month) + 1;
+				if (slot < 1 || slot > 14)
 					continue;
-				}
 
-				String sql = "UPDATE core.forecasthours " + "SET moddt = NOW(), forecasthours" + val + " = ?, month"
-						+ val + " = ?, modby = ? " + "WHERE projectid = ?";
-				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(), request.getProjectId());
+				Date sqlDate = Date.valueOf(month);
+
+				String sql = "UPDATE core.forecasthours " + "SET moddt = NOW(), forecasthours" + slot + " = ?, month"
+						+ slot + " = ?, modby = ? " + "WHERE projectid = ?";
+
+				jdbcTemplate.update(sql, hours, sqlDate, request.getEntryBy(), request.getProjectId());
 			}
 		}
 
@@ -282,33 +279,40 @@ public class ForecastingServiceImpl implements ForecastingService {
 	@Override
 	public GeneralResponse updateCoreHours(List<CoreHoursRequest> requests) {
 		GeneralResponse response = new GeneralResponse();
+		if (requests == null || requests.isEmpty()) {
+			response.Status = "error";
+			response.Message = "No requests provided";
+			return response;
+		}
+
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
-		Map<LocalDate, List<CoreHoursRequest>> groupedByDate = requests.stream()
-				.collect(Collectors.groupingBy(req -> LocalDate.parse(req.getDate(), formatter)));
-
-		for (Map.Entry<LocalDate, List<CoreHoursRequest>> entry : groupedByDate.entrySet()) {
-			LocalDate parsedDate = entry.getKey();
-			Date sqlDate = Date.valueOf(parsedDate);
-
-			for (int i = 1; i <= 14; i++) {
-				String resetSql = "UPDATE core.corehours " + "SET corehours" + i + " = 0, moddt = NOW(), modby = ? "
-						+ "WHERE corehoursid = ? AND month" + i + " = ?";
-				jdbcTemplate.update(resetSql, requests.get(0).getEntryBy(), // modby
-						requests.get(0).getCoreHoursId(), // same record
-						sqlDate);
+		for (CoreHoursRequest request : requests) {
+			Map<String, Integer> map = request.getCoreHoursByMonth();
+			if (map == null || map.isEmpty()) {
+				continue;
 			}
 
-			for (CoreHoursRequest request : entry.getValue()) {
-				int val = getValue(request.getDate());
-				if (val < 1 || val > 14) {
+			for (Map.Entry<String, Integer> e : map.entrySet()) {
+				String dateStr = e.getKey();
+				Integer hours = e.getValue();
+				if (hours == null) {
+					hours = 0;
+				}
+
+				LocalDate month = LocalDate.parse(dateStr, formatter).withDayOfMonth(1);
+				int slot = (int) ChronoUnit.MONTHS.between(baseMonth, month) + 1;
+				if (slot < 1 || slot > 14) {
 					continue;
 				}
 
-				String sql = "UPDATE core.corehours " + "SET moddt = NOW(), corehours" + val + " = ?, month" + val
+				Date sqlDate = Date.valueOf(month);
+
+				String sql = "UPDATE core.corehours " + "SET moddt = NOW(), corehours" + slot + " = ?, month" + slot
 						+ " = ?, modby = ? " + "WHERE corehoursid = ?";
-				jdbcTemplate.update(sql, request.getCoreHours(), sqlDate, request.getEntryBy(),
-						request.getCoreHoursId());
+
+				jdbcTemplate.update(sql, hours, sqlDate, request.getEntryBy(), request.getCoreHoursId());
 			}
 		}
 

@@ -83,11 +83,13 @@ export class ProjectForecastingComponent implements OnInit {
   projectTotalCorehours: number[] = [];
   editedCoreHours: {
     forecastHoursId: number;
-    date: string;
-    coreHours: number;
+    date?: string;
+    coreHours?: number;
     entryBy?: string;
     projectId?: number;
+    coreHoursByMonth?: any;
   }[] = [];
+
   dropDownValues: any[] = [];
   selectedValues: SelectedValue[] = [];
   public activeProjects: IProjectMin[] = [];
@@ -247,7 +249,6 @@ export class ProjectForecastingComponent implements OnInit {
       input.value = '';
       return;
     }
-
     if (Array.isArray(res.coreHoursByMonth)) {
       const obj: { [key: string]: number } = {};
       for (const item of res.coreHoursByMonth) {
@@ -257,27 +258,21 @@ export class ProjectForecastingComponent implements OnInit {
       }
       res.coreHoursByMonth = obj;
     }
-
     res.coreHoursByMonth ??= {};
     res.coreHoursByMonth[monthKey] = value;
-
-    const existing = this.editedCoreHours.find(
-      (e) => e.forecastHoursId === res.forecastHoursId && e.date === monthKey
+    this.editedCoreHours = this.editedCoreHours.filter(
+      (e) => e.forecastHoursId !== res.forecastHoursId
     );
-
-    if (existing) {
-      existing.coreHours = value;
-    } else {
-      this.editedCoreHours.push({
-        forecastHoursId: res.forecastHoursId ?? 0,
-        date: monthKey,
-        coreHours: value,
-        projectId: res.projectId,
-      });
-    }
-
+    const rowUpdate = {
+      forecastHoursId: res.forecastHoursId ?? 0,
+      projectId: res.projectId,
+      entryBy: this.authenticatedUser.netID,
+      coreHoursByMonth: { ...res.coreHoursByMonth }, 
+    };
+    this.editedCoreHours.push(rowUpdate);
     this.recalculateTotalsFromList();
   }
+
   recalculateTotalsFromList(): void {
     const monthCount = this.monthKeys.length;
     this.projectTotalCorehours = new Array(monthCount).fill(0);

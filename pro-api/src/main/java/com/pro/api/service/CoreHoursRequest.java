@@ -1,5 +1,7 @@
 package com.pro.api.service;
 
+import java.util.Map;
+
 public class CoreHoursRequest {
 
 	private Long forecastHoursId;
@@ -8,6 +10,7 @@ public class CoreHoursRequest {
 	private Long coreHoursId;
 	private String entryBy;
 	private Long projectId;
+	private Map<String, Integer> coreHoursByMonth;
 
 	public int getCoreHours() {
 		return coreHours;
@@ -55,6 +58,14 @@ public class CoreHoursRequest {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public Map<String, Integer> getCoreHoursByMonth() {
+		return coreHoursByMonth;
+	}
+
+	public void setCoreHoursByMonth(Map<String, Integer> coreHoursByMonth) {
+		this.coreHoursByMonth = coreHoursByMonth;
 	}
 
 }
