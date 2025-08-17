@@ -16,6 +16,7 @@ public class ForecastingResponse {
 	private List<Long> projectTotalCoreHours;
 	private Long coreHoursId;
 	private Long projectId;
+	private String dempoId;
 
 	List<Pair<LocalDate, Integer>> coreHoursByMonth;
 
@@ -97,6 +98,14 @@ public class ForecastingResponse {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public String getDempoId() {
+		return dempoId;
+	}
+
+	public void setDempoId(String dempoId) {
+		this.dempoId = dempoId;
 	}
 
 }

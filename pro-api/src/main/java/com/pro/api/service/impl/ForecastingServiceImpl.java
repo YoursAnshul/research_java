@@ -62,6 +62,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			response.setCoreHoursId(rs.getLong("corehoursid"));
 			response.setFname(rs.getString("fname"));
 			response.setLname(rs.getString("lname"));
+			response.setDempoId(rs.getString("dempoid"));
 
 			LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 			List<Pair<LocalDate, Integer>> monthHoursList = new ArrayList<>();
@@ -311,9 +312,10 @@ public class ForecastingServiceImpl implements ForecastingService {
 				Date sqlDate = Date.valueOf(month);
 
 				String sql = "UPDATE core.corehours " + "SET moddt = NOW(), corehours" + slot + " = ?, month" + slot
-						+ " = ?, modby = ? " + "WHERE corehoursid = ?";
+						+ " = ?, modby = ?, dempoid = ? " + "WHERE corehoursid = ?";
 
-				jdbcTemplate.update(sql, hours, sqlDate, request.getEntryBy(), request.getCoreHoursId());
+				jdbcTemplate.update(sql, hours, sqlDate, request.getEntryBy(), request.getDempoId(),
+						request.getCoreHoursId());
 			}
 		}
 

@@ -74,6 +74,7 @@ export class UserCoreHoursComponent implements OnInit {
     entryBy?: string;
     projectId?: number;
     coreHoursByMonth?: any;
+    dempoid?: string
   }[] = [];
   authenticatedUser!: IAuthenticatedUser;
   isLoading: boolean = false;
@@ -255,6 +256,7 @@ onCoreHourChange(event: Event, monthKey: string, res: any): void {
     projectId: res.projectId,
     entryBy: this.authenticatedUser.netID,
     coreHoursByMonth: { ...res.coreHoursByMonth }, 
+    dempoId: res.dempoId
   };
 
   this.editedCoreHours.push(rowUpdate);

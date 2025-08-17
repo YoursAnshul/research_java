@@ -11,6 +11,7 @@ public class CoreHoursRequest {
 	private String entryBy;
 	private Long projectId;
 	private Map<String, Integer> coreHoursByMonth;
+	private String dempoId;
 
 	public int getCoreHours() {
 		return coreHours;
@@ -66,6 +67,14 @@ public class CoreHoursRequest {
 
 	public void setCoreHoursByMonth(Map<String, Integer> coreHoursByMonth) {
 		this.coreHoursByMonth = coreHoursByMonth;
+	}
+
+	public String getDempoId() {
+		return dempoId;
+	}
+
+	public void setDempoId(String dempoId) {
+		this.dempoId = dempoId;
 	}
 
 }
