@@ -68,10 +68,13 @@ export class UserCoreHoursComponent implements OnInit {
   dropDownValues: any[] = [];
   selectedValues: SelectedValue[] = [];
   editedCoreHours: {
-    date: string;
-    coreHours: number;
     coreHoursId: number;
+    date?: string;
+    coreHours?: number;
     entryBy?: string;
+    projectId?: number;
+    coreHoursByMonth?: any;
+    dempoid?: string
   }[] = [];
   authenticatedUser!: IAuthenticatedUser;
   ngOnInit(): void {
@@ -155,6 +158,7 @@ export class UserCoreHoursComponent implements OnInit {
 
     this.paginatedList = this.list.slice(start, end);
     this.calculateTotals();
+    // this.recalculateLocalTotals();
     this.calculateProjectTotals();
   }
 
@@ -217,51 +221,67 @@ export class UserCoreHoursComponent implements OnInit {
     this.calculateProjectTotals();
     this.calculateTotals();
   }
-  onCoreHourChange(event: Event, monthKey: string, res: any): void {
-    const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 10);
-
-    if (isNaN(value) || value < 0) {
-      input.value = '';
-      return;
-    }
-
-    if (!res.coreHoursByMonth) {
-      res.coreHoursByMonth = [];
-    }
-
-    if (
-      !Array.isArray(res.coreHoursByMonth) &&
-      typeof res.coreHoursByMonth === 'object'
-    ) {
-      res.coreHoursByMonth[monthKey] = value;
-    } else if (Array.isArray(res.coreHoursByMonth)) {
-      const existingMonth = res.coreHoursByMonth.find(
-        (m: any) => m.first === monthKey
-      );
-      if (existingMonth) {
-        existingMonth.second = value;
-      } else {
-        res.coreHoursByMonth.push({ first: monthKey, second: value });
-      }
-    }
-
-    const existing = this.editedCoreHours.find(
-      (e) => e.coreHoursId === res.coreHoursId && e.date === monthKey
-    );
-
-    if (existing) {
-      existing.coreHours = value;
-    } else {
-      this.editedCoreHours.push({
-        coreHoursId: res.coreHoursId ?? 0,
-        date: monthKey,
-        coreHours: value,
-      });
-    }
+onCoreHourChange(event: Event, monthKey: string, res: any): void {
+  const input = event.target as HTMLInputElement;
+  const value = parseInt(input.value, 10);
+  if (isNaN(value) || value < 0) {
+    input.value = '';
+    return;
   }
 
-  
+  if (Array.isArray(res.coreHoursByMonth)) {
+    const obj: { [key: string]: number } = {};
+    for (const item of res.coreHoursByMonth) {
+      if (item?.first && typeof item?.second === 'number') {
+        obj[item.first] = item.second;
+      }
+    }
+    res.coreHoursByMonth = obj;
+  }
+
+  res.coreHoursByMonth ??= {};
+  res.coreHoursByMonth[monthKey] = value;
+
+  this.editedCoreHours = this.editedCoreHours.filter(
+    (e) => e.coreHoursId !== res.coreHoursId
+  );
+
+  const rowUpdate = {
+    coreHoursId: res.coreHoursId ?? 0,
+    projectId: res.projectId,
+    entryBy: this.authenticatedUser.netID,
+    coreHoursByMonth: { ...res.coreHoursByMonth }, 
+    dempoId: res.dempoId
+  };
+
+  this.editedCoreHours.push(rowUpdate);
+
+  // this.recalculateLocalTotals();
+}
+
+  recalculateLocalTotals(): void {
+    const monthLength = this.monthKeys.length;
+    this.totalCoreHours = new Array(monthLength).fill(0);
+
+    for (const res of this.list) {
+      for (let i = 0; i < monthLength; i++) {
+        const key = this.monthKeys[i];
+        let val = 0;
+
+        if (Array.isArray(res?.coreHoursByMonth)) {
+          const match = res.coreHoursByMonth.find((m: any) => m.first === key);
+          val = match?.second ?? 0;
+        } else if (
+          res?.coreHoursByMonth &&
+          typeof res.coreHoursByMonth === 'object'
+        ) {
+          val = res.coreHoursByMonth[key] ?? 0;
+        }
+
+        this.totalCoreHours[i] += val;
+      }
+    }
+  }
 
   saveCoreHours(): void {
     if (this.editedCoreHours.length === 0) {
