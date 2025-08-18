@@ -95,6 +95,15 @@ public class ForecastingServiceImpl implements ForecastingService {
 		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
 		for (CoreHoursRequest request : requests) {
+
+			String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
+			Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, request.getProjectId());
+
+			if (count == null || count == 0) {
+				String insertSql = "INSERT INTO core.forecasthours (projectid) VALUES (?)";
+				jdbcTemplate.update(insertSql, request.getProjectId());
+			}
+
 			Map<String, Integer> map = request.getCoreHoursByMonth();
 			if (map == null || map.isEmpty())
 				continue;
