@@ -96,23 +96,20 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 		for (CoreHoursRequest request : requests) {
 
-			String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
-			Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, request.getProjectId());
-
-			if (count == null || count == 0) {
-				String insertSql = "INSERT INTO core.forecasthours (projectid) VALUES (?)";
-				jdbcTemplate.update(insertSql, request.getProjectId());
-			}
-
 			Map<String, Integer> map = request.getCoreHoursByMonth();
 			if (map == null || map.isEmpty())
 				continue;
 
+			StringBuilder cols = new StringBuilder();
+			StringBuilder vals = new StringBuilder();
+			List<Object> insertParams = new ArrayList<>();
+
+			StringBuilder updates = new StringBuilder();
+			List<Object> updateParams = new ArrayList<>();
+
 			for (Map.Entry<String, Integer> e : map.entrySet()) {
 				String dateStr = e.getKey();
-				Integer hours = e.getValue();
-				if (hours == null)
-					hours = 0;
+				Integer hours = e.getValue() == null ? 0 : e.getValue();
 
 				LocalDate month = LocalDate.parse(dateStr, formatter).withDayOfMonth(1);
 				int slot = (int) ChronoUnit.MONTHS.between(baseMonth, month) + 1;
@@ -121,11 +118,38 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 				Date sqlDate = Date.valueOf(month);
 
-				String sql = "UPDATE core.forecasthours " + "SET moddt = NOW(), forecasthours" + slot + " = ?, month"
-						+ slot + " = ?, modby = ?, entryBY = ? " + "WHERE projectid = ?";
+				cols.append("forecasthours").append(slot).append(", month").append(slot).append(", ");
+				vals.append("?, ?, ");
+				insertParams.add(hours);
+				insertParams.add(sqlDate);
 
-				jdbcTemplate.update(sql, hours, sqlDate, request.getEntryBy(), request.getEntryBy(),
-						request.getProjectId());
+				updates.append("forecasthours").append(slot).append(" = ?, month").append(slot).append(" = ?, ");
+				updateParams.add(hours);
+				updateParams.add(sqlDate);
+			}
+
+			if (insertParams.isEmpty())
+				continue;
+
+			insertParams.add(request.getProjectId());
+			insertParams.add(request.getEntryBy());
+			insertParams.add(request.getEntryBy());
+
+			updateParams.add(request.getEntryBy());
+			updateParams.add(request.getEntryBy());
+			updateParams.add(request.getProjectId());
+
+			String existsSql = "SELECT COUNT(*) FROM core.forecasthours WHERE projectid = ?";
+			Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, request.getProjectId());
+
+			if (count == null || count == 0) {
+				String insertSql = "INSERT INTO core.forecasthours (" + cols
+						+ "projectid, entryby, modby, entrydt, moddt) " + "VALUES (" + vals + "?, ?, ?, NOW(), NOW())";
+				jdbcTemplate.update(insertSql, insertParams.toArray());
+			} else {
+				String updateSql = "UPDATE core.forecasthours SET " + updates
+						+ "modby = ?, entryby = ?, moddt = NOW() WHERE projectid = ?";
+				jdbcTemplate.update(updateSql, updateParams.toArray());
 			}
 		}
 
@@ -304,13 +328,19 @@ public class ForecastingServiceImpl implements ForecastingService {
 			if (map == null || map.isEmpty()) {
 				continue;
 			}
+			StringBuilder updateCols = new StringBuilder();
+			List<Object> updateParams = new ArrayList<>();
+
+			StringBuilder insertCols = new StringBuilder("dempoid, entryby, modby, entrydt, moddt");
+			StringBuilder insertVals = new StringBuilder("?, ?, ?, NOW(), NOW()");
+			List<Object> insertParams = new ArrayList<>();
+			insertParams.add(request.getDempoId());
+			insertParams.add(request.getEntryBy());
+			insertParams.add(request.getEntryBy());
 
 			for (Map.Entry<String, Integer> e : map.entrySet()) {
 				String dateStr = e.getKey();
-				Integer hours = e.getValue();
-				if (hours == null) {
-					hours = 0;
-				}
+				Integer hours = e.getValue() == null ? 0 : e.getValue();
 
 				LocalDate month = LocalDate.parse(dateStr, formatter).withDayOfMonth(1);
 				int slot = (int) ChronoUnit.MONTHS.between(baseMonth, month) + 1;
@@ -320,11 +350,34 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 				Date sqlDate = Date.valueOf(month);
 
-				String sql = "UPDATE core.corehours " + "SET moddt = NOW(), corehours" + slot + " = ?, month" + slot
-						+ " = ?, modby = ?, dempoid = ? " + "WHERE corehoursid = ?";
+				updateCols.append("corehours").append(slot).append(" = ?, month").append(slot).append(" = ?, ");
+				updateParams.add(hours);
+				updateParams.add(sqlDate);
 
-				jdbcTemplate.update(sql, hours, sqlDate, request.getEntryBy(), request.getDempoId(),
-						request.getCoreHoursId());
+				insertCols.append(", corehours").append(slot).append(", month").append(slot);
+				insertVals.append(", ?, ?");
+				insertParams.add(hours);
+				insertParams.add(sqlDate);
+			}
+
+			if (updateParams.isEmpty()) {
+				continue;
+			}
+
+			updateParams.add(request.getEntryBy());
+			updateParams.add(request.getDempoId());
+			updateParams.add(request.getCoreHoursId());
+
+			String existsSql = "SELECT COUNT(*) FROM core.corehours WHERE corehoursid = ?";
+			Integer count = jdbcTemplate.queryForObject(existsSql, Integer.class, request.getCoreHoursId());
+
+			if (count == null || count == 0) {
+				String insertSql = "INSERT INTO core.corehours (" + insertCols + ") VALUES (" + insertVals + ")";
+				jdbcTemplate.update(insertSql, insertParams.toArray());
+			} else {
+				String updateSql = "UPDATE core.corehours SET " + updateCols
+						+ "modby = ?, dempoid = ?, moddt = NOW() WHERE corehoursid = ?";
+				jdbcTemplate.update(updateSql, updateParams.toArray());
 			}
 		}
 
