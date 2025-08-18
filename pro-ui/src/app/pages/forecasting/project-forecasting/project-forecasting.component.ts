@@ -270,7 +270,7 @@ export class ProjectForecastingComponent implements OnInit {
       coreHoursByMonth: { ...res.coreHoursByMonth }, 
     };
     this.editedCoreHours.push(rowUpdate);
-    this.recalculateTotalsFromList();
+    // this.recalculateTotalsFromList();
   }
 
   recalculateTotalsFromList(): void {

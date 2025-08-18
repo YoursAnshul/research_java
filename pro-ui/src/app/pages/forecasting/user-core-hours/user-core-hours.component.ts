@@ -163,7 +163,7 @@ export class UserCoreHoursComponent implements OnInit {
 
     this.paginatedList = this.list.slice(start, end);
     this.calculateTotals();
-    this.recalculateLocalTotals();
+    // this.recalculateLocalTotals();
     this.calculateProjectTotals();
   }
 
@@ -261,7 +261,7 @@ onCoreHourChange(event: Event, monthKey: string, res: any): void {
 
   this.editedCoreHours.push(rowUpdate);
 
-  this.recalculateLocalTotals();
+  // this.recalculateLocalTotals();
 }
 
   recalculateLocalTotals(): void {
