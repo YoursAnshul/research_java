@@ -29,7 +29,7 @@
     <div class="hour-header">09:00 PM</div>
     <div class="hour-header">10:00 PM</div>
     <div class="hour-header">11:00 PM</div>
-    <div *ngIf="authenticatedUser?.interviewer" class="total-hour-header" style="background: #0078d4; color: white; width: 5.75%;">
+    <div *ngIf="authenticatedUser?.interviewer" class="total-hour-header" style="background: #0078d4; color: white;">
       Total
     </div>
 
@@ -47,6 +47,7 @@
         top: -3px;
         right: 0;
         z-index: 10;
+        width: 4.75%;
       ">
       <!-- <input type="text" [value]="calculateTotalDuration() + ' hr'" class="day-right-aligned-input" [readonly]="true"
         [style.height]="inputHeight"
@@ -59,9 +60,10 @@
         top: -3px;
         right: 0;
         z-index: 10;
+        width: 4.75%;
       ">
       <input type="text" [value]="calculateTotalDuration() + ' hr'" class="day-right-aligned-input" [readonly]="true"
-        [style.height]="inputHeight" disabled="true" />
+         disabled="true" />
     </div>
     <div id="day-calendar-user-schedules" style="margin-top: 4px" *ngIf="!isLoading">
       @for (group of groupedSchedules; track group.user.userId) {
