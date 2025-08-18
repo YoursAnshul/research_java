@@ -21,6 +21,10 @@ export class MonthViewComponent implements OnInit {
   openScheduleData(schedule: any): void {
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
+    if (date) {
+      date.setHours(0, 0, 0, 0);
+    }
+    currentDate.setHours(0, 0, 0, 0);
     if (
       this.authenticatedUser.interviewer &&
       date !== null &&

@@ -153,8 +153,14 @@ export class DayViewComponent implements OnInit {
     ) {
       return;
     }
-    let date = schedule?.dayWiseDate ? new Date(schedule.dayWiseDate) : null;
+    let date = schedule?.dayWiseDate
+      ? new Date(schedule.dayWiseDate + 'T00:00:00-04:00')
+      : null;
     let currentDate = new Date();
+    if (date) {
+      date.setHours(0, 0, 0, 0);
+    }
+    currentDate.setHours(0, 0, 0, 0);
     if (
       this.authenticatedUser.interviewer &&
       date !== null &&
