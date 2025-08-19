@@ -1083,7 +1083,7 @@ export class ShifCalendarComponent implements OnInit {
     return true;
   }
   onResetShiftSchedule(): void {
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
   getAuthor(projectId: number): void {
     const prevUserId = this.selectedUser?.userId; // store the previous userId

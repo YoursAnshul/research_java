@@ -338,11 +338,11 @@ export class ShiftWeekViewComponentV2 implements OnInit {
       }
     }
     this.sendWeekDate.emit(date);
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
   onResetShiftSchedule(): void {
     console.log(' sdfsdfds:');
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
   calculateTotalDuration(): number {
     if (!this.weekSchedules) return 0;

@@ -319,7 +319,7 @@ export class ShiftDayViewComponent implements OnInit {
       }
     }
     this.sendDate.emit(this.selectedDate);
-    // this.resetShiftSchedule.emit();
+    this.resetShiftSchedule.emit();
   }
 
   handleClick(schedule: any, event: MouseEvent) {
