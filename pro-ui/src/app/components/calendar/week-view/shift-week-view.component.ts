@@ -445,7 +445,7 @@ export class ShiftWeekViewComponent implements OnInit {
       return;
     }
 
-    let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
+    let date = schedule?.scheduledate ? new Date(schedule.scheduledate+ 'T00:00:00-04:00') : null;
     let currentDate = new Date();
     if (date) {
       date.setHours(0, 0, 0, 0);
