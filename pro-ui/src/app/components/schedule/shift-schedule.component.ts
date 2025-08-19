@@ -234,7 +234,7 @@ export class ShiftScheduleComponent implements OnInit {
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
       }
-    );
+    );    
   }
 
   ngOnChanges(): void { }
@@ -249,7 +249,8 @@ export class ShiftScheduleComponent implements OnInit {
       const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
       const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate;
+      const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate || (projectsChanged?.projectName !== this.previousProjectName);
     } else if (this.authenticatedUser.admin && this.profileType != 'user-profile') {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
       const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
@@ -257,17 +258,15 @@ export class ShiftScheduleComponent implements OnInit {
       const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
       const userChanged = this.shiftForm.get('user')?.dirty && this.shiftForm.get('user')?.value;
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-
-      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || projectsChanged || userChanged || userDate;
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged  || userChanged || userDate || (projectsChanged?.projectName !== this.previousProjectName);
     }
     else if (this.authenticatedUser.admin && this.profileType == 'user-profile') {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
       const endTimeChanged = this.shiftForm.get('endTime')?.dirty && this.shiftForm.get('endTime')?.value;
       const commentsChanged = this.shiftForm.get('comments')?.dirty && this.shiftForm.get('comments')?.value?.trim() !== '';
-      // const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
+      const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;      
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-
-      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate;
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged || userDate ||(projectsChanged?.projectName !== this.previousProjectName);
     }
 
     if (shouldShowConfirmation) {
@@ -288,7 +287,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.isClosed = true;
     this.dialogRef.close();
   }
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.isDataLoaded = false;
     if (this.authenticatedUser.interviewer) {
       this.getBlockOutDates();
@@ -356,7 +355,8 @@ export class ShiftScheduleComponent implements OnInit {
             this.allProjects.find((p) => p.projectId === defProjectId) || null;
         }
         this.loadScheduleData();
-        this.loadUserData();
+        this.loadUserData();        
+      
       },
       error: (error) => {
         console.error('Error loading authors/projects:', error);
@@ -393,7 +393,6 @@ export class ShiftScheduleComponent implements OnInit {
     //   }
     //   this.updateDayLabel(date);
     // });
-
     this.shiftForm
       .get('dayWiseDate')
       ?.valueChanges.pipe(
@@ -488,6 +487,7 @@ export class ShiftScheduleComponent implements OnInit {
         this.previousDempoId = user.dempoId;
       }
     });
+    this.previousProjectName = this.selectedProject?.projectName || null;
     this.shiftForm.get('projects')?.valueChanges.subscribe((project) => {
       if (
         !this.skipValidation &&
@@ -509,7 +509,6 @@ export class ShiftScheduleComponent implements OnInit {
       } else {
         this.isModified = false;
       }
-      this.previousProjectName = project.projectName;
     });
     this.shiftForm.get('comments')?.valueChanges.subscribe((comment) => {
       if (
