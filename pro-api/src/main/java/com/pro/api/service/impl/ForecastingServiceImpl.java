@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import com.pro.api.controllers.GeneralResponse;
 import com.pro.api.response.ForecastingResponse;
 import com.pro.api.response.PageResponse;
+import com.pro.api.service.AuditService;
 import com.pro.api.service.CoreHoursRequest;
 import com.pro.api.service.ForecastingService;
 
@@ -42,6 +43,9 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private AuditService auditService;
 
 	@Override
 	public PageResponse<ForecastingResponse> getList(String codeValues) {
@@ -146,10 +150,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 				String insertSql = "INSERT INTO core.forecasthours (" + cols
 						+ "projectid, entryby, modby, entrydt, moddt) " + "VALUES (" + vals + "?, ?, ?, NOW(), NOW())";
 				jdbcTemplate.update(insertSql, insertParams.toArray());
+				this.auditService.updateNetId(request.getEntryBy());
 			} else {
 				String updateSql = "UPDATE core.forecasthours SET " + updates
 						+ "modby = ?, entryby = ?, moddt = NOW() WHERE projectid = ?";
 				jdbcTemplate.update(updateSql, updateParams.toArray());
+				this.auditService.updateNetId(request.getEntryBy());
 			}
 		}
 
@@ -176,7 +182,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "LEFT OUTER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+				+ "WHERE p.active = 1 AND p.projectdisplayid LIKE '%3%' AND p.projecttype = 2 ";
 		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
 			sql += "AND p.projectid IN (" + codeValues + ") ";
 		}
@@ -374,10 +380,12 @@ public class ForecastingServiceImpl implements ForecastingService {
 			if (count == null || count == 0) {
 				String insertSql = "INSERT INTO core.corehours (" + insertCols + ") VALUES (" + insertVals + ")";
 				jdbcTemplate.update(insertSql, insertParams.toArray());
+				this.auditService.updateNetId(request.getEntryBy());
 			} else {
 				String updateSql = "UPDATE core.corehours SET " + updateCols
 						+ "modby = ?, dempoid = ?, moddt = NOW() WHERE corehoursid = ?";
 				jdbcTemplate.update(updateSql, updateParams.toArray());
+				this.auditService.updateNetId(request.getEntryBy());
 			}
 		}
 

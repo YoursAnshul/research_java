@@ -18,7 +18,7 @@ public interface ScheduleService {
 
 	public GeneralResponse updateSchedule(ShiftScheduleRequest request);
 
-	public GeneralResponse deleteSchedule(Long id);
+	public GeneralResponse deleteSchedule(Long id, String netId);
 
 	public GeneralResponse getOptionValue();
 

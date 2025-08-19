@@ -755,9 +755,9 @@ public class UserSchedulesController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@DeleteMapping("/delete-schedule/{id}")
-	public ResponseEntity<GeneralResponse> deleteSchedule(@PathVariable("id") Long id) {
-		GeneralResponse response = scheduleService.deleteSchedule(id);
+	@DeleteMapping("/delete-schedule/{id}/{netId}")
+	public ResponseEntity<GeneralResponse> deleteSchedule(@PathVariable("id") Long id,@PathVariable("netId") String netId) {
+		GeneralResponse response = scheduleService.deleteSchedule(id, netId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
