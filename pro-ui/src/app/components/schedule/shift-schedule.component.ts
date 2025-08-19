@@ -2160,7 +2160,7 @@ export class ShiftScheduleComponent implements OnInit {
             this.updateNewRequest(shift.id);
           }
           this.homeSelectedDate = this.shiftForm.get('dayWiseDate')?.value;
-          this.onResetShiftSchedule();
+          // this.onResetShiftSchedule();
           this.shiftSchedule = [];
           this.shiftSchedule1 = [];
           localStorage.removeItem('shiftSchedule');
