@@ -176,7 +176,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month13 AS month13, fh.forecasthours13 AS forecasthours13, "
 				+ "fh.month14 AS month14, fh.forecasthours14 AS forecasthours14 " + "FROM core.projects p "
 				+ "LEFT OUTER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+				+ "WHERE p.active = 1 AND p.projectdisplayid LIKE '%3%' AND p.projecttype = 2 ";
 		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
 			sql += "AND p.projectid IN (" + codeValues + ") ";
 		}
@@ -257,7 +257,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				+ "fh.month11, fh.forecasthours11, fh.month12, fh.forecasthours12, "
 				+ "fh.month13, fh.forecasthours13, fh.month14, fh.forecasthours14 " + "FROM core.projects p "
 				+ "INNER JOIN core.forecasthours fh ON p.projectid = fh.projectid "
-				+ "WHERE p.active = 1 AND p.projecttype = 2 ";
+				+ "WHERE p.active = 1 AND p.projectdisplayid LIKE '%3%' AND p.projecttype = 2 ";
 		if (codeValues != null && !codeValues.isEmpty() && !codeValues.equals("0")) {
 			sql += " AND p.projectid IN (" + codeValues + ") ";
 		}
