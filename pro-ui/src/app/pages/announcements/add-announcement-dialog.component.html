@@ -1,6 +1,9 @@
 <h2 mat-dialog-title>
-  <span *ngIf="!id || id === 0">Add New Announcement</span>
-  <span *ngIf="id && id !== 0">Edit Announcement</span>
+  @if (!id || id === 0) {
+    <span>Add New Announcement</span>
+  } @else {
+    <span>Edit Announcement</span>
+  }
   <mat-icon
     fontIcon="close"
     class="text-danger close-icon"
@@ -116,11 +119,11 @@
           [for]="startPicker"
         ></mat-datepicker-toggle>
         <mat-datepicker #startPicker></mat-datepicker>
-        <mat-error
-          *ngIf="announcementForm.get('startDate')?.hasError('required')"
-        >
-          Start Date is required
-        </mat-error>
+        @if (announcementForm.get('startDate')?.hasError('required')) {
+          <mat-error>
+            Start Date is required
+          </mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field
@@ -162,19 +165,20 @@
               Any Projects
             </label>
           </div>
-          <mat-select-trigger>
-            <span *ngIf="isAllSelected()">Any Projects</span>
-            <span *ngFor="let selected of selectedProjects">
-              <span *ngIf="!isAllSelected()">
-                <span
-                  class="tag"
-                  [ngStyle]="{ '--tag-color': selected.projectColor }"
-                >
-                  {{ selected.projectName }}
-                </span>
+            <mat-select-trigger>
+            @if (isAllSelected()) {
+              <span>Any Projects</span>
+            } @else {
+              <span *ngFor="let selected of selectedProjects">
+              <span
+                class="tag"
+                [ngStyle]="{ '--tag-color': selected.projectColor }"
+              >
+                {{ selected.projectName }}
               </span>
-            </span>
-          </mat-select-trigger>
+              </span>
+            }
+            </mat-select-trigger>
           <mat-option *ngFor="let project of projectList" [value]="project">
             {{ project.projectName }}
           </mat-option>

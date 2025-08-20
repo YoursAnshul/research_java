@@ -1,11 +1,13 @@
-<div *ngIf="userObj.interviewer" class="center-message">
-  <div class="message-wrapper">
-    <mat-icon class="logo">error</mat-icon>
-    <p class="message">You don't have access</p>
+@if (userObj?.interviewer) {
+  <div class="center-message">
+    <div class="message-wrapper">
+      <mat-icon class="logo">error</mat-icon>
+      <p class="message">You don't have access</p>
+    </div>
   </div>
-</div>
-
-<div class="container" *ngIf="userObj == null || !userObj.interviewer">
+}
+@if (userObj == null || !userObj.interviewer) {
+  <div class="container">
   <h2 class="configuration">
     <span
       style="color: #0680cd; text-decoration: underline; cursor: pointer"
@@ -24,9 +26,11 @@
       + Add New Announcement
     </button>
   </div>
-  <div *ngIf="isLoading" class="loader-container">
-    <mat-spinner [diameter]="50" color="primary"></mat-spinner>
-  </div>
+  @if (isLoading) {
+    <div class="loader-container">
+      <mat-spinner [diameter]="50" color="primary"></mat-spinner>
+    </div>
+  }
 
   <div class="table-wrapper">
     <div class="table text-sm mt-2">
@@ -68,26 +72,20 @@
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle fixed-width"
           >
-            <ng-container
-              *ngIf="
-                announcement.displayTo !== 'Any Projects';
-                else showAnyProjects
-              "
-            >
+            @if (announcement.displayTo !== 'Any Projects') {
               <div class="tags-container">
-                @for (project of announcement.displayTo; track $index) {
+              @for (project of announcement.displayTo; track $index) {
                 <span
-                  class="tag"
-                  [ngStyle]="{ '--tag-color': project.projectColor }"
+                class="tag"
+                [ngStyle]="{ '--tag-color': project.projectColor }"
                 >
-                  {{ project.projectName }}
+                {{ project.projectName }}
                 </span>
-                }
+              }
               </div>
-            </ng-container>
-            <ng-template #showAnyProjects>
+            } @else {
               <span>All Projects</span>
-            </ng-template>
+            }
           </div>
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
@@ -199,3 +197,5 @@
   <div class="w-full text-sm">No announcement found</div>
   }
 </div>
+}
+

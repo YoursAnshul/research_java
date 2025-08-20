@@ -25,14 +25,15 @@
     </g>
   </svg>
   <h3>Announcements</h3>
-  <a
-    *ngIf="!userObj.interviewer"
-    routerLink="/announcement-management"
-    [queryParams]="{ path: 'home' }"
-    class="manage-link"
-  >
-    Manage Announcements
-  </a>
+  @if (!userObj.interviewer) {
+    <a
+      routerLink="/announcement-management"
+      [queryParams]="{ path: 'home' }"
+      class="manage-link"
+    >
+      Manage Announcements
+    </a>
+  }
 </div>
 
 <div class="announcements-panel">
@@ -51,13 +52,14 @@
           class="announcement-body"
           [ngClass]="{ truncated: !announcement.isFullText }"
         ></div>
+        @if (announcement.bodyText.length > maxLength) {
         <button
-          *ngIf="announcement.bodyText.length > maxLength"
           (click)="toggleText(announcement)"
           class="show-more-btn"
         >
           {{ announcement.isFullText ? "Show Less" : "Show More" }}
         </button>
+        }
       </div>
 
       <div class="meta">
@@ -65,39 +67,33 @@
           <small
             >Posted {{ announcement.startDate | date : "MM/dd/yyyy" }}
           </small>
-          <small *ngIf="announcement?.isAuthor && announcement?.authorName"
-            >by {{ announcement.authorName }}</small
-          >
+            @if (announcement?.isAuthor && announcement?.authorName) {
+            <small>by {{ announcement.authorName }}</small>
+            }
         </div>
 
         <div class="tags">
-          <span
-            *ngIf="
-              announcement &&
-              announcement.projectObject &&
-              announcement.projectObject.length > 0 &&
-              allProjectList &&
-              allProjectList.length > 0 &&
-              announcement.projectObject.length === allProjectList.length
-            "
-          >
-            <!-- All Projects -->
-          </span>
+            @if (
+            announcement &&
+            announcement.projectObject &&
+            announcement.projectObject.length > 0 &&
+            allProjectList &&
+            allProjectList.length > 0 &&
+            announcement.projectObject.length === allProjectList.length
+            ) {
+            <span></span>
+            }
 
-          <ng-container
-            *ngIf="
-              announcement?.projectObject?.length !== allProjectList?.length
-            "
-          >
+            @if (announcement?.projectObject?.length !== allProjectList?.length) {
             @for (project of announcement.projectObject; track $index) {
-            <span
+              <span
               class="tag"
               [ngStyle]="{ '--tag-color': project.projectColor }"
-            >
+              >
               {{ project.projectName }}
-            </span>
+              </span>
             }
-          </ng-container>
+            }
         </div>
       </div>
     </div>
