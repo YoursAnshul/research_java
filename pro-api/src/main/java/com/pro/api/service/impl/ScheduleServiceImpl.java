@@ -12,11 +12,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ import com.pro.api.response.Projects;
 import com.pro.api.response.ScheduleResponse;
 import com.pro.api.response.ShiftScheduleRequest;
 import com.pro.api.response.User;
+import com.pro.api.service.AuditService;
 import com.pro.api.service.ScheduleService;
 
 @Service
@@ -49,6 +52,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Autowired
 	private CoreHourRepository coreHourRepository;
 
+	@Autowired
+	private AuditService auditService;
+
 	public GeneralResponse saveSchedule(List<ShiftScheduleRequest> list) {
 		GeneralResponse response = new GeneralResponse();
 		Set<String> errorMessages = new LinkedHashSet<>();
@@ -62,8 +68,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
-		ZoneId localZone = ZoneId.systemDefault(); 
-												
+		ZoneId localZone = ZoneId.systemDefault();
+
 		ZoneId utcZone = ZoneOffset.UTC;
 
 		for (ShiftScheduleRequest request : list) {
@@ -114,7 +120,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
 						request.getComments(), startDateTimeUtc, endDateTimeUtc, "0", request.getEntryby(), new Date(),
 						"NA");
-
+				this.auditService.updateNetId(request.getEntryby());
 				successCount++;
 
 			} catch (DateTimeParseException e) {
@@ -230,7 +236,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 				return response;
 			}
 
-
 			ZoneId localZone = ZoneId.systemDefault();
 			ZoneId utcZone = ZoneOffset.UTC;
 
@@ -271,15 +276,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 					return response;
 				}
 			}
-
 			String updateQuery = "UPDATE core.schedules SET scheduleDate = ?, projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?, status = ?, entryby = ?, entrydt = ?, machinename = ? WHERE preschedulekey = ?";
 			this.jdbcTemplate.update(updateQuery, scheduleDate, request.getProjectId(), request.getComments(),
 					startDateTimeUtc, endDateTimeUtc, "0", request.getEntryby(), new Date(), "NA", request.getId());
-
+			this.auditService.updateNetId(request.getEntryby());
 			response.Message = "Schedule updated successfully!";
 		} catch (DateTimeParseException e) {
+			e.printStackTrace();
 			response.Message = "Invalid date/time format: " + e.getMessage();
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.Message = "Error updating schedule: " + e.getMessage();
 		}
 
@@ -287,7 +293,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public GeneralResponse deleteSchedule(Long id) {
+	public GeneralResponse deleteSchedule(Long id, String netId) {
 		GeneralResponse response = new GeneralResponse();
 		response.Message = "";
 
@@ -304,6 +310,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			if (rowsDeleted == 0) {
 				response.Message = "No matching schedule found to delete.";
 			} else {
+				this.auditService.updateNetId(netId);
 				response.Message = "Schedule deleted successfully!";
 			}
 		} catch (Exception e) {
