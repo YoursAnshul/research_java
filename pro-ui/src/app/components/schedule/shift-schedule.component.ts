@@ -2226,7 +2226,7 @@ export class ShiftScheduleComponent implements OnInit {
     const shift = this.shiftForm.value || {};
     this.http
       .delete(
-        `${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}`
+        `${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}/${this.authenticatedUser.netID}`
       )
       .subscribe({
         next: (res: any) => {
