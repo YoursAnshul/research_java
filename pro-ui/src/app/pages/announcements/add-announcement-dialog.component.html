@@ -28,7 +28,8 @@
           matSuffix
           (click)="toggleEmojiPicker($event, 'formField')"
         >
-          <mat-icon *ngIf="!selectedEmoji"
+          @if (!selectedEmoji) {
+          <mat-icon
             ><svg
               style="margin-left: 5px !important"
               width="21"
@@ -56,6 +57,7 @@
               </g>
             </svg>
           </mat-icon>
+          }
         </button>
       </mat-form-field>
 
@@ -65,9 +67,11 @@
       >
         <mat-label>Title</mat-label>
         <input matInput placeholder="Title*" formControlName="title" />
-        <mat-error *ngIf="announcementForm.get('title')?.hasError('required')">
-          Title is required
-        </mat-error>
+        @if (announcementForm.get('title')?.hasError('required')) {
+          <mat-error>
+            Title is required
+          </mat-error>
+        }
       </mat-form-field>
     </div>
     <div class="editor-container">

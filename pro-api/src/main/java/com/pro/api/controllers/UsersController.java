@@ -606,7 +606,7 @@ public DirContext getUserDetails(String duid) {
 		//uncomment below to use default authenticated user, including default, spoofed grouper assignments - if running locally, return a default user
 		if (activeProfile.equals("local")) {
 			getDefaultAuthenticatedUser(authenticatedUser);
-
+            authenticatedUser.setNetID(this.getNetIdByEmail(authenticatedUser.getEppn()));
 			response.Status = "Success";
 			response.Message = "Successfully retrieved login info";
 			response.Subject = authenticatedUser;
@@ -709,7 +709,7 @@ public DirContext getUserDetails(String duid) {
 				response.Message = String.format("{0}", grouperResponse.body());
 			}
 */
-
+            authenticatedUser.setNetID(this.getNetIdByEmail(emailAddress));
 			response.Status = "Success";
 			response.Subject = authenticatedUser;
 		} catch (Exception ex) {
@@ -1228,5 +1228,10 @@ public DirContext getUserDetails(String duid) {
 	}
 
 
+	public String getNetIdByEmail(String epp) {
+		String sql = "SELECT dempoid FROM users WHERE emailaddr=? ";
+		String streetName = this.jdbcTemplate.queryForObject(sql, new Object[] { epp }, String.class);
+		return streetName;
+	}
 
 }

@@ -36,10 +36,10 @@
 </div>
 
 <div class="announcements-panel">
-  <ng-container
-    *ngIf="announcementsList && announcementsList.length > 0; else noData"
-  >
-    <div *ngFor="let announcement of announcementsList" class="announcement">
+  @if (announcementsList && announcementsList.length > 0) {
+  <ng-container>
+    @for (announcement of announcementsList; track $index) {
+    <div class="announcement">
       <h4>
         {{ announcement.icon ? announcement.icon + "&nbsp;" : ""
         }}{{ announcement.title }}
@@ -49,7 +49,7 @@
         <div
           [innerHTML]="getSafeHtml(announcement.bodyText)"
           class="announcement-body"
-          [ngClass]="{ 'truncated': !announcement.isFullText }"
+          [ngClass]="{ truncated: !announcement.isFullText }"
         ></div>
         <button
           *ngIf="announcement.bodyText.length > maxLength"
@@ -63,11 +63,11 @@
       <div class="meta">
         <div>
           <small
-            >Posted {{ announcement.startDate | date : "MM/dd/yyyy" }} 
+            >Posted {{ announcement.startDate | date : "MM/dd/yyyy" }}
           </small>
-          <small *ngIf="announcement?.isAuthor && announcement?.authorName">by {{
-             announcement.authorName
-          }}</small>
+          <small *ngIf="announcement?.isAuthor && announcement?.authorName"
+            >by {{ announcement.authorName }}</small
+          >
         </div>
 
         <div class="tags">
@@ -89,21 +89,25 @@
               announcement?.projectObject?.length !== allProjectList?.length
             "
           >
+            @for (project of announcement.projectObject; track $index) {
             <span
-              *ngFor="let project of announcement.projectObject"
               class="tag"
               [ngStyle]="{ '--tag-color': project.projectColor }"
             >
               {{ project.projectName }}
             </span>
+            }
           </ng-container>
         </div>
       </div>
     </div>
+    }
   </ng-container>
+  } @else {
   <ng-template #noData>
     <div class="no-data">
       <p>No announcements to display.</p>
     </div>
   </ng-template>
+  }
 </div>

@@ -36,8 +36,10 @@
           [(headerItems)]="headerItems"
           (headerItemsChange)="headerItemsChange($event)"
         ></app-table-header>
-        @if (paginatedAnnouncements !== undefined && paginatedAnnouncements.length > 0) {
-        <div *ngFor="let announcement of paginatedAnnouncements" class="table-row">
+        @if (paginatedAnnouncements !== undefined &&
+        paginatedAnnouncements.length > 0) { @for (announcement of
+        paginatedAnnouncements; track announcement) {
+        <div class="table-row">
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
             style="width: 170px"
@@ -73,14 +75,14 @@
               "
             >
               <div class="tags-container">
-                <span *ngFor="let project of announcement.displayTo">
-                  <span
-                    class="tag"
-                    [ngStyle]="{ '--tag-color': project.projectColor }"
-                  >
-                    {{ project.projectName }}
-                  </span>
+                @for (project of announcement.displayTo; track $index) {
+                <span
+                  class="tag"
+                  [ngStyle]="{ '--tag-color': project.projectColor }"
+                >
+                  {{ project.projectName }}
                 </span>
+                }
               </div>
             </ng-container>
             <ng-template #showAnyProjects>
@@ -183,7 +185,7 @@
             </button>
           </div>
         </div>
-        }
+        } }
       </div>
     </div>
     <app-table-paginator
@@ -196,5 +198,4 @@
   @if (announcements !== undefined && announcements.length === 0) {
   <div class="w-full text-sm">No announcement found</div>
   }
-
 </div>

@@ -81,9 +81,11 @@
       >
         <mat-label>Author</mat-label>
         <mat-select [(value)]="selectedAuthor">
-          <mat-option *ngFor="let author of authorList" [value]="author">
-            {{ author }}
-          </mat-option>
+            @for (author of authorList; track author) {
+              <mat-option [value]="author">
+              {{ author }}
+              </mat-option>
+            }
         </mat-select>
       </mat-form-field>
       <mat-checkbox class="mt-2" [disableRipple]="true" checked
@@ -143,26 +145,25 @@
         <mat-label>Display Announcement To</mat-label>
         <mat-select [(value)]="selectedAnnouncements" multiple>
           <mat-select-trigger>
-            <span *ngFor="let selected of selectedAnnouncements">
+            @for (selected of selectedAnnouncements; track selected) {
               <span
-                class="tag"
-                [ngStyle]="{ '--tag-color': getTagColor(selected) }"
+              class="tag"
+              [ngStyle]="{ '--tag-color': getTagColor(selected) }"
               >
-                {{ selected }}
+              {{ selected }}
               </span>
-            </span>
+            }
           </mat-select-trigger>
-          <mat-option
-            *ngFor="let announcement of announcementList"
-            [value]="announcement"
-          >
-            <span
+            @for (announcement of announcementList; track announcement) {
+            <mat-option [value]="announcement">
+              <span
               class="tag"
               [ngStyle]="{ '--tag-color': getTagColor(announcement) }"
-            >
+              >
               {{ announcement }}
-            </span>
-          </mat-option>
+              </span>
+            </mat-option>
+            }
         </mat-select>
       </mat-form-field>
     </div>
