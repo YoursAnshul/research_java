@@ -606,7 +606,7 @@ public DirContext getUserDetails(String duid) {
 		//uncomment below to use default authenticated user, including default, spoofed grouper assignments - if running locally, return a default user
 		if (activeProfile.equals("local")) {
 			getDefaultAuthenticatedUser(authenticatedUser);
-
+			authenticatedUser.setNetID(this.getNetIdByEmail(authenticatedUser.getEppn()));
 			response.Status = "Success";
 			response.Message = "Successfully retrieved login info";
 			response.Subject = authenticatedUser;
@@ -709,7 +709,7 @@ public DirContext getUserDetails(String duid) {
 				response.Message = String.format("{0}", grouperResponse.body());
 			}
 */
-
+			authenticatedUser.setNetID(this.getNetIdByEmail(authenticatedUser.getEppn()));
 			response.Status = "Success";
 			response.Subject = authenticatedUser;
 		} catch (Exception ex) {
@@ -722,7 +722,7 @@ public DirContext getUserDetails(String duid) {
 
 	private void getDefaultAuthenticatedUser(AuthenticatedUser user) {
 		user.setEppn("jeremiah.reed@duke.edu");
-		user.setNetID("jmr110");
+		// user.setNetID("kv125");
 		user.setDisplayName("duke");
 
 		//set the below as needed for testing locally
@@ -734,6 +734,13 @@ public DirContext getUserDetails(String duid) {
 		user.projectTeam = false;
 		user.outcomesIt = false;
 
+	}
+
+	public String getNetIdByEmail(String epp) {
+		epp =epp.trim();
+		String sql = "SELECT dempoid FROM users WHERE emailaddr=? ";
+		String streetName = this.jdbcTemplate.queryForObject(sql, new Object[] { epp }, String.class);
+		return streetName;
 	}
 
 	// DELETE: /api/users/Current

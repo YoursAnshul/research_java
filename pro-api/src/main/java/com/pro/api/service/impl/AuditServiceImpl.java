@@ -21,11 +21,15 @@ public class AuditServiceImpl implements AuditService {
 
 			if (count != null && count > 0) {
 				String sqlUpdate = "UPDATE core.auditusertemp SET audituser = ? WHERE auditusertempid = 1";
+				System.out.println("sqlUpdate---------- "+sqlUpdate);
+				System.out.println("netId---------- "+netId);
 				this.jdbcTemplate.update(sqlUpdate, netId);
 				response.Status = "Successfully Updated";
 				response.Message = "Updated audituser on core.auditusertemp successfully!!";
 			} else {
 				String sqlInsert = "INSERT INTO core.auditusertemp (auditusertempid, audituser) VALUES (1, ?)";
+				System.out.println("sqlInsert---------- "+sqlInsert);
+				System.out.println("netId222---------- "+netId);
 				this.jdbcTemplate.update(sqlInsert, netId);
 				response.Status = "Successfully Inserted";
 				response.Message = "Inserted audituser into core.auditusertemp successfully!!";

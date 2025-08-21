@@ -73,6 +73,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 		ZoneId utcZone = ZoneOffset.UTC;
 
 		for (ShiftScheduleRequest request : list) {
+			this.auditService.updateNetId(request.getEntryby());
 			try {
 				if (request.getScheduleDate() == null || request.getStartTime() == null
 						|| request.getEndTime() == null) {
@@ -120,7 +121,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 				this.jdbcTemplate.update(insertQuery, request.getDempoId(), scheduleDate, request.getProjectId(),
 						request.getComments(), startDateTimeUtc, endDateTimeUtc, "0", request.getEntryby(), new Date(),
 						"NA");
-				this.auditService.updateNetId(request.getEntryby());
+				
 				successCount++;
 
 			} catch (DateTimeParseException e) {
@@ -217,6 +218,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public GeneralResponse updateSchedule(ShiftScheduleRequest request) {
+		System.out.println("request.getEntryby()-------- "+request.getEntryby());
+		this.auditService.updateNetId(request.getEntryby());
 		GeneralResponse response = new GeneralResponse();
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
 
@@ -276,10 +279,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 					return response;
 				}
 			}
+			
 			String updateQuery = "UPDATE core.schedules SET scheduleDate = ?, projectId = ?, comments = ?, startDateTime = ?, endDateTime = ?, status = ?, entryby = ?, entrydt = ?, machinename = ? WHERE preschedulekey = ?";
 			this.jdbcTemplate.update(updateQuery, scheduleDate, request.getProjectId(), request.getComments(),
 					startDateTimeUtc, endDateTimeUtc, "0", request.getEntryby(), new Date(), "NA", request.getId());
-			this.auditService.updateNetId(request.getEntryby());
+			
 			response.Message = "Schedule updated successfully!";
 		} catch (DateTimeParseException e) {
 			e.printStackTrace();
@@ -294,6 +298,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public GeneralResponse deleteSchedule(Long id, String netId) {
+		this.auditService.updateNetId(netId);
 		GeneralResponse response = new GeneralResponse();
 		response.Message = "";
 
@@ -310,7 +315,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			if (rowsDeleted == 0) {
 				response.Message = "No matching schedule found to delete.";
 			} else {
-				this.auditService.updateNetId(netId);
+				
 				response.Message = "Schedule deleted successfully!";
 			}
 		} catch (Exception e) {
