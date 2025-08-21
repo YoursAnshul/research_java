@@ -1,6 +1,6 @@
+@if (authenticatedUser?.netID && !authenticatedUser?.admin) {
 <div
   class="inner-container"
-  *ngIf="authenticatedUser?.netID && !authenticatedUser?.admin"
 >
   <h2>No Access</h2>
   <p>Your user account does not have access to view this page.</p>
@@ -9,10 +9,15 @@
     mistake.
   </p>
 </div>
-<div *ngIf="isLoading" class="spinner-container">
+}
+
+@if (isLoading) {
+<div class="spinner-container">
   <mat-spinner color="primary" [diameter]="30"></mat-spinner>
 </div>
-<div *ngIf="authenticatedUser?.netID && authenticatedUser?.admin && !isLoading">
+}
+@if (authenticatedUser?.netID && authenticatedUser?.admin && !isLoading) {
+<div>
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center">
       <div class="min-w-[225px] pr-4 py-1">
@@ -43,7 +48,9 @@
         [disabled]="spin"
         class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400 flex items-center justify-center"
       >
-        <i class="fa fa-spinner fa-spin" *ngIf="spin"></i>
+        @if (spin) {
+        <i class="fa fa-spinner fa-spin"></i>
+        }
         <span class="ml-2">{{ spin ? "Saving..." : "Save" }}</span>
       </button>
 
@@ -52,7 +59,9 @@
         [disabled]="exportIsDisabled"
         class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
       >
-        <i class="fa fa-spinner fa-spin" *ngIf="exportIsDisabled"></i>
+        @if (exportIsDisabled) {
+        <i class="fa fa-spinner fa-spin"></i>
+        }
         <span class="ml-2">{{
           exportIsDisabled ? "Export..." : "Export"
         }}</span>
@@ -173,3 +182,4 @@
     </table>
   </div>
 </div>
+}
