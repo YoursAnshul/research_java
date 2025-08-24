@@ -1,5 +1,6 @@
 package com.pro.api.controllers;
 
+import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -225,6 +226,22 @@ public class UserSchedulesController {
 		try {
 			List<ViUserSchedule> userSchedules = viUserScheduleRepository.findByYearAndMonth(anchorDate.getYear(),
 					anchorDate.getMonthValue());
+
+			for (ViUserSchedule schedule : userSchedules) {
+				LocalDate scheduleDate = schedule.getScheduledate();
+				if (scheduleDate != null) {
+					Timestamp ts = Timestamp.valueOf(scheduleDate.atStartOfDay());
+
+					if (scheduleService.isDstEndDate(ts)) {
+						if (schedule.getStartdatetime() != null) {
+							schedule.setStartdatetime(schedule.getStartdatetime().plusHours(1));
+						}
+						if (schedule.getEnddatetime() != null) {
+							schedule.setEnddatetime(schedule.getEnddatetime().plusHours(1));
+						}
+					}
+				}
+			}
 			response.Status = "Success";
 			response.Message = "Successfully retrieved user schedules";
 			response.Subject = userSchedules;

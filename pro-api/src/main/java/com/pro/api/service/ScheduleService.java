@@ -1,5 +1,6 @@
 package com.pro.api.service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface ScheduleService {
 	public GeneralResponse getOptionValue();
 
 	public GeneralResponse getCoreHours(LocalDate scheduleDate, String dempoId);
+
+	public boolean isDstEndDate(Timestamp timestamp);
 }
