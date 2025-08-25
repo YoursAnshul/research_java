@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import com.pro.api.controllers.GeneralResponse;
 import com.pro.api.response.ForecastingResponse;
 import com.pro.api.response.PageResponse;
+import com.pro.api.service.AuditService;
 import com.pro.api.service.CoreHoursRequest;
 import com.pro.api.service.ForecastingService;
 
@@ -42,6 +43,9 @@ public class ForecastingServiceImpl implements ForecastingService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private AuditService auditService;
 
 	@Override
 	public PageResponse<ForecastingResponse> getList(String codeValues) {
@@ -95,7 +99,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
 		for (CoreHoursRequest request : requests) {
-
+			this.auditService.updateNetId(request.getEntryBy());
 			Map<String, Integer> map = request.getCoreHoursByMonth();
 			if (map == null || map.isEmpty())
 				continue;
@@ -146,6 +150,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 				String insertSql = "INSERT INTO core.forecasthours (" + cols
 						+ "projectid, entryby, modby, entrydt, moddt) " + "VALUES (" + vals + "?, ?, ?, NOW(), NOW())";
 				jdbcTemplate.update(insertSql, insertParams.toArray());
+				
 			} else {
 				String updateSql = "UPDATE core.forecasthours SET " + updates
 						+ "modby = ?, entryby = ?, moddt = NOW() WHERE projectid = ?";
@@ -324,6 +329,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
 		for (CoreHoursRequest request : requests) {
+			this.auditService.updateNetId(request.getEntryBy());
 			Map<String, Integer> map = request.getCoreHoursByMonth();
 			if (map == null || map.isEmpty()) {
 				continue;
@@ -374,6 +380,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 			if (count == null || count == 0) {
 				String insertSql = "INSERT INTO core.corehours (" + insertCols + ") VALUES (" + insertVals + ")";
 				jdbcTemplate.update(insertSql, insertParams.toArray());
+				
 			} else {
 				String updateSql = "UPDATE core.corehours SET " + updateCols
 						+ "modby = ?, dempoid = ?, moddt = NOW() WHERE corehoursid = ?";

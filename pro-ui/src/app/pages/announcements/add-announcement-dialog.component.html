@@ -1,6 +1,9 @@
 <h2 mat-dialog-title>
-  <span *ngIf="!id || id === 0">Add New Announcement</span>
-  <span *ngIf="id && id !== 0">Edit Announcement</span>
+  @if (!id || id === 0) {
+    <span>Add New Announcement</span>
+  } @else {
+    <span>Edit Announcement</span>
+  }
   <mat-icon
     fontIcon="close"
     class="text-danger close-icon"
@@ -28,7 +31,8 @@
           matSuffix
           (click)="toggleEmojiPicker($event, 'formField')"
         >
-          <mat-icon *ngIf="!selectedEmoji"
+          @if (!selectedEmoji) {
+          <mat-icon
             ><svg
               style="margin-left: 5px !important"
               width="21"
@@ -56,6 +60,7 @@
               </g>
             </svg>
           </mat-icon>
+          }
         </button>
       </mat-form-field>
 
@@ -65,9 +70,11 @@
       >
         <mat-label>Title</mat-label>
         <input matInput placeholder="Title*" formControlName="title" />
-        <mat-error *ngIf="announcementForm.get('title')?.hasError('required')">
-          Title is required
-        </mat-error>
+        @if (announcementForm.get('title')?.hasError('required')) {
+          <mat-error>
+            Title is required
+          </mat-error>
+        }
       </mat-form-field>
     </div>
     <div class="editor-container">
@@ -82,9 +89,11 @@
       >
         <mat-label>Author</mat-label>
         <mat-select [(value)]="selectedAuthor">
-          <mat-option *ngFor="let author of authorList" [value]="author">
-            {{ author.userName }}
-          </mat-option>
+          @for (author of authorList; track author) {
+            <mat-option [value]="author">
+              {{ author.userName }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-checkbox
@@ -112,11 +121,11 @@
           [for]="startPicker"
         ></mat-datepicker-toggle>
         <mat-datepicker #startPicker></mat-datepicker>
-        <mat-error
-          *ngIf="announcementForm.get('startDate')?.hasError('required')"
-        >
-          Start Date is required
-        </mat-error>
+        @if (announcementForm.get('startDate')?.hasError('required')) {
+          <mat-error>
+            Start Date is required
+          </mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field
@@ -158,22 +167,25 @@
               Any Projects
             </label>
           </div>
-          <mat-select-trigger>
-            <span *ngIf="isAllSelected()">Any Projects</span>
-            <span *ngFor="let selected of selectedProjects">
-              <span *ngIf="!isAllSelected()">
+            <mat-select-trigger>
+            @if (isAllSelected()) {
+              <span>Any Projects</span>
+            } @else {
+              @for (selected of selectedProjects; track selected) {
                 <span
                   class="tag"
                   [ngStyle]="{ '--tag-color': selected.projectColor }"
                 >
                   {{ selected.projectName }}
                 </span>
-              </span>
-            </span>
-          </mat-select-trigger>
-          <mat-option *ngFor="let project of projectList" [value]="project">
-            {{ project.projectName }}
-          </mat-option>
+              }
+            }
+            </mat-select-trigger>
+          @for (project of projectList; track project) {
+            <mat-option [value]="project">
+              {{ project.projectName }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
