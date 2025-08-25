@@ -89,9 +89,11 @@
       >
         <mat-label>Author</mat-label>
         <mat-select [(value)]="selectedAuthor">
-          <mat-option *ngFor="let author of authorList" [value]="author">
-            {{ author.userName }}
-          </mat-option>
+          @for (author of authorList; track author) {
+            <mat-option [value]="author">
+              {{ author.userName }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-checkbox
@@ -169,19 +171,21 @@
             @if (isAllSelected()) {
               <span>Any Projects</span>
             } @else {
-              <span *ngFor="let selected of selectedProjects">
-              <span
-                class="tag"
-                [ngStyle]="{ '--tag-color': selected.projectColor }"
-              >
-                {{ selected.projectName }}
-              </span>
-              </span>
+              @for (selected of selectedProjects; track selected) {
+                <span
+                  class="tag"
+                  [ngStyle]="{ '--tag-color': selected.projectColor }"
+                >
+                  {{ selected.projectName }}
+                </span>
+              }
             }
             </mat-select-trigger>
-          <mat-option *ngFor="let project of projectList" [value]="project">
-            {{ project.projectName }}
-          </mat-option>
+          @for (project of projectList; track project) {
+            <mat-option [value]="project">
+              {{ project.projectName }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>

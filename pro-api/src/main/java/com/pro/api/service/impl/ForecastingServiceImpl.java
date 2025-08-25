@@ -99,7 +99,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
 		for (CoreHoursRequest request : requests) {
-
+			this.auditService.updateNetId(request.getEntryBy());
 			Map<String, Integer> map = request.getCoreHoursByMonth();
 			if (map == null || map.isEmpty())
 				continue;
@@ -150,12 +150,11 @@ public class ForecastingServiceImpl implements ForecastingService {
 				String insertSql = "INSERT INTO core.forecasthours (" + cols
 						+ "projectid, entryby, modby, entrydt, moddt) " + "VALUES (" + vals + "?, ?, ?, NOW(), NOW())";
 				jdbcTemplate.update(insertSql, insertParams.toArray());
-				this.auditService.updateNetId(request.getEntryBy());
+				
 			} else {
 				String updateSql = "UPDATE core.forecasthours SET " + updates
 						+ "modby = ?, entryby = ?, moddt = NOW() WHERE projectid = ?";
 				jdbcTemplate.update(updateSql, updateParams.toArray());
-				this.auditService.updateNetId(request.getEntryBy());
 			}
 		}
 
@@ -330,6 +329,7 @@ public class ForecastingServiceImpl implements ForecastingService {
 		LocalDate baseMonth = LocalDate.now().withDayOfMonth(1);
 
 		for (CoreHoursRequest request : requests) {
+			this.auditService.updateNetId(request.getEntryBy());
 			Map<String, Integer> map = request.getCoreHoursByMonth();
 			if (map == null || map.isEmpty()) {
 				continue;
@@ -380,12 +380,11 @@ public class ForecastingServiceImpl implements ForecastingService {
 			if (count == null || count == 0) {
 				String insertSql = "INSERT INTO core.corehours (" + insertCols + ") VALUES (" + insertVals + ")";
 				jdbcTemplate.update(insertSql, insertParams.toArray());
-				this.auditService.updateNetId(request.getEntryBy());
+				
 			} else {
 				String updateSql = "UPDATE core.corehours SET " + updateCols
 						+ "modby = ?, dempoid = ?, moddt = NOW() WHERE corehoursid = ?";
 				jdbcTemplate.update(updateSql, updateParams.toArray());
-				this.auditService.updateNetId(request.getEntryBy());
 			}
 		}
 
