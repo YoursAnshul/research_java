@@ -209,7 +209,8 @@ public class ManageAnnouncementsImpl implements ManageAnnouncements {
 		sql.append(" LEFT JOIN LATERAL (SELECT  ");
 		sql.append(" STRING_AGG(p.projectid::text, ',' ORDER BY p.projectid) AS dispprojects ");
 		sql.append("  FROM  core.projects p ");
-		sql.append("  WHERE p.projectid = ANY(string_to_array(a.dispprojects, '|')::int[]) ");
+		sql.append(
+				" WHERE p.projectid = ANY(ARRAY(SELECT CAST(x AS int) FROM unnest(string_to_array(a.dispprojects, '|')) AS x WHERE x <> 'null' AND x <> '')) ");
 		sql.append(" ) AS p ON TRUE  WHERE 1=1 ");
 		if (keyword != null && !keyword.isEmpty()) {
 			keyword = keyword.toLowerCase();
