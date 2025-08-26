@@ -10,15 +10,12 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -40,7 +37,6 @@ import com.pro.api.models.business.KeyValuePair;
 import com.pro.api.models.business.SessionUserEmail;
 import com.pro.api.models.business.ValidationMessagePlus;
 import com.pro.api.models.dataaccess.CoreHour;
-import com.pro.api.models.dataaccess.Request;
 import com.pro.api.models.dataaccess.Schedule;
 import com.pro.api.models.dataaccess.User;
 import com.pro.api.models.dataaccess.ValidationMessage;
@@ -226,7 +222,6 @@ public class UserSchedulesController {
 		try {
 			List<ViUserSchedule> userSchedules = viUserScheduleRepository.findByYearAndMonth(anchorDate.getYear(),
 					anchorDate.getMonthValue());
-
 			for (ViUserSchedule schedule : userSchedules) {
 				LocalDate scheduleDate = schedule.getScheduledate();
 				if (scheduleDate != null) {
@@ -490,7 +485,7 @@ public class UserSchedulesController {
 				// ------------------------------------
 				// schedule level 1 only
 				// ------------------------------------
-				// An interviewer's schedule should include 2-night shifts, until at or after 9 p.m., each month
+				// An interviewer's schedule should include 2 night shifts, until at or after 9 p.m., each month
 				if (schedulinglevel == 1) {
 					List<LocalDateTime> schedulesWeeklyTemp = schedulesWeekly.stream()
 							.filter(s -> s.getStartdatetime() != null && s.getEnddatetime() != null
@@ -498,7 +493,7 @@ public class UserSchedulesController {
 											|| s.getStartdatetime().atZoneSameInstant(serverZoneId).getHour() >= 21))
 							.map(ViUserSchedule::getWeekStart).distinct().sorted().collect(Collectors.toList());
 
-					if (schedulesWeeklyTemp.size() < 2 || schedulesWeeklyTemp.size() > 2) {
+					if (schedulesWeeklyTemp.size() < 2) {
 						addMessage(validationMessages, 10, um.getInMonth(), um.getDempoId(), null);
 					}
 				}
@@ -534,8 +529,8 @@ public class UserSchedulesController {
 							.distinct()
 							.collect(Collectors.toList());
 
-					// Check if there are at 2 weekend shifts in the month
-					if (weekendShifts.size() < 2 || weekendShifts.size() > 2) {
+					// Check if there are at least 2 weekend shifts in the month
+					if (weekendShifts.size() < 2) {
 						addMessage(validationMessages, 11, um.getInMonth(), um.getDempoId(), null);
 					}
 				}
