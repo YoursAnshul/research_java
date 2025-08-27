@@ -79,7 +79,7 @@
       }
 
       @if (!authenticatedUser?.interviewer) {
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>{{_languageFieldInfo?.fieldLabel}}</mat-label>
           <mat-select multiple id="languages-filter"
             [formControl]="_languageFilter"
@@ -89,7 +89,21 @@
               <mat-option value="{{l.codeValues}}">{{l.dropDownItem}}</mat-option>
             }
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
+
+        <div style="width: 200px;">
+            <app-select
+              id="status-filter"
+              [fieldLabel]="'Languages'"
+              [anyLabel]="'Languages'"
+              [multiSelect]="true"
+              [dropDownValues]="languageDropDownValues"
+              (selectedValuesChange)="languageChange($event)"
+              [selectedValues]="selectedLanguageValues"
+              [formControl]="_languageFilter"
+              [(anyValueSelected)]="langaugeAnySelected">
+            </app-select>
+        </div>
       }
     </div>
 

@@ -9,6 +9,7 @@ import { IAuthenticatedUser, IDropDownValue, IFormField, IFormFieldVariable, IPr
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LogsService } from '../../../services/logs/logs.service';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
+import { SelectedValue } from '../../../models/presentation/selected-value';
 
 @Component({
   selector: 'app-calendar-controls',
@@ -54,18 +55,23 @@ export class CalendarControlsComponent implements OnInit {
   scheduleFetchStatus!: boolean;
   todayPickerLabel: string = 'Today';
   scheduleFetchMessage: string = '';
-
+  langaugeAnySelected: boolean = true
   errorMessage!: string;
   dropDownValues = [
       { value: 1, dropDownItem: 'All Active Users', codeValues: 1 },
       { value: 2, dropDownItem: 'Scheduled Users', codeValues: 2 },
   ];
+  languageDropDownValues: IDropDownValue[] = [];
+  selectedLanguageValues: SelectedValue[] = [];
+
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
     private logsService: LogsService) { }
 
   ngOnInit(): void {
-
+    this.languageDropDownValues = this._languages?.map(x => {
+      return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
+    }) || [];
     this.setStartView();
 //subscribe to scheduleFetchStatus
     this.userSchedulesService.scheduleFetchStatus.subscribe(
@@ -201,8 +207,16 @@ export class CalendarControlsComponent implements OnInit {
     this._selectedDate.setValue(new Date());
     this.selectedDateChange.emit(this._selectedDate);
   }
-   userChange(event: any): void {
+
+  userChange(event: any): void {
     this._userFilter.setValue(event.map((e:any) => e.value));
     this.filterChange.emit();
   }
+
+  languageChange(event: SelectedValue[]): void {
+    const selectedIds = event.map(e => String(e.value));  
+    this._languageFilter.setValue(selectedIds); 
+    this.filterChange.emit();
+  }
+
 }
