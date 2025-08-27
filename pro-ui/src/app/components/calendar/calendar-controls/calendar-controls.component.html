@@ -69,7 +69,7 @@
         </mat-form-field> -->
         <div style="width: 200px;">
             <app-select
-              id="status-filter"
+              id="user-filter"
               [fieldLabel]="'Users'"
               [dropDownValues]="dropDownValues"
               (selectedValuesChange)="userChange($event)"
@@ -93,7 +93,7 @@
 
         <div style="width: 200px;">
             <app-select
-              id="status-filter"
+              id="language-filter"
               [fieldLabel]="'Languages'"
               [anyLabel]="'Languages'"
               [multiSelect]="true"
@@ -108,22 +108,35 @@
     </div>
 
     @if (!authenticatedUser?.interviewer) {
-      <mat-form-field>
+      <!-- <mat-form-field>
         <mat-label>Projects</mat-label>
         <mat-select multiple
           [formControl]="_projectFilter"
-          (selectionChange)="this.filterChange.emit()">
+          (selectionChange)="projectChange($event)">
           <mat-option value="0">Any Project</mat-option>
-          @for (group of projectGroups; track group) {
+          @for (group of ; track group) {
             <mat-optgroup
               [label]="group.name">
-              @for (p of group.projects; track p) {
+              @for (p of groprojectGroupsup.projects; track p) {
                 <mat-option value="{{p.projectID}}">{{p.projectName}}</mat-option>
               }
             </mat-optgroup>
           }
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
+      <div style="width: 200px;">
+          <app-select
+            id="project-filter"
+            [fieldLabel]="'Projects'"
+            [anyLabel]="'Projects'"
+            [multiSelect]="true"
+            [dropDownValues]="projectdropDownValues"
+            (selectedValuesChange)="projectChange($event)"
+            [selectedValues]="selectedProjectValues"
+            [formControl]="_projectFilter"
+            [(anyValueSelected)]="projectAnySelected">
+          </app-select>
+      </div>
     }
 
     @if (!authenticatedUser?.interviewer) {

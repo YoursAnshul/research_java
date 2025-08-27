@@ -63,6 +63,9 @@ export class CalendarControlsComponent implements OnInit {
   ];
   languageDropDownValues: IDropDownValue[] = [];
   selectedLanguageValues: SelectedValue[] = [];
+  projectdropDownValues: IDropDownValue[] = [];
+  selectedProjectValues: SelectedValue[] = [];
+  projectAnySelected: boolean = true;
 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
@@ -71,7 +74,8 @@ export class CalendarControlsComponent implements OnInit {
   ngOnInit(): void {
     this.languageDropDownValues = this._languages?.map(x => {
       return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
-    }) || [];
+    }) || [];    
+    
     this.setStartView();
 //subscribe to scheduleFetchStatus
     this.userSchedulesService.scheduleFetchStatus.subscribe(
@@ -89,20 +93,25 @@ export class CalendarControlsComponent implements OnInit {
 
   }
 
+  // ngOnChanges(): void {
+  //   //group projects for dropdown
+  //   let projectGroup: IProjectGroup = {
+  //     name: 'Projects',
+  //     projects: this._projects?.filter(x => x.projectType !== 'Administrative')
+  //   };
+
+  //   let adminGroup: IProjectGroup = {
+  //     name: 'Admin',
+  //     projects: this._projects?.filter(x => x.projectType == 'Administrative')
+  //   };
+
+  //   this.projectGroups = [projectGroup, adminGroup];
+
+  // }
   ngOnChanges(): void {
-    //group projects for dropdown
-    let projectGroup: IProjectGroup = {
-      name: 'Projects',
-      projects: this._projects?.filter(x => x.projectType !== 'Administrative')
-    };
-
-    let adminGroup: IProjectGroup = {
-      name: 'Admin',
-      projects: this._projects?.filter(x => x.projectType == 'Administrative')
-    };
-
-    this.projectGroups = [projectGroup, adminGroup];
-
+    this.projectdropDownValues = this._projects?.map(x => {
+      return { dropDownItem: x.projectName || '', codeValues: x.projectID || 0 };
+    }) || [];
   }
 
   //set the start view text based on calendar type
@@ -216,6 +225,12 @@ export class CalendarControlsComponent implements OnInit {
   languageChange(event: SelectedValue[]): void {
     const selectedIds = event.map(e => String(e.value));  
     this._languageFilter.setValue(selectedIds); 
+    this.filterChange.emit();
+  }
+
+  projectChange(event: any): void {
+    const selectedIds = event.map((e:any) => String(e.value));  
+    this._projectFilter.setValue(selectedIds);
     this.filterChange.emit();
   }
 
