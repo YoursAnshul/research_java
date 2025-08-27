@@ -142,20 +142,30 @@
     @if (!authenticatedUser?.interviewer) {
       <div id="conditional-operator-filter-outer">
         <font>&mdash;</font>
-        <mat-form-field id="conditional-operator-filter">
+        <!-- <mat-form-field id="conditional-operator-filter">
           <mat-select [formControl]="_conditionalOperatorFilter"
             (selectionChange)="this.filterChange.emit()">
             <mat-option value="1" style="font-style: italic;">and</mat-option>
             <mat-option value="2" style="font-style: italic;">or</mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
+        <div style="width: 200px;">
+            <app-select
+              id="operator-filter"
+              [fieldLabel]="'Operator'"
+              [dropDownValues]="operatorDropDownValues"
+              (selectedValuesChange)="operatorChange($event)"
+              [formControl]="_conditionalOperatorFilter"
+              [selectedValues]="selectedOperatorValues">
+            </app-select>
+        </div>
         <font>&mdash;</font>
       </div>
     }
 
     <div id="trained-on-section"
       [class.interviewer]="authenticatedUser?.interviewer">
-      <mat-form-field style="display: block;">
+      <!-- <mat-form-field style="display: block;">
         <mat-label>Trained On</mat-label>
         <mat-select multiple [formControl]="_trainedOnFilter" (selectionChange)="this.filterChange.emit()">
           <mat-option value="0">Any Project</mat-option>
@@ -167,9 +177,22 @@
             </mat-optgroup>
           }
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
+       <div style="width: 200px;">
+          <app-select
+            id="trained-on-project-filter"
+            [fieldLabel]="'Trained On'"
+            [anyLabel]="'Trained On'"
+            [multiSelect]="true"
+            [dropDownValues]="projectdropDownValues"
+            (selectedValuesChange)="projectChange($event)"
+            [selectedValues]="selectedProjectValues"
+            [formControl]="_trainedOnFilter"
+            [(anyValueSelected)]="projectAnySelected">
+          </app-select>
+      </div>
 
-      <mat-form-field style="display: block;">
+      <!-- <mat-form-field style="display: block;">
         <mat-label>Not Trained On</mat-label>
         <mat-select multiple [formControl]="_notTrainedOnFilter" (selectionChange)="this.filterChange.emit()">
           <mat-option value="0">Any Project</mat-option>
@@ -181,7 +204,20 @@
             </mat-optgroup>
           }
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
+      <div style="width: 200px;">
+          <app-select
+            id="not-trained-on-project-filter"
+            [fieldLabel]="'Not Trained On'"
+            [anyLabel]="'Not Trained On'"
+            [multiSelect]="true"
+            [dropDownValues]="projectdropDownValues"
+            (selectedValuesChange)="projectChange($event)"
+            [selectedValues]="selectedProjectValues"
+            [formControl]="_trainedOnFilter"
+            [(anyValueSelected)]="projectAnySelected">
+          </app-select>
+      </div>
     </div>
     <button id="reset-button" mat-raised-button class="btn"
       (click)="resetDefaultFilters.emit()">

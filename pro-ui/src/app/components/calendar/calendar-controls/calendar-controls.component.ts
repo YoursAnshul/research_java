@@ -66,6 +66,13 @@ export class CalendarControlsComponent implements OnInit {
   projectdropDownValues: IDropDownValue[] = [];
   selectedProjectValues: SelectedValue[] = [];
   projectAnySelected: boolean = true;
+  operatorDropDownValues = [
+    { value: 1, dropDownItem: 'and', codeValues: 1},
+    { value: 2, dropDownItem: 'or', codeValues: 2 }
+  ];
+  selectedOperatorValues: SelectedValue[] = [
+    new SelectedValue(1, this.operatorDropDownValues.find(op => op.value === 1))
+  ];
 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
@@ -75,7 +82,6 @@ export class CalendarControlsComponent implements OnInit {
     this.languageDropDownValues = this._languages?.map(x => {
       return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
     }) || [];    
-    
     this.setStartView();
 //subscribe to scheduleFetchStatus
     this.userSchedulesService.scheduleFetchStatus.subscribe(
@@ -231,6 +237,10 @@ export class CalendarControlsComponent implements OnInit {
   projectChange(event: any): void {
     const selectedIds = event.map((e:any) => String(e.value));  
     this._projectFilter.setValue(selectedIds);
+    this.filterChange.emit();
+  }
+  operatorChange(event: any): void {
+    this._conditionalOperatorFilter.setValue(event.map((e:any) => e.value));
     this.filterChange.emit();
   }
 
