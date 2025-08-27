@@ -59,14 +59,23 @@
     [class.interviewer]="authenticatedUser?.interviewer">
     <div id="user-language-filters">
       @if (!authenticatedUser?.interviewer) {
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>Users</mat-label>
           <mat-select [formControl]="_userFilter"
-            (selectionChange)="this.filterChange.emit()">
+            (selectionChange)="userChange($event)">
             <mat-option value="1">All Active Users</mat-option>
             <mat-option value="2">Scheduled Users</mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
+        <div style="width: 200px;">
+            <app-select
+              id="status-filter"
+              [fieldLabel]="'Users'"
+              [dropDownValues]="dropDownValues"
+              (selectedValuesChange)="userChange($event)"
+              [formControl]="_userFilter">
+            </app-select>
+        </div>
       }
 
       @if (!authenticatedUser?.interviewer) {

@@ -56,7 +56,10 @@ export class CalendarControlsComponent implements OnInit {
   scheduleFetchMessage: string = '';
 
   errorMessage!: string;
-
+  dropDownValues = [
+      { value: 1, dropDownItem: 'All Active Users', codeValues: 1 },
+      { value: 2, dropDownItem: 'Scheduled Users', codeValues: 2 },
+  ];
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
     private logsService: LogsService) { }
@@ -198,5 +201,8 @@ export class CalendarControlsComponent implements OnInit {
     this._selectedDate.setValue(new Date());
     this.selectedDateChange.emit(this._selectedDate);
   }
-
+   userChange(event: any): void {
+    this._userFilter.setValue(event.map((e:any) => e.value));
+    this.filterChange.emit();
+  }
 }
