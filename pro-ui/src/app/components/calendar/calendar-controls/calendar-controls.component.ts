@@ -9,6 +9,7 @@ import { IAuthenticatedUser, IDropDownValue, IFormField, IFormFieldVariable, IPr
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LogsService } from '../../../services/logs/logs.service';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
+import { SelectedValue } from '../../../models/presentation/selected-value';
 
 @Component({
   selector: 'app-calendar-controls',
@@ -54,16 +55,41 @@ export class CalendarControlsComponent implements OnInit {
   scheduleFetchStatus!: boolean;
   todayPickerLabel: string = 'Today';
   scheduleFetchMessage: string = '';
-
+  langaugeAnySelected: boolean = true
   errorMessage!: string;
+  dropDownValues = [
+      { value: 1, dropDownItem: 'All Active Users', codeValues: 1 },
+      { value: 2, dropDownItem: 'Scheduled Users', codeValues: 2 },
+  ];
+  selectedDropDownValues: SelectedValue[] = [
+    new SelectedValue(1, this.dropDownValues.find(op => op.value === 1))
+  ];
+  languageDropDownValues: IDropDownValue[] = [];
+  selectedLanguageValues: SelectedValue[] = [];
+  projectdropDownValues: IDropDownValue[] = [];
+  selectedProjectValues: SelectedValue[] = [];
+  projectAnySelected: boolean = true;
+  operatorDropDownValues = [
+    { value: 1, dropDownItem: 'and', codeValues: 1},
+    { value: 2, dropDownItem: 'or', codeValues: 2 }
+  ];
+  selectedOperatorValues: SelectedValue[] = [
+    new SelectedValue(1, this.operatorDropDownValues.find(op => op.value === 1))
+  ];
+  projectAnyTraninedOnSelected: boolean = true;
+  projectAnyNotTraninedOnSelected: boolean = true;
 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
     private logsService: LogsService) { }
 
   ngOnInit(): void {
-
+    this.languageDropDownValues = this._languages?.map(x => {
+      return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
+    }) || [];    
     this.setStartView();
+    this._userFilter.setValue(this.selectedDropDownValues.map(e => e.value));
+    this.filterChange.emit();
 //subscribe to scheduleFetchStatus
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       scheduleFetchStatus => {
@@ -80,20 +106,30 @@ export class CalendarControlsComponent implements OnInit {
 
   }
 
+  // ngOnChanges(): void {
+  //   //group projects for dropdown
+  //   let projectGroup: IProjectGroup = {
+  //     name: 'Projects',
+  //     projects: this._projects?.filter(x => x.projectType !== 'Administrative')
+  //   };
+
+  //   let adminGroup: IProjectGroup = {
+  //     name: 'Admin',
+  //     projects: this._projects?.filter(x => x.projectType == 'Administrative')
+  //   };
+
+  //   this.projectGroups = [projectGroup, adminGroup];
+
+  // }
   ngOnChanges(): void {
-    //group projects for dropdown
-    let projectGroup: IProjectGroup = {
-      name: 'Projects',
-      projects: this._projects?.filter(x => x.projectType !== 'Administrative')
-    };
-
-    let adminGroup: IProjectGroup = {
-      name: 'Admin',
-      projects: this._projects?.filter(x => x.projectType == 'Administrative')
-    };
-
-    this.projectGroups = [projectGroup, adminGroup];
-
+    this.languageDropDownValues = this._languages?.map(x => {
+      return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
+    }) || [];   
+    this._userFilter.setValue(this.selectedDropDownValues.map(e => e.value));
+    this.filterChange.emit();
+    this.projectdropDownValues = this._projects?.map(x => {
+      return { dropDownItem: x.projectName || '', codeValues: x.projectID || 0 };
+    }) || [];
   }
 
   //set the start view text based on calendar type
@@ -198,5 +234,64 @@ export class CalendarControlsComponent implements OnInit {
     this._selectedDate.setValue(new Date());
     this.selectedDateChange.emit(this._selectedDate);
   }
+
+  userChange(event: any): void {
+    this._userFilter.setValue(event.map((e:any) => e.value));
+    this.filterChange.emit();
+  }
+
+  languageChange(event: SelectedValue[]): void {
+    const selectedIds = event.map(e => String(e.value));  
+    this._languageFilter.setValue(selectedIds); 
+    this.filterChange.emit();
+  }
+
+  projectChange(event: any): void {
+    const selectedIds = event.map((e:any) => String(e.value));  
+    this._projectFilter.setValue(selectedIds);
+    this.filterChange.emit();
+  }
+  operatorChange(event: any): void {
+    this._conditionalOperatorFilter.setValue(event.map((e:any) => e.value));
+    this.filterChange.emit();
+  }
+
+  projectTrainedOnChange(event: any): void {
+    const selectedIds = event.map((e:any) => String(e.value));  
+    this._projectFilter.setValue(selectedIds);
+    this.filterChange.emit();
+  }
+  projectNotTrainedOnChange(event: any): void {
+    const selectedIds = event.map((e:any) => String(e.value));  
+    this._projectFilter.setValue(selectedIds);
+    this.filterChange.emit();
+  }
+
+  onResetFilters(): void {
+  // Reset FormControl values to default
+  this._userFilter.setValue([]);
+  this._languageFilter.setValue([]);
+  this._projectFilter.setValue([]);
+  this._conditionalOperatorFilter.setValue([]);
+  this._trainedOnFilter.setValue([]);
+  this._notTrainedOnFilter.setValue([]);
+
+  // Reset UI selections
+  this.selectedLanguageValues = [];
+  this.selectedProjectValues = [];
+  this.selectedOperatorValues = [
+    new SelectedValue(1, this.operatorDropDownValues.find(op => op.value === 1))
+  ];
+
+  this.projectAnySelected = true;
+  this.projectAnyTraninedOnSelected = true;
+  this.projectAnyNotTraninedOnSelected = true;
+
+  // Emit event for parent if needed
+  this.resetDefaultFilters.emit();
+
+  // Trigger filter refresh
+  this.filterChange.emit();
+}
 
 }
