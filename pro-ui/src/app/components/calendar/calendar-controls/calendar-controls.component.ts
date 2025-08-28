@@ -62,7 +62,7 @@ export class CalendarControlsComponent implements OnInit {
       { value: 2, dropDownItem: 'Scheduled Users', codeValues: 2 },
   ];
   selectedDropDownValues: SelectedValue[] = [
-    new SelectedValue(1, this.dropDownValues.find(op => op.value === 1))
+    new SelectedValue(2, this.dropDownValues.find(op => op.value === 2))
   ];
   languageDropDownValues: IDropDownValue[] = [];
   selectedLanguageValues: SelectedValue[] = [];
