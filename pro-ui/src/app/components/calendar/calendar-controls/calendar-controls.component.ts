@@ -73,6 +73,8 @@ export class CalendarControlsComponent implements OnInit {
   selectedOperatorValues: SelectedValue[] = [
     new SelectedValue(1, this.operatorDropDownValues.find(op => op.value === 1))
   ];
+  projectAnyTraninedOnSelected: boolean = true;
+  projectAnyNotTraninedOnSelected: boolean = true;
 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
@@ -243,5 +245,43 @@ export class CalendarControlsComponent implements OnInit {
     this._conditionalOperatorFilter.setValue(event.map((e:any) => e.value));
     this.filterChange.emit();
   }
+
+  projectTrainedOnChange(event: any): void {
+    const selectedIds = event.map((e:any) => String(e.value));  
+    this._projectFilter.setValue(selectedIds);
+    this.filterChange.emit();
+  }
+  projectNotTrainedOnChange(event: any): void {
+    const selectedIds = event.map((e:any) => String(e.value));  
+    this._projectFilter.setValue(selectedIds);
+    this.filterChange.emit();
+  }
+
+  onResetFilters(): void {
+  // Reset FormControl values to default
+  this._userFilter.setValue([]);
+  this._languageFilter.setValue([]);
+  this._projectFilter.setValue([]);
+  this._conditionalOperatorFilter.setValue([]);
+  this._trainedOnFilter.setValue([]);
+  this._notTrainedOnFilter.setValue([]);
+
+  // Reset UI selections
+  this.selectedLanguageValues = [];
+  this.selectedProjectValues = [];
+  this.selectedOperatorValues = [
+    new SelectedValue(1, this.operatorDropDownValues.find(op => op.value === 1))
+  ];
+
+  this.projectAnySelected = true;
+  this.projectAnyTraninedOnSelected = true;
+  this.projectAnyNotTraninedOnSelected = true;
+
+  // Emit event for parent if needed
+  this.resetDefaultFilters.emit();
+
+  // Trigger filter refresh
+  this.filterChange.emit();
+}
 
 }

@@ -185,10 +185,9 @@
             [anyLabel]="'Trained On'"
             [multiSelect]="true"
             [dropDownValues]="projectdropDownValues"
-            (selectedValuesChange)="projectChange($event)"
-            [selectedValues]="selectedProjectValues"
+            (selectedValuesChange)="projectTrainedOnChange($event)"
             [formControl]="_trainedOnFilter"
-            [(anyValueSelected)]="projectAnySelected">
+            [(anyValueSelected)]="projectAnyTraninedOnSelected">
           </app-select>
       </div>
 
@@ -212,15 +211,18 @@
             [anyLabel]="'Not Trained On'"
             [multiSelect]="true"
             [dropDownValues]="projectdropDownValues"
-            (selectedValuesChange)="projectChange($event)"
-            [selectedValues]="selectedProjectValues"
+            (selectedValuesChange)="projectNotTrainedOnChange($event)"
             [formControl]="_trainedOnFilter"
-            [(anyValueSelected)]="projectAnySelected">
+            [(anyValueSelected)]="projectAnyNotTraninedOnSelected">
           </app-select>
       </div>
     </div>
-    <button id="reset-button" mat-raised-button class="btn"
+    <!-- <button id="reset-button" mat-raised-button class="btn"
       (click)="resetDefaultFilters.emit()">
+      Reset
+    </button> -->
+    <button id="reset-button" mat-raised-button class="btn"
+      (click)="onResetFilters()">
       Reset
     </button>
   </div>
