@@ -61,6 +61,9 @@ export class CalendarControlsComponent implements OnInit {
       { value: 1, dropDownItem: 'All Active Users', codeValues: 1 },
       { value: 2, dropDownItem: 'Scheduled Users', codeValues: 2 },
   ];
+  selectedDropDownValues: SelectedValue[] = [
+    new SelectedValue(1, this.dropDownValues.find(op => op.value === 1))
+  ];
   languageDropDownValues: IDropDownValue[] = [];
   selectedLanguageValues: SelectedValue[] = [];
   projectdropDownValues: IDropDownValue[] = [];
@@ -85,6 +88,8 @@ export class CalendarControlsComponent implements OnInit {
       return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
     }) || [];    
     this.setStartView();
+    this._userFilter.setValue(this.selectedDropDownValues.map(e => e.value));
+    this.filterChange.emit();
 //subscribe to scheduleFetchStatus
     this.userSchedulesService.scheduleFetchStatus.subscribe(
       scheduleFetchStatus => {
@@ -117,6 +122,11 @@ export class CalendarControlsComponent implements OnInit {
 
   // }
   ngOnChanges(): void {
+    this.languageDropDownValues = this._languages?.map(x => {
+      return {dropDownItem: x.dropDownItem, codeValues: x.codeValues };
+    }) || [];   
+    this._userFilter.setValue(this.selectedDropDownValues.map(e => e.value));
+    this.filterChange.emit();
     this.projectdropDownValues = this._projects?.map(x => {
       return { dropDownItem: x.projectName || '', codeValues: x.projectID || 0 };
     }) || [];

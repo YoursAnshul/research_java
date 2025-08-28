@@ -73,7 +73,8 @@
               [fieldLabel]="'Users'"
               [dropDownValues]="dropDownValues"
               (selectedValuesChange)="userChange($event)"
-              [formControl]="_userFilter">
+              [formControl]="_userFilter"
+               [selectedValues]="selectedDropDownValues">
             </app-select>
         </div>
       }
