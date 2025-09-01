@@ -10,7 +10,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import { LogsService } from '../../../services/logs/logs.service';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
 import { SelectedValue } from '../../../models/presentation/selected-value';
-
+import { UserRole } from '../../../models/presentation/enums';
 @Component({
   selector: 'app-calendar-controls',
   templateUrl: './calendar-controls.component.html',
@@ -57,6 +57,7 @@ export class CalendarControlsComponent implements OnInit {
   scheduleFetchMessage: string = '';
   langaugeAnySelected: boolean = true
   errorMessage!: string;
+  UserRoles: any = UserRole;
   dropDownValues = [
       { value: 1, dropDownItem: 'All Active Users', codeValues: 1 },
       { value: 2, dropDownItem: 'Scheduled Users', codeValues: 2 },

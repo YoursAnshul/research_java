@@ -56,9 +56,9 @@
 <!--filters-->
 <div id="calendar-filters-outer">
   <div id="calendar-filters"
-    [class.interviewer]="authenticatedUser?.interviewer">
+    [class.interviewer]="authenticatedUser?.role == UserRoles.Interviewer">
     <div id="user-language-filters">
-      @if (!authenticatedUser?.interviewer) {
+      @if (authenticatedUser?.role !== UserRoles.Interviewer) {
         <!-- <mat-form-field>
           <mat-label>Users</mat-label>
           <mat-select [formControl]="_userFilter"
@@ -79,7 +79,7 @@
         </div>
       }
 
-      @if (!authenticatedUser?.interviewer) {
+      @if (authenticatedUser?.role !== UserRoles.Interviewer) {
         <!-- <mat-form-field>
           <mat-label>{{_languageFieldInfo?.fieldLabel}}</mat-label>
           <mat-select multiple id="languages-filter"
@@ -108,7 +108,7 @@
       }
     </div>
 
-    @if (!authenticatedUser?.interviewer) {
+   @if (authenticatedUser?.role !== UserRoles.Interviewer) {
       <!-- <mat-form-field>
         <mat-label>Projects</mat-label>
         <mat-select multiple
@@ -140,7 +140,7 @@
       </div>
     }
 
-    @if (!authenticatedUser?.interviewer) {
+    @if (authenticatedUser?.role !== UserRoles.Interviewer) {
       <div id="conditional-operator-filter-outer">
         <font>&mdash;</font>
         <!-- <mat-form-field id="conditional-operator-filter">
@@ -165,7 +165,7 @@
     }
 
     <div id="trained-on-section"
-      [class.interviewer]="authenticatedUser?.interviewer">
+     [class.interviewer]="authenticatedUser?.role == UserRoles.Interviewer">
       <!-- <mat-form-field style="display: block;">
         <mat-label>Trained On</mat-label>
         <mat-select multiple [formControl]="_trainedOnFilter" (selectionChange)="this.filterChange.emit()">
