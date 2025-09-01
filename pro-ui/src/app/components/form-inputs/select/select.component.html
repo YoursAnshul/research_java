@@ -29,7 +29,8 @@
     }
     
     @if (showDropdown && !disabled) {
-        <div class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none min-w-[200px]"
+        <div class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none"
+            [ngStyle]="{'min-width': width}"
             [class.min-w-[225px]]="hideInput"
             [class.ml-[-15px]]="hideInput"
             [class.mt-2]="hideInput">

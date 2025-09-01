@@ -74,7 +74,8 @@
               [dropDownValues]="dropDownValues"
               (selectedValuesChange)="userChange($event)"
               [formControl]="_userFilter"
-               [selectedValues]="selectedDropDownValues">
+               [selectedValues]="selectedDropDownValues"
+               [width]="'130px'">
             </app-select>
         </div>
       }
@@ -102,7 +103,8 @@
               (selectedValuesChange)="languageChange($event)"
               [selectedValues]="selectedLanguageValues"
               [formControl]="_languageFilter"
-              [(anyValueSelected)]="langaugeAnySelected">
+              [(anyValueSelected)]="langaugeAnySelected"
+              [width]="'130px'">
             </app-select>
         </div>
       }
@@ -135,7 +137,8 @@
             (selectedValuesChange)="projectChange($event)"
             [selectedValues]="selectedProjectValues"
             [formControl]="_projectFilter"
-            [(anyValueSelected)]="projectAnySelected">
+            [(anyValueSelected)]="projectAnySelected"
+            [width]="'110px'">
           </app-select>
       </div>
     }
@@ -157,7 +160,8 @@
               [dropDownValues]="operatorDropDownValues"
               (selectedValuesChange)="operatorChange($event)"
               [formControl]="_conditionalOperatorFilter"
-              [selectedValues]="selectedOperatorValues">
+              [selectedValues]="selectedOperatorValues"
+              [width]="'80px'">
             </app-select>
         </div>
         <font>&mdash;</font>
@@ -188,7 +192,8 @@
             [dropDownValues]="projectdropDownValues"
             (selectedValuesChange)="projectTrainedOnChange($event)"
             [formControl]="_trainedOnFilter"
-            [(anyValueSelected)]="projectAnyTraninedOnSelected">
+            [(anyValueSelected)]="projectAnyTraninedOnSelected"
+            [width]="'150px'">
           </app-select>
       </div>
 
@@ -214,7 +219,8 @@
             [dropDownValues]="projectdropDownValues"
             (selectedValuesChange)="projectNotTrainedOnChange($event)"
             [formControl]="_trainedOnFilter"
-            [(anyValueSelected)]="projectAnyNotTraninedOnSelected">
+            [(anyValueSelected)]="projectAnyNotTraninedOnSelected"
+            [width]="'150px'">
           </app-select>
       </div>
     </div>

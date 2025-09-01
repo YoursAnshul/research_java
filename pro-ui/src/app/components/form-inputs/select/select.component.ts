@@ -24,6 +24,7 @@ export class SelectComponent {
 
   @Input() anyValueSelected: boolean = false;
   @Output() anyValueSelectedChange = new EventEmitter<boolean>();
+  @Input() width: string = '200px';
 
   public guid: string = '';
 
