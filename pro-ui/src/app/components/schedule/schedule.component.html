@@ -15,8 +15,7 @@
   </div>
 
   <!--schedule validation issues-->
-  @if (validationMessages.length > 0) {
-      <div id="validation-messages" >
+  <div id="validation-messages" *ngIf="validationMessages.length > 0">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="red" class="valid-icon bi bi-calendar-x-fill"
       viewBox="0 0 16 16">
       <path
@@ -24,80 +23,54 @@
     </svg>
     You have one or more scheduling validation issues for the month of {{formatDateMonthNameToString(selectedDate)}}:
 
-   @if (validationMessagesChecked) {
     <svg id="scheduling-level-info" width="16px" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-       class="bi bi-question-circle" viewBox="0 0 16 16"
-       (mouseenter)="displaySchedulingLevelInfo($event)" (mouseleave)="hideSchedulingLevelInfo()">
-       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-        <path
-         d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z" />
+      class="bi bi-question-circle" viewBox="0 0 16 16" *ngIf="validationMessagesChecked"
+      (mouseenter)="displaySchedulingLevelInfo($event)" (mouseleave)="hideSchedulingLevelInfo()">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+      <path
+        d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z" />
     </svg>
-    }
 
-    @if (!validationMessagesExpanded) {
-     <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="red" class="expand-icon bi bi-chevron-double-down"
-        viewBox="0 0 16 16"  (click)="expandValidationMessages(true)">
-        <path fill-rule="evenodd"
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="red" class="expand-icon bi bi-chevron-double-down"
+      viewBox="0 0 16 16" *ngIf="!validationMessagesExpanded" (click)="expandValidationMessages(true)">
+      <path fill-rule="evenodd"
         d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-        <path fill-rule="evenodd"
+      <path fill-rule="evenodd"
         d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-     </svg>
-    }
-    
-    @if (validationMessagesExpanded) {
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="red" class="expand-icon bi bi-chevron-double-up"
-      viewBox="0 0 16 16" (click)="expandValidationMessages(false)">
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="red" class="expand-icon bi bi-chevron-double-up"
+      viewBox="0 0 16 16" *ngIf="validationMessagesExpanded" (click)="expandValidationMessages(false)">
       <path fill-rule="evenodd"
         d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z" />
       <path fill-rule="evenodd"
         d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-      </svg>
-    }
-    
-    @if (validationMessagesExpanded) {
-   <div id="validation-details">
-   <ul>
-    @for (vm of validationMessages; track $index) {
-      <li>
-        @for (line of (vm.messageText || '').split('|'); track $index) {
-          <div>{{ line }}</div>
-        }
+    </svg>
+    <div id="validation-details" *ngIf="validationMessagesExpanded">
+      <ul>
+        <li *ngFor="let vm of validationMessages;let i=index;">
+          <!--{{vm.MessageText}}-->
+          <div *ngFor="let line of (vm.messageText || '').split('|');let i=index;">{{line}}</div>
 
-        @if ((vm.schedules || '').length > 0) {
-          <ul>
-            @for (s of vm.schedules; track $index) {
-              <li class="validation-schedules">
-                <span class="bold italic">{{ s.projectName }} |</span>&nbsp;&nbsp;
-                {{ formatDateOnlyWithMonthNameToString(s.startdatetime || null) }},
-                &nbsp;&nbsp;<span class="italic">{{ s.startTime }} – {{ s.endTime }} : {{ s.scheduledHours }} hours</span>
-              </li>
-            }
+
+          <ul *ngIf="(vm.schedules || '').length > 0">
+            <li *ngFor="let s of vm.schedules" class="validation-schedules"><span class="bold italic">{{s.projectName}}
+                |</span>&nbsp;&nbsp;{{formatDateOnlyWithMonthNameToString(s.startdatetime || null)}}, &nbsp;&nbsp;<span
+                class="italic">{{s.startTime}} – {{s.endTime}} : {{s.scheduledHours}} hours</span></li>
           </ul>
-        }
 
-        @if ((vm.details || '').length > 0) {
-          <ul>
-            @for (detail of splitByPipe((vm.details || '')); track $index) {
-              <li class="validation-schedules">
-                <span class="bold italic">{{ detail }}</span>
-              </li>
-            }
+          <ul *ngIf="(vm.details || '').length > 0">
+            <li *ngFor="let detail of splitByPipe((vm.details || ''))" class="validation-schedules"><span
+                class="bold italic">{{detail}}</span></li>
           </ul>
-        }
-      </li>
-    }
-  </ul>
-</div>
 
-    }
-   
+        </li>
+      </ul>
+    </div>
   </div>
-  }
-  
 
   <!--no schedule validation issues-->
-  @if(validationMessages.length < 1 && validationMessagesChecked && (currentUser?.schedulinglevel || 0) > 0){
-  <div id="no-validation-issues">
+  <div id="no-validation-issues"
+    *ngIf="validationMessages.length < 1 && validationMessagesChecked && (currentUser?.schedulinglevel || 0) > 0">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="green" class="valid-icon bi bi-calendar-check-fill"
       viewBox="0 0 16 16">
       <path
@@ -106,15 +79,11 @@
 
     {{formatDateMonthNameToString(selectedDate)}} schedule is valid
   </div>
-  }
- 
 
   <!--date navigation-->
-  @if (currentTab !== 'Add') {
-   <div id="calendar-date-picker" [class.week-date-picker]="currentTab == 'Week'">
+  <div id="calendar-date-picker" [class.week-date-picker]="currentTab == 'Week'" *ngIf="currentTab !== 'Add'">
     <!--<div class="arrow-nav" (click)="addDaysToSelectedDate(-1)">-->
-    @if (currentTab !== 'Custom') {
-    <div class="arrow-nav" (click)="addDateUnitsToSelectedDate(-1)">
+    <div class="arrow-nav" (click)="addDateUnitsToSelectedDate(-1)" *ngIf="currentTab !== 'Custom'">
       <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle-fill" fill="#2D6BA4"
         xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd"
@@ -122,39 +91,29 @@
         </path>
       </svg>
     </div>
-    }
 
     <div id="date-picker-input">
 
-      @if (currentTab == 'Day') {
-         <app-day-datepicker [selectedDate]="selectedDateFC"
-           (selectedDateChange)="fetchNewSchedules($event)">
-         </app-day-datepicker>
-      }
-     
-      @if (currentTab == 'Week') {
-        <app-week-datepicker  [selectedDate]="selectedDateFC"
-        [(selectedDateRange)]="selectedDateRange" (selectedDateChange)="fetchNewSchedules($event)">
-        </app-week-datepicker>
-      }
-    
-      @if (currentTab == 'Month') {
-       <app-month-datepicker  [selectedDate]="selectedDateFC"
+      <app-day-datepicker *ngIf="currentTab == 'Day'" [selectedDate]="selectedDateFC"
         (selectedDateChange)="fetchNewSchedules($event)">
-        </app-month-datepicker>
-      }
-      
-      @if (currentTab == 'Custom') {
-        <app-range-datepicker [(selectedDateRange)]="selectedCustomRange"
-           (selectedDateRangeChange)="getCustomSchedules()">
-        </app-range-datepicker>
-      }
+      </app-day-datepicker>
+
+      <app-week-datepicker *ngIf="currentTab == 'Week'" [selectedDate]="selectedDateFC"
+        [(selectedDateRange)]="selectedDateRange" (selectedDateChange)="fetchNewSchedules($event)">
+      </app-week-datepicker>
+
+      <app-month-datepicker *ngIf="currentTab == 'Month'" [selectedDate]="selectedDateFC"
+        (selectedDateChange)="fetchNewSchedules($event)">
+      </app-month-datepicker>
+
+      <app-range-datepicker *ngIf="currentTab == 'Custom'" [(selectedDateRange)]="selectedCustomRange"
+        (selectedDateRangeChange)="getCustomSchedules()">
+      </app-range-datepicker>
 
     </div>
 
     <!--<div class="arrow-nav" (click)="addDaysToSelectedDate(1)">-->
-    @if (currentTab !== 'Custom') {
-    <div class="arrow-nav" (click)="addDateUnitsToSelectedDate(1)">
+    <div class="arrow-nav" (click)="addDateUnitsToSelectedDate(1)" *ngIf="currentTab !== 'Custom'">
       <svg width="1.5em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle-fill" fill="#2D6BA4"
         xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd"
@@ -162,21 +121,18 @@
         </path>
       </svg>
     </div>
-    }
-   
   </div>
-  }
+
 
   <!--filters-->
-  @if (authenticatedUser?.resourceGroup || authenticatedUser?.admin) {
-      <div id="schedule-filters" class="schedule-filters">
+  <div id="schedule-filters" class="schedule-filters"
+    *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
+
     <mat-form-field>
       <mat-label>User</mat-label>
       <mat-select multiple [formControl]="userFilterFC" (selectionChange)="applyFilters('user')">
         <mat-option value="0">Any User</mat-option>
-         @for (u of filteredUsers; track $index) {
-           <mat-option [value]="u.dempoid">{{ u.displayName }}</mat-option>
-        }
+        <mat-option *ngFor="let u of filteredUsers" value="{{u.dempoid}}">{{u.displayName}}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -184,10 +140,8 @@
       <mat-label>Project</mat-label>
       <mat-select multiple [formControl]="projectFilterFC" (selectionChange)="applyFilters('project')">
         <mat-option value="0">Any Project</mat-option>
-            @for (p of filteredProjects; track p.projectName) {
-             <mat-option [value]="p.projectName">{{ p.projectName }}</mat-option>
-        }
-        </mat-select>
+        <mat-option *ngFor="let p of filteredProjects" value="{{p.projectName}}">{{p.projectName}}</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <button id="reset-filters-button" mat-raised-button class="btn btn-primary" color="primary"
@@ -195,28 +149,19 @@
       Reset
     </button>
   </div>
-  }
- 
   <button id="schedule-save-all-button" mat-raised-button class="btn btn-primary" color="primary"
     (click)="saveConfirmation()">
     Save All
   </button>
 
-  @if (showPopupMessage) {
-     <app-modal-popup id="modal-popup-message" class="modal-popup" (closeEvent)="closeModalPopup()">
-     </app-modal-popup>
-  }
-  
+  <app-modal-popup id="modal-popup-message" class="modal-popup" (closeEvent)="closeModalPopup()"
+    *ngIf="showPopupMessage">
+  </app-modal-popup>
   <div id="hover-message" [class.hidden]="!showHoverMessage">
   </div>
 
-  @if (showBlackFilter) {
-    <div id="black-filter" [ngStyle]="blackFilterStyle()"></div>
-  }
-
-  @if (showScheduleBlackFilter) {
-    <div id="schedule-black-filter" [ngStyle]="blackFilterStyle()"></div>
-  }
+  <div id="black-filter" [ngStyle]="blackFilterStyle()" *ngIf="showBlackFilter"></div>
+  <div id="schedule-black-filter" [ngStyle]="blackFilterStyle()" *ngIf="showScheduleBlackFilter"></div>
 
 </div>
 
@@ -226,14 +171,11 @@
   <mat-tab label="Add">
     <ng-template mat-tab-label>
       <span [class.invalid-emphasis]="addTabInvalid">Add</span>
-       @if (addTabInvalid) {
-          <span class="invalid-emphasis">&nbsp;<sup>**</sup></span>
-       }
+      <span class="invalid-emphasis" *ngIf="addTabInvalid">&nbsp;<sup>**</sup></span>
     </ng-template>
 
     <div class="paginated-schedules">
-      @for (s of pagedUserSchedulesAdded; track s.dempoid) {
-      <app-schedule-line class="schedule-row"  [schedule]="s"
+      <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesAdded" [schedule]="s"
         [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
         [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
         [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
@@ -241,7 +183,6 @@
         (addEvent)="addSchedule($event, true)" (changeEvent)="changeEvent($event)"
         (mouseover)="displayHoverMessage($event, s)" (mouseout)="hideHoverMessage()">
       </app-schedule-line>
-    }
     </div>
 
     <mat-paginator #paginator [pageSize]="pageSizeAdded" [pageSizeOptions]="pageSizeOptions"
@@ -253,22 +194,16 @@
   <mat-tab label="Day">
     <ng-template mat-tab-label>
       <span [class.invalid-emphasis]="dayTabInvalid">Day</span>
-      @if (dayTabInvalid) {  
-        <span class="invalid-emphasis">&nbsp;<sup>**</sup></span>
-      }
+      <span class="invalid-emphasis" *ngIf="dayTabInvalid">&nbsp;<sup>**</sup></span>
     </ng-template>
 
     <!--<cdk-virtual-scroll-viewport class="schedule-viewport" itemSize="60" class="schedule-tab">-->
     <!--</cdk-virtual-scroll-viewport>-->
     <div class="paginated-schedules">
-      @if ((pagedUserSchedulesDay || []).length < 1) {
-        <div class="no-results bold italic">
-           No matching schedules found for this day...
-        </div>
-      }
-
-      @for (s of pagedUserSchedulesDay; track s.dempoid) {
-      <app-schedule-line class="schedule-row"  [schedule]="s"
+      <div class="no-results bold italic" *ngIf="(pagedUserSchedulesDay || []).length < 1">
+        No matching schedules found for this day...
+      </div>
+      <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesDay" [schedule]="s"
         [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
         [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
         [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
@@ -276,7 +211,6 @@
         (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
         (mouseleave)="hideHoverMessage()">
       </app-schedule-line>
-      }
     </div>
 
     <mat-paginator #paginator [pageSize]="pageSizeDay" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true"
@@ -287,9 +221,7 @@
   <mat-tab label="Week">
     <ng-template mat-tab-label>
       <span [class.invalid-emphasis]="weekTabInvalid">Week</span>
-      @if (weekTabInvalid) {
-        <span class="invalid-emphasis">&nbsp;<sup>**</sup></span>
-      }
+      <span class="invalid-emphasis" *ngIf="weekTabInvalid">&nbsp;<sup>**</sup></span>
     </ng-template>
 
     <!--<cdk-virtual-scroll-viewport class="schedule-viewport" itemSize="60" class="schedule-tab">
@@ -312,13 +244,10 @@
           </cdk-virtual-scroll-viewport>-->
 
     <div class="paginated-schedules">
-      @if ((pagedUserSchedulesWeek || []).length < 1) {
-        <div class="no-results bold italic">
-         No matching schedules found for this date range...
-         </div>
-      }
-      @for (s of pagedUserSchedulesWeek; track s.dempoid) {
-        <app-schedule-line class="schedule-row" [schedule]="s"
+      <div class="no-results bold italic" *ngIf="(pagedUserSchedulesWeek || []).length < 1">
+        No matching schedules found for this date range...
+      </div>
+        <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesWeek" [schedule]="s"
           [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
           [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
           [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
@@ -326,7 +255,6 @@
           (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
           (mouseleave)="hideHoverMessage()">
         </app-schedule-line>
-      }
       </div>
 
       <mat-paginator #paginator [pageSize]="pageSizeWeek" [pageSizeOptions]="pageSizeOptions"
@@ -338,19 +266,14 @@
     <mat-tab label="Month">
       <ng-template mat-tab-label>
         <span [class.invalid-emphasis]="monthTabInvalid">Month</span>
-        @if (monthTabInvalid) {
-          <span class="invalid-emphasis">&nbsp;<sup>**</sup></span>
-        }
+        <span class="invalid-emphasis" *ngIf="monthTabInvalid">&nbsp;<sup>**</sup></span>
       </ng-template>
 
       <div class="paginated-schedules">
-        @if ((pagedUserSchedulesMonth || []).length < 1) {
-          <div class="no-results bold italic">
-            No matching schedules found for this date range...
-          </div>
-        }
-        @for (s of pagedUserSchedulesMonth; track s.dempoid) {
-        <app-schedule-line class="schedule-row" [schedule]="s"
+        <div class="no-results bold italic" *ngIf="(pagedUserSchedulesMonth || []).length < 1">
+          No matching schedules found for this date range...
+        </div>
+        <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesMonth" [schedule]="s"
           [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
           [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
           [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
@@ -358,7 +281,6 @@
           (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
           (mouseleave)="hideHoverMessage()">
         </app-schedule-line>
-       } 
       </div>
 
       <mat-paginator #paginator [pageSize]="pageSizeMonth" [pageSizeOptions]="pageSizeOptions"
@@ -370,20 +292,14 @@
     <mat-tab label="Custom">
       <ng-template mat-tab-label>
         <span [class.invalid-emphasis]="customTabInvalid">Custom</span>
-        @if (customTabInvalid) {
-          <span class="invalid-emphasis">&nbsp;<sup>**</sup></span>
-        }
+        <span class="invalid-emphasis" *ngIf="customTabInvalid">&nbsp;<sup>**</sup></span>
       </ng-template>
 
       <div class="paginated-schedules">
-        @if ((pagedUserSchedulesCustom || []).length < 1) {
-          <div class="no-results bold italic">
-             No matching schedules found for this date range...
-          </div>
-        }
-
-        @for (s of pagedUserSchedulesCustom; track s.dempoid) {
-        <app-schedule-line class="schedule-row" [schedule]="s"
+        <div class="no-results bold italic" *ngIf="(pagedUserSchedulesCustom || []).length < 1">
+          No matching schedules found for this date range...
+        </div>
+        <app-schedule-line class="schedule-row" *ngFor="let s of pagedUserSchedulesCustom" [schedule]="s"
           [allUsers]="allUsers" [allProjects]="allProjects" [timeCodes]="timeCodes"
           [authenticatedUser]="authenticatedUser" [readOnly]="checkReadOnly(s)" [unlockDate]="unlockDate"
           [blockOutDates]="blockOutDates" [schedulingLevel]="currentUser?.schedulinglevel || 0"
@@ -391,7 +307,6 @@
           (changeEvent)="changeEvent($event)" (mouseenter)="displayHoverMessage($event, s)"
           (mouseleave)="hideHoverMessage()">
         </app-schedule-line>
-       }
       </div>
 
       <mat-paginator #paginator [pageSize]="pageSizeCustom" [pageSizeOptions]="pageSizeOptions"

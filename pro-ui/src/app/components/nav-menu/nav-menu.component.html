@@ -1,6 +1,6 @@
 <div id="nav-container-outer">
   <div id="nav-container">
- <!--   <app-time-in-out *ngIf="authenticatedUser?.interviewer"></app-time-in-out>-->
+ <!--   <app-time-in-out *ngIf="authenticatedUser?.role == UserRoles.Interviewer"></app-time-in-out>-->
     <div [class.selected-link]="checkSelected('home')">
       <a [routerLink]="allowNavigation ? '/' : null"
          id="home-nav"
@@ -93,7 +93,7 @@
     </div>
 
     <div [class.selected-link]="checkSelected('forecasting')"
-         *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+         *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
       <a [routerLink]="allowNavigation ? '/forecasting' : null"
          id="forecasting-nav"
          (click)="confirmIfChanges('forecasting-nav')"
@@ -110,7 +110,7 @@
     </div>
 
     <div [class.selected-link]="checkSelected('requests')"
-         *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+         *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
       <a [routerLink]="allowNavigation ? '/requests' : null"
          id="requests-nav"
          (click)="confirmIfChanges('requests-nav')"
@@ -127,7 +127,7 @@
     </div>
 
     <div [class.selected-link]="checkSelected('communications-hub')"
-         *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin || trainedOnCommHubProject">
+         *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) || trainedOnCommHubProject">
       <a [routerLink]="allowNavigation ? '/communications-hub' : null"
          id="communications-hub-nav"
          (click)="confirmIfChanges('communications-hub-nav')"
@@ -145,7 +145,7 @@
     </div>
 
     <div [class.selected-link]="checkSelected('configuration')"
-         *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+         *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
       <a [routerLink]="allowNavigation ? '/configuration' : null"
          id="configuration-nav"
          (click)="confirmIfChanges('configuration-nav')"

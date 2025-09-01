@@ -351,9 +351,6 @@ export interface IAuthenticatedUser {
   netID: string;
   role?: number;
   isMemberOf: string;
-  interviewer: boolean;
-  resourceGroup: boolean;
-  admin: boolean;
   userRoles?: string[] | undefined;
   sessionMinsLeft: number;
   timecards: ITimeCard[];

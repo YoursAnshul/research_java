@@ -17,6 +17,7 @@ import { Utils } from '../../../classes/utils';
 import moment from 'moment-timezone';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { ScheduleService } from '../../schedule/schedule.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-shift-month-view',
@@ -41,6 +42,7 @@ export class ShiftMonthViewComponent implements OnInit {
   type: any = null;
   @Input() isEdit: boolean = false;
   @Input() isScheduleUpdate: boolean = false;
+  UserRoles: any = UserRole;
 
   constructor(
     private authenticationService: AuthenticationService,

@@ -6,6 +6,7 @@ import { GlobalsService } from '../../services/globals/globals.service';
 import { ProjectsService } from '../../services/projects/projects.service';
 import { UsersService } from '../../services/users/users.service';
 import { User } from '../../models/data/user';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-nav-menu',
@@ -22,7 +23,8 @@ export class NavMenuComponent implements OnInit {
   allUsers: User[] = [];
   authenticatedUserProfile: User = {} as User;
   trainedOnCommHubProject: boolean = false;
-
+  UserRoles: any = UserRole;
+  
   constructor(private authenticationService: AuthenticationService,
     private globalsService: GlobalsService,
     private projectsService: ProjectsService,
@@ -55,7 +57,7 @@ export class NavMenuComponent implements OnInit {
     this.authenticationService.authenticatedUser.subscribe(
       authenticatedUser => {
         this.authenticatedUser = authenticatedUser;
-        if (!authenticatedUser.interviewer) {
+        if (authenticatedUser.role !== UserRole.Interviewer) {
           this.usersLabel = 'Users';
         }
 
@@ -164,11 +166,6 @@ export class NavMenuComponent implements OnInit {
     if (Utils.arrayIncludesAny(this.authenticatedUserProfile.trainedOnArray, commHubProjectIds))
       this.trainedOnCommHubProject = true;
 
-    //DEBUG
-    //this.authenticatedUser.Admin = false;
-    //this.authenticatedUser.ResourceGroup = false;
-    //this.authenticatedUser.Interviewer = true;
-    //this.trainedOnCommHubProject = false;
   }
 
 }

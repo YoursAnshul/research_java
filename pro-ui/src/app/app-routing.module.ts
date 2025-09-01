@@ -20,6 +20,7 @@ import { ManageAnnouncementsComponent } from './pages/announcements/announcement
 import { SchedulingInfoComponent } from './components/scheduling-info/scheduling-info.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UnsavedChangesGuard } from './guards/unsaved-changes.guard';
+import { RoleGuard } from './guards/role.guard';
 import { ShiftScheduleComponent } from './components/schedule/shift-schedule.component';
 import { UserCoreHoursComponent } from './pages/forecasting/user-core-hours/user-core-hours.component';
 import { ProjectForecastingComponent } from './pages/forecasting/project-forecasting/project-forecasting.component';
@@ -37,10 +38,10 @@ const routes: Routes = [
   { path: 'projects', component: ProjectsComponent},
   { path: 'communications', component: CommunicationsComponent},
   { path: 'reports', component: ReportsComponent},
-  { path: 'users', component: UsersComponent, canDeactivate: [UnsavedChangesGuard]},
-  { path: 'forecasting', component: ForecastingComponent},
-  { path: 'requests', component: RequestsComponent, canDeactivate: [UnsavedChangesGuard] },
-  { path: 'configuration', component: ConfigurationComponent, canDeactivate: [UnsavedChangesGuard]},
+  { path: 'users', component: UsersComponent, canActivate: [RoleGuard], canDeactivate: [UnsavedChangesGuard]},
+  { path: 'forecasting', component: ForecastingComponent, canActivate: [RoleGuard]},
+  { path: 'requests', component: RequestsComponent, canActivate: [RoleGuard], canDeactivate: [UnsavedChangesGuard] },
+  { path: 'configuration', component: ConfigurationComponent, canActivate: [RoleGuard], canDeactivate: [UnsavedChangesGuard]},
   { path: 'book-reference', data: { hideHeaderFooter: true }, component: CustomPageComponent},
   { path: 'announcement-management', component: ManageAnnouncementsComponent},
   { path: 'scheduling-info', data: { hideHeaderFooter: true }, component: SchedulingInfoComponent},

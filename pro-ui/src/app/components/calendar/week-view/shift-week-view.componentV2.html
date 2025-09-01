@@ -14,7 +14,7 @@
       </div>
   
       <div 
-      *ngIf="authenticatedUser?.interviewer"
+      *ngIf="authenticatedUser?.role == UserRoles.Interviewer"
         [ngStyle]="{
           width: '7%',
           'background-color': '#0078d4',
@@ -24,7 +24,7 @@
         Total
       </div>
       <div 
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
+      *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0"
         [ngStyle]="{
           width: '7%',
           'background-color': '#0078d4',
@@ -59,7 +59,7 @@
       </div>
   
       <div
-      *ngIf="authenticatedUser?.interviewer"
+      *ngIf="authenticatedUser?.role == UserRoles.Interviewer"
         [ngStyle]="{
           width: '7%',
           justifyContent: 'center',
@@ -79,7 +79,7 @@
         />
       </div>
       <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId!=0"
+        *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0"
         [ngStyle]="{
           width: '7%',
           justifyContent: 'center',
@@ -117,7 +117,7 @@
   
     <!-- User Schedules -->
     <div id="week-calendar-user-schedules" style="display: flex;" *ngIf="!isLoading">
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day1Schedules; track schedule) {
           <div class="schedule-card"
             (click)="handleClick(schedule)"
@@ -139,7 +139,7 @@
       </div>
       
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day2Schedules; track schedule) {
           <div class="schedule-card"
              (click)="handleClick(schedule)"
@@ -160,7 +160,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day3Schedules; track schedule) {
           <div class="schedule-card"
             (click)="handleClick(schedule)"
@@ -181,7 +181,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day4Schedules; track schedule) {
           <div class="schedule-card"
             (click)="handleClick(schedule)"
@@ -202,7 +202,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day5Schedules; track schedule) {
           <div class="schedule-card"
             (click)="handleClick(schedule)"
@@ -223,7 +223,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day6Schedules; track schedule) {
           <div class="schedule-card"
             (click)="handleClick(schedule)"
@@ -244,7 +244,7 @@
         }
       </div>
   
-      <div [ngClass]="(authenticatedUser?.interviewer) || (authenticatedUser?.admin && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
+      <div [ngClass]="(authenticatedUser?.role == UserRoles.Interviewer) || ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId!=0) ? 'day-schedules-container-interviewer' : 'day-schedules-container'">
         @for (schedule of weekSchedules?.day7Schedules; track schedule) {
           <div class="schedule-card"
             (click)="handleClick(schedule)"

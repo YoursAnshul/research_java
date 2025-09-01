@@ -1,13 +1,11 @@
-@if (userObj?.interviewer) {
-  <div class="center-message">
-    <div class="message-wrapper">
-      <mat-icon class="logo">error</mat-icon>
-      <p class="message">You don't have access</p>
-    </div>
+<div *ngIf="userObj.interviewer" class="center-message">
+  <div class="message-wrapper">
+    <mat-icon class="logo">error</mat-icon>
+    <p class="message">You don't have access</p>
   </div>
-}
-@if (userObj == null || !userObj.interviewer) {
-  <div class="container">
+</div>
+
+<div class="container" *ngIf="userObj == null || !userObj.interviewer">
   <h2 class="configuration">
     <span
       style="color: #0680cd; text-decoration: underline; cursor: pointer"
@@ -26,11 +24,9 @@
       + Add New Announcement
     </button>
   </div>
-  @if (isLoading) {
-    <div class="loader-container">
-      <mat-spinner [diameter]="50" color="primary"></mat-spinner>
-    </div>
-  }
+  <div *ngIf="isLoading" class="loader-container">
+    <mat-spinner [diameter]="50" color="primary"></mat-spinner>
+  </div>
 
   <div class="table-wrapper">
     <div class="table text-sm mt-2">
@@ -40,10 +36,8 @@
           [(headerItems)]="headerItems"
           (headerItemsChange)="headerItemsChange($event)"
         ></app-table-header>
-        @if (paginatedAnnouncements !== undefined &&
-        paginatedAnnouncements.length > 0) { @for (announcement of
-        paginatedAnnouncements; track announcement) {
-        <div class="table-row">
+        @if (paginatedAnnouncements !== undefined && paginatedAnnouncements.length > 0) {
+        <div *ngFor="let announcement of paginatedAnnouncements" class="table-row">
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
             style="width: 170px"
@@ -72,20 +66,26 @@
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle fixed-width"
           >
-            @if (announcement.displayTo !== 'Any Projects') {
+            <ng-container
+              *ngIf="
+                announcement.displayTo !== 'Any Projects';
+                else showAnyProjects
+              "
+            >
               <div class="tags-container">
-              @for (project of announcement.displayTo; track $index) {
-                <span
-                class="tag"
-                [ngStyle]="{ '--tag-color': project.projectColor }"
-                >
-                {{ project.projectName }}
+                <span *ngFor="let project of announcement.displayTo">
+                  <span
+                    class="tag"
+                    [ngStyle]="{ '--tag-color': project.projectColor }"
+                  >
+                    {{ project.projectName }}
+                  </span>
                 </span>
-              }
               </div>
-            } @else {
+            </ng-container>
+            <ng-template #showAnyProjects>
               <span>All Projects</span>
-            }
+            </ng-template>
           </div>
           <div
             class="table-cell border border-1 border-[#B5B5B5] p-2 px-2 align-middle"
@@ -183,7 +183,7 @@
             </button>
           </div>
         </div>
-        } }
+        }
       </div>
     </div>
     <app-table-paginator
@@ -196,6 +196,5 @@
   @if (announcements !== undefined && announcements.length === 0) {
   <div class="w-full text-sm">No announcement found</div>
   }
-</div>
-}
 
+</div>

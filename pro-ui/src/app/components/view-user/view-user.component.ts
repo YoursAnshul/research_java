@@ -40,6 +40,7 @@ import { Router } from '@angular/router';
 import { ScheduleService } from '../schedule/schedule.service';
 import { ShiftScheduleComponent } from '../schedule/shift-schedule.component';
 import { PageEvent } from '@angular/material/paginator';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-view-user',
@@ -123,6 +124,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   pageSize = 10;
   paginatedRequests: IRequest[] = [];
   public currentPage: number = 1;
+  UserRoles: any = UserRole;
 
   constructor(
     private fb: FormBuilder,
@@ -456,7 +458,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   isReadOnly(): boolean {
-    if (this.authenticatedUser?.projectTeam || this.authenticatedUser?.admin) {
+    if (this.authenticatedUser?.role == UserRole.ProjectTeam || (this.authenticatedUser?.role == UserRole.Admin || this.authenticatedUser?.role == UserRole.OutcomesIT)) {
       return false;
     } else {
       return true;
@@ -667,9 +669,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
 
         //disable field requirements for interviewer-only roles
         if (
-          this.authenticatedUser.interviewer &&
-          !this.authenticatedUser.admin &&
-          !this.authenticatedUser.resourceGroup
+          this.authenticatedUser.role == UserRole.Interviewer
         ) {
           userFormField.formFieldVariable.formField.required = false;
         }
@@ -812,7 +812,7 @@ export class ViewUserComponent implements OnInit, OnChanges {
   }
 
   private validateRequiredFields() {
-    if (this.authenticatedUser.interviewer) {
+    if (this.authenticatedUser.role == UserRole.Interviewer) {
       return;
     }
     this.tab2Invalid = false;

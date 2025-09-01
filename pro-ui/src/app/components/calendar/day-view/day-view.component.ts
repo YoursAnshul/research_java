@@ -13,6 +13,7 @@ import { ScheduleService } from '../../schedule/schedule.service';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-day-view',
@@ -148,21 +149,15 @@ export class DayViewComponent implements OnInit {
   }
   openScheduleData(schedule: any): void {
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       this.authenticatedUser.netID != schedule.dempoid
     ) {
       return;
     }
-    let date = schedule?.dayWiseDate
-      ? new Date(schedule.dayWiseDate + 'T00:00:00-04:00')
-      : null;
+    let date = schedule?.dayWiseDate ? new Date(schedule.dayWiseDate) : null;
     let currentDate = new Date();
-    if (date) {
-      date.setHours(0, 0, 0, 0);
-    }
-    currentDate.setHours(0, 0, 0, 0);
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       date !== null &&
       date < currentDate
     ) {

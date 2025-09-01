@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { GlobalsService } from '../../services/globals/globals.service';
 import { LogsService } from '../../services/logs/logs.service';
 import { Utils } from '../../classes/utils';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-time-in-out',
@@ -25,6 +26,7 @@ export class TimeInOutComponent {
   public showHistory: boolean = false;
 
   public dateTimeCards: IDateTimeCards[] = [];
+  UserRoles: any = UserRole;
 
   constructor(private http: HttpClient,
     private usersService: UsersService,

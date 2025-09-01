@@ -697,14 +697,14 @@
 
         <div
           class="pro-ep-role italic"
-          *ngIf="authenticatedUser?.admin; else resourceGroup"
+          *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT); else resourceGroup"
         >
           (admin)
         </div>
         <ng-template #resourceGroup>
           <div
             class="pro-ep-role italic"
-            *ngIf="authenticatedUser?.resourceGroup; else interviewer"
+            *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam; else interviewer"
           >
             (resource group)
           </div>
@@ -712,7 +712,7 @@
         <ng-template #interviewer>
           <div
             class="pro-ep-role italic"
-            *ngIf="authenticatedUser?.interviewer; else projectTeam"
+            *ngIf="authenticatedUser?.role == UserRoles.Interviewer; else projectTeam"
           >
             (interviewer)
           </div>

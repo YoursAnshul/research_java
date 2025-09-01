@@ -1,15 +1,5 @@
-@if (authenticatedUser?.netID && !(authenticatedUser?.admin)) {
-<div class="inner-container">
-  <h2>No Access</h2>
-  <p>Your user account does not have access to view this page.</p>
-  <p>
-    Please contact someone in the resource team if you believe this was a
-    mistake.
-  </p>
-</div>
-}
-@if ((!showSelectedUser && !createUser) && authenticatedUser?.netID && authenticatedUser?.admin) {
-<div style="margin-left: 20px;" class="text-[#262626] w-fit">
+@if (!showSelectedUser && !createUser) {
+<div class="text-[#262626] w-fit" >
 
    
     <div class="text-xl font-medium mb-6">
@@ -258,8 +248,8 @@
 
 
 <!--view user-->
-@if (showSelectedUser && authenticatedUser?.netID && authenticatedUser?.admin) {
-<div id="user-profile">
+@if (showSelectedUser) {
+<div id="user-profile" >
 
   <app-view-user id="view-user-form"
                  [viewUser]="selectedUser"
@@ -268,7 +258,7 @@
 </div>
 }
 
-@if (createUser && authenticatedUser?.netID && authenticatedUser?.admin) {
+@if (createUser) {
 <div>
     <app-add-user (closewindow)="createUser = false" (userSaved)="onUserAdded($event)" [createForm] ="true" (setUnsavedChanges)="setUnsavedChanges($event)"/>
 </div>

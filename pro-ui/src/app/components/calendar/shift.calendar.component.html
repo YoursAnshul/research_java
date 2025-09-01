@@ -31,7 +31,7 @@
     <mat-tab label="Day" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
         <div
-          [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
+          [ngClass]="authenticatedUser?.role == UserRoles.Interviewer ? 'wd100' : 'wd100'"
           class="calendar-control-container center-container"
         >
           <app-shift-calendar-controls
@@ -44,7 +44,7 @@
           </app-shift-calendar-controls>
         </div>
       </div>
-      <div class="center-container" *ngIf="!authenticatedUser?.interviewer">
+      <div class="center-container" *ngIf="authenticatedUser?.role !== UserRoles.Interviewer">
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
             <mat-label>User</mat-label>
@@ -123,7 +123,7 @@
     <mat-tab label="Week" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
         <div
-          [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
+          [ngClass]="authenticatedUser?.role == UserRoles.Interviewer ? 'wd100' : 'wd100'"
           class="calendar-control-container center-container"
         >
           <app-shift-calendar-controls
@@ -139,7 +139,7 @@
       </div>
       <div
         class="center-container mb-3"
-        *ngIf="!authenticatedUser?.interviewer"
+        *ngIf="authenticatedUser?.role !== UserRoles.Interviewer"
       >
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">
@@ -217,7 +217,7 @@
     <mat-tab label="Month" [disabled]="isLoading || isWeekTabDisabled">
       <div class="calendar-wrapper">
         <div
-          [ngClass]="authenticatedUser?.interviewer ? 'wd100' : 'wd100'"
+          [ngClass]="authenticatedUser?.role == UserRoles.Interviewer ? 'wd100' : 'wd100'"
           class="calendar-control-container center-container"
         >
           <app-shift-calendar-controls
@@ -232,7 +232,7 @@
       </div>
       <div
         class="center-container mb-3"
-        *ngIf="!authenticatedUser?.interviewer"
+        *ngIf="authenticatedUser?.role !== UserRoles.Interviewer"
       >
         <div>
           <mat-form-field appearance="outline" class="custom-form-field">

@@ -25,6 +25,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
 import moment from 'moment-timezone';
 import { ScheduleService } from '../../schedule/schedule.service';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-shift-week-view',
@@ -65,7 +66,8 @@ export class ShiftWeekViewComponent implements OnInit {
   validationMessages: IValidationMessage[] = [];
   invalidScheduleKeys: string[] = [];
   invalidWeeks: string[] = [];
-
+  UserRoles: any = UserRole;
+  
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -325,7 +327,7 @@ export class ShiftWeekViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   addShift(date: any): void {
-    if (this.authenticatedUser?.interviewer) {
+    if (this.authenticatedUser?.role == UserRole.Interviewer) {
       if (!date) {
         console.warn('No date selected.');
         return;
@@ -431,28 +433,23 @@ export class ShiftWeekViewComponent implements OnInit {
     }, this.clickDelay);
   }
   openScheduleData(schedule: ISchedule): void {
-    const excludedProjects = [
-      'Sick',
-      'Absent',
-      'Arriving Late',
-      'Leaving Early',
-    ];
-
     if (
-      excludedProjects.includes(schedule.projectName ?? '') &&
-      this.authenticatedUser.interviewer
+      (schedule.projectName == 'Sick' ||
+      schedule.projectName == 'Absent' ||
+      schedule.projectName == 'Arriving Late' ||
+      schedule.projectName == 'Leaving Early') &&
+      this.authenticatedUser.role == UserRole.Interviewer
     ) {
       return;
     }
-
-    let date = schedule?.scheduledate ? new Date(schedule.scheduledate+ 'T00:00:00-04:00') : null;
+    let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
     if (date) {
       date.setHours(0, 0, 0, 0);
     }
     currentDate.setHours(0, 0, 0, 0);
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       date !== null &&
       date < currentDate
     ) {
