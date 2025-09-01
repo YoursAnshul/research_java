@@ -1,25 +1,15 @@
 package com.pro.api.controllers;
 
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
-
+import com.pro.api.models.business.AuthenticatedUser;
+import com.pro.api.models.business.SessionUserEmail;
+import com.pro.api.models.business.UserMin;
+import com.pro.api.models.dataaccess.*;
+//import com.pro.api.models.dataaccess.repos.CoreHourRepository;
+import com.pro.api.models.dataaccess.repos.*;
+import com.pro.api.service.AuditService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,35 +17,25 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.pro.api.models.business.AuthenticatedUser;
-import com.pro.api.models.business.SessionUserEmail;
-import com.pro.api.models.business.UserMin;
-import com.pro.api.models.dataaccess.CoreHour;
-import com.pro.api.models.dataaccess.CurrentUser;
-import com.pro.api.models.dataaccess.InterviewerTimeCard;
-import com.pro.api.models.dataaccess.Training;
-import com.pro.api.models.dataaccess.User;
-//import com.pro.api.models.dataaccess.repos.CoreHourRepository;
-import com.pro.api.models.dataaccess.repos.CoreHourRepository;
-import com.pro.api.models.dataaccess.repos.DropDownValueRepository;
-import com.pro.api.models.dataaccess.repos.FormFieldRepository;
-import com.pro.api.models.dataaccess.repos.InterviewerTimeCardRepository;
-import com.pro.api.models.dataaccess.repos.TrainingRepository;
-import com.pro.api.models.dataaccess.repos.UserRepository;
-import com.pro.api.service.AuditService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -132,10 +112,7 @@ public class UsersController {
 
 			response.Status = "Success";
 			response.Message = "Successfully retrieved users";
-			
-			// response.Subject = userRepository.findAllUserMinsOrderedByName();
-			// code not to be push
-			response.Subject = userRepository.findAll();
+			response.Subject = userRepository.findAllUserMinsOrderedByName();
 		} catch (Exception ex) {
 			response.Status = "Failure";
 			response.Message = ex.getMessage();
@@ -605,8 +582,13 @@ public DirContext getUserDetails(String duid) {
 
 		//uncomment below to use default authenticated user, including default, spoofed grouper assignments - if running locally, return a default user
 		if (activeProfile.equals("local")) {
+			// getDefaultAuthenticatedUser(authenticatedUser);
 			getDefaultAuthenticatedUser(authenticatedUser);
             authenticatedUser.setNetID(this.getNetIdByEmail(authenticatedUser.getEppn()));
+            authenticatedUser.setUserRoles(new String[]{"3"});
+//			User user = userRepository.findFirstByEmailaddrIgnoreCase("jeremiah.reed@duke.edu");
+//			authenticatedUser = new AuthenticatedUser(user);
+
 			response.Status = "Success";
 			response.Message = "Successfully retrieved login info";
 			response.Subject = authenticatedUser;
@@ -709,7 +691,7 @@ public DirContext getUserDetails(String duid) {
 				response.Message = String.format("{0}", grouperResponse.body());
 			}
 */
-            authenticatedUser.setNetID(this.getNetIdByEmail(emailAddress));
+			authenticatedUser.setNetID(this.getNetIdByEmail(emailAddress));
 			response.Status = "Success";
 			response.Subject = authenticatedUser;
 		} catch (Exception ex) {
@@ -719,6 +701,12 @@ public DirContext getUserDetails(String duid) {
 
 		return response;
 	}
+	
+	public String getNetIdByEmail(String epp) {
+		String sql = "SELECT dempoid FROM users WHERE emailaddr=? ";
+		String streetName = this.jdbcTemplate.queryForObject(sql, new Object[] { epp }, String.class);
+		return streetName;
+	}
 
 	private void getDefaultAuthenticatedUser(AuthenticatedUser user) {
 		user.setEppn("jeremiah.reed@duke.edu");
@@ -726,13 +714,15 @@ public DirContext getUserDetails(String duid) {
 		user.setDisplayName("duke");
 
 		//set the below as needed for testing locally
-		 user.interviewer = false;
+		user.interviewer = true;
 		// user.resourceGroup = true;
-		user.admin = true;
+		// user.admin = true;
 		user.resourceGroup = false;
-		// user.admin = false;
+		user.admin = false;
+		// user.role = 3;
 		user.projectTeam = false;
 		user.outcomesIt = false;
+		user.userRoles = new String[]{"3"};
 
 	}
 
@@ -1228,10 +1218,5 @@ public DirContext getUserDetails(String duid) {
 	}
 
 
-	public String getNetIdByEmail(String epp) {
-		String sql = "SELECT dempoid FROM users WHERE emailaddr=? ";
-		String streetName = this.jdbcTemplate.queryForObject(sql, new Object[] { epp }, String.class);
-		return streetName;
-	}
 
 }
