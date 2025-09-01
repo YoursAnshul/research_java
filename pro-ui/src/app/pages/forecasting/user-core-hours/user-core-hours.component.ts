@@ -22,9 +22,7 @@ import { UserRole } from '../../../models/presentation/enums';
   styleUrls: ['./user-core-hours.component.css'],
 })
 export class UserCoreHoursComponent implements OnInit {
-  
   UserRoles: any = UserRole;
-
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
@@ -81,6 +79,9 @@ export class UserCoreHoursComponent implements OnInit {
     dempoid?: string
   }[] = [];
   authenticatedUser!: IAuthenticatedUser;
+  isLoading: boolean = false;
+  save: boolean = false;
+  exportIsDisabled: boolean = false;
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() === 'SUCCESS') {
@@ -135,11 +136,13 @@ export class UserCoreHoursComponent implements OnInit {
   }
 
   getList(codeValues: number): void {
+    this.isLoading = true;
     const apiUrl = `${environment.DataAPIUrl}/forecasting/list?codeValues=${codeValues}`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
         this.paginate();
+        this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Error fetching user forecasting:', error);
@@ -288,8 +291,11 @@ onCoreHourChange(event: Event, monthKey: string, res: any): void {
   }
 
   saveCoreHours(): void {
+    this.save = true;
     if (this.editedCoreHours.length === 0) {
       this.showToastMessage('No changes to save.', 'error');
+      this.isLoading = false;
+      this.save = false;
       return;
     }
 
@@ -306,10 +312,12 @@ onCoreHourChange(event: Event, monthKey: string, res: any): void {
         this.editedCoreHours = [];
 
         const codeValue = this.selectedValues[0]?.item?.codeValues ?? 0;
+        this.save = false;
         this.getList(codeValue);
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);
+        this.save = false;
         this.showToastMessage('Error saving core hours.', 'error');
       },
     });
@@ -332,6 +340,7 @@ onCoreHourChange(event: Event, monthKey: string, res: any): void {
     });
   }
   export() {
+    this.exportIsDisabled = true;
     const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
     const params = new HttpParams().set(
       'codeValues',
@@ -347,8 +356,10 @@ onCoreHourChange(event: Event, monthKey: string, res: any): void {
         a.download = 'forecasting.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
+        this.exportIsDisabled = false;
       },
       error: (error: any) => {
+        this.exportIsDisabled = false;
         console.error('Error exporting core hours:', error);
       },
     });

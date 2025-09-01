@@ -1,15 +1,22 @@
 @if (authenticatedUser?.netID && !((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT))) {
-  <div class="inner-container">
-    <h2>No Access</h2>
-    <p>Your user account does not have access to view this page.</p>
-    <p>
-      Please contact someone in the resource team if you believe this was a
-      mistake.
-    </p>
-  </div>
+<div
+  class="inner-container"
+>
+  <h2>No Access</h2>
+  <p>Your user account does not have access to view this page.</p>
+  <p>
+    Please contact someone in the resource team if you believe this was a
+    mistake.
+  </p>
+</div>
+}
+
+@if (isLoading) {
+<div class="spinner-container">
+  <mat-spinner color="primary" [diameter]="30"></mat-spinner>
+</div>
 }
 @if (authenticatedUser?.netID && (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)) {
-
 <div>
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center">
@@ -38,16 +45,26 @@
     <div class="flex space-x-2">
       <button
         (click)="saveCoreHours()"
+        [disabled]="spin"
         class="bg-blue-400 hover:bg-blue-500 text-white font-semibold px-6 py-2 rounded shadow border-2 border-blue-400 flex items-center justify-center"
       >
-        <span class="ml-2">Save</span>
+        @if (spin) {
+        <i class="fa fa-spinner fa-spin"></i>
+        }
+        <span class="ml-2">{{ spin ? "Saving..." : "Save" }}</span>
       </button>
 
       <button
         (click)="export()"
+        [disabled]="exportIsDisabled"
         class="bg-white border border-blue-400 text-blue-500 font-semibold px-6 py-2 rounded shadow border-2 border-blue-400"
       >
-        <span class="ml-2">Export</span>
+        @if (exportIsDisabled) {
+        <i class="fa fa-spinner fa-spin"></i>
+        }
+        <span class="ml-2">{{
+          exportIsDisabled ? "Export..." : "Export"
+        }}</span>
       </button>
     </div>
   </div>

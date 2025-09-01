@@ -12,7 +12,7 @@ import { UserRole } from '../models/presentation/enums';
   animations: [
     trigger('slideInOut', [
       state('in', style({
-        width: '250px'
+        width: '220px'
       })),
       state('out', style({
         width: '70px'

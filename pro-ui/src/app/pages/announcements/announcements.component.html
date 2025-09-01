@@ -25,21 +25,22 @@
     </g>
   </svg>
   <h3>Announcements</h3>
-  <a
-    *ngIf="!userObj.interviewer"
-    routerLink="/announcement-management"
-    [queryParams]="{ path: 'home' }"
-    class="manage-link"
-  >
-    Manage Announcements
-  </a>
+  @if (!userObj.interviewer) {
+    <a
+      routerLink="/announcement-management"
+      [queryParams]="{ path: 'home' }"
+      class="manage-link"
+    >
+      Manage Announcements
+    </a>
+  }
 </div>
 
 <div class="announcements-panel">
-  <ng-container
-    *ngIf="announcementsList && announcementsList.length > 0; else noData"
-  >
-    <div *ngFor="let announcement of announcementsList" class="announcement">
+  @if (announcementsList && announcementsList.length > 0) {
+  <ng-container>
+    @for (announcement of announcementsList; track $index) {
+    <div class="announcement">
       <h4>
         {{ announcement.icon ? announcement.icon + "&nbsp;" : ""
         }}{{ announcement.title }}
@@ -49,61 +50,60 @@
         <div
           [innerHTML]="getSafeHtml(announcement.bodyText)"
           class="announcement-body"
-          [ngClass]="{ 'truncated': !announcement.isFullText }"
+          [ngClass]="{ truncated: !announcement.isFullText }"
         ></div>
+        @if (announcement.bodyText.length > maxLength) {
         <button
-          *ngIf="announcement.bodyText.length > maxLength"
           (click)="toggleText(announcement)"
           class="show-more-btn"
         >
           {{ announcement.isFullText ? "Show Less" : "Show More" }}
         </button>
+        }
       </div>
 
       <div class="meta">
         <div>
           <small
-            >Posted {{ announcement.startDate | date : "MM/dd/yyyy" }} 
+            >Posted {{ announcement.startDate | date : "MM/dd/yyyy" }}
           </small>
-          <small *ngIf="announcement?.isAuthor && announcement?.authorName">by {{
-             announcement.authorName
-          }}</small>
+            @if (announcement?.isAuthor && announcement?.authorName) {
+            <small>by {{ announcement.authorName }}</small>
+            }
         </div>
 
         <div class="tags">
-          <span
-            *ngIf="
-              announcement &&
-              announcement.projectObject &&
-              announcement.projectObject.length > 0 &&
-              allProjectList &&
-              allProjectList.length > 0 &&
-              announcement.projectObject.length === allProjectList.length
-            "
-          >
-            <!-- All Projects -->
-          </span>
+            @if (
+            announcement &&
+            announcement.projectObject &&
+            announcement.projectObject.length > 0 &&
+            allProjectList &&
+            allProjectList.length > 0 &&
+            announcement.projectObject.length === allProjectList.length
+            ) {
+            <span></span>
+            }
 
-          <ng-container
-            *ngIf="
-              announcement?.projectObject?.length !== allProjectList?.length
-            "
-          >
-            <span
-              *ngFor="let project of announcement.projectObject"
+            @if (announcement?.projectObject?.length !== allProjectList?.length) {
+            @for (project of announcement.projectObject; track $index) {
+              <span
               class="tag"
               [ngStyle]="{ '--tag-color': project.projectColor }"
-            >
+              >
               {{ project.projectName }}
-            </span>
-          </ng-container>
+              </span>
+            }
+            }
         </div>
       </div>
     </div>
+    }
   </ng-container>
+  } @else {
   <ng-template #noData>
     <div class="no-data">
       <p>No announcements to display.</p>
     </div>
   </ng-template>
+  }
 </div>

@@ -18,16 +18,13 @@ import { Utils } from '../../../classes/utils';
 import { ProjectsService } from '../../../services/projects/projects.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { UserRole } from '../../../models/presentation/enums';
-
 @Component({
   selector: 'app-project-forecasting',
   templateUrl: './project-forecasting.component.html',
   styleUrl: './project-forecasting.component.css',
 })
 export class ProjectForecastingComponent implements OnInit {
-
   UserRoles: any = UserRole;
-
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
@@ -101,6 +98,10 @@ export class ProjectForecastingComponent implements OnInit {
   public selectedProjects: SelectedValue[] = [];
   public projectsAnySelected: boolean = true;
   authenticatedUser!: IAuthenticatedUser;
+  isLoading: boolean = false;
+  spin = false;
+  exportIsDisabled = false;
+
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() === 'SUCCESS') {
@@ -159,11 +160,13 @@ export class ProjectForecastingComponent implements OnInit {
     //     codeValues.push(this.selectedProjects[i].value);
     //   }
     // }
+    this.isLoading = true;
     const apiUrl = `${environment.DataAPIUrl}/forecasting/project-list`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.list = data?.data || [];
         this.paginate();
+        this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Error fetching user forecasting:', error);
@@ -326,6 +329,7 @@ export class ProjectForecastingComponent implements OnInit {
       return;
     }
 
+    this.spin = true;
 
     this.editedCoreHours = this.editedCoreHours.map((e) => ({
       ...e,
@@ -339,10 +343,12 @@ export class ProjectForecastingComponent implements OnInit {
         this.showToastMessage('Core hours saved successfully!', 'success');
         this.editedCoreHours = [];
         this.getList();
+        this.spin = false;
       },
       error: (error: any) => {
         console.error('Error saving core hours:', error);
         this.showToastMessage('Failed to save core hours.', 'error');
+        this.spin = false;
       },
     });
   }
@@ -368,6 +374,7 @@ export class ProjectForecastingComponent implements OnInit {
     this.getList();
   }
   export() {
+    this.exportIsDisabled = true;
     const apiUrl = `${environment.DataAPIUrl}/forecasting/export`;
     // let codeValues = [];
     // for (let i = 0; i < this.selectedProjects.length; i++) {
@@ -389,8 +396,10 @@ export class ProjectForecastingComponent implements OnInit {
         a.download = 'forecasting.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
+        this.exportIsDisabled = false;
       },
       error: (error: any) => {
+        this.exportIsDisabled = false;
         console.error('Error exporting core hours:', error);
       },
     });

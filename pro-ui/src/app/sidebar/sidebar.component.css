@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   height: 100vh; /* Ensures full height */
-  width: 250px; /* Default width */
+  width: 220px; /* Default width */
   background-color: #f8f9fa;
   overflow-y: auto; /* Allows scrolling within the sidebar */
   transition: width 0.3s ease;
