@@ -14,14 +14,9 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import {
-  IAuthenticatedUser,
-  IDropDownValue,
-} from '../../interfaces/interfaces';
+import { IAuthenticatedUser } from '../../interfaces/interfaces';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ConfirmationDialogComponent } from '../../components/add-user/confirmation-dialog.component';
-import { SelectedValue } from '../../models/presentation/selected-value';
-import { Utils } from '../../classes/utils';
 
 declare var Quill: any;
 
@@ -37,6 +32,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
   authorList: any[] = [];
   selectedAuthor: any = null;
   projectList: any[] = [];
+  selectedProjects: any[] = [];
   selectedEmoji: string = '';
   private emojiPicker: any;
   showEmojiPicker = false;
@@ -46,12 +42,9 @@ export class AddAnnouncementDialogComponent implements OnInit {
   currentTarget!: 'formField' | 'textArea';
   id: any;
   allSelected = false;
+  isAnyProjectsSelected: boolean = false;
   userObj: any;
   announcementData: any;
-  public activeProjectsDv: IDropDownValue[] = [];
-  public selectedProjects: SelectedValue[] = [];
-  public projectsAnySelected: boolean = true;
-
   constructor(
     public dialogRef: MatDialogRef<AddAnnouncementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -61,6 +54,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     private snackBar: MatSnackBar,
     private authenticationService: AuthenticationService
   ) {
+
     this.announcementForm = this.fb.group({
       title: ['', Validators.required],
       startDate: ['', Validators.required],
@@ -69,12 +63,15 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
     this.id = data?.id;
     this.announcementData = data;
-    if (data?.icon) {
-      this.selectedEmoji = data?.icon;
+    if(data?.icon){
+      this.selectedEmoji = data?.icon
     }
+    
+    
   }
 
   ngOnInit(): void {
+    
     this.authenticationService.authenticatedUser.subscribe(
       (authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -232,9 +229,16 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.dialogRef.close(this.announcement);
     if (this.announcementForm?.valid) {
       const selectedAuthorId = this.selectedAuthor?.userId;
-      const selectedProjectsIds = this.selectedProjects.map(
-        (project) => project.value
-      );
+      let selectedProjectsIds = [];
+      if (this.isAnyProjectsSelected) {
+        selectedProjectsIds = this.projectList.map(
+          (project) => project.projectId
+        );
+      } else {
+        selectedProjectsIds = this.selectedProjects.map(
+          (project) => project.projectId
+        );
+      }
       const adjustToUTCPlus530 = (dateString: string): string => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -298,10 +302,10 @@ export class AddAnnouncementDialogComponent implements OnInit {
   }
 
   confirmationPopup(): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      panelClass: 'custom-dialog-container',
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent,{
+      panelClass: 'custom-dialog-container'
     });
-
+    
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.closeDialog();
@@ -317,16 +321,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
     const plainTextContent = this.quill.root.textContent;
     const selectedAuthorName = this.selectedAuthor?.userName;
 
+    
     const announcementData = {
       title: this.announcementForm.value.title,
       bodyText: plainTextContent,
       start: this.announcementForm.value.startDate,
       authorName: selectedAuthorName,
       isAuthor: this.announcementForm.value.isAuthor,
-      displayTo: this.selectedProjects
-        .map((proj) => proj.item?.dropDownItem)
-        .join(', '),
-      icon: this.selectedEmoji,
+      displayTo: this.isAnyProjectsSelected
+        ? 'Any Projects'
+        : this.selectedProjects,
+      icon: this.selectedEmoji
     };
     this.dialog.open(PreviewComponent, {
       width: '600px',
@@ -339,11 +344,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.projectList = data;
-        this.activeProjectsDv = Utils.convertObjectArrayToDropDownValues(
-          this.projectList,
-          'projectId',
-          'projectName'
-        );
+        console.log(' this.projectList--', this.projectList);
       },
       error: (error: any) => {
         console.error('Error fetching project info:', error);
@@ -425,7 +426,7 @@ export class AddAnnouncementDialogComponent implements OnInit {
           isAuthor: data.Subject.isAuthor || false,
           startDate: adjustDate(data.Subject.startDate),
           expireDate: adjustDate(data.Subject.expireDate),
-          icon: this.selectedEmoji,
+          icon: this.selectedEmoji
         });
 
         // Set body text if available
@@ -442,13 +443,10 @@ export class AddAnnouncementDialogComponent implements OnInit {
           ) || null;
 
         // Select associated projects
-        if (data.Subject.projectIds?.length) {
-          this.selectedProjects = this.activeProjectsDv
-            .filter((proj) => data.Subject.projectIds.includes(proj.codeValues))
-            .map((proj) => new SelectedValue(proj.codeValues, proj));
-        } else {
-          this.selectedProjects = [];
-        }
+        this.selectedProjects =
+          this.projectList?.filter((project) =>
+            data.Subject?.projectIds?.includes(project.projectId)
+          ) || [];
       },
       error: (error: any) => {
         console.error('Error fetching announcement details:', error);
@@ -456,6 +454,17 @@ export class AddAnnouncementDialogComponent implements OnInit {
     });
   }
 
+  isAllSelected(): boolean {
+    return (this.isAnyProjectsSelected =
+      this.selectedProjects.length === this.projectList.length);
+  }
+
+  isIndeterminate(): boolean {
+    return (
+      this.selectedProjects.length > 0 &&
+      this.selectedProjects.length < this.projectList.length
+    );
+  }
   onCheckboxChange(event: any): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
@@ -479,9 +488,5 @@ export class AddAnnouncementDialogComponent implements OnInit {
       horizontalPosition: horizontalPosition,
       verticalPosition: verticalPosition,
     });
-  }
-  projectFilterChange($event: any): void {
-    this.selectedProjects = $event;
-    console.log('Selected Projects:', this.selectedProjects);
   }
 }

@@ -11,7 +11,7 @@ import { GlobalsService } from '../services/globals/globals.service';
   animations: [
     trigger('slideInOut', [
       state('in', style({
-        width: '250px'
+        width: '220px'
       })),
       state('out', style({
         width: '70px'
