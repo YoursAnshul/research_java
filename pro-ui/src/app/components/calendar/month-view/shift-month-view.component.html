@@ -1,5 +1,5 @@
 <div
-  *ngIf="authenticatedUser?.interviewer"
+  *ngIf="authenticatedUser?.role == UserRoles.Interviewer"
   style="background-color: #f2f2f2 !important"
 >
   @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {
@@ -20,7 +20,7 @@
 </div>
 
 <div
-  *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
+  *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0"
   style="background-color: #f2f2f2 !important"
 >
   @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {
@@ -40,7 +40,7 @@
   }
 </div>
 <div
-  *ngIf="authenticatedUser?.admin && selectedUser?.userId == 0"
+  *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId == 0"
   style="background-color: #f2f2f2 !important"
 >
   @for (weekSchedules of monthSchedules?.weekSchedules; track weekSchedules) {

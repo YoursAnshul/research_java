@@ -49,7 +49,7 @@
         <span class="ml-2">{{ currentDay }}</span>
 
         <!-- Day Wise Date Picker -->
-        <mat-form-field *ngIf="authenticatedUser?.interviewer" appearance="outline" class="custom-form-field ml-2"
+        <mat-form-field *ngIf="authenticatedUser?.role == UserRoles.Interviewer" appearance="outline" class="custom-form-field ml-2"
           style="width: 170px" [ngClass]="{
             'mat-form-field-invalid': isDateBlockDate || isBlockDate
           }"
@@ -59,7 +59,7 @@
           <mat-datepicker-toggle matSuffix [for]="dayWisePicker" [disabled]="isBlockDate"></mat-datepicker-toggle>
           <mat-datepicker #dayWisePicker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field *ngIf="authenticatedUser?.admin" appearance="outline" class="custom-form-field ml-2"
+        <mat-form-field *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)" appearance="outline" class="custom-form-field ml-2"
           style="width: 170px" [ngClass]="{
             'mat-form-field-invalid': isDateBlockDate || isBlockDate
           }">
@@ -155,6 +155,7 @@
               </g>
             </svg>
           </div>
+          
          
         </div>
       </div>

@@ -20,6 +20,7 @@ import { User } from '../../models/data/user';
 import { UnsavedChangesDialogComponent } from '../unsaved-changes-dialog/unsaved-changes-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';  
+import { UserRole } from '../../models/presentation/enums';
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
@@ -403,7 +404,7 @@ export class AddUserComponent implements OnInit {
   }
 
   isReadOnly(): boolean {
-    if (this.authenticatedUser?.projectTeam || this.authenticatedUser?.admin) {
+    if (this.authenticatedUser?.role == UserRole.ProjectTeam || (this.authenticatedUser?.role == UserRole.Admin || this.authenticatedUser?.role == UserRole.OutcomesIT)) {
       return false;
     } else {
       return false;
@@ -540,7 +541,7 @@ export class AddUserComponent implements OnInit {
         }
 
         //disable field requirements for interviewer-only roles
-        if (this.authenticatedUser.interviewer && !this.authenticatedUser.admin && !this.authenticatedUser.resourceGroup) {
+        if (this.authenticatedUser.role === UserRole.Interviewer && this.authenticatedUser.role > 0) {
           userFormField.formFieldVariable.formField.required = false;
         }
 

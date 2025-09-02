@@ -24,6 +24,7 @@ import { ScheduleService } from '../../schedule/schedule.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-shift-day-view',
@@ -59,7 +60,8 @@ export class ShiftDayViewComponent implements OnInit {
   @Input() isScheduleUpdate: boolean = false;
   validationMessages: IValidationMessage[] = [];
   invalidScheduleKeys: string[] = [];
-
+  UserRoles: any = UserRole;
+  
   constructor(
     private globalsService: GlobalsService,
     private sanitizer: DomSanitizer,
@@ -198,17 +200,17 @@ export class ShiftDayViewComponent implements OnInit {
     const duration = endHour - startHour; // Calculate event duration in hours
     let leftOffset = 0;
     let totalHours = 0;
-    if (this.authenticatedUser?.interviewer) {
+    if (this.authenticatedUser?.role == UserRole.Interviewer) {
       leftOffset = 12.9;
       totalHours = 17;
     } else if (
-      this.authenticatedUser?.admin &&
+      ((this.authenticatedUser?.role == UserRole.Admin || this.authenticatedUser?.role == UserRole.OutcomesIT) || this.authenticatedUser?.role == UserRole.OutcomesIT) &&
       this.selectedUser?.userId != 0
     ) {
       leftOffset = 12.85;
       totalHours = 17;
     } else if (
-      this.authenticatedUser?.admin &&
+      ((this.authenticatedUser?.role == UserRole.Admin || this.authenticatedUser?.role == UserRole.OutcomesIT) || this.authenticatedUser?.role == UserRole.OutcomesIT) &&
       this.selectedUser?.userId == 0
     ) {
       leftOffset = 15.4;
@@ -308,7 +310,7 @@ export class ShiftDayViewComponent implements OnInit {
     this.hoverMessage.hide();
   }
   addShift(): void {
-    if (this.authenticatedUser?.interviewer) {
+    if (this.authenticatedUser?.role == UserRole.Interviewer) {
       const selectedDate = new Date(this.selectedDate.value);
       const currentDate = new Date();
       selectedDate.setHours(0, 0, 0, 0);
@@ -339,7 +341,7 @@ export class ShiftDayViewComponent implements OnInit {
         schedule.projects.projectName == 'Absent' ||
         schedule.projects.projectName == 'Arriving Late' ||
         schedule.projects.projectName == 'Leaving Early') &&
-      this.authenticatedUser.interviewer
+      this.authenticatedUser.role == UserRole.Interviewer
     ) {
       return;
     }
@@ -352,7 +354,7 @@ export class ShiftDayViewComponent implements OnInit {
     }
     currentDate.setHours(0, 0, 0, 0);
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       date !== null &&
       date < currentDate
     ) {

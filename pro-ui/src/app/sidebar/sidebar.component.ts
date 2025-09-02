@@ -3,6 +3,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { GlobalsService } from '../services/globals/globals.service';
+import { UserRole } from '../models/presentation/enums';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +12,7 @@ import { GlobalsService } from '../services/globals/globals.service';
   animations: [
     trigger('slideInOut', [
       state('in', style({
-        width: '250px'
+        width: '220px'
       })),
       state('out', style({
         width: '70px'
@@ -68,7 +69,7 @@ export class SidebarComponent {
     );
     this.authenticationService.authenticatedUser.subscribe(
       authenticatedUser => {
-        if (!authenticatedUser?.interviewer) {
+        if (authenticatedUser?.role !== UserRole.Interviewer) {
           this.isInterviewer = false;
           this.menuItems.push(
             [

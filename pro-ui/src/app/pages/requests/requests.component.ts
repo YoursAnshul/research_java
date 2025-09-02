@@ -31,6 +31,7 @@ import { UnsavedChangesDialogComponent } from '../../components/unsaved-changes-
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { SelectedValue } from '../../models/presentation/selected-value';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-requests',
@@ -111,6 +112,9 @@ export class RequestsComponent implements OnInit, CanComponentDeactivate {
   pageSize = 10;
   paginatedRequests: IRequest[] = [];
   public currentPage: number = 1;
+
+  UserRoles: any = UserRole;
+  
   constructor(
     private globalsService: GlobalsService,
     private requestsService: RequestsService,

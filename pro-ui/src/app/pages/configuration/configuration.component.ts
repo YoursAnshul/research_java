@@ -22,6 +22,7 @@ import {CanComponentDeactivate} from "../../guards/unsaved-changes.guard";
 import {UnsavedChangesDialogComponent} from "../../components/unsaved-changes-dialog/unsaved-changes-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import { Router } from '@angular/router';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-configuration',
@@ -71,6 +72,9 @@ export class ConfigurationComponent implements CanComponentDeactivate {
   choicesSaveDisabled: boolean = true;
   choicesSaveInvalid: boolean = false;
   public nextUrl: string | null = null;
+
+  UserRoles: any = UserRole;
+  
   constructor(private configurationService: ConfigurationService,
               private globalsService: GlobalsService,
               private userSchedulesService: UserSchedulesService,

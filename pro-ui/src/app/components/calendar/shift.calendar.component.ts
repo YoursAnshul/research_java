@@ -33,6 +33,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ScheduleService } from '../schedule/schedule.service';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-shift-calendar',
@@ -131,7 +132,8 @@ export class ShifCalendarComponent implements OnInit {
   isWeekTabDisabled: boolean = false;
   @Input() pId: number = 0;
   @Input() isScheduleUpdate: boolean = false;
-
+  UserRoles: any = UserRole;
+  
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -154,7 +156,7 @@ export class ShifCalendarComponent implements OnInit {
     this.usersService.allUsersMin.subscribe(
       (allUsers) => {
         this.allUsers = allUsers;
-        if (this.authenticatedUser?.interviewer) {
+        if (this.authenticatedUser?.role == UserRole.Interviewer) {
           this.getAuthor1();
         }
         // else {
@@ -219,7 +221,7 @@ export class ShifCalendarComponent implements OnInit {
     this.disableWeekTabTemporarily();
     this.getAuthor(0);
     this.getProjectInfo('');
-    if (!this.isHomeRedirect && !this.authenticatedUser.interviewer) {
+    if (!this.isHomeRedirect && this.authenticatedUser.role !== UserRole.Interviewer) {
       this.getScheduleList(
         Utils.formatDateOnlyToStringUTC(
           this.selectedDate.value,
@@ -374,7 +376,7 @@ export class ShifCalendarComponent implements OnInit {
     if (this.homeSelectedDate) {
       this.selectedDate.setValue(this.homeSelectedDate);
     }
-    if (this.homeUser && !this.authenticatedUser?.interviewer) {
+    if (this.homeUser && this.authenticatedUser?.role !== UserRole.Interviewer) {
       this.selectedUser = this.homeUser;
       this.defaultUser = this.homeUser;
       this.getAuthorNew(0);
@@ -382,7 +384,7 @@ export class ShifCalendarComponent implements OnInit {
     }
     if (
       this.homeSelectedProject &&
-      !this.authenticatedUser?.interviewer &&
+      this.authenticatedUser?.role !== UserRole.Interviewer &&
       this.profileType != 'user-profile'
     ) {
       this.selectedProject = this.homeSelectedProject;
@@ -402,86 +404,13 @@ export class ShifCalendarComponent implements OnInit {
     if (
       !this.isEdit ||
       (this.isHomeRedirect &&
-        this.authenticatedUser.admin &&
+        (this.authenticatedUser.role == UserRole.Admin || this.authenticatedUser.role == UserRole.OutcomesIT) &&
         this.tab === 'Day')
     ) {
       this.getScheduleList(formattedDate);
     }
     this.checkContext();
   }
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   this.scheduleService.getType().subscribe((type) => {
-  //     if (type) {
-  //       this.profileType = type;
-  //     }
-  //   });
-
-  //   if (this.profileType == 'user-profile') {
-  //     this.tabIndex = 2;
-  //   } else if (this.tab) {
-  //     if (this.tab === 'Month') {
-  //       this.tabIndex = 2;
-  //     } else if (this.tab == 'Week') {
-  //       this.tabIndex = 1;
-  //     } else {
-  //       this.tabIndex = 0;
-  //     }
-  //   }
-  //   if (this.homeSelectedDate) {
-  //     this.selectedDate.setValue(this.homeSelectedDate);
-  //   }
-  //   if (this.homeUser && !this.authenticatedUser?.interviewer) {
-  //     this.selectedUser = this.homeUser;
-  //     this.defaultUser = this.homeUser;
-  //     this.getAuthorNew(0);
-  //     this.getProjectInfo(this.selectedUser?.dempoId);
-  //   }
-  //   if (
-  //     this.homeSelectedProject &&
-  //     !this.authenticatedUser?.interviewer &&
-  //     this.profileType != 'user-profile'
-  //   ) {
-  //     this.selectedProject = this.homeSelectedProject;
-  //   }
-  //   this.scheduleService.getSchedule().subscribe((data) => {
-  //     if (data) {
-  //       this.isHomeRedirect = data.isHomeRedirect;
-  //     }
-  //   });
-  //   if (this.changeDate && !this.isEdit) {
-  //     // this.selectedDate.setValue(this.changeDate);
-  //     this.getScheduleList(
-  //       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
-  //     );
-  //   } else if (
-  //     !this.isEdit &&
-  //     !this.isHomeRedirect &&
-  //     this.authenticatedUser.interviewer
-  //   ) {
-  //     this.getScheduleList(
-  //       Utils.formatDateOnlyToStringUTC(
-  //         this.selectedDate.value,
-  //         true,
-  //         true,
-  //         true
-  //       )
-  //     );
-  //   } else if (
-  //     this.isHomeRedirect &&
-  //     this.authenticatedUser.admin &&
-  //     this.tab == 'Day'
-  //   ) {
-  //     this.getScheduleList(
-  //       Utils.formatDateOnlyToStringUTC(
-  //         this.selectedDate.value,
-  //         true,
-  //         true,
-  //         true
-  //       )
-  //     );
-  //   }
-  //   this.checkContext();
-  // }
 
   findProjectInLists(projectToFind: any): any {
     return (
@@ -1147,9 +1076,9 @@ export class ShifCalendarComponent implements OnInit {
     const apiUrl = `${environment.DataAPIUrl}/manage-announement/authors`;
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
-        if (this.authenticatedUser?.interviewer) {
+        if (this.authenticatedUser?.role == UserRole.Interviewer) {
           this.userList = Array.isArray(data) ? data : [];
-          if (this.userObj?.eppn && this.authenticatedUser?.interviewer) {
+          if (this.userObj?.eppn && this.authenticatedUser?.role == UserRole.Interviewer) {
             this.getLoginUser(this.userObj.eppn);
           }
         }
@@ -1219,7 +1148,7 @@ export class ShifCalendarComponent implements OnInit {
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     let url = '';
-    if (this.authenticatedUser?.interviewer) {
+    if (this.authenticatedUser?.role == UserRole.Interviewer) {
       if (!this.selectedUser1) {
         this.getLoginUser(this.selectedUser.eppn);
       }
@@ -1229,7 +1158,7 @@ export class ShifCalendarComponent implements OnInit {
         url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}?demId=${this.selectedUser.dempoId}`;
       }
     } else {
-      if (!this.authenticatedUser?.interviewer) {
+      if (this.authenticatedUser?.role !== UserRole.Interviewer) {
         url = `${environment.DataAPIUrl}/api/userSchedules/schedule-list/${anchorDate}`;
         if (this.selectedUser && this.selectedUser?.dempoId) {
           url += `?demId=${this.selectedUser?.dempoId}`;

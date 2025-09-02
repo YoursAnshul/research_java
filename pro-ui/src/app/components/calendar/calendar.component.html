@@ -33,7 +33,7 @@
         </div>
         <div>
         </div>
-        <div  [ngClass] ="authenticatedUser?.interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+        <div style="margin-left: -70px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="day-calendar-controls"
             [_selectedDate]="selectedDate"
             [_languageFieldInfo]="languageFieldInfo"
@@ -64,7 +64,7 @@
         </div>
         <div>
         </div>
-        <div [ngClass] ="authenticatedUser?.interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+        <div intervstyle="margin-left: -70px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="week-calendar-controls"
             [_selectedDate]="selectedDate"
             [_languageFieldInfo]="languageFieldInfo"
@@ -94,7 +94,7 @@
             <app-legend [monthSchedules]="monthSchedules"></app-legend>
           }
         </div>
-        <div [ngClass] ="authenticatedUser?.interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+        <div style="margin-left: -70px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="month-calendar-controls"
             [_selectedDate]="selectedDate"
             [_languageFieldInfo]="languageFieldInfo"

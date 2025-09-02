@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IMonthSchedules } from '../../../interfaces/interfaces';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
-
+import { UserRole } from '../../../models/presentation/enums';
 @Component({
   selector: 'app-month-view',
   templateUrl: './month-view.component.html',
@@ -20,9 +20,14 @@ export class MonthViewComponent implements OnInit {
 
   openScheduleData(schedule: any): void {
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
+    // let date = schedule?.scheduledate ? new Date(schedule.scheduledate+ 'T00:00:00-04:00') : null;
     let currentDate = new Date();
+    // if (date) {
+    //   date.setHours(0, 0, 0, 0);
+    // }
+    // currentDate.setHours(0, 0, 0, 0);
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       date !== null &&
       date < currentDate
     ) {

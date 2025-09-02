@@ -25,7 +25,7 @@
     </div>
 
     <div
-      *ngIf="authenticatedUser?.interviewer"
+      *ngIf="authenticatedUser?.role == UserRoles.Interviewer"
       [ngStyle]="{
         width: '7%',
         'background-color': '#0078d4',
@@ -35,7 +35,7 @@
       Total
     </div>
     <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
+      *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0"
       [ngStyle]="{
         width: '7%',
         'background-color': '#0078d4',
@@ -80,7 +80,7 @@
     </div>
 
     <div
-      *ngIf="authenticatedUser?.interviewer"
+      *ngIf="authenticatedUser?.role == UserRoles.Interviewer"
       [ngStyle]="{
         width: '7%',
         justifyContent: 'center',
@@ -100,7 +100,7 @@
       />
     </div>
     <div
-      *ngIf="authenticatedUser?.admin && selectedUser?.userId != 0"
+      *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0"
       [ngStyle]="{
         width: '7%',
         justifyContent: 'center',
@@ -137,8 +137,8 @@
   <div id="week-calendar-user-schedules" style="display: flex" *ngIf="!isLoading">
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "
@@ -172,8 +172,8 @@
 
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "
@@ -207,8 +207,8 @@
 
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "
@@ -242,8 +242,8 @@
 
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "
@@ -277,8 +277,8 @@
 
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "
@@ -312,8 +312,8 @@
 
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "
@@ -347,8 +347,8 @@
 
     <div
       [ngClass]="
-        authenticatedUser?.interviewer ||
-        (authenticatedUser?.admin && selectedUser?.userId != 0)
+        authenticatedUser?.role == UserRoles.Interviewer ||
+        ((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT) && selectedUser?.userId != 0)
           ? 'day-schedules-container-interviewer'
           : 'day-schedules-container'
       "

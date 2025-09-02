@@ -28,7 +28,7 @@
           style="width: 16px; height: 16px"
           svgIcon="info"
           [ngbTooltip]="tooltipContent"
-          *ngIf="!isEdit && !authenticatedUser?.interviewer"
+          *ngIf="!isEdit && authenticatedUser?.role !== UserRoles.Interviewer"
         ></mat-icon>
         <ng-template #tooltipContent>
           JPG or PNG <br />
@@ -59,13 +59,13 @@
 
           <div
             class="flex gap-1 items-center"
-            *ngIf="!isEdit && !authenticatedUser?.interviewer"
-            [class.disabled]="authenticatedUser?.interviewer"
+            *ngIf="!isEdit && authenticatedUser?.role !== UserRoles.Interviewer"
+            [class.disabled]="authenticatedUser?.role == UserRoles.Interviewer"
             (click)="selectFile()"
           >
             <span
               class="text-xs text-[#005698] text-center underline cursor-pointer"
-              [class.disabled]="authenticatedUser?.interviewer"
+              [class.disabled]="authenticatedUser?.role == UserRoles.Interviewer"
               >Upload Photo</span
             >
           </div>
@@ -74,7 +74,7 @@
         <!-- hidden input and error message -->
         <input
           id="profile-image-file"
-          [disabled]="authenticatedUser?.interviewer || isEdit"
+          [disabled]="authenticatedUser?.role == UserRoles.Interviewer || isEdit"
           #fileInput
           type="file"
           hidden
@@ -271,31 +271,14 @@
         </div>
       </div>
 
-      <!-- Buttons
-      <div class="flex items-center gap-2" *ngIf="authenticatedUser?.interviewer">
-        <button mat-raised-button color="primary submit wd90" [disabled]="selectedTab != 'personal-contact-info'" (click)="clickOnEdit()" *ngIf="selectedTab != 'personal-contact-info' || isEdit">Edit User</button>
-        <button class="btn-outline" (click)="showUnsavedChangesDialog()"  *ngIf="selectedTab == 'personal-contact-info' && !isEdit">Cancel</button>
-        <button mat-raised-button color="primary submit" [disabled]="tab2Invalid" (click)="saveUser()"  *ngIf="selectedTab == 'personal-contact-info' && !isEdit">Save</button>
-      </div>-->
-      <!-- Buttons -->
-      <!-- <div class="flex items-center gap-2">
-        <button mat-raised-button color="primary submit wd90" (click)="clickOnEdit()"  [disabled]="authenticatedUser?.interviewer && selectedTab != 'personal-contact-info'" *ngIf=" isEdit">Edit User</button>
-        <button class="btn-outline" (click)="showUnsavedChangesDialog()"  *ngIf="!isEdit">Cancel</button>
-
-        @if (selectedUser.defaultproject === 0 && this.trainedOnProjects.length > 0) {
-          <button mat-raised-button color="primary submit" [disabled]="true" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
-        }@else {
-          <button mat-raised-button color="primary submit"  [disabled]="tab2Invalid ||  !changed" (click)="saveUser()"  *ngIf="!isEdit">Save</button>
-        }
-      </div> -->
-      @if(!authenticatedUser?.interviewer){
+      @if(authenticatedUser?.role !== UserRoles.Interviewer){
       <div class="flex items-center gap-2">
         <button
           mat-raised-button
           color="primary submit wd90"
           (click)="clickOnEdit()"
           [disabled]="
-            authenticatedUser?.interviewer &&
+            authenticatedUser?.role == UserRoles.Interviewer &&
             selectedTab != 'personal-contact-info'
           "
           *ngIf="isEdit"
@@ -340,7 +323,7 @@
           color="primary submit wd90"
           (click)="clickOnEdit()"
           [disabled]="
-            authenticatedUser?.interviewer &&
+            authenticatedUser?.role == UserRoles.Interviewer &&
             selectedTab !== 'personal-contact-info'
           "
           *ngIf="selectedTab != 'personal-contact-info'"
@@ -373,7 +356,7 @@
             color="primary submit wd90"
             (click)="clickOnEdit()"
             [disabled]="
-              authenticatedUser?.interviewer &&
+              authenticatedUser?.role == UserRoles.Interviewer &&
               selectedTab !== 'personal-contact-info'
             "
             *ngIf="isEdit"
@@ -388,7 +371,7 @@
     <!-- Tab 1: Scheduling -->
     @if (selectedTab === 'scheduling') {
     <div class="m-3 mt-4" *ngIf="createForm">
-      <div *ngIf="isEdit || authenticatedUser?.interviewer">
+      <div *ngIf="isEdit || authenticatedUser?.role == UserRoles.Interviewer">
         <div class="font-medium tracking-wider mb-2">PROJECTS</div>
         <div
           class="border border-2 border-[#c2c2c2] rounded-lg w-[250px] h-[260px] p-3 pt-2"
@@ -438,7 +421,7 @@
         </div>
       </div>
 
-      <div *ngIf="!isEdit && !authenticatedUser?.interviewer">
+      <div *ngIf="!isEdit && authenticatedUser?.role !== UserRoles.Interviewer">
         <app-trained-on-projects
           [trainedOnProjects]="trainedOnProjects"
           [defPro]="defPro"

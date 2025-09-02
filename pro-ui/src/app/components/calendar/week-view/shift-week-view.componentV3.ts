@@ -21,6 +21,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import moment from 'moment-timezone';
 import { ScheduleService } from '../../schedule/schedule.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-shift-week-view-v3',
@@ -295,7 +296,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
     this.hoverMessage.hide();
   }
   addShift(date: any): void {
-    if (this.authenticatedUser?.interviewer) {
+    if (this.authenticatedUser?.role == UserRole.Interviewer) {
       if (!date) {
         console.warn('No date selected.');
         return;
@@ -400,14 +401,22 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   }
 
   openScheduleData(schedule: ISchedule): void {
+    const excludedProjects = [
+      'Sick',
+      'Absent',
+      'Arriving Late',
+      'Leaving Early',
+    ];
+
     if (
       (schedule.projectName == 'Sick' ||
       schedule.projectName == 'Absent' ||
       schedule.projectName == 'Arriving Late' ||
-      schedule.projectName == 'Leaving Early') && this.authenticatedUser.interviewer
+      schedule.projectName == 'Leaving Early') && this.authenticatedUser.role == UserRole.Interviewer
     ) {
       return;
     }
+    // let date = schedule?.scheduledate ? new Date(schedule.scheduledate+ 'T00:00:00-04:00') : null;
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
     if (date) {
@@ -416,7 +425,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
     currentDate.setHours(0, 0, 0, 0);
 
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       date !== null &&
       date < currentDate
     ) {

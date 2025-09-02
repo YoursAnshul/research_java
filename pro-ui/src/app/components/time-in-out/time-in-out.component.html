@@ -1,5 +1,5 @@
 
-@if (authenticatedUser?.interviewer) {
+@if (authenticatedUser?.role == UserRoles.Interviewer) {
 
     @if ((currentTimecard?.datetimeout || !currentTimecard?.datetimein || !currentTimecardIsToday()) && currentUser) {
         <!-- time in -->

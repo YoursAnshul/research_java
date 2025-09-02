@@ -17,13 +17,14 @@ import { ConfigurationService } from '../../../services/configuration/configurat
 import { Utils } from '../../../classes/utils';
 import { ProjectsService } from '../../../services/projects/projects.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
-
+import { UserRole } from '../../../models/presentation/enums';
 @Component({
   selector: 'app-project-forecasting',
   templateUrl: './project-forecasting.component.html',
   styleUrl: './project-forecasting.component.css',
 })
 export class ProjectForecastingComponent implements OnInit {
+  UserRoles: any = UserRole;
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
@@ -97,6 +98,8 @@ export class ProjectForecastingComponent implements OnInit {
   public selectedProjects: SelectedValue[] = [];
   public projectsAnySelected: boolean = true;
   authenticatedUser!: IAuthenticatedUser;
+
+
   ngOnInit(): void {
     this.configurationService.getFormField('Role').subscribe((response) => {
       if ((response.Status || '').toUpperCase() === 'SUCCESS') {

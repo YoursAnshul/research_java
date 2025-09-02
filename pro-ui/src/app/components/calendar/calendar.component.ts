@@ -10,6 +10,7 @@ import { LogsService } from '../../services/logs/logs.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { User } from '../../models/data/user';
 import { ScheduleService } from '../schedule/schedule.service';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-calendar',
@@ -69,6 +70,8 @@ export class CalendarComponent implements OnInit {
 
   tabIndex = 0;
   scheduleDate: Date = new Date();
+  UserRoles: any = UserRole;
+  
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,

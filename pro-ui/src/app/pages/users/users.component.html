@@ -1,4 +1,5 @@
-<div class="text-[#262626] w-fit" *ngIf="!showSelectedUser && !createUser" >
+@if (!showSelectedUser && !createUser) {
+<div class="text-[#262626] w-fit" >
 
    
     <div class="text-xl font-medium mb-6">
@@ -243,17 +244,22 @@
    </div>
 
 </div>
+}
 
 
 <!--view user-->
-<div id="user-profile" *ngIf="showSelectedUser">
+@if (showSelectedUser) {
+<div id="user-profile" >
 
   <app-view-user id="view-user-form"
                  [viewUser]="selectedUser"
                  (closewindow)="showSelectedUser = false; getAllUsers()" (userSaved)="onUserAdded($event)" (setUnsavedChanges)="setUnsavedChanges($event)" [isShow]="true">
   </app-view-user>
 </div>
+}
 
-<div *ngIf="createUser">
+@if (createUser) {
+<div>
     <app-add-user (closewindow)="createUser = false" (userSaved)="onUserAdded($event)" [createForm] ="true" (setUnsavedChanges)="setUnsavedChanges($event)"/>
 </div>
+}

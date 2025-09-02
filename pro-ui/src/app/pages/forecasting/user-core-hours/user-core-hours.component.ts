@@ -14,6 +14,7 @@ import {
 } from '@angular/material/snack-bar';
 import { ConfigurationService } from '../../../services/configuration/configuration.service';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-user-core-hours',
@@ -21,6 +22,7 @@ import { AuthenticationService } from '../../../services/authentication/authenti
   styleUrls: ['./user-core-hours.component.css'],
 })
 export class UserCoreHoursComponent implements OnInit {
+  UserRoles: any = UserRole;
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,

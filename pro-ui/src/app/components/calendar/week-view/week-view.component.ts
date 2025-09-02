@@ -12,6 +12,7 @@ import { ScheduleService } from '../../schedule/schedule.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShiftScheduleComponent } from '../../schedule/shift-schedule.component';
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-week-view',
@@ -123,15 +124,20 @@ export class WeekViewComponent implements OnInit {
 
   openScheduleData(schedule: any): void {
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       this.authenticatedUser.netID != schedule.dempoid
     ) {
       return;
     }
+    // let date = schedule?.scheduledate ? new Date(schedule.scheduledate+ 'T00:00:00-04:00') : null;
     let date = schedule?.scheduledate ? new Date(schedule.scheduledate) : null;
     let currentDate = new Date();
+    // if (date) {
+    //   date.setHours(0, 0, 0, 0);
+    // }
+    // currentDate.setHours(0, 0, 0, 0);
     if (
-      this.authenticatedUser.interviewer &&
+      this.authenticatedUser.role == UserRole.Interviewer &&
       date !== null &&
       date < currentDate
     ) {

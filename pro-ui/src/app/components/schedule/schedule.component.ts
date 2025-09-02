@@ -14,6 +14,7 @@ import { ProjectsService } from '../../services/projects/projects.service';
 import { UsersService } from '../../services/users/users.service';
 import { UserSchedulesService } from '../../services/userSchedules/user-schedules.service';
 import { User } from '../../models/data/user';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-schedule',
@@ -115,6 +116,8 @@ export class ScheduleComponent implements OnInit {
   projectFilterFC: FormControl = new FormControl(['0']);
   anyUserToggle: boolean = true;
   anyProjectToggle: boolean = true;
+
+  UserRoles: any = UserRole;
 
   constructor(private userSchedulesService: UserSchedulesService,
     private usersService: UsersService,
@@ -229,7 +232,7 @@ export class ScheduleComponent implements OnInit {
 
         //restrict schedules shown if user is interviewer-only
         if (this.allUsers) {
-          if (this.authenticatedUser.interviewer && !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)) {
+          if (this.authenticatedUser.role == UserRole.Interviewer || !this.authenticatedUser.role) {
             this.allUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID);
             if (this.userSchedulesMonth.length > 0) {
               this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID);
@@ -259,7 +262,7 @@ export class ScheduleComponent implements OnInit {
 
         //restrict schedules shown if user is interviewer-only
         if (this.authenticatedUser) {
-          if (this.authenticatedUser.interviewer && !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)) {
+          if (this.authenticatedUser.role == UserRole.Interviewer || !this.authenticatedUser.role) {
             this.allUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID);
             if (this.userSchedulesMonth.length > 0) {
               this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID);
@@ -1021,31 +1024,6 @@ export class ScheduleComponent implements OnInit {
     // Define a function that abstracts the complex date comparison.
     function isDateValid(date: Date, unlockDate: Date, lockDate: Date, authenticatedUser: any, currentUser: any): boolean {
 
-      //admin role , resourceGroup role and canEdit flag should be able to edit any schedule at any time
-      /*      if (authenticatedUser.admin || currentUser.canedit || authenticatedUser.resourceGroup) {
-              return true;
-            }
-
-
-            const scheduleDate =  (date !== null && date !== undefined) ? new Date(date.getFullYear(), date.getMonth(), date.getDate()) : null;
-            scheduleDate?.setHours(0, 0, 0, 0 );
-
-            const unlockDateTwo = (unlockDate !== null && unlockDate !== undefined) ? new Date(unlockDate.getFullYear(), unlockDate.getMonth() + 1, unlockDate.getDate()) : null;
-            unlockDateTwo?.setHours(0, 0, 0, 0 );
-            const currentDate = new Date();
-            currentDate?.setHours(0, 0, 0, 0 );
-
-            //currentDate On or before lockDate, interviewers will be able to add/modify schedules for UnlockDate and later.
-            if (scheduleDate != null  && authenticatedUser.interviewer && currentDate <= lockDate) {
-              return  scheduleDate >= unlockDate ;
-            }
-
-            //currentDate After lockDate, interviewers will only be able to add/modify schedules for unlockDateTwo and later.
-            if ( scheduleDate != null && unlockDate != null && unlockDateTwo != null  && authenticatedUser.interviewer && currentDate > lockDate ) {
-              return scheduleDate >= unlockDateTwo;
-            }
-
-            return false;*/
       return date instanceof Date && !(authenticatedUser === null || authenticatedUser === undefined);
     }
 
@@ -1105,9 +1083,7 @@ export class ScheduleComponent implements OnInit {
 
       //blockout date validations
     } else if (blockOutDateStrings.includes(Utils.formatDateOnlyToStringUTC(schedule.startdatetime) || '')
-      && this.authenticatedUser.interviewer
-      && !this.authenticatedUser.resourceGroup
-      && !this.authenticatedUser.admin) {
+      && this.authenticatedUser.role == UserRole.Interviewer) {
 
       if (!schedule.validationMessages) {
         schedule.validationMessages = [];
@@ -1518,7 +1494,7 @@ export class ScheduleComponent implements OnInit {
 
     //restrict schedules shown if user is interviewer-only
     if (this.authenticatedUser) {
-      if (this.authenticatedUser.interviewer && !(this.authenticatedUser.admin || this.authenticatedUser.resourceGroup)) {
+      if (this.authenticatedUser.role == UserRole.Interviewer) {
         this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID);
         this.filteredUserSchedulesCustom = this.filteredUserSchedulesCustom.filter(x => x.dempoid == this.authenticatedUser.netID);
         this.allUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID);
@@ -1562,9 +1538,7 @@ export class ScheduleComponent implements OnInit {
     }
 
     //only display current user if interviewer-only
-    if (this.authenticatedUser.interviewer
-      && !this.authenticatedUser.resourceGroup
-      && !this.authenticatedUser.admin) {
+    if (this.authenticatedUser.role == UserRole.Interviewer) {
       this.filteredUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID.toLowerCase());
       this.availableUsers = this.allUsers.filter(x => x.dempoid == this.authenticatedUser.netID.toLowerCase());
       this.filteredUserSchedulesMonth = this.filteredUserSchedulesMonth.filter(x => x.dempoid == this.authenticatedUser.netID.toLowerCase());
@@ -1608,9 +1582,7 @@ export class ScheduleComponent implements OnInit {
 
     //only display current user if interviewer-only
     if (this.authenticatedUser) {
-      if (this.authenticatedUser.interviewer
-        && !this.authenticatedUser.resourceGroup
-        && !this.authenticatedUser.admin) {
+      if (this.authenticatedUser.role == UserRole.Interviewer) {
         let user: User = this.allUsers.find(x => x.dempoid == this.authenticatedUser.netID) as User;
         this.availableProjects = this.availableProjects.filter(x => (x.projectType == 'Administrative' || Utils.pipeStringToArray(user.trainedon).includes(x.projectID.toString())));
       }
@@ -1687,9 +1659,7 @@ export class ScheduleComponent implements OnInit {
     }
 
     if (this.unlockDate
-      && this.authenticatedUser?.interviewer
-      && !this.authenticatedUser?.resourceGroup
-      && !this.authenticatedUser?.admin) {
+      && this.authenticatedUser?.role == UserRole.Interviewer) {
 
       const unlockDateTwo = new Date(this.unlockDate.getFullYear(), this.unlockDate.getMonth() + 1, this.unlockDate.getDate());
       unlockDateTwo?.setHours(0, 0, 0, 0);
@@ -2208,9 +2178,7 @@ export class ScheduleComponent implements OnInit {
 
       //before unlock date
       if ((Utils.formatDateOnly(schedule.startdatetime) || new Date()) < this.unlockDate
-        && this.authenticatedUser.interviewer
-        && !this.authenticatedUser.resourceGroup
-        && !this.authenticatedUser.admin
+        && this.authenticatedUser.role == UserRole.Interviewer
         && !this.currentUser.canEdit) {
         return true;
       }

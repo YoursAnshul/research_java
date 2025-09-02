@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { IAuthenticatedUser } from '../../interfaces/interfaces';
+import { UserRole } from '../../models/presentation/enums';
 
 
 @Component({
@@ -9,6 +10,9 @@ import { IAuthenticatedUser } from '../../interfaces/interfaces';
   styleUrl: './forecasting.component.css'
 })
 export class ForecastingComponent implements OnInit {
+
+  UserRoles: any = UserRole;
+
   constructor(
 
     private authenticationService: AuthenticationService

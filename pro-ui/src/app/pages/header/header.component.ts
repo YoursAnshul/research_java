@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { UsersService } from '../../services/users/users.service';
+import { UserRole } from '../../models/presentation/enums';
 
 @Component({
   selector: 'app-header',
@@ -63,6 +64,7 @@ export class HeaderComponent implements OnInit {
 
 
   @ViewChild('participantTemplate') participantTemplate!: TemplateRef<any>;
+  UserRoles: any = UserRole;
 
   constructor(
     private authenticationService: AuthenticationService,

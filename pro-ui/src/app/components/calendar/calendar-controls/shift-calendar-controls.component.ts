@@ -31,6 +31,7 @@ import {
 import { AuthenticationService } from '../../../services/authentication/authentication.service';
 import { LogsService } from '../../../services/logs/logs.service';
 import { UserSchedulesService } from '../../../services/userSchedules/user-schedules.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-shift-calendar-controls',
@@ -211,7 +212,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
         targetDate.setDate(targetDate.getDate() + unit);
 
         if (
-          this.authenticatedUser?.interviewer &&
+          this.authenticatedUser?.role == UserRole.Interviewer &&
           targetDate.getMonth() === blockedMonth &&
           targetDate.getFullYear() === blockedYear
         ) {
@@ -239,7 +240,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
         weekEnd.setDate(weekStart.getDate() + 6);
 
         if (
-          this.authenticatedUser?.interviewer &&
+          this.authenticatedUser?.role == UserRole.Interviewer &&
           weekStart.getMonth() === blockedMonth &&
           weekEnd.getMonth() === blockedMonth
         ) {
@@ -254,7 +255,7 @@ export class ShiftCalendarControlsComponent implements OnInit {
         targetDate.setMonth(targetDate.getMonth() + unit);
 
         if (
-          this.authenticatedUser?.interviewer &&
+          this.authenticatedUser?.role == UserRole.Interviewer &&
           targetDate.getMonth() === blockedMonth &&
           targetDate.getFullYear() === blockedYear
         ) {

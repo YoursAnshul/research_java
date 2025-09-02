@@ -7,6 +7,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { User } from '../../models/data/user';
 import { UsersService } from '../../services/users/users.service';
 import { Utils } from '../../classes/utils';
+import { UserRole } from '../../models/presentation/enums';
 
 interface Announcement {
   title: string;
@@ -79,8 +80,10 @@ export class AnnouncementsComponent implements OnInit {
             isFullText: false,
           })) || [];
           
-          if (!(this.authenticatedUser.resourceGroup
-            || this.authenticatedUser.admin)
+          if (!(this.authenticatedUser.role == UserRole.ProjectTeam
+            || this.authenticatedUser.role == UserRole.Admin
+            || this.authenticatedUser.role == UserRole.OutcomesIT
+            )
           ) {
             this.announcementsList = this.announcementsList.filter((announcement) =>
               (Utils.arrayIncludesAny(this.currentUser.trainedOnArray, (announcement.projectIds || []).map(x => x.toString()))

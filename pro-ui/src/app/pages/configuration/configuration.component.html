@@ -1,11 +1,11 @@
 <div id="configuration-page" class="inner-container"
-     *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+     *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
   <h2 class="page-title">Configuration</h2>
   <mat-tab-group animationDuration="10ms">
 
     <!--general-->
     <mat-tab label="Scheduling"
-             *ngIf="authenticatedUser?.admin">
+             *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
       <div class="tab-inner">
         <div id="general-config-container" class="configuration-container">
 
@@ -212,7 +212,7 @@
 
             <!-- comm hub tab -->
             <mat-tab label="Communications Hub"
-                     *ngIf="formFieldsByTable.length > 0 && (authenticatedUser?.resourceGroup || authenticatedUser?.admin)">
+                     *ngIf="formFieldsByTable.length > 0 && (authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT))">
 
               <div style="margin-left: 9px; display: table;">
                 <mat-form-field>
@@ -393,7 +393,7 @@
             </mat-tab>
 
             <!-- other tabs -->
-            <div *ngIf="authenticatedUser?.admin">
+            <div *ngIf="(authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
               <mat-tab label="{{fft.tableName}}"
                        *ngFor="let fft of formFieldsByTable">
 
@@ -893,7 +893,7 @@
 </app-modal-popup>
 
 <div class="inner-container"
-     *ngIf="authenticatedUser?.netID && !(authenticatedUser?.admin)">
+     *ngIf="authenticatedUser?.netID && !((authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT))">
   <h2>No Access</h2>
   <p>Your user account does not have access to view this page.</p>
   <p>Please contact someone in the resource team if you believe this was a mistake.</p>

@@ -126,7 +126,7 @@
 
   <!--filters-->
   <div id="schedule-filters" class="schedule-filters"
-    *ngIf="authenticatedUser?.resourceGroup || authenticatedUser?.admin">
+    *ngIf="authenticatedUser?.role == UserRoles.ProjectTeam || (authenticatedUser?.role == UserRoles.Admin || authenticatedUser?.role == UserRoles.OutcomesIT)">
 
     <mat-form-field>
       <mat-label>User</mat-label>
