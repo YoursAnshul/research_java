@@ -61,15 +61,22 @@ export class SelectComponent {
 
   //get the selected values as a string
   public getSelectedValues(): string {
-    if ((this.anyLabel || '').length > 0
-      && (this.selectedValues.length === 0 || this.anyValueSelected)) {
-      return `Any ${this.anyLabel}`;
+    if ((this.anyLabel || '').length > 0 &&
+          (this.selectedValues.length === 0 || this.anyValueSelected)) {
+         return `Any ${this.anyLabel}`;
     } else if (this.selectedValues.length === 0) {
-      return `${this.fieldLabel}`;
+         return `${this.fieldLabel}`;
     }
-    
-    return this.selectedValues.map(x => (x.item?.dropDownItem || '')).join(', ');
+    const len = this.selectedValues.length;
+    if (len === 1) {
+        return this.selectedValues[0]?.item?.dropDownItem || '';
+    }
+    if (len === 2) {
+        return `${this.selectedValues[0]?.item?.dropDownItem || ''}, ${this.selectedValues[1]?.item?.dropDownItem || ''}`;
+    }
+    return `${this.selectedValues[0]?.item?.dropDownItem || ''}, ${this.selectedValues[1]?.item?.dropDownItem || ''}...`;
   }
+
 
   //action to take when the user clicks the 'Any' option
   public selectAny(event: any = undefined): void {
