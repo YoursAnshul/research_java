@@ -68,13 +68,19 @@ export class SelectComponent {
          return `${this.fieldLabel}`;
     }
     const len = this.selectedValues.length;
+    const widthValue = parseInt(this.width.replace('px', ''), 10);
+
     if (len === 1) {
         return this.selectedValues[0]?.item?.dropDownItem || '';
     }
-    if (len === 2) {
+    if (len === 2 && widthValue > 170) {
         return `${this.selectedValues[0]?.item?.dropDownItem || ''}, ${this.selectedValues[1]?.item?.dropDownItem || ''}`;
     }
-    return `${this.selectedValues[0]?.item?.dropDownItem || ''}, ${this.selectedValues[1]?.item?.dropDownItem || ''}...`;
+    if (widthValue > 170) {
+        return `${this.selectedValues[0]?.item?.dropDownItem || ''}, ${this.selectedValues[1]?.item?.dropDownItem || ''}..`;
+    } else {
+        return `${this.selectedValues[0]?.item?.dropDownItem || ''}..`;
+    }
   }
 
 

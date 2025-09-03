@@ -67,7 +67,7 @@
             <mat-option value="2">Scheduled Users</mat-option>
           </mat-select>
         </mat-form-field> -->
-        <div style="width: 130px;">
+        <div class="min-w-[130px]">
             <app-select
               id="user-filter"
               [fieldLabel]="'Users'"
@@ -93,7 +93,7 @@
           </mat-select>
         </mat-form-field> -->
 
-        <div style="width: 130px;">
+        <div class="min-w-[130px]">
             <app-select
               id="language-filter"
               [fieldLabel]="'Languages'"
@@ -127,7 +127,7 @@
           }
         </mat-select>
       </mat-form-field> -->
-      <div style="width: 110px;">
+      <div class="min-w-[180px]">
           <app-select
             id="project-filter"
             [fieldLabel]="'Projects'"
@@ -138,7 +138,7 @@
             [selectedValues]="selectedProjectValues"
             [formControl]="_projectFilter"
             [(anyValueSelected)]="projectAnySelected"
-            [width]="'110px'">
+            [width]="'180px'">
           </app-select>
       </div>
     }
@@ -182,7 +182,7 @@
           }
         </mat-select>
       </mat-form-field> -->
-       <div style="width: 150px;">
+       <div class="min-w-[180px]">
           <app-select
             id="trained-on-project-filter"
             [fieldLabel]="'Trained On'"
@@ -192,7 +192,7 @@
             (selectedValuesChange)="projectTrainedOnChange($event)"
             [formControl]="_trainedOnFilter"
             [(anyValueSelected)]="projectAnyTraninedOnSelected"
-            [width]="'150px'">
+            [width]="'180px'">
           </app-select>
       </div>
 
@@ -209,7 +209,7 @@
           }
         </mat-select>
       </mat-form-field> -->
-      <div style="width: 150px;">
+      <div class="min-w-[180px]">
           <app-select
             id="not-trained-on-project-filter"
             [fieldLabel]="'Not Trained On'"
@@ -219,7 +219,7 @@
             (selectedValuesChange)="projectNotTrainedOnChange($event)"
             [formControl]="_trainedOnFilter"
             [(anyValueSelected)]="projectAnyNotTraninedOnSelected"
-            [width]="'150px'">
+            [width]="'180px'">
           </app-select>
       </div>
     </div>
