@@ -79,6 +79,8 @@ export class CalendarControlsComponent implements OnInit {
   ];
   projectAnyTraninedOnSelected: boolean = true;
   projectAnyNotTraninedOnSelected: boolean = true;
+  selectedTrainedOnProjectValues: SelectedValue[] = [];
+  selectedNotTrainedOnProjectValues: SelectedValue[] = [];
 
   constructor(private authenticationService: AuthenticationService,
     private userSchedulesService: UserSchedulesService,
@@ -277,9 +279,12 @@ export class CalendarControlsComponent implements OnInit {
   this._trainedOnFilter.setValue([]);
   this._notTrainedOnFilter.setValue([]);
 
+
   // Reset UI selections
   this.selectedLanguageValues = [];
   this.selectedProjectValues = [];
+  this.selectedTrainedOnProjectValues = [];
+  this.selectedNotTrainedOnProjectValues = [];
   this.selectedOperatorValues = [
     new SelectedValue(1, this.operatorDropDownValues.find(op => op.value === 1))
   ];
