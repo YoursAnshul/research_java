@@ -71,13 +71,17 @@ export class SidebarComponent {
       authenticatedUser => {
         if (authenticatedUser?.role !== UserRole.Interviewer) {
           this.isInterviewer = false;
-          this.menuItems.push(
-            [
-              { id: 8, icon: 'shield_person', label: 'Users', route: '/users' },
-              { id: 9, icon: 'calendar_month', label: 'Forecasting', route: '/forecasting' },
-              { id: 10, icon: 'chat', label: 'Requests', route: '/requests' },
-              { id: 11, icon: 'settings', label: 'Configuration', route: '/configuration' },
-            ])
+          const newItems = [
+                { id: 8, icon: 'shield_person', label: 'Users', route: '/users' },
+                { id: 9, icon: 'calendar_month', label: 'Forecasting', route: '/forecasting' },
+                { id: 10, icon: 'chat', label: 'Requests', route: '/requests' },
+                { id: 11, icon: 'settings', label: 'Configuration', route: '/configuration' }
+          ];
+          const existingIds = this.menuItems.flat().map(item => item.id);
+          const filteredItems = newItems.filter(item => !existingIds.includes(item.id));
+          if (filteredItems.length > 0) {
+              this.menuItems.push(filteredItems);
+          }
         }
       }
     );
