@@ -29,12 +29,51 @@
     }
     
     @if (showDropdown && !disabled) {
-        <div class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none"
+        <div *ngIf="isFlag" class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none"
             [ngStyle]="{
             'min-width': width,
-            'max-height': '200px',  
+            'max-height': '160px',  
             'overflow-y': 'auto'   
             }"
+            [class.min-w-[225px]]="hideInput"
+            [class.ml-[-15px]]="hideInput"
+            [class.mt-2]="hideInput">
+            <!-- any select -->
+            @if (multiSelect && anyLabel.length > 0) {
+                <div class="py-1 border-b border-b-1 border-b-duke-gray-light w-full flex items-center gap-1 px-2">
+                    <input class="cursor-pointer" type="checkbox"
+                        (click)="selectAny($event)"
+                        [checked]="anyValueSelected" />
+                    <div class="cursor-pointer"
+                        (click)="selectAny()">Any {{anyLabel}}</div>
+                </div>
+            }
+            
+            @if(dropDownValues.length < 1) {
+                <div class="py-1 w-full flex items-center gap-1 px-2">
+                    Loading...
+                </div>
+            }
+
+            <!-- dropdown -->
+            @for (dv of dropDownValues; track dv) {
+                <div class="py-1 border-t-1 border-t-duke-gray-light w-full flex items-center gap-1 px-2"
+                    [class.border-t]="dv !== dropDownValues[0] && dropDownValues.length > 1"
+                    [class.bg-button-blue-light]="isValueSelected(dv)">
+
+                    @if (multiSelect) {
+                        <input class="cursor-pointer" type="checkbox"
+                            (change)="toggleSelectedValue(dv)"
+                            [checked]="isValueSelected(dv)" />
+                    }
+                    <div class="cursor-pointer w-full text-black"
+                        (click)="toggleSelectedValue(dv)">{{dv?.dropDownItem}}</div>
+                </div>
+            }
+        </div>
+
+        <div *ngIf="!isFlag" class="absolute z-50 border-1 border-button-blue shadow-none py-1 bg-white rounded-md cursor-default select-none min-w-[200px]"
+            
             [class.min-w-[225px]]="hideInput"
             [class.ml-[-15px]]="hideInput"
             [class.mt-2]="hideInput">

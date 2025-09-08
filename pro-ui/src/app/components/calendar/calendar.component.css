@@ -20,13 +20,13 @@
   flex-direction: row;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 4px;
+  margin-bottom: 43px;
   margin-left: 0.4rem;
   margin-right: 0.4rem;
 }
 
 .legend-container {
-  flex: 0 0 16.4em;
+  flex: 0 0 12.2em;
 }
 
 @keyframes spin {

@@ -23,6 +23,7 @@
     <span id="refresh-calendar-message" class="italic">{{scheduleFetchMessage}}</span>
 
   </div>
+  @if (authenticatedUser?.role !== UserRoles.Interviewer) {
   <mat-tab-group (selectedTabChange)="onTabChanged($event);">
     <mat-tab label="Day">
       <div class="calendar-wrapper">
@@ -33,7 +34,7 @@
         </div>
         <div>
         </div>
-        <div style="margin-left: -70px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+        <div style="margin-left: -120px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="day-calendar-controls"
             [_selectedDate]="selectedDate"
             [_languageFieldInfo]="languageFieldInfo"
@@ -64,7 +65,7 @@
         </div>
         <div>
         </div>
-        <div intervstyle="margin-left: -70px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+        <div style="margin-left: -110px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="week-calendar-controls"
             [_selectedDate]="selectedDate"
             [_languageFieldInfo]="languageFieldInfo"
@@ -94,7 +95,7 @@
             <app-legend [monthSchedules]="monthSchedules"></app-legend>
           }
         </div>
-        <div style="margin-left: -70px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+        <div style="margin-left: -90px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
           <app-calendar-controls id="month-calendar-controls"
             [_selectedDate]="selectedDate"
             [_languageFieldInfo]="languageFieldInfo"
@@ -117,7 +118,104 @@
       <app-month-view [monthSchedules]="monthSchedules"></app-month-view>
     </mat-tab>
   </mat-tab-group>
+  }
 
+    @if (authenticatedUser?.role === UserRoles.Interviewer) {
+  <mat-tab-group (selectedTabChange)="onTabChanged($event);">
+    <mat-tab label="Day">
+      <div class="calendar-wrapper">
+        <div class="legend-container">
+          @if (tabIndex == 0) {
+            <app-legend [userSchedules]="filteredUserSchedulesDay"></app-legend>
+          }
+        </div>
+        <div>
+        </div>
+        <div style="margin-left: -120px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+          <app-calendar-controls style="margin-left: 30px;" id="day-calendar-controls"
+            [_selectedDate]="selectedDate"
+            [_languageFieldInfo]="languageFieldInfo"
+            [_languages]="languages"
+            [_projects]="projects"
+            [_userFilter]="userFilter"
+            [_languageFilter]="languageFilter"
+            [_projectFilter]="projectFilter"
+            [_conditionalOperatorFilter]="conditionalOperatorFilter"
+            [_trainedOnFilter]="trainedOnFilter"
+            [_notTrainedOnFilter]="notTrainedOnFilter"
+            [_calendarType]="'DAY'"
+            [authenticatedUser]="authenticatedUser"
+            (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+            (filterChange)="applyFilters()"
+            (resetDefaultFilters)="setDefaultFilters(true)">
+          </app-calendar-controls>
+        </div>
+      </div>
+      <app-day-view [userSchedules]="filteredUserSchedulesDay" [selectedDate]="selectedDate"></app-day-view>
+    </mat-tab>
+    <mat-tab label="Week">
+      <div class="calendar-wrapper">
+        <div class="legend-container">
+          @if (tabIndex == 1) {
+            <app-legend [weekSchedules]="weekSchedules"></app-legend>
+          }
+        </div>
+        <div>
+        </div>
+        <div style="margin-left: -110px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+          <app-calendar-controls style="margin-left: 20px;" id="week-calendar-controls"
+            [_selectedDate]="selectedDate"
+            [_languageFieldInfo]="languageFieldInfo"
+            [_languages]="languages"
+            [_projects]="projects"
+            [_userFilter]="userFilter"
+            [_languageFilter]="languageFilter"
+            [_projectFilter]="projectFilter"
+            [_conditionalOperatorFilter]="conditionalOperatorFilter"
+            [_trainedOnFilter]="trainedOnFilter"
+            [_notTrainedOnFilter]="notTrainedOnFilter"
+            [selectedDateRange]="selectedDateRange"
+            [_calendarType]="'WEEK'"
+            [authenticatedUser]="authenticatedUser"
+            (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+            (filterChange)="applyFilters()"
+            (resetDefaultFilters)="setDefaultFilters(true)">
+          </app-calendar-controls>
+        </div>
+      </div>
+      <app-week-view [weekSchedules]="weekSchedules"></app-week-view>
+    </mat-tab>
+    <mat-tab label="Month">
+      <div class="calendar-wrapper">
+        <div class="legend-container">
+          @if (tabIndex == 2) {
+            <app-legend [monthSchedules]="monthSchedules"></app-legend>
+          }
+        </div>
+        <div style="margin-left: -90px;" [ngClass] ="authenticatedUser?.role == UserRoles.Interviewer ? 'wd70' : 'wd100'" class="calendar-control-container">
+          <app-calendar-controls style="margin-left: 40px;" id="month-calendar-controls"
+            [_selectedDate]="selectedDate"
+            [_languageFieldInfo]="languageFieldInfo"
+            [_languages]="languages"
+            [_projects]="projects"
+            [_userFilter]="userFilter"
+            [_languageFilter]="languageFilter"
+            [_projectFilter]="projectFilter"
+            [_conditionalOperatorFilter]="conditionalOperatorFilter"
+            [_trainedOnFilter]="trainedOnFilter"
+            [_notTrainedOnFilter]="notTrainedOnFilter"
+            [_calendarType]="'MONTH'"
+            [authenticatedUser]="authenticatedUser"
+            (selectedDateChange)="getAllUserSchedulesByAnchorDate()"
+            (filterChange)="applyFilters()"
+            (resetDefaultFilters)="setDefaultFilters(true)">
+          </app-calendar-controls>
+        </div>
+      </div>
+      <app-month-view [monthSchedules]="monthSchedules"></app-month-view>
+    </mat-tab>
+  </mat-tab-group>
+  }
 </div>
 
 

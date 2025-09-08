@@ -258,7 +258,7 @@ export class ShiftScheduleComponent implements OnInit {
       const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
       const userChanged = this.shiftForm.get('user')?.dirty && this.shiftForm.get('user')?.value;
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged  || userChanged || userDate || (projectsChanged?.projectName !== this.previousProjectName);
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged  || userChanged || userDate || projectsChanged;
     }
     else if ((this.authenticatedUser.role == UserRole.Admin || this.authenticatedUser.role == UserRole.OutcomesIT) && this.profileType == 'user-profile') {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
