@@ -54,7 +54,6 @@ import { UserSchedulesService } from '../../services/userSchedules/user-schedule
 import { User } from '../../models/data/user';
 import { UserRole } from '../../models/presentation/enums';
 import moment from 'moment';
-import { BlockDateConfirmationDialogComponent } from '../calendar/calendar-controls/block.date.dailog.confirmation';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -259,7 +258,7 @@ export class ShiftScheduleComponent implements OnInit {
       const projectsChanged = this.shiftForm.get('projects')?.dirty && this.shiftForm.get('projects')?.value;
       const userChanged = this.shiftForm.get('user')?.dirty && this.shiftForm.get('user')?.value;
       const userDate = this.shiftForm.get('dayWiseDate')?.dirty && this.shiftForm.get('dayWiseDate')?.value;
-      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged  || userChanged || userDate || projectsChanged;
+      shouldShowConfirmation = startTimeChanged || endTimeChanged || commentsChanged  || userChanged || userDate || (projectsChanged?.projectName !== this.previousProjectName);
     }
     else if ((this.authenticatedUser.role == UserRole.Admin || this.authenticatedUser.role == UserRole.OutcomesIT) && this.profileType == 'user-profile') {
       const startTimeChanged = this.shiftForm.get('startTime')?.dirty && this.shiftForm.get('startTime')?.value;
@@ -290,7 +289,9 @@ export class ShiftScheduleComponent implements OnInit {
   }
   ngOnInit(): void {    
     this.isDataLoaded = false;
-    this.getBlockOutDates();
+    if (this.authenticatedUser.role == UserRole.Interviewer) {
+      this.getBlockOutDates();
+    }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
@@ -1332,46 +1333,11 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
       if (!this.isEdit) {
-        if(this.authenticatedUser?.role == UserRole.Admin){
-          const isBlockDate = this.isDateBlocked(this.shiftForm.get('dayWiseDate')?.value)
-          if(isBlockDate){
-            this.openBlockDateConfirmationDialog().afterClosed().subscribe((confirmed: any) => {
-            if (confirmed) {
-              console.log('Confirmed: Proceed with saving...');
-              this.saveSchedule();
-            } else {
-              this.isBlockDate = true;
-              this.shiftForm.get('dayWiseDate')?.setErrors({ dateBlocked: true });
-              this.shiftForm.get('startTime')?.disable();
-              this.shiftForm.get('endTime')?.disable();
-              console.log('Cancelled: Do not save.');
-            }
-            });
-          }
-        }
+        this.saveSchedule();
       } else {
-        if(this.authenticatedUser?.role == UserRole.Admin){
-          const isBlockDate = this.isDateBlocked(this.shiftForm.get('dayWiseDate')?.value)
-          if(isBlockDate){
-            this.openBlockDateConfirmationDialog().afterClosed().subscribe((confirmed: any) => {
-            if (confirmed) {
-              console.log('Confirmed: Proceed with update...');
-              this.editSchedule();
-            } else {
-              const dayWiseDateControl = this.shiftForm.get('dayWiseDate');
-              this.isBlockDate = true;
-              dayWiseDateControl?.setErrors({ dateBlocked: true });
-              dayWiseDateControl?.markAsTouched();
-              dayWiseDateControl?.updateValueAndValidity();
-
-              this.shiftForm.get('startTime')?.disable();
-              this.shiftForm.get('endTime')?.disable();
-              console.log('Cancelled: Do not update.');
-            }
-            });
-          }
-        }
+        this.editSchedule();
       }
+
       this.tryValidateSchedules();
     }
   }
@@ -1883,22 +1849,7 @@ export class ShiftScheduleComponent implements OnInit {
       },
     });
   }
-  isDateBlocked(selectedDate: Date): boolean { 
-    const selectedDateString = selectedDate.toISOString().split('T')[0];
 
-    return this.blockOutDates.filter(item => {
-    if (!item.blockOutDay) return false;
-      const blockOutDay = item.blockOutDay instanceof Date
-      ? item.blockOutDay.toISOString()
-      : item.blockOutDay;
-      return blockOutDay.split('T')[0] === selectedDateString;
-    }).length > 0;
-  }
-  openBlockDateConfirmationDialog(): MatDialogRef<BlockDateConfirmationDialogComponent, any> {
-    return this.dialog.open(BlockDateConfirmationDialogComponent, {
-      panelClass: 'custom-dialog-container',
-    });
-  }
   saveSchedule(): void {
     this.isModified = false;
     const shiftScheduleList: any[] = [];
