@@ -54,6 +54,7 @@ import { UserSchedulesService } from '../../services/userSchedules/user-schedule
 import { User } from '../../models/data/user';
 import { UserRole } from '../../models/presentation/enums';
 import moment from 'moment';
+import { BlockDateConfirmationDialogComponent } from '../calendar/calendar-controls/block.date.dailog.confirmation';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -289,9 +290,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
   ngOnInit(): void {    
     this.isDataLoaded = false;
-    if (this.authenticatedUser.role == UserRole.Interviewer) {
-      this.getBlockOutDates();
-    }
+    this.getBlockOutDates();
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
@@ -702,8 +701,8 @@ export class ShiftScheduleComponent implements OnInit {
       selectedDate.getFullYear(),
       selectedDate.getMonth(),
       selectedDate.getDate()
-    );
-
+    );    
+    
     const blockedEntries = this.blockOutDates.filter((blockOut) => {
       const blockOutDate = new Date(blockOut.blockOutDay!);
       const blockOutDateOnly = new Date(
@@ -723,15 +722,19 @@ export class ShiftScheduleComponent implements OnInit {
 
     const hasTimeBlock = blockedEntries.some(
       (blockOut) => blockOut.startTime && blockOut.endTime
-    );
-
+    );    
+    
     if (!hasTimeBlock) {
       this.shiftForm.get('dayWiseDate')?.setErrors({ dateBlocked: true });
       this.shiftForm.get('startTime')?.disable();
       this.shiftForm.get('endTime')?.disable();
       this.blockedTimeSlots = [];
       this.isBlockDate = true;
-      this.openBlockDialog(false); // date-only block
+      if (this.authenticatedUser.role == UserRole.Interviewer){
+        this.openBlockDialog(false);
+      } else {
+        this.openConfirmationBlockDialog(false);
+      }
       return;
     }
 
@@ -745,7 +748,35 @@ export class ShiftScheduleComponent implements OnInit {
           ...this.generateBlockedTimeSlots(normalizedStart, normalizedEnd)
         );
       }
-    });
+    });    
+    console.log('Blocked Time Slots:', this.blockedTimeSlots);
+
+    if (this.blockedTimeSlots.length > 0 && this.authenticatedUser.role === UserRole.Admin) {
+        const startTime = this.shiftForm.get('startTime')?.value;
+        const endTime = this.shiftForm.get('endTime')?.value;
+
+        if (startTime && endTime) {
+          const toMinutes = (timeStr: string): number => {
+          const [time, modifier] = timeStr.split(' ');
+          let [hours, minutes] = time.split(':').map(Number);
+          if (modifier === 'PM' && hours !== 12) hours += 12;
+          if (modifier === 'AM' && hours === 12) hours = 0;
+          return hours * 60 + (minutes || 0);
+        };
+
+        const startMinutes = toMinutes(startTime);
+        const endMinutes = toMinutes(endTime);
+
+        const isOverlap = this.blockedTimeSlots.some(slot => {
+          const slotMinutes = toMinutes(slot);
+          return slotMinutes >= startMinutes && slotMinutes < endMinutes;
+        });
+
+        if (isOverlap) {
+         this.openConfirmationBlockDialog(true);
+        }
+       }
+    }
     this.shiftForm.get('startTime')?.enable();
     this.shiftForm.get('endTime')?.enable();
     this.shiftForm.get('dayWiseDate')?.enable();
@@ -866,6 +897,33 @@ export class ShiftScheduleComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.closeDialog();
+      }
+    });
+  }
+  openConfirmationBlockDialog(isTimeSlot: boolean): void {
+    const dialogRef = this.dialog.open(BlockDateConfirmationDialogComponent, {
+      panelClass: 'custom-dialog-container',
+      data: { isTimeSlot },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {      
+      if (result) {
+         if(!this.isEdit){
+         // this.saveSchedule(); 
+         } else {
+          // this.editSchedule();
+         }
+         this.shiftForm.get('startTime')?.enable();
+         this.shiftForm.get('endTime')?.enable();
+         this.shiftForm.get('dayWiseDate')?.enable();
+         this.shiftForm.get('dayWiseDate')?.setErrors(null);
+         this.isBlockDate = false;
+      } else {
+         this.shiftForm.get('startTime')?.disable();
+         this.shiftForm.get('endTime')?.disable();
+         this.shiftForm.get('dayWiseDate')?.disable();
+         this.shiftForm.get('dayWiseDate')?.setErrors({ dateBlocked: true });
+         this.isBlockDate = true;
       }
     });
   }
@@ -1332,12 +1390,16 @@ export class ShiftScheduleComponent implements OnInit {
       this.weekSchedules = [...this.shiftSchedule1];
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
-      if (!this.isEdit) {
-        this.saveSchedule();
-      } else {
-        this.editSchedule();
-      }
-
+      // if (!this.isEdit) {
+      //   this.saveSchedule();
+      // } else {
+      //   this.editSch
+      this.validateBlockOutDate(this.shiftForm.get('dayWiseDate')?.value);
+      this.shiftForm.get('dayWiseDate')?.setErrors(null);
+      this.shiftForm.get('dayWiseDate')?.enable();
+      this.shiftForm.get('startTime')?.enable();
+      this.shiftForm.get('endTime')?.enable();
+      this.isBlockDate = false;
       this.tryValidateSchedules();
     }
   }

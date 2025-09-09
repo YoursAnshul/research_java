@@ -75,7 +75,7 @@
           [class.disabled-field]="shiftForm.get('startTime')?.disabled || isBlockDate" style="width: 80px">
           <mat-label>Start Time</mat-label>
           <mat-select formControlName="startTime" [disabled]="!!shiftForm.get('startTime')?.disabled || isBlockDate">
-            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isStartTimeBlocked(time)">
+            <mat-option *ngFor="let time of timeSlots" [value]="time" [disabled]="isStartTimeBlocked(time) && !this.authenticatedUser?.role == UserRoles.Admin">
               <div class="time-box" [ngStyle]="{
                   'background-color': getBackgroundColor(time)
                 }">
@@ -92,7 +92,7 @@
           <mat-label>End Time</mat-label>
           <mat-select formControlName="endTime" [disabled]="!!shiftForm.get('endTime')?.disabled || isBlockDate">
             <mat-option *ngFor="let time of endtimeSlots" [value]="time"
-              [disabled]="isEndTimeBlocked(time) || isBlockDate">
+              [disabled]="(isEndTimeBlocked(time) || isBlockDate) && !this.authenticatedUser?.role == UserRoles.Admin">
               <div class="time-box" [ngStyle]="{
                   'background-color': getBackgroundColor(time)
                 }">

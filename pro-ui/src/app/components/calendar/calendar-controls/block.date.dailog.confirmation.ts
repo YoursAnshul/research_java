@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-schedule-close-dialog',
@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./block.date.dailog.confirmation.css']
 })
 export class BlockDateConfirmationDialogComponent {
-  constructor(public dialogRef: MatDialogRef<BlockDateConfirmationDialogComponent>) {}
+  constructor(public dialogRef: MatDialogRef<BlockDateConfirmationDialogComponent>,  @Inject(MAT_DIALOG_DATA) public data: { isTimeSlot: boolean }) {}
 
   onConfirm(): void {
     this.dialogRef.close(true);

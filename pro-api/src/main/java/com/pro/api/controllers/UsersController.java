@@ -583,11 +583,11 @@ public DirContext getUserDetails(String duid) {
 		//uncomment below to use default authenticated user, including default, spoofed grouper assignments - if running locally, return a default user
 		if (activeProfile.equals("local")) {
 			// getDefaultAuthenticatedUser(authenticatedUser);
-			getDefaultAuthenticatedUser(authenticatedUser);
-            authenticatedUser.setNetID(this.getNetIdByEmail(authenticatedUser.getEppn()));
-            authenticatedUser.setUserRoles(new String[]{"3"});
-//			User user = userRepository.findFirstByEmailaddrIgnoreCase("jeremiah.reed@duke.edu");
-//			authenticatedUser = new AuthenticatedUser(user);
+//			getDefaultAuthenticatedUser(authenticatedUser);
+//            authenticatedUser.setNetID(this.getNetIdByEmail(authenticatedUser.getEppn()));
+//            authenticatedUser.setUserRoles(new String[]{"3"});
+			User user = userRepository.findFirstByEmailaddrIgnoreCase("jeremiah.reed@duke.edu");
+			authenticatedUser = new AuthenticatedUser(user);
 
 			response.Status = "Success";
 			response.Message = "Successfully retrieved login info";
