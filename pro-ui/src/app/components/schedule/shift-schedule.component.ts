@@ -289,9 +289,7 @@ export class ShiftScheduleComponent implements OnInit {
   }
   ngOnInit(): void {    
     this.isDataLoaded = false;
-    if (this.authenticatedUser.role == UserRole.Interviewer) {
-      this.getBlockOutDates();
-    }
+    this.getBlockOutDates();
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
         this.isHomeRedirect = data.isHomeRedirect;
@@ -1333,14 +1331,78 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
       if (!this.isEdit) {
-        this.saveSchedule();
+        const isBlockOutDate = this.isBlockOutDate(this.shiftForm.get('dayWiseDate')?.value);
+        // this.saveSchedule();
       } else {
-        this.editSchedule();
+        const isBlockOutDate = this.isBlockOutDate(this.shiftForm.get('dayWiseDate')?.value);
+        console.log('Is Block Out Date:', isBlockOutDate)
+        const isTimeSlotBlock = this.isBlockStartAndEndTime(this.shiftForm.get('dayWiseDate')?.value,this.shiftForm.get('startTime')?.value, this.shiftForm.get('endTime')?.value);
+        console.log('Is Start Time Blocked:', isTimeSlotBlock);
+        this.shiftForm.get('startTime')?.setErrors(null);
+        this.shiftForm.get('endTime')?.setErrors(null);
+        this.shiftForm.markAsPristine();
+        this.shiftForm.markAsUntouched();
+        // this.editSchedule();
       }
 
       this.tryValidateSchedules();
     }
   }
+  isBlockOutDate(selectedDate: Date): boolean {
+    const selectedDateOnly = new Date(
+       selectedDate.getFullYear(),
+       selectedDate.getMonth(),
+       selectedDate.getDate()
+    ).getTime();
+
+    for (const blockOut of this.blockOutDates) {
+       const blockOutDate = new Date(blockOut.blockOutDay!);
+       const blockOutDateOnly = new Date(
+            blockOutDate.getFullYear(),
+            blockOutDate.getMonth(),
+            blockOutDate.getDate()
+       ).getTime();
+
+      if (blockOutDateOnly === selectedDateOnly) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  isBlockStartAndEndTime(date: Date, startTime: string, endTime: string): boolean {
+      const toMinutes = (time: string) => {
+       const [timePart, modifier] = time.split(' ');
+       let [hours, minutes] = timePart.split(':').map(Number);
+
+       if (modifier === 'PM' && hours !== 12) {
+          hours += 12;
+       }
+       if (modifier === 'AM' && hours === 12) {
+          hours = 0;
+       }
+       return hours * 60 + (minutes || 0);
+      };
+
+      const start = toMinutes(startTime);
+      const end = toMinutes(endTime);
+
+      for (const blockOut of this.blockOutDates) {
+        if (new Date(blockOut.blockOutDay!).toDateString() === new Date(date).toDateString()) {
+          if (blockOut.startTime && blockOut.endTime) {
+             const blockStart = toMinutes(blockOut.startTime);
+             const blockEnd = toMinutes(blockOut.endTime);
+             if (start < blockEnd && end > blockStart) {
+                return true;
+             }
+          }
+        }
+      }
+      return false;
+  }
+
+
+
   saveNewRequest(id: number): void {
     if (
       !(
@@ -1793,7 +1855,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.configurationService.getBlockOutDates().subscribe(
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.blockOutDates = <IBlockOutDate[]>response.Subject;
+          this.blockOutDates = <IBlockOutDate[]>response.Subject;          
           this.validateBlockOutDate(this.selectedDate.value);
         }
       },
