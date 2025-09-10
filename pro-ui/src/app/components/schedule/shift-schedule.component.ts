@@ -1331,18 +1331,9 @@ export class ShiftScheduleComponent implements OnInit {
       this.shiftForm.get('startTime')?.setErrors(null);
       this.shiftForm.get('endTime')?.setErrors(null);
       if (!this.isEdit) {
-        const isBlockOutDate = this.isBlockOutDate(this.shiftForm.get('dayWiseDate')?.value);
-        // this.saveSchedule();
+        this.saveSchedule();
       } else {
-        const isBlockOutDate = this.isBlockOutDate(this.shiftForm.get('dayWiseDate')?.value);
-        console.log('Is Block Out Date:', isBlockOutDate)
-        const isTimeSlotBlock = this.isBlockStartAndEndTime(this.shiftForm.get('dayWiseDate')?.value,this.shiftForm.get('startTime')?.value, this.shiftForm.get('endTime')?.value);
-        console.log('Is Start Time Blocked:', isTimeSlotBlock);
-        this.shiftForm.get('startTime')?.setErrors(null);
-        this.shiftForm.get('endTime')?.setErrors(null);
-        this.shiftForm.markAsPristine();
-        this.shiftForm.markAsUntouched();
-        // this.editSchedule();
+        this.editSchedule();
       }
 
       this.tryValidateSchedules();
