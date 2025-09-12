@@ -19,13 +19,13 @@
       </div>
     }
     @if (uniqueProjectDetails.length == 0) {
-      <p class="no-legend-msg">There are no Projects to display</p>
+      <p class="no-legend-msg">No Projects to display</p>
     }
   </mat-card-content>
 </mat-card>
 
 <ng-template #dialogTemplate let-data="data">
-  <mat-card class="legend-card">
+  <mat-card  [ngClass]="authenticatedUser?.role == UserRoles.Interviewer ? 'legend-card-1' : ''">
     <mat-card-header>
       <div mat-card-avatar class="legend-title legend-title-adjust">
         <h2 class="mat-subheading-1">{{ data.title }}</h2>

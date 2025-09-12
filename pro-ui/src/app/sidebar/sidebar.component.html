@@ -1,6 +1,11 @@
 <!-- app.component.html -->
 <div class="sidenav-container">
-  <div class="sidenav" [ngClass]="{'collapsed': isCollapsed}" [@slideInOut]="isCollapsed ? 'out' : 'in'">
+  <div [ngClass]="{
+    'sidenav-1': authenticatedUser?.role == UserRoles.Interviewer,
+    'sidenav': authenticatedUser?.role != UserRoles.Interviewer,
+    'collapsed': isCollapsed
+  }"
+  [@slideInOut]="isCollapsed ? 'out' : 'in'">
     <!-- Toggle Button -->
     @if (!isCollapsed) {
       <div class="menu-border menu">

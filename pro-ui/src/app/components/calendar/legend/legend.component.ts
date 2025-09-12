@@ -19,6 +19,7 @@ import {
   ISchedule,
   IUserSchedule,
   IWeekSchedules,
+  IAuthenticatedUser
 } from '../../../interfaces/interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../dialog/dialog.component';
@@ -27,6 +28,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { GlobalsService } from '../../../services/globals/globals.service';
 import { Utils } from '../../../classes/utils';
 import { User } from '../../../models/data/user';
+import { AuthenticationService } from '../../../services/authentication/authentication.service';
+import { UserRole } from '../../../models/presentation/enums';
 
 @Component({
   selector: 'app-legend',
@@ -43,21 +46,29 @@ export class LegendComponent implements OnInit, OnChanges, OnDestroy {
   @Input() weekSchedules!: IWeekSchedules | null;
   @Input() monthSchedules!: IMonthSchedules;
   activeProjects!: IProjectMin[];
+  authenticatedUser!: IAuthenticatedUser;
   // @Input() selectedUser!: User;
 
   readonly unsub$ = new Subject<void>();
+  UserRoles: any = UserRole;
 
   constructor(
     private dialog: MatDialog,
     private projectsService: ProjectsService,
     private globalsService: GlobalsService,
-    private cDRef: ChangeDetectorRef
+    private cDRef: ChangeDetectorRef,
+    private authenticationService: AuthenticationService
   ) {
     this.projectsService.allProjectsMin.subscribe((allProjects) => {
       this.activeProjects = allProjects.filter(
         (x) => x.active && x.projectType !== 'Administrative'
       );
     });
+    this.authenticationService.authenticatedUser.subscribe(
+          (authenticatedUser) => {
+            this.authenticatedUser = authenticatedUser;
+          }
+        );
   }
 
   ngOnInit(): void {    

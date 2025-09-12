@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { GlobalsService } from '../services/globals/globals.service';
 import { UserRole } from '../models/presentation/enums';
+import { IAuthenticatedUser } from '../interfaces/interfaces';
 
 @Component({
   selector: 'app-sidebar',
@@ -40,9 +41,16 @@ export class SidebarComponent {
   isCollapsed = false;
   showSchedule: boolean = false;
   isInterviewer = true;
+  UserRoles: any = UserRole;
+  authenticatedUser!: IAuthenticatedUser;
   showParticipantModal: boolean = false;
   constructor(private router: Router, private authenticationService: AuthenticationService, private globalsService: GlobalsService) {
      // Listen to route changes to update the selected route
+     this.authenticationService.authenticatedUser.subscribe(
+          (authenticatedUser) => {
+            this.authenticatedUser = authenticatedUser;
+          }
+        );
      this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.selectedItemRoute = this.router.url;
