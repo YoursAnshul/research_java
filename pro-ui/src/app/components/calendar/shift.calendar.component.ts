@@ -134,6 +134,7 @@ export class ShifCalendarComponent implements OnInit {
   @Input() pId: number = 0;
   @Input() isScheduleUpdate: boolean = false;
   UserRoles: any = UserRole;
+  
   userDropDownValues: IDropDownValue[] = [];
   anyUserValueSelected: boolean = true;
   selectedUserValues: SelectedValue[] = [];
@@ -427,6 +428,8 @@ export class ShifCalendarComponent implements OnInit {
     }
     this.checkContext();
   }
+
+
   compareProjects(project1: any, project2: any): boolean {
     return project1 && project2
       ? project1.projectId === project2.projectId
@@ -1043,6 +1046,7 @@ export class ShifCalendarComponent implements OnInit {
         const matchedUser = newUserList.find(
           (user) => user.userId === prevUserId
         );
+
         this.selectedUser = matchedUser || this.defaultUser;
       },
       error: (error) => console.error('Error fetching authors:', error),
@@ -1105,12 +1109,14 @@ export class ShifCalendarComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjects = Array.isArray(data) ? data : [];
+
         const uniqueProjectsList = this.allProjects.filter( (proj, index, self) =>
           index === self.findIndex((p) => p.projectId === proj.projectId));
         this.projectDropDownValues = uniqueProjectsList.map((project) => ({
           dropDownItem: project.projectName,
           codeValues: project.projectId
         }));
+
         this.adminProjects = this.allProjects.filter(
           (project: { projectType: number }) => project.projectType === 4
         );
@@ -1151,7 +1157,7 @@ export class ShifCalendarComponent implements OnInit {
     );
     this.selectedUserChange.emit(this.selectedUser);
   }
-  onProjectChange(project: any) {    
+  onProjectChange(project: any) {
     this.selectedProject = '';
     this.selectedProjectValues = project;
     const selected = this.selectedProjectValues[0];
@@ -1199,9 +1205,33 @@ export class ShifCalendarComponent implements OnInit {
     }
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        this.shiftSchedule = response ?? [];
+
+        let viShiftSchedule: ISchedule[] = response ?? [];
+        for (let schedule of viShiftSchedule) {
+          schedule.scheduledate = new Date(schedule.startdatetime ?? '');
+          schedule.startdatetime = new Date(schedule.startdatetime ?? '');
+          schedule.enddatetime = new Date(schedule.enddatetime ?? '');
+          schedule.dayWiseDate = new Date(schedule.startdatetime ?? '');
+          schedule.startTime = Utils.formatDateToTimeString(schedule.startdatetime, true) || '';
+          schedule.endTime = Utils.formatDateToTimeString(schedule.enddatetime, true) || '';
+          schedule.duration = parseFloat(((schedule.enddatetime?.getTime() - schedule.startdatetime?.getTime()) / (1000 * 60 * 60)).toFixed(2));
+          schedule.user = {
+            dempoid: schedule.dempoid ?? '',
+            userId: schedule.userid ?? 0,
+            userName: schedule.displayName
+          } as User;
+          schedule.projects = {
+            projectId: schedule.projectid,
+            projectName: schedule.projectName,
+            projectColor: schedule.projectColor
+          };
+          // console.log(schedule);
+        }
+
+        this.shiftSchedule = viShiftSchedule;
+
         localStorage.setItem(
-          'shiftSchedule',
+          'shiftSchedule', 
           JSON.stringify(this.shiftSchedule)
         );
         const missingSchedules =

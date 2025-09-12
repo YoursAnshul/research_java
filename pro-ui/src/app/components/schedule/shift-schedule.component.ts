@@ -54,6 +54,7 @@ import { UserSchedulesService } from '../../services/userSchedules/user-schedule
 import { User } from '../../models/data/user';
 import { UserRole } from '../../models/presentation/enums';
 import moment from 'moment';
+import { BlockDateConfirmationDialogComponent } from '../calendar/calendar-controls/block.date.dailog.confirmation';
 
 @Component({
   selector: 'app-shift-schedule',
@@ -1229,170 +1230,408 @@ export class ShiftScheduleComponent implements OnInit {
     //   }
     //   this.tryValidateSchedules(selectedDate || new Date());
     // }
-    if (this.shiftForm.valid) {
-      const formData = this.shiftForm.value;
-      const selectedDate = formData.dayWiseDate;
-      this.changeDate = new Date(selectedDate);
+    if (this.authenticatedUser?.role == UserRole.Admin) {
+      if (this.shiftForm.valid) {
+        const formData1 = this.shiftForm.value;
+        const selectedDate1 = formData1.dayWiseDate;
+        // const isTimeSlotBlock = this.isBlockStartAndEndTime(this.shiftForm.get('dayWiseDate')?.value,this.shiftForm.get('startTime')?.value, this.shiftForm.get('endTime')?.value);
 
-      this.tryValidateSchedules();
-    }
-    const storedSchedule = localStorage.getItem('shiftSchedule');
-    if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
-      this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
-    }
-    const startTime = this.shiftForm.get('startTime')?.value;
-    const endTime = this.shiftForm.get('endTime')?.value;
+        
+        if (this.isDateBlockedOut(selectedDate1)) {
+          // Show confirmation dialog for block out date
+          this.openBlockDateConfirmationDialog().afterClosed().subscribe((confirmed: any) => {
+            if (confirmed) {
+              if (this.shiftForm.valid) {
+                const formData = this.shiftForm.value;
+                const selectedDate = formData.dayWiseDate;
+                this.changeDate = new Date(selectedDate);
+                this.tryValidateSchedules();
+              }
+              const storedSchedule = localStorage.getItem('shiftSchedule');
+              if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
+                this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
+              }
+              const startTime = this.shiftForm.get('startTime')?.value;
+              const endTime = this.shiftForm.get('endTime')?.value;
 
-    if (!startTime) {
-      this.shiftForm.get('startTime')?.setErrors({ required: true });
-    }
-    if (!endTime) {
-      this.shiftForm.get('endTime')?.setErrors({ required: true });
-    }
+              if (!startTime) {
+                this.shiftForm.get('startTime')?.setErrors({ required: true });
+              }
+              if (!endTime) {
+                this.shiftForm.get('endTime')?.setErrors({ required: true });
+              }
 
-    if (this.shiftForm.valid) {
-      const formData = this.shiftForm.value;
-      const selectedDate = formData.dayWiseDate;
-      const selectedUser = formData.user;
-      const newStartTime = this.combineDateAndTime(
-        selectedDate,
-        formData.startTime
-      ).getTime();
+              if (this.shiftForm.valid) {
+                const formData = this.shiftForm.value;
 
-      const newEndTime = this.combineDateAndTime(
-        selectedDate,
-        formData.endTime
-      ).getTime();
+                const selectedDate = formData.dayWiseDate;
+                const selectedUser = formData.user;
+                const newStartTime = this.combineDateAndTime(
+                  selectedDate,
+                  formData.startTime
+                ).getTime();
 
-      if (newStartTime >= newEndTime) {
-        this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
-        return;
-      }
-      const isDuplicate = this.shiftSchedule?.some((shift) => {
-        const shiftDateMatch =
-          new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
-          new Date(selectedDate).toISOString().split('T')[0];
-        const shiftUserMatch = shift.user.dempoId === selectedUser.dempoId;
-        const shiftStartTime = this.combineDateAndTime(
-          shift.dayWiseDate,
-          shift.startTime
-        ).getTime();
-        const shiftEndTime = this.combineDateAndTime(
-          shift.dayWiseDate,
-          shift.endTime
-        ).getTime();
-        const isSameShift =
-          shiftDateMatch &&
-          shiftUserMatch &&
-          shiftStartTime === newStartTime &&
-          shiftEndTime === newEndTime;
+                const newEndTime = this.combineDateAndTime(
+                  selectedDate,
+                  formData.endTime
+                ).getTime();
 
-        const isOverlapping =
-          shiftDateMatch &&
-          shiftUserMatch &&
-          newStartTime < shiftEndTime &&
-          newEndTime > shiftStartTime;
-        return isSameShift || isOverlapping;
-      });
-      if (isDuplicate) {
-        this.scheduleFetchStatus = false;
-        this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
-        this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
-        return;
-      }
+                if (newStartTime >= newEndTime) {
+                  this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
+                  return;
+                }
+                const isDuplicate = this.shiftSchedule?.some((shift) => {
+                  const shiftDateMatch =
+                    new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
+                    new Date(selectedDate).toISOString().split('T')[0];
+                  const shiftUserMatch = shift.user.dempoId === selectedUser.dempoId;
+                  const shiftStartTime = this.combineDateAndTime(
+                    shift.dayWiseDate,
+                    shift.startTime
+                  ).getTime();
+                  const shiftEndTime = this.combineDateAndTime(
+                    shift.dayWiseDate,
+                    shift.endTime
+                  ).getTime();
+                  const isSameShift =
+                    shiftDateMatch &&
+                    shiftUserMatch &&
+                    shiftStartTime === newStartTime &&
+                    shiftEndTime === newEndTime;
 
-      const newShift = { ...formData, duration: this.duration };
-      this.shiftSchedule1 = this.shiftSchedule1
-        ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
-        : [{ ...newShift, isNew: true }];
-      const formatDate = (date: any) => {
-        if (typeof date === 'string') {
-          return date;
-        }
-        return new Date(date).toISOString().split('T')[0];
-      };
+                  const isOverlapping =
+                    shiftDateMatch &&
+                    shiftUserMatch &&
+                    newStartTime < shiftEndTime &&
+                    newEndTime > shiftStartTime;
+                  return isSameShift || isOverlapping;
+                });
+                if (isDuplicate) {
+                  this.scheduleFetchStatus = false;
+                  this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+                  this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+                  return;
+                }
 
-      const uniqueNewShifts = this.shiftSchedule1?.filter(
-        (newShift) =>
-          !this.shiftSchedule.some(
-            (shift) =>
-              formatDate(shift.dayWiseDate) ===
-              formatDate(newShift.dayWiseDate) &&
-              shift.startTime.trim().toLowerCase() ===
-              newShift.startTime.trim().toLowerCase() &&
-              shift.endTime.trim().toLowerCase() ===
-              newShift.endTime.trim().toLowerCase() &&
-              shift.user.dempoId === newShift.user.dempoId
-          )
-      );
+                const newShift = { ...formData, duration: this.duration };
+                this.shiftSchedule1 = this.shiftSchedule1
+                  ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
+                  : [{ ...newShift, isNew: true }];
+                const formatDate = (date: any) => {
+                  if (typeof date === 'string') {
+                    return date;
+                  }
+                  return new Date(date).toISOString().split('T')[0];
+                };
 
-      this.shiftSchedule = [...this.shiftSchedule, ...uniqueNewShifts];
-      this.weekSchedules = [...this.shiftSchedule1];
-      this.shiftForm.get('startTime')?.setErrors(null);
-      this.shiftForm.get('endTime')?.setErrors(null);
-      if (!this.isEdit) {
-        this.saveSchedule();
-      } else {
-        this.editSchedule();
-      }
+                const uniqueNewShifts = this.shiftSchedule1?.filter(
+                  (newShift) =>
+                    !this.shiftSchedule.some(
+                      (shift) =>
+                        formatDate(shift.dayWiseDate) ===
+                        formatDate(newShift.dayWiseDate) &&
+                        shift.startTime.trim().toLowerCase() ===
+                        newShift.startTime.trim().toLowerCase() &&
+                        shift.endTime.trim().toLowerCase() ===
+                        newShift.endTime.trim().toLowerCase() &&
+                        shift.user.dempoId === newShift.user.dempoId
+                    )
+                );
 
-      this.tryValidateSchedules();
-    }
-  }
-  isBlockOutDate(selectedDate: Date): boolean {
-    const selectedDateOnly = new Date(
-       selectedDate.getFullYear(),
-       selectedDate.getMonth(),
-       selectedDate.getDate()
-    ).getTime();
+                this.shiftSchedule = [...this.shiftSchedule, ...uniqueNewShifts];
+                this.weekSchedules = [...this.shiftSchedule1];
+                this.shiftForm.get('startTime')?.setErrors(null);
+                this.shiftForm.get('endTime')?.setErrors(null);
+                if (!this.isEdit) {
+                  this.saveSchedule();
+                } else {
+                  this.editSchedule();
+                }
+                this.tryValidateSchedules();
+              }
 
-    for (const blockOut of this.blockOutDates) {
-       const blockOutDate = new Date(blockOut.blockOutDay!);
-       const blockOutDateOnly = new Date(
-            blockOutDate.getFullYear(),
-            blockOutDate.getMonth(),
-            blockOutDate.getDate()
-       ).getTime();
+            } else {
+              console.log('Cancelled: Do not save due to block out date.');
+              return;
+            }
+          });
+        } else {
+          if (this.shiftForm.valid) {
+            const formData = this.shiftForm.value;
+            const selectedDate = formData.dayWiseDate;
+            this.changeDate = new Date(selectedDate);
+            this.tryValidateSchedules();
+          }
+          const storedSchedule = localStorage.getItem('shiftSchedule');
+          if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
+            this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
+          }
+          const startTime = this.shiftForm.get('startTime')?.value;
+          const endTime = this.shiftForm.get('endTime')?.value;
 
-      if (blockOutDateOnly === selectedDateOnly) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  isBlockStartAndEndTime(date: Date, startTime: string, endTime: string): boolean {
-      const toMinutes = (time: string) => {
-       const [timePart, modifier] = time.split(' ');
-       let [hours, minutes] = timePart.split(':').map(Number);
+          if (!startTime) {
+            this.shiftForm.get('startTime')?.setErrors({ required: true });
+          }
+          if (!endTime) {
+            this.shiftForm.get('endTime')?.setErrors({ required: true });
+          }
 
-       if (modifier === 'PM' && hours !== 12) {
-          hours += 12;
-       }
-       if (modifier === 'AM' && hours === 12) {
-          hours = 0;
-       }
-       return hours * 60 + (minutes || 0);
-      };
+          if (this.shiftForm.valid) {
+            const formData = this.shiftForm.value;
 
-      const start = toMinutes(startTime);
-      const end = toMinutes(endTime);
+            const selectedDate = formData.dayWiseDate;
+            const selectedUser = formData.user;
+            const newStartTime = this.combineDateAndTime(
+              selectedDate,
+              formData.startTime
+            ).getTime();
 
-      for (const blockOut of this.blockOutDates) {
-        if (new Date(blockOut.blockOutDay!).toDateString() === new Date(date).toDateString()) {
-          if (blockOut.startTime && blockOut.endTime) {
-             const blockStart = toMinutes(blockOut.startTime);
-             const blockEnd = toMinutes(blockOut.endTime);
-             if (start < blockEnd && end > blockStart) {
-                return true;
-             }
+            const newEndTime = this.combineDateAndTime(
+              selectedDate,
+              formData.endTime
+            ).getTime();
+
+            if (newStartTime >= newEndTime) {
+              this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
+              return;
+            }
+            const isDuplicate = this.shiftSchedule?.some((shift) => {
+              const shiftDateMatch =
+                new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
+                new Date(selectedDate).toISOString().split('T')[0];
+              const shiftUserMatch = shift.user.dempoId === selectedUser.dempoId;
+              const shiftStartTime = this.combineDateAndTime(
+                shift.dayWiseDate,
+                shift.startTime
+              ).getTime();
+              const shiftEndTime = this.combineDateAndTime(
+                shift.dayWiseDate,
+                shift.endTime
+              ).getTime();
+              const isSameShift =
+                shiftDateMatch &&
+                shiftUserMatch &&
+                shiftStartTime === newStartTime &&
+                shiftEndTime === newEndTime;
+
+              const isOverlapping =
+                shiftDateMatch &&
+                shiftUserMatch &&
+                newStartTime < shiftEndTime &&
+                newEndTime > shiftStartTime;
+              return isSameShift || isOverlapping;
+            });
+            if (isDuplicate) {
+              this.scheduleFetchStatus = false;
+              this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+              this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+              return;
+            }
+
+            const newShift = { ...formData, duration: this.duration };
+            this.shiftSchedule1 = this.shiftSchedule1
+              ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
+              : [{ ...newShift, isNew: true }];
+            const formatDate = (date: any) => {
+              if (typeof date === 'string') {
+                return date;
+              }
+              return new Date(date).toISOString().split('T')[0];
+            };
+
+            const uniqueNewShifts = this.shiftSchedule1?.filter(
+              (newShift) =>
+                !this.shiftSchedule.some(
+                  (shift) =>
+                    formatDate(shift.dayWiseDate) ===
+                    formatDate(newShift.dayWiseDate) &&
+                    shift.startTime.trim().toLowerCase() ===
+                    newShift.startTime.trim().toLowerCase() &&
+                    shift.endTime.trim().toLowerCase() ===
+                    newShift.endTime.trim().toLowerCase() &&
+                    shift.user.dempoId === newShift.user.dempoId
+                )
+            );
+
+            this.shiftSchedule = [...this.shiftSchedule, ...uniqueNewShifts];
+            this.weekSchedules = [...this.shiftSchedule1];
+            this.shiftForm.get('startTime')?.setErrors(null);
+            this.shiftForm.get('endTime')?.setErrors(null);
+            if (!this.isEdit) {
+              this.saveSchedule();
+            } else {
+              this.editSchedule();
+            }
+            this.tryValidateSchedules();
           }
         }
       }
-      return false;
+    } else {
+
+
+      if (this.shiftForm.valid) {
+        const formData = this.shiftForm.value;
+        const selectedDate = formData.dayWiseDate;
+        this.changeDate = new Date(selectedDate);
+        this.tryValidateSchedules();
+      }
+      const storedSchedule = localStorage.getItem('shiftSchedule');
+      if (!this.shiftSchedule || this.shiftSchedule.length === 0) {
+        this.shiftSchedule = storedSchedule ? JSON.parse(storedSchedule) : [];
+      }
+      const startTime = this.shiftForm.get('startTime')?.value;
+      const endTime = this.shiftForm.get('endTime')?.value;
+
+      if (!startTime) {
+        this.shiftForm.get('startTime')?.setErrors({ required: true });
+      }
+      if (!endTime) {
+        this.shiftForm.get('endTime')?.setErrors({ required: true });
+      }
+
+      if (this.shiftForm.valid) {
+        const formData = this.shiftForm.value;
+
+        const selectedDate = formData.dayWiseDate;
+        const selectedUser = formData.user;
+        const newStartTime = this.combineDateAndTime(
+          selectedDate,
+          formData.startTime
+        ).getTime();
+
+        const newEndTime = this.combineDateAndTime(
+          selectedDate,
+          formData.endTime
+        ).getTime();
+
+        if (newStartTime >= newEndTime) {
+          this.shiftForm.get('endTime')?.setErrors({ invalidRange: true });
+          return;
+        }
+        const isDuplicate = this.shiftSchedule?.some((shift) => {
+          const shiftDateMatch =
+            new Date(shift.dayWiseDate).toISOString().split('T')[0] ===
+            new Date(selectedDate).toISOString().split('T')[0];
+          const shiftUserMatch = shift.user.dempoId === selectedUser.dempoId;
+          const shiftStartTime = this.combineDateAndTime(
+            shift.dayWiseDate,
+            shift.startTime
+          ).getTime();
+          const shiftEndTime = this.combineDateAndTime(
+            shift.dayWiseDate,
+            shift.endTime
+          ).getTime();
+          const isSameShift =
+            shiftDateMatch &&
+            shiftUserMatch &&
+            shiftStartTime === newStartTime &&
+            shiftEndTime === newEndTime;
+
+          const isOverlapping =
+            shiftDateMatch &&
+            shiftUserMatch &&
+            newStartTime < shiftEndTime &&
+            newEndTime > shiftStartTime;
+          return isSameShift || isOverlapping;
+        });
+        if (isDuplicate) {
+          this.scheduleFetchStatus = false;
+          this.shiftForm.get('startTime')?.setErrors({ duplicate: true });
+          this.shiftForm.get('endTime')?.setErrors({ duplicate: true });
+          return;
+        }
+
+        const newShift = { ...formData, duration: this.duration };
+        this.shiftSchedule1 = this.shiftSchedule1
+          ? [...this.shiftSchedule1, { ...newShift, isNew: true }]
+          : [{ ...newShift, isNew: true }];
+        const formatDate = (date: any) => {
+          if (typeof date === 'string') {
+            return date;
+          }
+          return new Date(date).toISOString().split('T')[0];
+        };
+
+        const uniqueNewShifts = this.shiftSchedule1?.filter(
+          (newShift) =>
+            !this.shiftSchedule.some(
+              (shift) =>
+                formatDate(shift.dayWiseDate) ===
+                formatDate(newShift.dayWiseDate) &&
+                shift.startTime.trim().toLowerCase() ===
+                newShift.startTime.trim().toLowerCase() &&
+                shift.endTime.trim().toLowerCase() ===
+                newShift.endTime.trim().toLowerCase() &&
+                shift.user.dempoId === newShift.user.dempoId
+            )
+        );
+
+        this.shiftSchedule = [...this.shiftSchedule, ...uniqueNewShifts];
+        this.weekSchedules = [...this.shiftSchedule1];
+        this.shiftForm.get('startTime')?.setErrors(null);
+        this.shiftForm.get('endTime')?.setErrors(null);
+        if (!this.isEdit) {
+          this.saveSchedule();
+        } else {
+          this.editSchedule();
+        }
+        this.tryValidateSchedules();
+      }
+    }
   }
 
+  // isBlockStartAndEndTime(date: Date, startTime: string, endTime: string): boolean {
+  //     const toMinutes = (time: string) => {
+  //      const [timePart, modifier] = time.split(' ');
+  //      let [hours, minutes] = timePart.split(':').map(Number);
+  //      if (modifier === 'PM' && hours !== 12) {
+  //         hours += 12;
+  //      }
+  //      if (modifier === 'AM' && hours === 12) {
+  //         hours = 0;
+  //      }
+  //      return hours * 60 + (minutes || 0);
+  //     };
+  //     const start = toMinutes(startTime);
+  //     const end = toMinutes(endTime);
+  //     for (const blockOut of this.blockOutDates) {
+  //       if (new Date(blockOut.blockOutDay!).toDateString() === new Date(date).toDateString()) {
+  //         if (blockOut.startTime && blockOut.endTime) {
+  //            const blockStart = toMinutes(blockOut.startTime);
+  //            const blockEnd = toMinutes(blockOut.endTime);
+  //            if (start < blockEnd && end > blockStart) {
+  //               return true;
+  //            }
+  //         }
+  //       }
+  //     }
+  //     return false;
+  // }
 
+    isDateBlockedOut(selectedDate: Date): boolean {
+    if (!this.blockOutDates || this.blockOutDates.length === 0 || !selectedDate) {
+      return false;
+    }
+
+    const selectedDateOnly = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate()
+    );
+
+    return this.blockOutDates.some((blockOut) => {
+      if (!blockOut.blockOutDay) return false;
+
+      const blockOutDate = new Date(blockOut.blockOutDay);
+      const blockOutDateOnly = new Date(
+        blockOutDate.getFullYear(),
+        blockOutDate.getMonth(),
+        blockOutDate.getDate()
+      );
+
+      return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
+    });
+  }
 
   saveNewRequest(id: number): void {
     if (
@@ -1846,7 +2085,7 @@ export class ShiftScheduleComponent implements OnInit {
     this.configurationService.getBlockOutDates().subscribe(
       (response) => {
         if ((response.Status || '').toUpperCase() == 'SUCCESS') {
-          this.blockOutDates = <IBlockOutDate[]>response.Subject;          
+          this.blockOutDates = <IBlockOutDate[]>response.Subject;
           this.validateBlockOutDate(this.selectedDate.value);
         }
       },
@@ -1903,6 +2142,12 @@ export class ShiftScheduleComponent implements OnInit {
     });
   }
 
+  openBlockDateConfirmationDialog(): MatDialogRef<BlockDateConfirmationDialogComponent, any> {
+    return this.dialog.open(BlockDateConfirmationDialogComponent, {
+      panelClass: 'custom-dialog-container',
+    });
+  }
+
   saveSchedule(): void {
     this.isModified = false;
     const shiftScheduleList: any[] = [];
@@ -1928,31 +2173,42 @@ export class ShiftScheduleComponent implements OnInit {
           date.getMonth() + 1
         ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-        const obj = {
-          dempoId: shift.user?.dempoId || null,
-          scheduleDate,
-          projectId: shift.projects?.projectId || null,
-          comments: shift.comments || '',
-          startTime: shift.startTime || null,
-          endTime: shift.endTime || null,
-          entryby: this.authenticatedUser.netID || null,
-        };
+        shift.startdatetime = new Date(`${scheduleDate} ${shift.startTime}`);
+        shift.enddatetime = new Date(`${scheduleDate} ${shift.endTime}`);
+
+        shift.dempoid = shift.user?.dempoId || null;
+        shift.projectid = shift.projects?.projectId || null;
+
+        const obj = shift;
+        // const obj = {
+        //   dempoId: shift.user?.dempoId || null,
+        //   scheduleDate,
+        //   projectId: shift.projects?.projectId || null,
+        //   comments: shift.comments || '',
+        //   startTime: shift.startTime || null,
+        //   endTime: shift.endTime || null,
+        //   entryby: this.authenticatedUser.netID || null,
+        // };
 
         shiftScheduleList.push(obj);
       }
     }
-    const uniqueScheduleList = Array.from(
-      new Map(
-        shiftScheduleList.map((item) => [
-          `${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`,
-          item,
-        ])
-      ).values()
-    );
+    // const uniqueScheduleList = Array.from(
+    //   new Map(
+    //     shiftScheduleList.map((item) => [
+    //       `${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`,
+    //       item,
+    //     ])
+    //   ).values()
+    // );
+
+    // Needs to move to service
+    // POST to /api/userSchedules
     this.http
       .post(
-        `${environment.DataAPIUrl}/api/userSchedules/save-schedule`,
-        uniqueScheduleList
+        `${environment.DataAPIUrl}/api/userSchedules`,
+        // uniqueScheduleList
+        shiftScheduleList
       )
       .subscribe({
         next: (res: any) => {
@@ -2073,7 +2329,31 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        this.shiftSchedule = response ?? [];
+        
+        let viShiftSchedule: ISchedule[] = response ?? [];
+        for (let schedule of viShiftSchedule) {
+          schedule.scheduledate = new Date(schedule.startdatetime ?? '');
+          schedule.startdatetime = new Date(schedule.startdatetime ?? '');
+          schedule.enddatetime = new Date(schedule.enddatetime ?? '');
+          schedule.dayWiseDate = new Date(schedule.startdatetime ?? '');
+          schedule.startTime = Utils.formatDateToTimeString(schedule.startdatetime, true) || '';
+          schedule.endTime = Utils.formatDateToTimeString(schedule.enddatetime, true) || '';
+          schedule.duration = parseFloat(((schedule.enddatetime?.getTime() - schedule.startdatetime?.getTime()) / (1000 * 60 * 60)).toFixed(2));
+          schedule.user = {
+            dempoid: schedule.dempoid ?? '',
+            userId: schedule.userid ?? 0,
+            userName: schedule.displayName
+          } as User;
+          schedule.projects = {
+            projectId: schedule.projectid,
+            projectName: schedule.projectName,
+            projectColor: schedule.projectColor
+          };
+          console.log(schedule);
+        }
+
+        this.shiftSchedule = viShiftSchedule;
+        
         localStorage.setItem(
           'shiftSchedule',
           JSON.stringify(this.shiftSchedule)
@@ -2190,19 +2470,30 @@ export class ShiftScheduleComponent implements OnInit {
     ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     const shift = this.shiftForm.value || {};
-    const obj = {
-      dempoId: shift.user?.dempoId || null,
-      scheduleDate,
-      projectId: shift.projects?.projectId || null,
-      comments: shift.comments || '',
-      startTime: startTime || null,
-      endTime: endTime || null,
-      entryby: this.authenticatedUser?.netID || null,
-      id: shift.id || null,
-    };
 
+    shift.startdatetime = new Date(`${scheduleDate} ${shift.startTime}`);
+    shift.enddatetime = new Date(`${scheduleDate} ${shift.endTime}`);
+
+    shift.dempoid = shift.user?.dempoId || null;
+    shift.projectid = shift.projects?.projectId || null;
+    shift.preschedulekey = shift.id || null;
+    
+    const obj = shift;
+    // const obj = {
+    //   dempoId: shift.user?.dempoId || null,
+    //   scheduleDate,
+    //   projectId: shift.projects?.projectId || null,
+    //   comments: shift.comments || '',
+    //   startTime: startTime || null,
+    //   endTime: endTime || null,
+    //   entryby: this.authenticatedUser?.netID || null,
+    //   id: shift.id || null,
+    // };
+
+    // Needs to move to service
+    // POST to /api/userSchedules
     this.http
-      .post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
+      .put(`${environment.DataAPIUrl}/api/userSchedules`, [obj])
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
@@ -2285,7 +2576,7 @@ export class ShiftScheduleComponent implements OnInit {
     const shift = this.shiftForm.value || {};
     this.http
       .delete(
-        `${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}/${this.authenticatedUser.netID}`
+        `${environment.DataAPIUrl}/api/userSchedules/${shift.id}/${this.authenticatedUser.netID}`
       )
       .subscribe({
         next: (res: any) => {
