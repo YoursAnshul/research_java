@@ -1,6 +1,6 @@
 .announcements-panel {
   max-height: 630px;
-  padding: 16px;
+  /* padding: 16px; */
   border-left: 1px solid #ccc;
   overflow-y: auto;
   font-family: "Roboto", sans-serif;
@@ -29,7 +29,8 @@
   font-size: 14px;
   color: #0680cd;
   text-decoration: underline;
-  margin-left: auto; /* Push the manage link to the right end */
+  margin-left: auto;
+  /* Push the manage link to the right end */
 }
 
 .announcement-title {
@@ -40,13 +41,14 @@
 }
 
 .announcement {
-  width: 400px;
+  /* width: 380px; */
   padding: 16px;
   margin-bottom: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #fff;
-  margin-left: -6px;
+  margin-left: 14px;
+  margin-top: 10px;
 }
 
 .announcement h4 {
@@ -84,6 +86,7 @@
   display: flex;
   align-items: center;
 }
+
 .tag::before {
   content: "";
   width: 10px;
@@ -91,10 +94,12 @@
   margin-right: 8px;
   background-color: var(--tag-color);
 }
+
 .icon-wrapper {
   display: inline-flex;
   margin-right: 8px;
 }
+
 .no-data {
   padding: 16px;
   text-align: center;
@@ -102,6 +107,7 @@
   font-size: 14px;
   font-style: italic;
 }
+
 .show-more-btn {
   background: none;
   border: none;
@@ -115,6 +121,7 @@
 .show-more-btn:hover {
   color: #0056b3;
 }
+
 .underlined-link {
   text-decoration: underline;
   color: blue;
@@ -135,13 +142,15 @@
   text-decoration: underline !important;
   cursor: pointer !important;
 }
+
 .announcement-body {
   overflow: hidden;
 }
 
 .announcement-body.truncated {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 3 lines */
+  -webkit-line-clamp: 2;
+  /* Limit to 3 lines */
   -webkit-box-orient: vertical;
   white-space: normal;
 }
