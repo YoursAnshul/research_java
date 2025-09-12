@@ -1042,7 +1042,9 @@ export class ShifCalendarComponent implements OnInit {
           codeValues: user.dempoId,
           userId: user.userId,
         }));
-        this.userDropDownValues.unshift({ dropDownItem: 'Any Users', codeValues: 0, userId: 0 });
+        if (!this.userDropDownValues.some(u => u.dropDownItem === 'Any Users')) {
+           this.userDropDownValues.unshift({dropDownItem: 'Any Users',codeValues: 0, userId: 0});
+        }
         const matchedUser = newUserList.find(
           (user) => user.userId === prevUserId
         );
