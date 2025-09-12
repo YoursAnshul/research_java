@@ -101,32 +101,26 @@ export class SelectComponent {
   }
 
   //action to take when the user clicks a value
-  public toggleSelectedValue(dv: IDropDownValue): void {
-    //if this is a single select dropdown, clear the other values
+   public toggleSelectedValue(dv: IDropDownValue): void {
     if (!this.multiSelect) {
+      // SINGLE SELECT
       this.selectedValues = [new SelectedValue(dv.codeValues, dv)];
+      this.anyValueSelected = false;
       this.showDropdown = false;
       this.showDropdownChange.emit(this.showDropdown);
       this.selectedValuesChange.emit(this.selectedValues);
       return;
-    } else {
-    
-      //if the value is already selected, deselect it
-      if (this.selectedValues.map(x => x.value).includes(dv.codeValues)) {
-        this.selectedValues = this.selectedValues.filter((x: SelectedValue) => x.value !== dv.codeValues);
-      //otherwise, select it
-      } else {
-        this.selectedValues.push(new SelectedValue(dv.codeValues, dv));
-      }
-
-      if (this.selectedValues.length === 0) {
-        this.anyValueSelected = true;
-      } else {
-        this.anyValueSelected = false;
-      }
-      this.anyValueSelectedChange.emit(this.anyValueSelected);
-
     }
+
+    // MULTI SELECT
+    if (this.selectedValues.map(x => x.value).includes(dv.codeValues)) {
+      this.selectedValues = this.selectedValues.filter((x: SelectedValue) => x.value !== dv.codeValues);
+    } else {
+      this.selectedValues.push(new SelectedValue(dv.codeValues, dv));
+    }
+
+    this.anyValueSelected = this.selectedValues.length === 0;
+    this.anyValueSelectedChange.emit(this.anyValueSelected);
 
     this.applyAnyFilter();
   }

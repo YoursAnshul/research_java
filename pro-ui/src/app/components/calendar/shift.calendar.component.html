@@ -46,51 +46,36 @@
       </div>
       <div class="center-container" *ngIf="authenticatedUser?.role !== UserRoles.Interviewer">
         <div>
-          <mat-form-field appearance="outline" class="custom-form-field">
-            <mat-label>User</mat-label>
-            <mat-select
-              [(ngModel)]="selectedUser"
-              (selectionChange)="onUserChange($event.value)"
-            >
-              <mat-option *ngFor="let user of userList" [value]="user">
-                {{ user.userName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="min-w-[200px]">
+          <app-select
+            id="user_filter"
+            [fieldLabel]="'Users'"
+            [anyLabel]="'Users'"
+            [multiSelect]="false"
+            [isFlag]="true"
+            [dropDownValues]="userDropDownValues"
+            (selectedValuesChange)="onUserChange($event)"
+            [(anyValueSelected)]="anyUserValueSelected"
+            [selectedValues]="selectedUserValues"
+            [width]="'200px'">
+          </app-select>
+        </div>
         </div>
         <div class="ml-3">
-          <mat-form-field appearance="outline" class="custom-form-field ml-2">
-            <mat-label>Project</mat-label>
-            <mat-select
-              [(ngModel)]="selectedProject"
-              (selectionChange)="onProjectChange($event.value)"
-              [compareWith]="compareProjects"
-            >
-              <!-- Permanent default option -->
-              <mat-option [value]="defaultProject">
-                {{ defaultProject.projectName }}
-              </mat-option>
-          
-              <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-          
-              <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
-          
+          <div class="min-w-[200px]">
+          <app-select
+            id="project_filter"
+            [fieldLabel]="'Projects'"
+            [anyLabel]="'Projects'"
+            [multiSelect]="false"
+            [isFlag]="true"
+            [dropDownValues]="projectDropDownValues"
+            (selectedValuesChange)="onProjectChange($event)"
+            [(anyValueSelected)]="anyProjectValueSelected"
+            [selectedValues]="selectedProjectValues"
+            [width]="'200px'">
+          </app-select>
+        </div>
         </div>
         <div class="ml-3">
           <button
@@ -141,52 +126,35 @@
         class="center-container mb-3"
         *ngIf="authenticatedUser?.role !== UserRoles.Interviewer"
       >
-        <div>
-          <mat-form-field appearance="outline" class="custom-form-field">
-            <mat-label>User</mat-label>
-            <mat-select
-              [(ngModel)]="selectedUser"
-              (selectionChange)="onUserChange($event.value)"
-            >
-              <mat-option *ngFor="let user of userList" [value]="user">
-                {{ user.userName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+       <div class="min-w-[200px]">
+          <app-select
+            id="user_filter"
+            [fieldLabel]="'Users'"
+            [anyLabel]="'Users'"
+            [multiSelect]="false"
+            [isFlag]="true"
+            [dropDownValues]="userDropDownValues"
+            (selectedValuesChange)="onUserChange($event)"
+            [(anyValueSelected)]="anyUserValueSelected"
+            [selectedValues]="selectedUserValues"
+            [width]="'200px'">
+          </app-select>
         </div>
         <div class="ml-3">
-          <mat-form-field appearance="outline" class="custom-form-field ml-2">
-            <mat-label>Project</mat-label>
-            <mat-select
-              [(ngModel)]="selectedProject"
-              (selectionChange)="onProjectChange($event.value)"
-              [compareWith]="compareProjects"
-            >
-              <!-- Permanent default option -->
-              <mat-option [value]="defaultProject">
-                {{ defaultProject.projectName }}
-              </mat-option>
-          
-              <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-          
-              <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
-          
+          <div class="min-w-[200px]">
+          <app-select
+            id="project_filter"
+            [fieldLabel]="'Projects'"
+            [anyLabel]="'Projects'"
+            [multiSelect]="false"
+            [isFlag]="true"
+            [dropDownValues]="projectDropDownValues"
+            (selectedValuesChange)="onProjectChange($event)"
+            [(anyValueSelected)]="anyProjectValueSelected"
+            [selectedValues]="selectedProjectValues"
+            [width]="'200px'">
+          </app-select>
+          </div>
         </div>
         <div class="ml-3">
           <button
@@ -234,52 +202,35 @@
         class="center-container mb-3"
         *ngIf="authenticatedUser?.role !== UserRoles.Interviewer"
       >
-        <div>
-          <mat-form-field appearance="outline" class="custom-form-field">
-            <mat-label>User</mat-label>
-            <mat-select
-              [(ngModel)]="selectedUser"
-              (selectionChange)="onUserChange($event.value)"
-            >
-              <mat-option *ngFor="let user of userList" [value]="user">
-                {{ user.userName }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+        <div class="min-w-[200px]">
+          <app-select
+            id="user_filter"
+            [fieldLabel]="'Users'"
+            [anyLabel]="'Users'"
+            [multiSelect]="false"
+            [isFlag]="true"
+            [dropDownValues]="userDropDownValues"
+            (selectedValuesChange)="onUserChange($event)"
+            [(anyValueSelected)]="anyUserValueSelected"
+            [selectedValues]="selectedUserValues"
+            [width]="'200px'">
+          </app-select>
         </div>
         <div class="ml-3">
-          <mat-form-field appearance="outline" class="custom-form-field ml-2">
-            <mat-label>Project</mat-label>
-            <mat-select
-              [(ngModel)]="selectedProject"
-              (selectionChange)="onProjectChange($event.value)"
-              [compareWith]="compareProjects"
-            >
-              <!-- Permanent default option -->
-              <mat-option [value]="defaultProject">
-                {{ defaultProject.projectName }}
-              </mat-option>
-          
-              <mat-optgroup label="Projects">
-                <mat-option
-                  *ngFor="let project of otherProjects"
-                  [value]="project"
-                >
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-          
-              <mat-optgroup label="Admin">
-                <mat-option
-                  *ngFor="let project of adminProjects"
-                  [value]="project"
-                >
-                  {{ project.projectName }}
-                </mat-option>
-              </mat-optgroup>
-            </mat-select>
-          </mat-form-field>
-          
+          <div class="min-w-[200px]">
+          <app-select
+            id="project_filter"
+            [fieldLabel]="'Projects'"
+            [anyLabel]="'Projects'"
+            [multiSelect]="false"
+            [isFlag]="true"
+            [dropDownValues]="projectDropDownValues"
+            (selectedValuesChange)="onProjectChange($event)"
+            [(anyValueSelected)]="anyProjectValueSelected"
+            [selectedValues]="selectedProjectValues"
+            [width]="'200px'">
+          </app-select>
+        </div>
         </div>
         <div class="ml-3">
           <button

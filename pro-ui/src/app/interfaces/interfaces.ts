@@ -123,6 +123,7 @@ export interface IDropDownValue {
   entryBy?: string | null;
   modDt?: Date | null;
   modBy?: string | null;
+  userId?: number;
 }
 
 export interface IFormField {

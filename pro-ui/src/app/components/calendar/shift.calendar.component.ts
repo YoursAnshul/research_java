@@ -34,6 +34,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 import { ScheduleService } from '../schedule/schedule.service';
 import { UserRole } from '../../models/presentation/enums';
+import { SelectedValue } from '../../models/presentation/selected-value';
 
 @Component({
   selector: 'app-shift-calendar',
@@ -133,7 +134,12 @@ export class ShifCalendarComponent implements OnInit {
   @Input() pId: number = 0;
   @Input() isScheduleUpdate: boolean = false;
   UserRoles: any = UserRole;
-  
+  userDropDownValues: IDropDownValue[] = [];
+  anyUserValueSelected: boolean = true;
+  selectedUserValues: SelectedValue[] = [];
+  projectDropDownValues: IDropDownValue[] = [];
+  anyProjectValueSelected: boolean = true;
+  selectedProjectValues: SelectedValue[] = [];
   //constructor
   constructor(
     private userSchedulesService: UserSchedulesService,
@@ -280,6 +286,8 @@ export class ShifCalendarComponent implements OnInit {
     );
   }
   onReset(): void {
+    this.selectedUserValues = []
+    this.selectedProjectValues = []
     this.shiftSchedule = [];
     this.shiftSchedule1 = [];
     this.selectedDate.setValue(new Date());
@@ -379,6 +387,10 @@ export class ShifCalendarComponent implements OnInit {
     if (this.homeUser && this.authenticatedUser?.role !== UserRole.Interviewer) {
       this.selectedUser = this.homeUser;
       this.defaultUser = this.homeUser;
+      this.selectedUserValues = [
+        new SelectedValue(this.homeUser?.userId, { dropDownItem: this.homeUser?.userName, codeValues: this.homeUser?.userId })
+      ];
+      this.anyUserValueSelected = false;
       this.getAuthorNew(0);
       this.getProjectInfo(this.selectedUser?.dempoId);
     }
@@ -388,6 +400,10 @@ export class ShifCalendarComponent implements OnInit {
       this.profileType != 'user-profile'
     ) {
       this.selectedProject = this.homeSelectedProject;
+      this.selectedProjectValues = [
+        new SelectedValue(this.homeSelectedProject?.projectId, { dropDownItem: this.homeSelectedProject?.projectName, codeValues: this.homeSelectedProject?.projectId })
+      ];
+      this.anyProjectValueSelected = false
     }
     this.scheduleService.getSchedule().subscribe((data) => {
       if (data) {
@@ -410,14 +426,6 @@ export class ShifCalendarComponent implements OnInit {
       this.getScheduleList(formattedDate);
     }
     this.checkContext();
-  }
-
-  findProjectInLists(projectToFind: any): any {
-    return (
-      this.otherProjects.find((p) => p.projectId === projectToFind.projectId) ||
-      this.adminProjects.find((p) => p.projectId === projectToFind.projectId) ||
-      null
-    );
   }
   compareProjects(project1: any, project2: any): boolean {
     return project1 && project2
@@ -1026,7 +1034,11 @@ export class ShifCalendarComponent implements OnInit {
         ];
 
         this.userList = newUserList;
-
+        this.userDropDownValues = this.userList.map((user) => ({
+          dropDownItem: user.userName,
+          codeValues: user.dempoId,
+          userId: user.userId,
+        }));
         const matchedUser = newUserList.find(
           (user) => user.userId === prevUserId
         );
@@ -1093,7 +1105,12 @@ export class ShifCalendarComponent implements OnInit {
     this.http.get(apiUrl).subscribe({
       next: (data: any) => {
         this.allProjects = Array.isArray(data) ? data : [];
-
+        const uniqueProjectsList = this.allProjects.filter( (proj, index, self) =>
+          index === self.findIndex((p) => p.projectId === proj.projectId));
+        this.projectDropDownValues = uniqueProjectsList.map((project) => ({
+          dropDownItem: project.projectName,
+          codeValues: project.projectId
+        }));
         this.adminProjects = this.allProjects.filter(
           (project: { projectType: number }) => project.projectType === 4
         );
@@ -1110,6 +1127,7 @@ export class ShifCalendarComponent implements OnInit {
           }
         );
         this.otherProjects = Array.from(uniqueProjects.values());
+        this.projectDropDownValues.unshift({ dropDownItem: 'Any Projects', codeValues: 0 });
       },
 
       error: (error) => console.error('Error fetching projects:', error),
@@ -1117,19 +1135,33 @@ export class ShifCalendarComponent implements OnInit {
   }
 
   onUserChange(user: any) {
+    this.selectedUserValues = user;
+    console.log('user', user);
+    const selected =  this.selectedUserValues [0];
+    var obj = {
+      userId: selected?.item?.userId,
+      dempoId: selected?.value,
+      userName: selected?.item?.dropDownItem
+    };
     this.selectedUser = '';
-    this.selectedUser = user;
-    this.getProjectInfo(user?.dempoId);
+    this.selectedUser = obj;
+    this.getProjectInfo(obj?.dempoId);
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
     this.selectedUserChange.emit(this.selectedUser);
   }
-  onProjectChange(project: any) {
+  onProjectChange(project: any) {    
     this.selectedProject = '';
-    this.selectedProject = project;
+    this.selectedProjectValues = project;
+    const selected = this.selectedProjectValues[0];
+    var obj = {
+      projectId: selected?.value,
+      projectName: selected?.item?.dropDownItem
+    };
+    this.selectedProject = obj;
     this.homeSelectedProject = null;
-    this.getAuthor(project.projectId);
+    this.getAuthor(obj.projectId);
     this.getScheduleList(
       Utils.formatDateOnlyToStringUTC(this.selectedDate.value, true, true, true)
     );
