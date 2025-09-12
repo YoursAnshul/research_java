@@ -141,31 +141,31 @@ export class ShiftDayViewComponent implements OnInit {
 
         schedule.duration = parseFloat(schedule.duration) || 0;
 
-        if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
-          const utcStart = new Date(
-            `${schedule.dayWiseDate} ${schedule.startTime} UTC`
-          );
-          const utcEnd = new Date(
-            `${schedule.dayWiseDate} ${schedule.endTime} UTC`
-          );
+        // if (schedule.dayWiseDate && schedule.startTime && schedule.endTime) {
+        //   const utcStart = new Date(
+        //     `${schedule.dayWiseDate} ${schedule.startTime} UTC`
+        //   );
+        //   const utcEnd = new Date(
+        //     `${schedule.dayWiseDate} ${schedule.endTime} UTC`
+        //   );
 
-          const startET = new Date(
-            utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
-          );
-          const endET = new Date(
-            utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
-          );
+          // const startET = new Date(
+          //   utcStart.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          // );
+          // const endET = new Date(
+          //   utcEnd.toLocaleString('en-US', { timeZone: 'America/New_York' })
+          // );
 
-          const timeOptions: Intl.DateTimeFormatOptions = {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-            timeZone: 'America/New_York',
-          };
+          // const timeOptions: Intl.DateTimeFormatOptions = {
+          //   hour: 'numeric',
+          //   minute: '2-digit',
+          //   hour12: true,
+          //   timeZone: 'America/New_York',
+          // };
 
-          schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
-          schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
-        }
+          // schedule.startTime = startET.toLocaleTimeString('en-US', timeOptions);
+          // schedule.endTime = endET.toLocaleTimeString('en-US', timeOptions);
+        // }
 
         return isDateMatch && isUserMatch && isProjectMatch ? schedule : null;
       })
@@ -337,10 +337,10 @@ export class ShiftDayViewComponent implements OnInit {
   }
   openScheduleData(schedule: ISchedule): void {
     if (
-      (schedule.projects.projectName == 'Sick' ||
-        schedule.projects.projectName == 'Absent' ||
-        schedule.projects.projectName == 'Arriving Late' ||
-        schedule.projects.projectName == 'Leaving Early') &&
+      (schedule.projects?.projectName == 'Sick' ||
+        schedule.projects?.projectName == 'Absent' ||
+        schedule.projects?.projectName == 'Arriving Late' ||
+        schedule.projects?.projectName == 'Leaving Early') &&
       this.authenticatedUser.role == UserRole.Interviewer
     ) {
       return;

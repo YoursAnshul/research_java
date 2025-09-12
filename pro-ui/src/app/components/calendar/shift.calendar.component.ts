@@ -1167,9 +1167,33 @@ export class ShifCalendarComponent implements OnInit {
     }
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        this.shiftSchedule = response ?? [];
+
+        let viShiftSchedule: ISchedule[] = response ?? [];
+        for (let schedule of viShiftSchedule) {
+          schedule.scheduledate = new Date(schedule.startdatetime ?? '');
+          schedule.startdatetime = new Date(schedule.startdatetime ?? '');
+          schedule.enddatetime = new Date(schedule.enddatetime ?? '');
+          schedule.dayWiseDate = new Date(schedule.startdatetime ?? '');
+          schedule.startTime = Utils.formatDateToTimeString(schedule.startdatetime, true) || '';
+          schedule.endTime = Utils.formatDateToTimeString(schedule.enddatetime, true) || '';
+          schedule.duration = parseFloat(((schedule.enddatetime?.getTime() - schedule.startdatetime?.getTime()) / (1000 * 60 * 60)).toFixed(2));
+          schedule.user = {
+            dempoid: schedule.dempoid ?? '',
+            userId: schedule.userid ?? 0,
+            userName: schedule.displayName
+          } as User;
+          schedule.projects = {
+            projectId: schedule.projectid,
+            projectName: schedule.projectName,
+            projectColor: schedule.projectColor
+          };
+          // console.log(schedule);
+        }
+
+        this.shiftSchedule = viShiftSchedule;
+
         localStorage.setItem(
-          'shiftSchedule',
+          'shiftSchedule', 
           JSON.stringify(this.shiftSchedule)
         );
         const missingSchedules =

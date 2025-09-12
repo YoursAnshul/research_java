@@ -1584,7 +1584,6 @@ export class ShiftScheduleComponent implements OnInit {
   //     const toMinutes = (time: string) => {
   //      const [timePart, modifier] = time.split(' ');
   //      let [hours, minutes] = timePart.split(':').map(Number);
-
   //      if (modifier === 'PM' && hours !== 12) {
   //         hours += 12;
   //      }
@@ -1593,10 +1592,8 @@ export class ShiftScheduleComponent implements OnInit {
   //      }
   //      return hours * 60 + (minutes || 0);
   //     };
-
   //     const start = toMinutes(startTime);
   //     const end = toMinutes(endTime);
-
   //     for (const blockOut of this.blockOutDates) {
   //       if (new Date(blockOut.blockOutDay!).toDateString() === new Date(date).toDateString()) {
   //         if (blockOut.startTime && blockOut.endTime) {
@@ -1635,6 +1632,7 @@ export class ShiftScheduleComponent implements OnInit {
       return blockOutDateOnly.getTime() === selectedDateOnly.getTime();
     });
   }
+
   saveNewRequest(id: number): void {
     if (
       !(
@@ -2149,6 +2147,7 @@ export class ShiftScheduleComponent implements OnInit {
       panelClass: 'custom-dialog-container',
     });
   }
+
   saveSchedule(): void {
     this.isModified = false;
     const shiftScheduleList: any[] = [];
@@ -2174,31 +2173,42 @@ export class ShiftScheduleComponent implements OnInit {
           date.getMonth() + 1
         ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-        const obj = {
-          dempoId: shift.user?.dempoId || null,
-          scheduleDate,
-          projectId: shift.projects?.projectId || null,
-          comments: shift.comments || '',
-          startTime: shift.startTime || null,
-          endTime: shift.endTime || null,
-          entryby: this.authenticatedUser.netID || null,
-        };
+        shift.startdatetime = new Date(`${scheduleDate} ${shift.startTime}`);
+        shift.enddatetime = new Date(`${scheduleDate} ${shift.endTime}`);
+
+        shift.dempoid = shift.user?.dempoId || null;
+        shift.projectid = shift.projects?.projectId || null;
+
+        const obj = shift;
+        // const obj = {
+        //   dempoId: shift.user?.dempoId || null,
+        //   scheduleDate,
+        //   projectId: shift.projects?.projectId || null,
+        //   comments: shift.comments || '',
+        //   startTime: shift.startTime || null,
+        //   endTime: shift.endTime || null,
+        //   entryby: this.authenticatedUser.netID || null,
+        // };
 
         shiftScheduleList.push(obj);
       }
     }
-    const uniqueScheduleList = Array.from(
-      new Map(
-        shiftScheduleList.map((item) => [
-          `${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`,
-          item,
-        ])
-      ).values()
-    );
+    // const uniqueScheduleList = Array.from(
+    //   new Map(
+    //     shiftScheduleList.map((item) => [
+    //       `${item.dempoId}_${item.scheduleDate}_${item.startTime}_${item.endTime}`,
+    //       item,
+    //     ])
+    //   ).values()
+    // );
+
+    // Needs to move to service
+    // POST to /api/userSchedules
     this.http
       .post(
-        `${environment.DataAPIUrl}/api/userSchedules/save-schedule`,
-        uniqueScheduleList
+        `${environment.DataAPIUrl}/api/userSchedules`,
+        // uniqueScheduleList
+        shiftScheduleList
       )
       .subscribe({
         next: (res: any) => {
@@ -2319,7 +2329,31 @@ export class ShiftScheduleComponent implements OnInit {
 
     this.http.get<any[]>(url).subscribe({
       next: (response) => {
-        this.shiftSchedule = response ?? [];
+        
+        let viShiftSchedule: ISchedule[] = response ?? [];
+        for (let schedule of viShiftSchedule) {
+          schedule.scheduledate = new Date(schedule.startdatetime ?? '');
+          schedule.startdatetime = new Date(schedule.startdatetime ?? '');
+          schedule.enddatetime = new Date(schedule.enddatetime ?? '');
+          schedule.dayWiseDate = new Date(schedule.startdatetime ?? '');
+          schedule.startTime = Utils.formatDateToTimeString(schedule.startdatetime, true) || '';
+          schedule.endTime = Utils.formatDateToTimeString(schedule.enddatetime, true) || '';
+          schedule.duration = parseFloat(((schedule.enddatetime?.getTime() - schedule.startdatetime?.getTime()) / (1000 * 60 * 60)).toFixed(2));
+          schedule.user = {
+            dempoid: schedule.dempoid ?? '',
+            userId: schedule.userid ?? 0,
+            userName: schedule.displayName
+          } as User;
+          schedule.projects = {
+            projectId: schedule.projectid,
+            projectName: schedule.projectName,
+            projectColor: schedule.projectColor
+          };
+          console.log(schedule);
+        }
+
+        this.shiftSchedule = viShiftSchedule;
+        
         localStorage.setItem(
           'shiftSchedule',
           JSON.stringify(this.shiftSchedule)
@@ -2436,19 +2470,30 @@ export class ShiftScheduleComponent implements OnInit {
     ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
     const shift = this.shiftForm.value || {};
-    const obj = {
-      dempoId: shift.user?.dempoId || null,
-      scheduleDate,
-      projectId: shift.projects?.projectId || null,
-      comments: shift.comments || '',
-      startTime: startTime || null,
-      endTime: endTime || null,
-      entryby: this.authenticatedUser?.netID || null,
-      id: shift.id || null,
-    };
 
+    shift.startdatetime = new Date(`${scheduleDate} ${shift.startTime}`);
+    shift.enddatetime = new Date(`${scheduleDate} ${shift.endTime}`);
+
+    shift.dempoid = shift.user?.dempoId || null;
+    shift.projectid = shift.projects?.projectId || null;
+    shift.preschedulekey = shift.id || null;
+    
+    const obj = shift;
+    // const obj = {
+    //   dempoId: shift.user?.dempoId || null,
+    //   scheduleDate,
+    //   projectId: shift.projects?.projectId || null,
+    //   comments: shift.comments || '',
+    //   startTime: startTime || null,
+    //   endTime: endTime || null,
+    //   entryby: this.authenticatedUser?.netID || null,
+    //   id: shift.id || null,
+    // };
+
+    // Needs to move to service
+    // POST to /api/userSchedules
     this.http
-      .post(`${environment.DataAPIUrl}/api/userSchedules/update-schedule`, obj)
+      .put(`${environment.DataAPIUrl}/api/userSchedules`, [obj])
       .subscribe({
         next: (res: any) => {
           this.showToastMessage(res.Message, 'success');
@@ -2531,7 +2576,7 @@ export class ShiftScheduleComponent implements OnInit {
     const shift = this.shiftForm.value || {};
     this.http
       .delete(
-        `${environment.DataAPIUrl}/api/userSchedules/delete-schedule/${shift.id}/${this.authenticatedUser.netID}`
+        `${environment.DataAPIUrl}/api/userSchedules/${shift.id}/${this.authenticatedUser.netID}`
       )
       .subscribe({
         next: (res: any) => {

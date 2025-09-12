@@ -28,7 +28,7 @@ export class SchedulingInfoComponent {
           <li class="mt5">An interviewer's weekly schedule should match their core hours total (40 if 40, 15 if 15)</li>
           <li class="mt5">An interviewer's weekly schedule should not exceed 40 hours total.</li>
           <li class="mt5">An interviewer's schedule should include at least 2 weekend shifts each month</li>
-          <li class="mt5 ml-5">A Saturday or Sunday shift schedule should be 4 hours minimum</li>
+          <li class="mt5 ml-5">A Saturday or Sunday shift schedule should be 4 hours minimum</li> 
         </ul>
       <br />
       <p class="ft700">Scheduling Level 3</p>
