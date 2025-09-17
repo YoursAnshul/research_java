@@ -125,17 +125,10 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     ) {
       return;
     }
-    const startOfWeek = moment(this.selectedDateRange.value.start)
-      .tz('America/New_York')
-      .startOf('day')
-      .toDate();
-    const endOfWeek = moment(this.selectedDateRange.value.end)
-      .tz('America/New_York')
-      .endOf('day')
-      .toDate();
-
-    startOfWeek.setHours(0, 0, 0, 0);
-    endOfWeek.setHours(23, 59, 59, 999);
+    
+    const startOfWeek = new Date(this.selectedDateRange.value.start.getUTCFullYear(), this.selectedDateRange.value.start.getUTCMonth(), this.selectedDateRange.value.start.getUTCDate());
+    
+    const endOfWeek = new Date(this.selectedDateRange.value.end.getUTCFullYear(), this.selectedDateRange.value.end.getUTCMonth(), this.selectedDateRange.value.end.getUTCDate());
 
     this.weekSchedules = {
       weekStart: startOfWeek,
@@ -152,11 +145,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
     const selectedProjectId = this.selectedProject?.projectId ?? null;
     this.processedSchedules = [];
     this.shiftSchedule?.forEach((shift) => {
-      const shiftDate = moment(shift.dayWiseDate)
-        .tz('America/New_York')
-        .startOf('day')
-        .toDate();
-      shiftDate.setHours(0, 0, 0, 0);
+      const shiftDate = new Date(shift.dayWiseDate.getUTCFullYear(), shift.dayWiseDate.getUTCMonth(), shift.dayWiseDate.getUTCDate());
 
       const isWithinDateRange =
         shiftDate >= startOfWeek && shiftDate <= endOfWeek;
@@ -168,7 +157,7 @@ export class ShiftWeekViewComponentV2 implements OnInit {
         : true;
 
       if (isWithinDateRange && isUserMatch && isProjectMatch) {
-        const dayIndex = shiftDate.getDay();
+        const dayIndex = shiftDate.getUTCDay();
         const adjustedDayIndex = dayIndex === 0 ? 7 : dayIndex;
 
         const schedule: ISchedule = {

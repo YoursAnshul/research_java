@@ -265,6 +265,30 @@ export class Utils {
 
   }
 
+  public static formatDateStringToTimeString(inputDateString: string, zeroPadHours: boolean = false, includeSeconds: boolean = false): string | null {
+    if (!inputDateString) {
+      return null;
+    }
+
+    //make sure we are using a Date type and not Date?
+    let inputDate = new Date(inputDateString);
+
+    var h = inputDate.getHours(), m = this.zeroPad(inputDate.getMinutes()), s = this.zeroPad(inputDate.getSeconds());
+    var hString = h.toString();
+    var amPM = (h >= 12 && h !== 0) ? 'PM' : 'AM';
+    if (zeroPadHours) {
+      hString = (h > 12) ? this.zeroPad(h - 12) : this.zeroPad(h);
+    } else {
+      hString = (h > 12) ? (h - 12).toString() : h.toString();
+    }
+
+    if (includeSeconds) {
+      return (hString + ':' + m + ':' + s + ' ' + amPM);
+    } else {
+      return (hString + ':' + m + ' ' + amPM);}
+
+  }
+
   public static isValidDate(inputDate: any): boolean {
     return !isNaN(Date.parse(inputDate));
   }

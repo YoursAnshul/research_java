@@ -136,11 +136,8 @@ export class ShiftMonthViewComponent implements OnInit {
     const shiftsByWeek: Map<string, ISchedule[]> = new Map();
 
     for (const shift of this.shiftSchedule) {
-      const shiftDate = moment(shift.dayWiseDate)
-        .tz('America/New_York')
-        .startOf('day')
-        .toDate();
-      shiftDate.setHours(0, 0, 0, 0);
+      const shiftDate = new Date(shift.dayWiseDate.getUTCFullYear(), shift.dayWiseDate.getUTCMonth(), shift.dayWiseDate.getUTCDate());
+      
       if (shiftDate < startOfCalendarView || shiftDate > endOfCalendarView)
         continue;
       let isValid = true;

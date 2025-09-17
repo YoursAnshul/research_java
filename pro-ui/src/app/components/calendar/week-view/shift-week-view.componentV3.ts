@@ -92,7 +92,7 @@ export class ShiftWeekViewComponentV3 implements OnInit {
   }
 
   processShiftSchedules(): void {
-    console.log('this.shiftSchedule--3--->', this.shiftSchedule);
+    // console.log('this.shiftSchedule--3--->', this.shiftSchedule);
     if (
       !this.selectedDateRange?.value?.start ||
       !this.selectedDateRange?.value?.end

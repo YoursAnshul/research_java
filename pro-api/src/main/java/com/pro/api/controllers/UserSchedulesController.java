@@ -9,15 +9,12 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,35 +23,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.pro.api.models.business.KeyValuePair;
-import com.pro.api.models.business.SessionUserEmail;
 import com.pro.api.models.business.ValidationMessagePlus;
 import com.pro.api.models.dataaccess.CoreHour;
-import com.pro.api.models.dataaccess.Request;
 import com.pro.api.models.dataaccess.Schedule;
 import com.pro.api.models.dataaccess.User;
 import com.pro.api.models.dataaccess.ValidationMessage;
 import com.pro.api.models.dataaccess.ViUserSchedule;
 import com.pro.api.models.dataaccess.repos.CoreHourRepository;
-import com.pro.api.models.dataaccess.repos.RequestRepository;
 import com.pro.api.models.dataaccess.repos.ScheduleRepository;
 import com.pro.api.models.dataaccess.repos.TimeCodeRepository;
 import com.pro.api.models.dataaccess.repos.UserRepository;
 import com.pro.api.models.dataaccess.repos.ValidationMessageRepository;
 import com.pro.api.models.dataaccess.repos.ValidationMessageTextRepository;
 import com.pro.api.models.dataaccess.repos.ViUserScheduleRepository;
-import com.pro.api.response.ScheduleResponse;
-import com.pro.api.response.ShiftScheduleRequest;
-import com.pro.api.service.AuditService;
 import com.pro.api.service.ScheduleService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,177 +48,201 @@ import jakarta.servlet.http.HttpServletRequest;
 public class UserSchedulesController {
 	private static final Logger logger = LoggerFactory.getLogger(UserSchedulesController.class);
 
-	@Autowired
-	private ScheduleRepository scheduleRepository;
-	@Autowired
-	private ViUserScheduleRepository viUserScheduleRepository;
-	@Autowired
-	private TimeCodeRepository timeCodeRepository;
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private ValidationMessageRepository validationMessageRepository;
-	@Autowired
-	private CoreHourRepository coreHourRepository;
-	@Autowired
-	private ValidationMessageTextRepository validationMessageTextRepository;
-	private ZoneId serverZoneId = ZoneId.of("America/New_York");
+    @Autowired
+    private ViUserScheduleRepository viUserScheduleRepository;
+    
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+    
+    @Autowired
+    private TimeCodeRepository timeCodeRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private ValidationMessageRepository validationMessageRepository;
+    
+    @Autowired
+    private CoreHourRepository coreHourRepository;
+    
+    @Autowired
+    private ValidationMessageTextRepository validationMessageTextRepository;
+    
+    @Autowired
+    private ScheduleService scheduleService;
 
-	@Autowired
-	private ScheduleService scheduleService;
+    private ZoneId serverZoneId = ZoneId.of("America/New_York");
 
-		@Autowired
-	private RequestRepository requestRepository;
+    @DeleteMapping("/{id}/{netId}")
+    public ResponseEntity<GeneralResponse> deleteSchedule(
+            @PathVariable("id") Long id,
+            @PathVariable("netId") String netId) {
+        return ResponseEntity.ok(scheduleService.deleteSchedule(id, netId));
+    }
 
-	@Autowired
-	private SessionUserEmail UserEmail;
+    @GetMapping("/scheduleCache")
+    public GeneralResponse scheduleCache() {
+        GeneralResponse response = new GeneralResponse();
+        try {
+            int currentYear = LocalDateTime.now().getYear();
+            List<ViUserSchedule> schedules = viUserScheduleRepository.findByYearAndMonth(currentYear, 
+                LocalDateTime.now().getMonthValue());
 
-	@Autowired
-	private AuditService auditService;
+            response.Status = "Success";
+            response.Message = "Successfully retrieved user schedule cache";
+            response.Subject = schedules;
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
 
-	@DeleteMapping
-	public GeneralResponse deleteSchedules(@RequestBody List<Schedule> schedules) {
-		GeneralResponse response = new GeneralResponse();
-		List<Schedule> deletedSchedules = new ArrayList<Schedule>();
-		List<String> errorMessages = new ArrayList<String>();
+        return response;
+    }
 
-		try {
-			for (Schedule schedule : schedules) {
-				try {
-					scheduleRepository.delete(schedule);
-					deletedSchedules.add(schedule);
-				} catch (Exception ex) {
-					errorMessages.add(ex.getMessage());
-				}
-			}
-			response.Status = "Success";
-			response.Message = "Successfully deleted schedule(s)";
-			response.Subject = deletedSchedules;
-			if (errorMessages.size() > 0) {
-				response.Message = String.format("%d schedules saved, %d schedules failed to save:\n%s",
-						deletedSchedules.size(), errorMessages.size(), String.join("\n", errorMessages));
-			}
+    @GetMapping("/timecodes")
+    public GeneralResponse getTimeCodes() {
+        GeneralResponse response = new GeneralResponse();
+        try {
+            response.Status = "Success";
+            response.Message = "Successfully retrieved time codes";
+            response.Subject = timeCodeRepository.findAllByOrderByTimeCodeValueAsc();
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
 
-			if (deletedSchedules.size() < 1) {
-				throw new Exception("No schedule(s) were deleted from the database");
-			}
-			logger.info("deleted schedules of size {} successfully ", deletedSchedules.size());
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
+        return response;
+    }
 
-		return response;
-	}
+    @PostMapping
+    public GeneralResponse saveSchedules(@RequestBody List<ViUserSchedule> schedules) {
+        GeneralResponse response = new GeneralResponse();
+        List<Schedule> savedSchedules = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
 
-	@GetMapping("/scheduleCache")
-	public GeneralResponse scheduleCache() {
-		GeneralResponse response = new GeneralResponse();
-		try {
-			int currentYear = LocalDateTime.now().getYear();
-			int lastYear = currentYear - 1;
-			int nextYear = currentYear + 1;
+        try {
+            for (ViUserSchedule userSchedule : schedules) {
+				Schedule schedule = new Schedule();
+				// Don't set preschedulekey - let JPA auto-generate it for new records
+				schedule.setDempoid(userSchedule.getDempoid());
+				schedule.setScheduledate(userSchedule.getStartdatetime().toLocalDate());
+				schedule.setStartdatetime(userSchedule.getStartdatetime());
+				schedule.setEnddatetime(userSchedule.getEnddatetime());
+				schedule.setProjectid(userSchedule.getProjectid());
+				schedule.setComments(userSchedule.getComments());
 
-			List<Schedule> schedules = scheduleRepository.findSchedulesByYearRange(lastYear, currentYear, nextYear);
+                try {
+                    Schedule sc = scheduleRepository.save(schedule);
+                    savedSchedules.add(sc);
+                } catch (Exception ex) {
+                    errorMessages.add(ex.getMessage());
+                }
+            }
+            response.Status = "Success";
+            response.Message = "Successfully saved schedule(s)";
+            response.Subject = savedSchedules;
+            logger.info("saved schedules of size : {} successfully ", savedSchedules.size());
+            if (!errorMessages.isEmpty()) {
+                response.Message = String.format("%d schedules saved, %d schedules failed to save:\n%s",
+                        savedSchedules.size(), errorMessages.size(), String.join("\n", errorMessages));
+            }
 
-			response.Status = "Success";
-			response.Message = "Successfully retrieved user schedule cache";
-			response.Subject = schedules;
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
+            if (savedSchedules.isEmpty()) {
+                throw new Exception("No schedule(s) were saved in the database");
+            }
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
 
-		return response;
-	}
+        return response;
+    }
 
-	@GetMapping("/timecodes")
-	public GeneralResponse getTimeCodes() {
-		GeneralResponse response = new GeneralResponse();
-		try {
+    @PutMapping
+    public GeneralResponse updateSchedules(@RequestBody List<ViUserSchedule> schedules) {
+        GeneralResponse response = new GeneralResponse();
+        List<Schedule> updatedSchedules = new ArrayList<>();
+        List<String> errorMessages = new ArrayList<>();
 
-			response.Status = "Success";
-			response.Message = "Successfully retrieved time codes";
-			response.Subject = timeCodeRepository.findAllByOrderByTimeCodeValueAsc();
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
+        try {
+            for (ViUserSchedule userSchedule : schedules) {
+                try {
+                    // Check if record exists first
+                    if (scheduleRepository.existsById(userSchedule.getPreschedulekey())) {
+                        Schedule schedule = new Schedule();
+                        schedule.setPreschedulekey(userSchedule.getPreschedulekey());
+                        schedule.setDempoid(userSchedule.getDempoid());
+                        schedule.setScheduledate(userSchedule.getStartdatetime().toLocalDate());
+                        schedule.setStartdatetime(userSchedule.getStartdatetime());
+                        schedule.setEnddatetime(userSchedule.getEnddatetime());
+                        schedule.setProjectid(userSchedule.getProjectid());
+                        schedule.setComments(userSchedule.getComments());
 
-		return response;
-	}
+                        Schedule sc = scheduleRepository.save(schedule);
+                        updatedSchedules.add(sc);
+                    } else {
+                        errorMessages.add("Schedule with ID " + userSchedule.getPreschedulekey() + " not found");
+                    }
+                } catch (Exception ex) {
+                    errorMessages.add(ex.getMessage());
+                }
+            }
+            response.Status = "Success";
+            response.Message = "Successfully updated schedule(s)";
+            response.Subject = updatedSchedules;
+            logger.info("updated schedules of size : {} successfully ", updatedSchedules.size());
+            if (!errorMessages.isEmpty()) {
+                response.Message = String.format("%d schedules updated, %d schedules failed to update:\n%s",
+                        updatedSchedules.size(), errorMessages.size(), String.join("\n", errorMessages));
+            }
 
-	@PostMapping
-	public GeneralResponse saveSchedules(@RequestBody List<Schedule> schedules) {
-		GeneralResponse response = new GeneralResponse();
-		List<Schedule> savedSchedules = new ArrayList<Schedule>();
-		List<String> errorMessages = new ArrayList<String>();
+            if (updatedSchedules.isEmpty()) {
+                throw new Exception("No schedule(s) were updated in the database");
+            }
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
 
-		try {
-			for (Schedule schedule : schedules) {
-				try {
-					Schedule sc = scheduleRepository.save(schedule);
-					savedSchedules.add(sc);
-				} catch (Exception ex) {
-					errorMessages.add(ex.getMessage());
-				}
-			}
-			response.Status = "Success";
-			response.Message = "Successfully saved schedule(s)";
-			response.Subject = savedSchedules;
-			logger.info("saved schedules of size : {} successfully ", savedSchedules.size());
-			if (errorMessages.size() > 0) {
-				response.Message = String.format("%d schedules saved, %d schedules failed to save:\n%s",
-						savedSchedules.size(), errorMessages.size(), String.join("\n", errorMessages));
-			}
+        return response;
+    }
 
-			if (savedSchedules.size() < 1) {
-				throw new Exception("No schedule(s) were saved in the database");
-			}
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
+    @GetMapping("/range")
+    public GeneralResponse getSchedulesByRange(
+            @RequestParam("startDate") LocalDate startDateParam,
+            @RequestParam("endDate") LocalDate endDateParam) {
+        GeneralResponse response = new GeneralResponse();
+        try {
+            OffsetDateTime startDate = startDateParam.atStartOfDay().atOffset(ZoneOffset.UTC);
+            OffsetDateTime endDate = endDateParam.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC);
+            response.Status = "Success";
+            response.Message = "Successfully retrieved user schedules";
+            response.Subject = viUserScheduleRepository.findUserSchedulesBetweenDates(startDate, endDate);
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
 
-		return response;
-	}
+        return response;
+    }
 
-	@GetMapping("/range")
-	public GeneralResponse getSchedulesByRange(@RequestParam("startDate") LocalDate startDateParam,
-			@RequestParam("endDate") LocalDate endDateParam) {
-		GeneralResponse response = new GeneralResponse();
-		try {
-			OffsetDateTime startDate = startDateParam.atStartOfDay().atOffset(ZoneOffset.UTC);
-			OffsetDateTime endDate = endDateParam.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC);
-			response.Status = "Success";
-			response.Message = "Successfully retrieved user schedules";
-			response.Subject = viUserScheduleRepository.findUserSchedulesBetweenDates(startDate, endDate);
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
+    @GetMapping("/{anchorDate}")
+    public GeneralResponse getIndex(@PathVariable LocalDate anchorDate) {
+        GeneralResponse response = new GeneralResponse();
+        try {
+            List<ViUserSchedule> userSchedules = viUserScheduleRepository.findByYearAndMonth(
+                anchorDate.getYear(), anchorDate.getMonthValue());
+            response.Status = "Success";
+            response.Message = "Successfully retrieved user schedules";
+            response.Subject = userSchedules;
+        } catch (Exception ex) {
+            response.Status = "Failure";
+            response.Message = ex.getMessage();
+        }
 
-		return response;
-	}
-
-	@GetMapping("/{anchorDate}")
-	public GeneralResponse getIndex(@PathVariable LocalDate anchorDate) {
-		GeneralResponse response = new GeneralResponse();
-		String netId = "Unknown"; // Assuming you manage user session in a similar way
-
-		try {
-			List<ViUserSchedule> userSchedules = viUserScheduleRepository.findByYearAndMonth(anchorDate.getYear(),
-					anchorDate.getMonthValue());
-			response.Status = "Success";
-			response.Message = "Successfully retrieved user schedules";
-			response.Subject = userSchedules;
-		} catch (Exception ex) {
-			response.Status = "Failure";
-			response.Message = ex.getMessage();
-		}
-
-		return response;
-	}
+        return response;
+    }
 
 	@PostMapping("/validation/{netId}")
 	public GeneralResponse validateSchedules(HttpServletRequest httpServletRequest,
@@ -573,21 +581,21 @@ public class UserSchedulesController {
 		return response;
 	}
 
-
-	private void deleteValidationMessages(ValidationMessage userMonth) {
-		try {
-			List<ValidationMessage> existingValidationMessages = validationMessageRepository
-					.findByDempoIdAndInMonthYearAndInMonthMonth(userMonth.getDempoId(), userMonth.getInMonth().getYear(),
-							userMonth.getInMonth().getMonthValue());
-			if (existingValidationMessages.size() > 0) {
-				validationMessageRepository.deleteAll(existingValidationMessages);
-			}
-		} catch (Exception ex) {
-			// If deletion fails due to concurrent modification, log and continue
-			// The next save operation will handle the conflict
-			logger.warn("Concurrent deletion detected for validation messages. Will retry on save.", ex);
-		}
-	}
+    private void deleteValidationMessages(ValidationMessage userMonth) {
+        try {
+            List<ValidationMessage> existingMessages = validationMessageRepository
+                .findByDempoIdAndInMonthYearAndInMonthMonth(
+                    userMonth.getDempoId(),
+                    userMonth.getInMonth().getYear(),
+                    userMonth.getInMonth().getMonthValue());
+            
+            if (!existingMessages.isEmpty()) {
+                validationMessageRepository.deleteAll(existingMessages);
+            }
+        } catch (Exception ex) {
+            logger.warn("Concurrent deletion detected for validation messages. Will retry on save.", ex);
+        }
+    }
 
 	private Integer getCoreHours(LocalDate inMonth, CoreHour userCoreHours) {
 		inMonth = LocalDate.of(inMonth.getYear(), inMonth.getMonth(), 1);
@@ -719,60 +727,38 @@ public class UserSchedulesController {
 		return response;
 	}
 
-	public static boolean isNullOrWhiteSpace(String str) {
-		return str == null || str.trim().isEmpty();
-	}
+    private static boolean isNullOrWhiteSpace(String str) {
+        return str == null || str.trim().isEmpty();
+    }
 
-	@PostMapping("/save-schedule")
-	public ResponseEntity<GeneralResponse> saveSchedule(@RequestBody List<ShiftScheduleRequest> request) {
-		GeneralResponse response = scheduleService.saveSchedule(request);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	}
+    @GetMapping("/schedule-list/{anchorDate}")
+    public ResponseEntity<List<ViUserSchedule>> getScheduleList(
+            @PathVariable String anchorDate,
+            @RequestParam(required = false, value = "demId") String dempoId,
+            @RequestParam(required = false, value = "project_id") Integer projectId,
+            @RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate,
+            @RequestParam(required = false, value = "tab_value") String tabValue,
+            @RequestParam(required = false, value = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false, value = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        
+        LocalDate parsedAnchorDate = LocalDate.parse(anchorDate.substring(0, 10), DateTimeFormatter.ISO_DATE);
+        List<ViUserSchedule> response = scheduleService.getList(dempoId, projectId, scheduleDate, tabValue,
+            startDate, endDate, parsedAnchorDate.getYear(), parsedAnchorDate.getMonthValue());
 
-	@GetMapping("/schedule-list/{anchorDate}")
-	public ResponseEntity<List<ScheduleResponse>> getScheduleList(@PathVariable String anchorDate,
-			@RequestParam(required = false, value = "demId") String dempoId,
-			@RequestParam(required = false, value = "project_id") Integer projectId,
-			@RequestParam(required = false, value = "schedule_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate,
-			@RequestParam(required = false, value = "tab_value") String tabValue,
-			@RequestParam(required = false, value = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false, value = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-		LocalDate parsedAnchorDate = LocalDate.parse(anchorDate.substring(0, 10), DateTimeFormatter.ISO_DATE);
-		System.out.println("dempoId---------" + dempoId);
-		List<ScheduleResponse> response = scheduleService.getList(dempoId, projectId, scheduleDate, tabValue, startDate,
-				endDate, parsedAnchorDate.getYear(), parsedAnchorDate.getMonthValue());
+        return response == null || response.isEmpty()
+            ? ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList())
+            : ResponseEntity.ok(response);
+    }
 
-		if (response == null || response.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.emptyList());
-		}
+    @GetMapping("/option-value")
+    public ResponseEntity<GeneralResponse> getOptionValue() {
+        return ResponseEntity.ok(scheduleService.getOptionValue());
+    }
 
-		return ResponseEntity.ok(response);
-	}
-
-	@PostMapping("/update-schedule")
-	public ResponseEntity<GeneralResponse> updateSchedule(@RequestBody ShiftScheduleRequest request) {
-		GeneralResponse response = scheduleService.updateSchedule(request);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	}
-
-	@DeleteMapping("/delete-schedule/{id}/{netId}")
-	public ResponseEntity<GeneralResponse> deleteSchedule(@PathVariable("id") Long id,@PathVariable("netId") String netId) {
-		GeneralResponse response = scheduleService.deleteSchedule(id, netId);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-	}
-
-	@GetMapping("/option-value")
-	public ResponseEntity<GeneralResponse> getOptionValue() {
-		GeneralResponse response = scheduleService.getOptionValue();
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-	}
-
-	@GetMapping("/core-hours")
-	public ResponseEntity<GeneralResponse> getCoreHours(
-			@RequestParam(required = false, value = "dempoId") String dempoId,
-			@RequestParam(required = false, value = "scheduleDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate) {
-		GeneralResponse response = scheduleService.getCoreHours(scheduleDate, dempoId);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-	}
-
+    @GetMapping("/core-hours")
+    public ResponseEntity<GeneralResponse> getCoreHours(
+            @RequestParam(required = false) String dempoId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate scheduleDate) {
+        return ResponseEntity.ok(scheduleService.getCoreHours(scheduleDate, dempoId));
+    }
 }

@@ -217,7 +217,6 @@ export interface ILegend {
 }
 
 export interface ISchedule {
-  projects?: any;
   preschedulekey: number;
   dempoid: string | null;
   fname: string | null;
@@ -270,9 +269,11 @@ export interface ISchedule {
   initialProjectid?: number | null;
   duration?: number | null;
   isNew?: boolean,
-  projectId?:number| null,
+  projectId?:number | null,
   isEdit?:boolean,
   tab?: string;
+  user?: User | null;
+  projects?: any | null;
 }
 
 export interface IScheduleMin {
